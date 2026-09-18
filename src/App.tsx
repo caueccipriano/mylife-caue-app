@@ -1,8 +1,8 @@
 import { type ChangeEvent, useEffect, useState } from 'react'
-import { NavLink, Route, Routes, useNavigate, useParams } from 'react-router-dom'
+import { NavLink, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom'
 import RegisterSheet from './RegisterSheet'
 import { archiveItems, areas, projects } from './data'
-import { exportBackup, importBackup, listRecords, type StoredRecord } from './storage'
+import { exportBackup, importBackup, listRecords, saveRecord, type StoredRecord } from './storage'
 
 const nav = [
   ['/', 'Agora'],
@@ -70,6 +70,7 @@ function Layout({ onRegister }: { onRegister: () => void }) {
           <Route path="/projetos/:id" element={<ProjectPage />} />
           <Route path="/arquivo" element={<ArchivePage />} />
           <Route path="/eu" element={<MePage />} />
+          <Route path="/capturar" element={<ChatGPTCapturePage />} />
         </Routes>
       </main>
 
@@ -306,6 +307,85 @@ function ArchivePage() {
         ))}
         {!filtered.length && <p className="empty">Nada encontrado com esse termo.</p>}
       </div>
+    </div>
+  )
+}
+
+
+function ChatGPTCapturePage() {
+  const location = useLocation()
+  const navigate = useNavigate()
+  const [state, setState] = useState<'ready' | 'saving' | 'saved' | 'error'>('ready')
+
+  const params = new URLSearchParams(location.search)
+  const text = params.get('texto')?.trim() || ''
+  const type = params.get('tipo')?.trim() || 'Nota'
+  const area = params.get('area')?.trim() || 'Pessoal'
+
+  async function save() {
+    if (!text || state === 'saving') return
+
+    setState('saving')
+
+    try {
+      await saveRecord({
+        id: crypto.randomUUID(),
+        text,
+        type,
+        area,
+        source: 'chatgpt',
+        createdAt: new Date().toISOString(),
+      })
+
+      window.dispatchEvent(new Event('eu-record-saved'))
+      setState('saved')
+    } catch {
+      setState('error')
+    }
+  }
+
+  return (
+    <div className="page capture-page">
+      <header className="page-title capture-title">
+        <p className="eyebrow">DO CHATGPT PARA O EU</p>
+        <h1>{text ? 'Pronto para guardar.' : 'Nada para importar.'}</h1>
+        <p>
+          {text
+            ? 'Confira o registro antes de colocá-lo no arquivo local deste aparelho.'
+            : 'Este link não contém um registro válido.'}
+        </p>
+      </header>
+
+      {text && (
+        <article className="capture-card">
+          <div className="capture-card-meta">
+            <span>{type}</span>
+            <span>{area}</span>
+          </div>
+          <p>{text}</p>
+        </article>
+      )}
+
+      {state === 'saved' ? (
+        <div className="capture-success">
+          <p className="eyebrow">GUARDADO</p>
+          <h2>Entrou no seu EU.</h2>
+          <div className="backup-actions">
+            <button className="primary-button" onClick={() => navigate('/arquivo')}>Ver no Arquivo</button>
+            <button className="secondary-button" onClick={() => navigate('/')}>Voltar ao Agora</button>
+          </div>
+        </div>
+      ) : text ? (
+        <div className="capture-actions">
+          <button className="primary-button" onClick={save} disabled={state === 'saving'}>
+            {state === 'saving' ? 'Guardando…' : 'Guardar no EU'}
+          </button>
+          <button className="secondary-button" onClick={() => navigate('/')}>Cancelar</button>
+          {state === 'error' && <p className="inline-error">Não consegui salvar neste aparelho. Tente novamente.</p>}
+        </div>
+      ) : (
+        <button className="secondary-button" onClick={() => navigate('/')}>Voltar</button>
+      )}
     </div>
   )
 }
