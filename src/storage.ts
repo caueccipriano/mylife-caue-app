@@ -1,3 +1,15 @@
+export type AttachmentKind = 'photo' | 'document' | 'audio' | 'link'
+
+export type StoredAttachment = {
+  id: string
+  kind: AttachmentKind
+  name: string
+  mimeType?: string
+  size?: number
+  blob?: Blob
+  url?: string
+}
+
 export type StoredRecord = {
   id: string
   text: string
@@ -5,9 +17,24 @@ export type StoredRecord = {
   area: string
   createdAt: string
   source?: 'manual' | 'chatgpt' | 'import'
+  attachments?: StoredAttachment[]
+}
+
+type BackupAttachment = Omit<StoredAttachment, 'blob'> & {
+  dataUrl?: string
+}
+
+type BackupRecord = Omit<StoredRecord, 'attachments'> & {
+  attachments?: BackupAttachment[]
 }
 
 type Backup = {
+  version: 2
+  exportedAt: string
+  records: BackupRecord[]
+}
+
+type LegacyBackup = {
   version: 1
   exportedAt: string
   records: StoredRecord[]
@@ -83,8 +110,8 @@ async function migrateLegacyRecords() {
     const store = tx.objectStore(RECORDS_STORE)
 
     parsed.forEach((record) => {
-      if (record?.id && record?.text && record?.createdAt) {
-        store.put({ ...record, source: record.source ?? 'manual' })
+      if (record?.id && record?.createdAt) {
+        store.put({ ...record, text: record.text ?? '', source: record.source ?? 'manual' })
       }
     })
 
@@ -101,11 +128,61 @@ async function migrateLegacyRecords() {
   }
 }
 
+function blobToDataUrl(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(String(reader.result))
+    reader.onerror = () => reject(reader.error)
+    reader.readAsDataURL(blob)
+  })
+}
+
+async function dataUrlToBlob(dataUrl: string) {
+  const response = await fetch(dataUrl)
+  return response.blob()
+}
+
+async function serializeRecord(record: StoredRecord): Promise<BackupRecord> {
+  const attachments = await Promise.all(
+    (record.attachments ?? []).map(async (attachment): Promise<BackupAttachment> => {
+      const { blob, ...rest } = attachment
+      return {
+        ...rest,
+        dataUrl: blob ? await blobToDataUrl(blob) : undefined,
+      }
+    }),
+  )
+
+  return {
+    ...record,
+    attachments,
+  }
+}
+
+async function deserializeRecord(record: BackupRecord): Promise<StoredRecord> {
+  const attachments = await Promise.all(
+    (record.attachments ?? []).map(async (attachment): Promise<StoredAttachment> => {
+      const { dataUrl, ...rest } = attachment
+      return {
+        ...rest,
+        blob: dataUrl ? await dataUrlToBlob(dataUrl) : undefined,
+      }
+    }),
+  )
+
+  return {
+    ...record,
+    source: record.source ?? 'import',
+    attachments,
+  }
+}
+
 export async function exportBackup() {
+  const records = await listRecords()
   const backup: Backup = {
-    version: 1,
+    version: 2,
     exportedAt: new Date().toISOString(),
-    records: await listRecords(),
+    records: await Promise.all(records.map(serializeRecord)),
   }
 
   const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' })
@@ -123,19 +200,24 @@ export async function exportBackup() {
 
 export async function importBackup(file: File) {
   const text = await file.text()
-  const parsed = JSON.parse(text) as Backup
+  const parsed = JSON.parse(text) as Backup | LegacyBackup
 
-  if (parsed?.version !== 1 || !Array.isArray(parsed.records)) {
+  if (!Array.isArray(parsed?.records) || (parsed.version !== 1 && parsed.version !== 2)) {
     throw new Error('Backup incompatível.')
   }
+
+  const records: StoredRecord[] =
+    parsed.version === 2
+      ? await Promise.all(parsed.records.map(deserializeRecord))
+      : parsed.records.map((record) => ({ ...record, source: record.source ?? 'import' }))
 
   const db = await openDatabase()
   const tx = db.transaction(RECORDS_STORE, 'readwrite')
   const store = tx.objectStore(RECORDS_STORE)
 
-  parsed.records.forEach((record) => {
-    if (record?.id && record?.text && record?.createdAt) {
-      store.put({ ...record, source: record.source ?? 'import' })
+  records.forEach((record) => {
+    if (record?.id && record?.createdAt) {
+      store.put({ ...record, text: record.text ?? '' })
     }
   })
 
