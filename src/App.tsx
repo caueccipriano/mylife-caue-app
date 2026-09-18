@@ -86,42 +86,47 @@ function Layout({ onRegister }: { onRegister: () => void }) {
 
 function AgoraPage({ onRegister }: { onRegister: () => void }) {
   const records = useStoredRecords()
+  const navigate = useNavigate()
 
   const focus = [
-    { label: 'CARREIRA', title: 'Evolução profissional', summary: 'Base sólida em custos, com dados entrando no próximo capítulo.', next: 'consolidar portfólio' },
-    { label: 'COMPRAS', title: 'Trocar de carro', summary: 'Pesquisa ativa dentro de uma faixa de referência já definida.', next: 'selecionar candidatos reais' },
-    { label: 'PESSOAL', title: 'EU', summary: 'O arquivo vivo começou a ganhar forma.', next: 'validar a primeira experiência' },
+    { label: 'CARREIRA', title: 'Evolução profissional', summary: 'Base sólida em custos, com dados entrando no próximo capítulo.', next: 'consolidar portfólio', path: '/projetos/evolucao-profissional' },
+    { label: 'COMPRAS', title: 'Trocar de carro', summary: 'Pesquisa ativa dentro de uma faixa de referência já definida.', next: 'selecionar candidatos reais', path: '/projetos/trocar-de-carro' },
+    { label: 'PESSOAL', title: 'EU', summary: 'O arquivo vivo começou a ganhar forma.', next: 'validar a primeira experiência', path: '/projetos/eu' },
   ]
 
   return (
     <div className="page page-home">
-      <header className="hero">
-        <p className="eyebrow">{todayLabel()}</p>
+      <header className="hero home-hero">
+        <div className="mobile-home-bar" aria-hidden="true">
+          <span className="mobile-wordmark">EU</span>
+          <span className="mobile-edition">ARQUIVO VIVO</span>
+        </div>
+        <p className="eyebrow home-date">{todayLabel()}</p>
         <h1>{greeting()}, Cauê.</h1>
         <p className="hero-copy">Esta é a sua vida agora.</p>
       </header>
 
-      <section>
+      <section className="home-section">
         <div className="section-heading">
           <h2>Em foco</h2>
-          <span>{focus.length.toString().padStart(2, '0')} assuntos</span>
+          <span>o que está em movimento</span>
         </div>
         <div className="focus-grid">
           {focus.map((item) => (
-            <article className="focus-card" key={item.title}>
+            <button className="focus-card" key={item.title} onClick={() => navigate(item.path)}>
               <p className="eyebrow">{item.label}</p>
               <h3>{item.title}</h3>
               <p>{item.summary}</p>
               <div className="next-line">Próximo <span>→</span> {item.next}</div>
-            </article>
+            </button>
           ))}
         </div>
       </section>
 
-      <section>
+      <section className="home-section">
         <div className="section-heading">
           <h2>Recentes</h2>
-          <span>últimos registros</span>
+          <NavLink className="section-link" to="/arquivo">Ver arquivo →</NavLink>
         </div>
         <div className="recent-list">
           {records.length ? records.slice(0, 4).map((record) => (
@@ -143,7 +148,7 @@ function AgoraPage({ onRegister }: { onRegister: () => void }) {
       <button className="register-panel" onClick={onRegister}>
         <span>REGISTRAR</span>
         <strong>Guarde qualquer coisa da sua vida.</strong>
-        <em>Texto, foto, link, documento ou áudio →</em>
+        <em>Escreva do seu jeito. O EU organiza depois →</em>
       </button>
     </div>
   )
