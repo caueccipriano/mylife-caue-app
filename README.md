@@ -14,7 +14,7 @@ O app oferece cinco perspectivas integradas sobre a mesma vida:
 - **Arquivo** — memória pesquisável de tudo que foi registrado.
 - **Eu** — dossiê pessoal vivo e linha do tempo.
 
-O coração da experiência é o botão **Registrar**: texto, foto, link, documento ou áudio entram primeiro como um registro único e depois são interpretados e vinculados automaticamente.
+O coração da experiência é o botão **Registrar**: texto, foto, link, documento ou áudio entram primeiro como um registro único e depois são interpretados e vinculados.
 
 ## Direção visual
 
@@ -28,19 +28,28 @@ Design editorial, arquitetônico e silencioso.
 | Oliva | `#6B6751` |
 | Papel | `#F5F1E8` |
 
-Títulos editoriais serifados, corpo sans-serif limpo, bordas finas, bastante espaço em branco e quase nenhuma decoração gratuita.
+Títulos editoriais serifados, corpo sans-serif limpo, bordas finas, bastante espaço vazio e quase nenhuma decoração gratuita.
 
-## Stack inicial
+## Stack
 
 - React + TypeScript + Vite
-- PWA responsivo, mobile-first
+- PWA mobile-first, otimizado para iPhone
 - React Router
-- Supabase como backend planejado
-- Classificação por IA via função server-side/Edge Function, nunca com segredo exposto no cliente
+- **IndexedDB local-first** para persistência
+- Service Worker para shell offline
+- Backup manual em JSON, restaurável pelo próprio app
+
+Não existe backend pago, conta obrigatória ou Supabase.
+
+## Dados
+
+O conteúdo pessoal fica no navegador instalado no aparelho. O EU oferece exportação de backup para que o arquivo possa ser salvo no app Arquivos/iCloud Drive e restaurado depois.
+
+A camada de interpretação começa com regras locais. IA externa só entra futuramente se fizer sentido e sempre como recurso opcional, sem ser requisito para o funcionamento básico.
 
 ## Estado atual
 
-Primeira fundação: shell visual, navegação, páginas principais, modal Registrar, dados demonstrativos e documentação do modelo de dados.
+Primeira fundação funcional: navegação, páginas principais, Registrar, persistência local em IndexedDB, Arquivo conectado aos registros, backup/restauração e estrutura PWA.
 
 ---
 
