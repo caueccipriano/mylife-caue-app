@@ -75,6 +75,7 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
         type: interpretation.kind,
         area: interpretation.area,
         createdAt: new Date().toISOString(),
+        source: 'manual',
       })
 
       setSaved(interpretation)
