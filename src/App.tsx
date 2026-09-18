@@ -1,16 +1,16 @@
-import { type ChangeEvent, useEffect, useState } from 'react'
+import { type ChangeEvent, type ReactNode, useEffect, useState } from 'react'
 import { NavLink, Route, Routes, useLocation, useNavigate, useParams } from 'react-router-dom'
 import RegisterSheet from './RegisterSheet'
 import { archiveItems, areas, projects } from './data'
 import { exportBackup, importBackup, listRecords, saveRecord, type StoredRecord } from './storage'
 
-const nav = [
-  ['/', 'Agora'],
-  ['/areas', 'Áreas'],
-  ['/projetos', 'Projetos'],
+const primaryNav = [
+  ['/', 'Hoje'],
   ['/arquivo', 'Arquivo'],
   ['/eu', 'Eu'],
 ] as const
+
+type StickerTone = 'ink' | 'sage' | 'sand' | 'stone' | 'blue'
 
 function todayLabel() {
   return new Intl.DateTimeFormat('pt-BR', {
@@ -49,17 +49,47 @@ function useStoredRecords() {
   return records
 }
 
+function Sticker({ children, tone = 'ink', tilt = 0 }: { children: ReactNode; tone?: StickerTone; tilt?: number }) {
+  return (
+    <span
+      className={'brand-sticker sticker-' + tone}
+      style={{ transform: 'rotate(' + tilt + 'deg)' }}
+    >
+      {children}
+    </span>
+  )
+}
+
+function BrandHeader() {
+  return (
+    <div className="brand-header">
+      <NavLink to="/" className="brand-lockup" aria-label="EU, voltar para Hoje">
+        <strong>EU</strong>
+        <span>arquivo vivo</span>
+      </NavLink>
+      <div className="brand-header-marks" aria-hidden="true">
+        <span>✦</span>
+        <span>↗</span>
+      </div>
+    </div>
+  )
+}
+
 function Layout({ onRegister }: { onRegister: () => void }) {
   return (
     <div className="app-frame">
       <aside className="side-rail">
         <NavLink className="brand" to="/">EU</NavLink>
+        <p className="rail-tagline">Mais vida no que importa.</p>
         <nav>
-          {nav.map(([path, label]) => (
+          {primaryNav.map(([path, label]) => (
             <NavLink key={path} to={path} end={path === '/'}>{label}</NavLink>
           ))}
+          <NavLink to="/areas">Áreas</NavLink>
+          <NavLink to="/projetos">Projetos</NavLink>
         </nav>
-        <button className="rail-register" onClick={onRegister}>Registrar</button>
+        <div className="rail-sticker">UMA VIDA REAL<br />EM UM SÓ LUGAR</div>
+        <button className="rail-register" onClick={onRegister}>+ Registrar</button>
       </aside>
 
       <main className="main-canvas">
@@ -74,9 +104,12 @@ function Layout({ onRegister }: { onRegister: () => void }) {
         </Routes>
       </main>
 
-      <button className="floating-register" onClick={onRegister}>Registrar</button>
+      <button className="floating-register" onClick={onRegister} aria-label="Registrar no EU">
+        <span>+</span>
+      </button>
+
       <nav className="bottom-nav" aria-label="Navegação principal">
-        {nav.map(([path, label]) => (
+        {primaryNav.map(([path, label]) => (
           <NavLink key={path} to={path} end={path === '/'}>{label}</NavLink>
         ))}
       </nav>
@@ -89,67 +122,112 @@ function AgoraPage({ onRegister }: { onRegister: () => void }) {
   const navigate = useNavigate()
 
   const focus = [
-    { label: 'CARREIRA', title: 'Evolução profissional', summary: 'Base sólida em custos, com dados entrando no próximo capítulo.', next: 'consolidar portfólio', path: '/projetos/evolucao-profissional' },
-    { label: 'COMPRAS', title: 'Trocar de carro', summary: 'Pesquisa ativa dentro de uma faixa de referência já definida.', next: 'selecionar candidatos reais', path: '/projetos/trocar-de-carro' },
-    { label: 'PESSOAL', title: 'EU', summary: 'O arquivo vivo começou a ganhar forma.', next: 'validar a primeira experiência', path: '/projetos/eu' },
+    { label: 'CARREIRA', title: 'Evolução profissional', summary: 'Custos como base. Dados entrando no próximo capítulo.', next: 'consolidar portfólio', path: '/projetos/evolucao-profissional', tone: 'sage' as StickerTone },
+    { label: 'COMPRAS', title: 'Trocar de carro', summary: 'Pesquisa ativa dentro da faixa que faz sentido para você.', next: 'selecionar candidatos', path: '/projetos/trocar-de-carro', tone: 'sand' as StickerTone },
+    { label: 'PESSOAL', title: 'EU', summary: 'Seu arquivo vivo ganhou uma direção nova.', next: 'usar e refinar', path: '/projetos/eu', tone: 'blue' as StickerTone },
   ]
 
   return (
     <div className="page page-home">
-      <header className="hero home-hero">
-        <div className="mobile-home-bar" aria-hidden="true">
-          <span className="mobile-wordmark">EU</span>
-          <span className="mobile-edition">ARQUIVO VIVO</span>
+      <BrandHeader />
+
+      <header className="home-intro">
+        <div className="home-intro-copy">
+          <p className="eyebrow">{todayLabel()}</p>
+          <h1>{greeting()},<br />Cauê.</h1>
+          <p>Pequenos registros constroem uma história inteira.</p>
         </div>
-        <p className="eyebrow home-date">{todayLabel()}</p>
-        <h1>{greeting()}, Cauê.</h1>
-        <p className="hero-copy">Esta é a sua vida agora.</p>
+        <div className="home-brand-cluster" aria-hidden="true">
+          <div className="seal-sticker">EU<span>UMA VIDA REAL</span></div>
+          <Sticker tone="sage" tilt={-4}>VIVA O AGORA ↗</Sticker>
+          <span className="spark-mark">✦</span>
+        </div>
       </header>
 
-      <section className="home-section">
-        <div className="section-heading">
-          <h2>Em foco</h2>
-          <span>o que está em movimento</span>
+      <section className="phase-card">
+        <div>
+          <Sticker tone="ink" tilt={-2}>MINHA FASE</Sticker>
+          <h2>Construindo uma vida mais intencional.</h2>
+          <p>Mais clareza para lembrar o que importa, entender o que está em movimento e guardar o que merece ficar.</p>
         </div>
-        <div className="focus-grid">
-          {focus.map((item) => (
-            <button className="focus-card" key={item.title} onClick={() => navigate(item.path)}>
-              <p className="eyebrow">{item.label}</p>
+        <button onClick={onRegister} className="phase-register">Registrar algo <span>↗</span></button>
+      </section>
+
+      <section className="home-section">
+        <div className="section-heading organic-heading">
+          <div>
+            <p className="eyebrow">AGORA</p>
+            <h2>Em foco</h2>
+          </div>
+          <button className="text-link" onClick={() => navigate('/projetos')}>Ver projetos ↗</button>
+        </div>
+
+        <div className="focus-grid organic-focus">
+          {focus.map((item, index) => (
+            <button className={'focus-card organic-card tone-' + item.tone} key={item.title} onClick={() => navigate(item.path)}>
+              <div className="focus-topline">
+                <Sticker tone={item.tone} tilt={index === 1 ? 2 : -2}>{item.label}</Sticker>
+                <span className="card-number">0{index + 1}</span>
+              </div>
               <h3>{item.title}</h3>
               <p>{item.summary}</p>
-              <div className="next-line">Próximo <span>→</span> {item.next}</div>
+              <div className="next-line">Próximo <span>↗</span> {item.next}</div>
             </button>
           ))}
         </div>
       </section>
 
       <section className="home-section">
-        <div className="section-heading">
-          <h2>Recentes</h2>
-          <NavLink className="section-link" to="/arquivo">Ver arquivo →</NavLink>
+        <div className="section-heading organic-heading">
+          <div>
+            <p className="eyebrow">ATALHOS</p>
+            <h2>Olhar sua vida</h2>
+          </div>
         </div>
-        <div className="recent-list">
-          {records.length ? records.slice(0, 4).map((record) => (
+        <div className="life-shortcuts">
+          <button onClick={() => navigate('/areas')}>
+            <Sticker tone="sage" tilt={-3}>ÁREAS</Sticker>
+            <strong>Contextos que continuam com você.</strong>
+            <span>Explorar ↗</span>
+          </button>
+          <button onClick={() => navigate('/projetos')}>
+            <Sticker tone="stone" tilt={2}>PROJETOS</Sticker>
+            <strong>Coisas que começaram, mudaram ou vão terminar.</strong>
+            <span>Explorar ↗</span>
+          </button>
+        </div>
+      </section>
+
+      <section className="home-section recent-section">
+        <div className="section-heading organic-heading">
+          <div>
+            <p className="eyebrow">MEMÓRIA</p>
+            <h2>Recentes</h2>
+          </div>
+          <NavLink className="text-link" to="/arquivo">Ver arquivo ↗</NavLink>
+        </div>
+        <div className="recent-list organic-recent">
+          {records.length ? records.slice(0, 4).map((record, index) => (
             <div className="recent-row" key={record.id}>
               <span>{new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short' }).format(new Date(record.createdAt))}</span>
-              <strong>{record.type}</strong>
-              <p>{record.text}</p>
+              <Sticker tone={index % 2 ? 'stone' : 'sand'} tilt={index % 2 ? 1 : -1}>{record.type}</Sticker>
+              <p>{record.text || 'Registro com anexo'}</p>
             </div>
           )) : (
             <>
-              <div className="recent-row"><span>18 set</span><strong>Decisão</strong><p>Direção visual do EU definida</p></div>
-              <div className="recent-row"><span>18 set</span><strong>Projeto</strong><p>EU iniciado</p></div>
-              <div className="recent-row"><span>17 set</span><strong>Referência</strong><p>Paleta arquitetônica salva</p></div>
+              <div className="recent-row"><span>18 set</span><Sticker tone="sand" tilt={-1}>DECISÃO</Sticker><p>Direção visual do EU definida</p></div>
+              <div className="recent-row"><span>18 set</span><Sticker tone="blue" tilt={1}>PROJETO</Sticker><p>EU iniciado</p></div>
+              <div className="recent-row"><span>17 set</span><Sticker tone="sage" tilt={-2}>REFERÊNCIA</Sticker><p>Paleta masculina e orgânica aprovada</p></div>
             </>
           )}
         </div>
       </section>
 
-      <button className="register-panel" onClick={onRegister}>
-        <span>REGISTRAR</span>
-        <strong>Guarde qualquer coisa da sua vida.</strong>
-        <em>Escreva do seu jeito. O EU organiza depois →</em>
-      </button>
+      <div className="home-signoff" aria-hidden="true">
+        <span>REGISTRAR O PRESENTE.</span>
+        <strong>CONSTRUIR O QUE VEM.</strong>
+        <div>↝</div>
+      </div>
     </div>
   )
 }
@@ -157,73 +235,87 @@ function AgoraPage({ onRegister }: { onRegister: () => void }) {
 function AreasPage() {
   const [selected, setSelected] = useState(areas[0].id)
   const area = areas.find((item) => item.id === selected) ?? areas[0]
+  const tones = ['sage', 'sand', 'blue', 'stone', 'blue', 'sage', 'sand', 'stone']
 
   return (
     <div className="page">
-      <header className="page-title">
-        <p className="eyebrow">ÁREAS</p>
-        <h1>As partes permanentes da sua vida.</h1>
-        <p>Não são pastas. São contextos que continuam existindo mesmo quando os projetos mudam.</p>
+      <BrandHeader />
+      <header className="page-intro compact-intro">
+        <Sticker tone="sage" tilt={-2}>ÁREAS</Sticker>
+        <h1>Tudo que faz parte da sua vida.</h1>
+        <p>Contextos permanentes. Eles continuam existindo mesmo quando os projetos mudam.</p>
       </header>
 
-      <div className="area-layout">
-        <div className="area-list">
-          {areas.map((item) => (
-            <button className={selected === item.id ? 'active' : ''} onClick={() => setSelected(item.id)} key={item.id}>
-              <span>{item.name}</span>
-              <small>{item.status}</small>
-            </button>
-          ))}
+      <div className="area-card-grid">
+        {areas.map((item, index) => (
+          <button
+            className={'area-tile tone-' + tones[index] + (selected === item.id ? ' active' : '')}
+            onClick={() => setSelected(item.id)}
+            key={item.id}
+          >
+            <span className="area-glyph" aria-hidden="true">{['↗','○','≡','⌂','↝','□','✦','· · ·'][index]}</span>
+            <strong>{item.name}</strong>
+            <small>{item.status}</small>
+          </button>
+        ))}
+      </div>
+
+      <article className="area-story">
+        <div className="area-story-head">
+          <div>
+            <p className="eyebrow">ÁREA SELECIONADA</p>
+            <h2>{area.name}</h2>
+          </div>
+          <Sticker tone="ink" tilt={2}>{area.status}</Sticker>
         </div>
 
-        <article className="area-sheet">
-          <div className="status-row">
-            <p className="eyebrow">{area.name.toUpperCase()}</p>
-            <span className="status-chip">{area.status}</span>
-          </div>
-          <h2>{area.now}</h2>
-          <dl className="executive-grid">
-            <div><dt>AGORA</dt><dd>{area.now}</dd></div>
-            <div><dt>DIREÇÃO</dt><dd>{area.direction}</dd></div>
-            <div>
-              <dt>EM ANDAMENTO</dt>
-              <dd>{area.active.length ? area.active.map((item) => <span className="line-item" key={item}>{item}</span>) : 'Nenhum item ativo.'}</dd>
-            </div>
-            <div><dt>DECISÕES</dt><dd>{area.decisions} registradas</dd></div>
-            <div><dt>DOCUMENTOS</dt><dd>Nenhum documento destacado.</dd></div>
-            <div><dt>HISTÓRICO</dt><dd><span className="timeline-years">2026 — 2025 — 2024</span></dd></div>
-          </dl>
-        </article>
-      </div>
+        <div className="area-story-quote">
+          <span>“</span>
+          <p>{area.now}</p>
+        </div>
+
+        <div className="area-story-grid">
+          <div><span>DIREÇÃO</span><strong>{area.direction}</strong></div>
+          <div><span>EM ANDAMENTO</span><strong>{area.active.length ? area.active.join(' · ') : 'Sem item ativo agora'}</strong></div>
+          <div><span>DECISÕES</span><strong>{area.decisions} registradas</strong></div>
+          <div><span>HISTÓRICO</span><strong>2026 · 2025 · 2024</strong></div>
+        </div>
+      </article>
     </div>
   )
 }
 
 function ProjectsPage() {
   const navigate = useNavigate()
+
   return (
     <div className="page">
-      <header className="page-title">
-        <p className="eyebrow">PROJETOS</p>
-        <h1>Coisas que têm um ciclo de vida.</h1>
-        <p>Começam, mudam, terminam. Cada projeto guarda contexto, decisões e próximos movimentos.</p>
+      <BrandHeader />
+      <header className="page-intro compact-intro">
+        <Sticker tone="sand" tilt={2}>PROJETOS</Sticker>
+        <h1>Ideias que ganham uma história.</h1>
+        <p>Não é uma lista de tarefas. É contexto, decisões, fase atual e o próximo movimento.</p>
       </header>
-      <div className="project-list">
-        {projects.map((project) => (
-          <button key={project.id} className="project-row" onClick={() => navigate('/projetos/' + project.id)}>
-            <div>
-              <p className="eyebrow">{project.area.toUpperCase()} · {project.status.toUpperCase()}</p>
-              <h3>{project.name}</h3>
-              <p>{project.summary}</p>
+
+      <div className="project-story-list">
+        {projects.map((project, index) => (
+          <button key={project.id} className={'project-story-card project-tone-' + (index % 3)} onClick={() => navigate('/projetos/' + project.id)}>
+            <div className="project-card-header">
+              <Sticker tone={index === 0 ? 'sand' : index === 1 ? 'sage' : 'blue'} tilt={index % 2 ? 2 : -2}>{project.area}</Sticker>
+              <span>{project.status}</span>
             </div>
-            <div className="project-meta">
+            <h3>{project.name}</h3>
+            <p>{project.summary}</p>
+            <div className="project-progress-line">
               <span>{project.phase}</span>
               <span>{project.deadline}</span>
-              <b>→</b>
+              <b>↗</b>
             </div>
           </button>
         ))}
       </div>
+
+      <div className="scribble-note" aria-hidden="true">grandes planos também nascem de pequenos registros ↝</div>
     </div>
   )
 }
@@ -237,85 +329,101 @@ function ProjectPage() {
 
   return (
     <div className="page">
-      <button className="back-link" onClick={() => navigate('/projetos')}>← Projetos</button>
-      <header className="project-hero">
-        <div className="status-row">
-          <p className="eyebrow">{project.area.toUpperCase()}</p>
-          <span className="status-chip terra">{project.status}</span>
+      <BrandHeader />
+      <button className="back-link" onClick={() => navigate('/projetos')}>← Voltar aos projetos</button>
+
+      <header className="project-detail-hero">
+        <div className="project-detail-labels">
+          <Sticker tone="sage" tilt={-2}>{project.area}</Sticker>
+          <Sticker tone="stone" tilt={2}>{project.status}</Sticker>
         </div>
         <h1>{project.name}</h1>
         <p>{project.summary}</p>
       </header>
 
-      <div className="project-summary-grid">
+      <div className="project-detail-strip">
         <div><span>META</span><strong>{project.deadline}</strong></div>
         <div><span>FASE</span><strong>{project.phase}</strong></div>
         <div><span>RECURSO</span><strong>{project.resource || 'Não se aplica'}</strong></div>
       </div>
 
-      <section className="narrative-block">
-        <p className="eyebrow">CONTEXTO</p>
+      <section className="story-block">
+        <Sticker tone="sand" tilt={-1}>COMO COMEÇOU</Sticker>
         <p>{project.context}</p>
       </section>
 
-      <div className="two-column">
+      <div className="decision-columns">
         <section>
-          <p className="eyebrow">DECISÕES TOMADAS</p>
-          {project.decisions.map((item) => <div className="check-row done" key={item}><span>✓</span>{item}</div>)}
+          <p className="eyebrow">JÁ FOI DECIDIDO</p>
+          {project.decisions.map((item) => <div className="decision-row done" key={item}><span>✓</span><p>{item}</p></div>)}
         </section>
         <section>
-          <p className="eyebrow">PRÓXIMOS PASSOS</p>
-          {project.next.map((item) => <div className="check-row" key={item}><span>○</span>{item}</div>)}
+          <p className="eyebrow">PRÓXIMOS MOVIMENTOS</p>
+          {project.next.map((item) => <div className="decision-row" key={item}><span>↗</span><p>{item}</p></div>)}
         </section>
       </div>
 
-      <section className="narrative-block">
-        <p className="eyebrow">LINHA DO TEMPO</p>
-        <div className="project-timeline">
-          <span>18 SET</span><p>Projeto atualizado</p>
-          <span>INÍCIO</span><p>Contexto inicial registrado</p>
-        </div>
-      </section>
+      <div className="timeline-sticker-row">
+        <Sticker tone="ink" tilt={-2}>18 SET · ATUALIZADO</Sticker>
+        <Sticker tone="blue" tilt={2}>INÍCIO · CONTEXTO REGISTRADO</Sticker>
+      </div>
     </div>
   )
 }
 
 function ArchivePage() {
   const [query, setQuery] = useState('')
+  const [facet, setFacet] = useState('Todos')
   const records = useStoredRecords()
   const dynamicItems = records.map((record) => ({
     type: record.type,
-    title: record.text,
-    meta: `${record.area} · ${new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date(record.createdAt))}`,
+    title: record.text || 'Registro com anexo',
+    meta: record.area + ' · ' + new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date(record.createdAt)),
   }))
-  const filtered = [...dynamicItems, ...archiveItems].filter((item) =>
-    (item.title + item.type + item.meta).toLowerCase().includes(query.toLowerCase()),
-  )
+  const allItems = [...dynamicItems, ...archiveItems]
+  const filtered = allItems.filter((item) => {
+    const matchesQuery = (item.title + item.type + item.meta).toLowerCase().includes(query.toLowerCase())
+    const matchesFacet = facet === 'Todos' || item.type.toLowerCase().includes(facet.toLowerCase())
+    return matchesQuery && matchesFacet
+  })
+  const facets = ['Todos', 'Nota', 'Preferência', 'Decisão', 'Projeto', 'Referência']
 
   return (
     <div className="page">
-      <header className="page-title archive-title">
-        <p className="eyebrow">ARQUIVO</p>
+      <BrandHeader />
+      <header className="page-intro archive-intro">
+        <Sticker tone="blue" tilt={-2}>ARQUIVO</Sticker>
         <h1>Encontre qualquer coisa da sua vida.</h1>
+        <p>O que você viveu, pensou, decidiu, gostou ou quis guardar.</p>
       </header>
-      <input className="archive-search" placeholder="Procure qualquer coisa da sua vida" value={query} onChange={(event) => setQuery(event.target.value)} />
-      <div className="facet-row">
-        {['Pessoas', 'Lugares', 'Compras', 'Decisões', 'Referências'].map((facet) => <button key={facet}>{facet}</button>)}
+
+      <div className="archive-search-wrap">
+        <span aria-hidden="true">⌕</span>
+        <input className="archive-search" placeholder="Buscar no seu arquivo..." value={query} onChange={(event) => setQuery(event.target.value)} />
       </div>
-      <div className="archive-results">
+
+      <div className="facet-row organic-facets">
+        {facets.map((item) => (
+          <button className={facet === item ? 'active' : ''} onClick={() => setFacet(item)} key={item}>{item}</button>
+        ))}
+      </div>
+
+      <div className="archive-results organic-archive">
         {filtered.map((item, index) => (
           <article key={item.type + item.title + index}>
-            <p className="eyebrow">{item.type.toUpperCase()}</p>
-            <h3>{item.title}</h3>
-            <p>{item.meta}</p>
+            <div className={'archive-symbol symbol-' + (index % 4)} aria-hidden="true">{['✦','○','↗','≡'][index % 4]}</div>
+            <div>
+              <Sticker tone={index % 2 ? 'stone' : 'sage'} tilt={index % 2 ? 1 : -1}>{item.type}</Sticker>
+              <h3>{item.title}</h3>
+              <p>{item.meta}</p>
+            </div>
           </article>
         ))}
-        {!filtered.length && <p className="empty">Nada encontrado com esse termo.</p>}
+        {!filtered.length && <div className="empty-state"><Sticker tone="sand">NADA AQUI AINDA</Sticker><p>Tente outro termo ou outro tipo de registro.</p></div>}
       </div>
     </div>
   )
 }
-
 
 function ChatGPTCapturePage() {
   const location = useLocation()
@@ -329,7 +437,6 @@ function ChatGPTCapturePage() {
 
   async function save() {
     if (!text || state === 'saving') return
-
     setState('saving')
 
     try {
@@ -341,7 +448,6 @@ function ChatGPTCapturePage() {
         source: 'chatgpt',
         createdAt: new Date().toISOString(),
       })
-
       window.dispatchEvent(new Event('eu-record-saved'))
       setState('saved')
     } catch {
@@ -351,40 +457,32 @@ function ChatGPTCapturePage() {
 
   return (
     <div className="page capture-page">
-      <header className="page-title capture-title">
-        <p className="eyebrow">DO CHATGPT PARA O EU</p>
-        <h1>{text ? 'Pronto para guardar.' : 'Nada para importar.'}</h1>
-        <p>
-          {text
-            ? 'Confira o registro antes de colocá-lo no arquivo local deste aparelho.'
-            : 'Este link não contém um registro válido.'}
-        </p>
+      <BrandHeader />
+      <header className="page-intro compact-intro">
+        <Sticker tone="blue" tilt={-2}>CHATGPT → EU</Sticker>
+        <h1>{text ? 'Isso merece ficar.' : 'Nada para importar.'}</h1>
+        <p>{text ? 'Confira antes de guardar no arquivo local deste iPhone.' : 'Este link não contém um registro válido.'}</p>
       </header>
 
       {text && (
         <article className="capture-card">
-          <div className="capture-card-meta">
-            <span>{type}</span>
-            <span>{area}</span>
-          </div>
+          <div className="capture-card-meta"><Sticker tone="sand">{type}</Sticker><Sticker tone="sage">{area}</Sticker></div>
           <p>{text}</p>
         </article>
       )}
 
       {state === 'saved' ? (
         <div className="capture-success">
-          <p className="eyebrow">GUARDADO</p>
+          <Sticker tone="ink">GUARDADO</Sticker>
           <h2>Entrou no seu EU.</h2>
           <div className="backup-actions">
             <button className="primary-button" onClick={() => navigate('/arquivo')}>Ver no Arquivo</button>
-            <button className="secondary-button" onClick={() => navigate('/')}>Voltar ao Agora</button>
+            <button className="secondary-button" onClick={() => navigate('/')}>Voltar ao Hoje</button>
           </div>
         </div>
       ) : text ? (
         <div className="capture-actions">
-          <button className="primary-button" onClick={save} disabled={state === 'saving'}>
-            {state === 'saving' ? 'Guardando…' : 'Guardar no EU'}
-          </button>
+          <button className="primary-button" onClick={save} disabled={state === 'saving'}>{state === 'saving' ? 'Guardando…' : 'Guardar no EU'}</button>
           <button className="secondary-button" onClick={() => navigate('/')}>Cancelar</button>
           {state === 'error' && <p className="inline-error">Não consegui salvar neste aparelho. Tente novamente.</p>}
         </div>
@@ -424,40 +522,56 @@ function MePage() {
 
   return (
     <div className="page dossier">
-      <header className="me-header">
-        <p className="eyebrow">EU</p>
-        <h1>Cauê</h1>
-        <p>28 anos</p>
+      <BrandHeader />
+
+      <header className="me-hero">
+        <div className="me-monogram">
+          <span>EU</span>
+          <small>PROCESSO<br />SEMPRE</small>
+        </div>
+        <div>
+          <Sticker tone="blue" tilt={-2}>EM CONSTANTE CONSTRUÇÃO</Sticker>
+          <h1>Cauê</h1>
+          <p>28 anos</p>
+        </div>
       </header>
 
-      <section className="me-now">
-        <p className="eyebrow">AGORA</p>
-        <h2>Construindo uma fase mais intencional da vida profissional, financeira e pessoal.</h2>
+      <section className="me-phase-card">
+        <Sticker tone="sage" tilt={-2}>MINHA FASE</Sticker>
+        <h2>Construindo uma vida mais intencional e alinhada com o que importa.</h2>
+        <div className="handwritten-accent">mais eu. menos ruído. ↝</div>
       </section>
 
-      <div className="dossier-grid">
-        <article><p className="eyebrow">TRABALHO</p><h3>Custos, controladoria e análise</h3><p>Experiência industrial com interesse crescente em dados.</p></article>
-        <article><p className="eyebrow">ESTUDOS</p><h3>Formação em andamento</h3><p>Graduação, dados, idiomas e repertório profissional.</p></article>
-        <article><p className="eyebrow">OBJETIVOS ATUAIS</p><h3>Avançar sem perder contexto</h3><p>Carreira, projetos pessoais e decisões maiores organizadas no mesmo arquivo.</p></article>
-        <article><p className="eyebrow">INTERESSES</p><h3>Dados, design, leitura e tecnologia</h3><p>Assuntos que aparecem com frequência nos registros.</p></article>
-        <article><p className="eyebrow">PREFERÊNCIAS</p><h3>Clareza, estética limpa e escolhas bem comparadas</h3><p>Preferências se refinam automaticamente ao longo do tempo.</p></article>
-      </div>
+      <section className="me-links-grid">
+        <article><span>01</span><h3>Trabalho</h3><p>Custos, controladoria, análise e uma direção crescente para dados.</p></article>
+        <article><span>02</span><h3>Estudos</h3><p>Formação, dados, idiomas e repertório aplicado.</p></article>
+        <article><span>03</span><h3>Objetivos</h3><p>Avançar sem perder contexto do que realmente importa.</p></article>
+        <article><span>04</span><h3>Interesses</h3><p>Tecnologia, leitura, design, viagens e boas referências.</p></article>
+      </section>
 
-      <div className="history-links">
-        <button><span>2026</span><strong>Ver meu ano</strong><b>→</b></button>
-        <button><span>HISTÓRIA</span><strong>Minha linha do tempo</strong><b>→</b></button>
+      <section className="interest-cloud">
+        <div className="section-heading organic-heading">
+          <div><p className="eyebrow">MAPA PESSOAL</p><h2>Preferências</h2></div>
+        </div>
+        <div className="interest-tags">
+          {['Tecnologia', 'Viagens', 'Leitura', 'Design', 'Dados', 'Bem-estar', 'Relógios', 'Perfumes', 'Séries', 'Organização'].map((item, index) => (
+            <Sticker key={item} tone={index % 3 === 0 ? 'sage' : index % 3 === 1 ? 'sand' : 'blue'} tilt={(index % 3) - 1}>{item}</Sticker>
+          ))}
+        </div>
+      </section>
+
+      <div className="history-links organic-history">
+        <button><Sticker tone="sand">2026</Sticker><strong>Ver meu ano</strong><b>↗</b></button>
+        <button><Sticker tone="blue">HISTÓRIA</Sticker><strong>Minha linha do tempo</strong><b>↗</b></button>
       </div>
 
       <section className="backup-block">
-        <p className="eyebrow">DADOS DESTE IPHONE</p>
-        <h2>Seu arquivo fica no aparelho.</h2>
-        <p>O EU funciona sem conta e sem servidor pago. Faça um backup de vez em quando para não depender apenas do armazenamento do navegador.</p>
+        <Sticker tone="stone" tilt={-1}>DADOS DESTE IPHONE</Sticker>
+        <h2>Seu arquivo fica com você.</h2>
+        <p>Sem conta e sem servidor pago. Faça backup de vez em quando para não depender apenas do armazenamento do navegador.</p>
         <div className="backup-actions">
           <button className="primary-button" onClick={handleExport}>Criar backup</button>
-          <label className="secondary-button">
-            Restaurar backup
-            <input type="file" accept="application/json,.json" onChange={handleImport} />
-          </label>
+          <label className="secondary-button">Restaurar backup<input type="file" accept="application/json,.json" onChange={handleImport} /></label>
         </div>
         {backupMessage && <p className="backup-message">{backupMessage}</p>}
       </section>
