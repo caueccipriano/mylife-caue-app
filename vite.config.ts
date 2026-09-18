@@ -35,7 +35,27 @@ export default defineConfig({
       },
       workbox: {
         navigateFallback: 'index.html',
-        cleanupOutdatedCaches: true
+        cleanupOutdatedCaches: true,
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+            handler: 'StaleWhileRevalidate',
+            options: {
+              cacheName: 'eu-google-fonts-stylesheets'
+            }
+          },
+          {
+            urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'eu-google-fonts-webfonts',
+              expiration: {
+                maxEntries: 12,
+                maxAgeSeconds: 31536000
+              }
+            }
+          }
+        ]
       }
     })
   ]
