@@ -1,4 +1,5 @@
 import { FormEvent, useMemo, useState } from 'react'
+import { saveRecord } from './storage'
 
 type Props = {
   open: boolean
@@ -21,7 +22,7 @@ function interpret(input: string): Interpretation {
       kind: 'Projeto',
       area: value.includes('carro') || value.includes('comprar') ? 'Compras' : 'Pessoal',
       title: input.slice(0, 64),
-      detail: 'Intenção com meta detectada. Datas, valores e entidades serão estruturados na camada de IA.',
+      detail: 'Intenção com meta detectada. Datas, valores e nomes serão estruturados depois.',
     }
   }
 
@@ -54,30 +55,42 @@ function interpret(input: string): Interpretation {
 export default function RegisterSheet({ open, onClose, onSaved }: Props) {
   const [value, setValue] = useState('')
   const [saved, setSaved] = useState<Interpretation | null>(null)
+  const [error, setError] = useState('')
+  const [saving, setSaving] = useState(false)
   const interpretation = useMemo(() => (value.trim() ? interpret(value.trim()) : null), [value])
 
   if (!open) return null
 
-  function submit(event: FormEvent) {
+  async function submit(event: FormEvent) {
     event.preventDefault()
-    if (!value.trim() || !interpretation) return
+    if (!value.trim() || !interpretation || saving) return
 
-    const current = JSON.parse(localStorage.getItem('eu-records') || '[]')
-    const item = {
-      id: crypto.randomUUID(),
-      text: value.trim(),
-      type: interpretation.kind,
-      area: interpretation.area,
-      createdAt: new Date().toISOString(),
+    setSaving(true)
+    setError('')
+
+    try {
+      await saveRecord({
+        id: crypto.randomUUID(),
+        text: value.trim(),
+        type: interpretation.kind,
+        area: interpretation.area,
+        createdAt: new Date().toISOString(),
+      })
+
+      setSaved(interpretation)
+      onSaved()
+    } catch {
+      setError('Não consegui guardar esse registro no aparelho. Tente novamente.')
+    } finally {
+      setSaving(false)
     }
-    localStorage.setItem('eu-records', JSON.stringify([item, ...current].slice(0, 100)))
-    setSaved(interpretation)
-    onSaved()
   }
 
   function close() {
     setValue('')
     setSaved(null)
+    setError('')
+    setSaving(false)
     onClose()
   }
 
@@ -119,13 +132,15 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
               </div>
             )}
 
-            <button className="primary-button full" type="submit" disabled={!value.trim()}>
-              Guardar no EU
+            {error && <p className="inline-error">{error}</p>}
+
+            <button className="primary-button full" type="submit" disabled={!value.trim() || saving}>
+              {saving ? 'Guardando…' : 'Guardar no EU'}
             </button>
           </form>
         ) : (
           <div className="saved-state">
-            <p className="eyebrow">GUARDADO</p>
+            <p className="eyebrow">GUARDADO NO IPHONE</p>
             <h3>{saved.kind}</h3>
             <p>{saved.title}</p>
             <div className="saved-meta">{saved.area}</div>
