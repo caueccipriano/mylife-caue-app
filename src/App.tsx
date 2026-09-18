@@ -3,6 +3,7 @@ import { NavLink, Route, Routes, useLocation, useNavigate, useParams } from 'rea
 import RegisterSheet from './RegisterSheet'
 import { archiveItems, areas, projects } from './data'
 import { exportBackup, importBackup, listRecords, saveRecord, type StoredRecord } from './storage'
+import { latestBridgeDelta, readAppBridges, type BridgeCard } from './integrations'
 
 const primaryNav = [
   ['/', 'Hoje'],
@@ -48,6 +49,32 @@ function useStoredRecords() {
   return records
 }
 
+function useAppBridges() {
+  const [bridges, setBridges] = useState<BridgeCard[]>(() => readAppBridges())
+
+  useEffect(() => {
+    const refresh = () => setBridges(readAppBridges())
+    const visible = () => {
+      if (!document.hidden) refresh()
+    }
+
+    refresh()
+    window.addEventListener('focus', refresh)
+    window.addEventListener('storage', refresh)
+    document.addEventListener('visibilitychange', visible)
+    const timer = window.setInterval(refresh, 15000)
+
+    return () => {
+      window.removeEventListener('focus', refresh)
+      window.removeEventListener('storage', refresh)
+      document.removeEventListener('visibilitychange', visible)
+      window.clearInterval(timer)
+    }
+  }, [])
+
+  return bridges
+}
+
 function Sticker({ children, tone = 'ink', tilt = 0 }: { children: ReactNode; tone?: StickerTone; tilt?: number }) {
   return (
     <span
@@ -85,6 +112,7 @@ function Layout({ onRegister }: { onRegister: () => void }) {
             <NavLink key={path} to={path} end={path === '/'}>{label}</NavLink>
           ))}
           <NavLink to="/arquivo">Arquivo</NavLink>
+          <NavLink to="/evolucao">Evolução</NavLink>
           <NavLink to="/areas">Áreas</NavLink>
           <NavLink to="/projetos">Projetos</NavLink>
         </nav>
@@ -99,6 +127,7 @@ function Layout({ onRegister }: { onRegister: () => void }) {
           <Route path="/projetos" element={<ProjectsPage />} />
           <Route path="/projetos/:id" element={<ProjectPage />} />
           <Route path="/arquivo" element={<ArchivePage />} />
+          <Route path="/evolucao" element={<EvolutionPage />} />
           <Route path="/eu" element={<MePage />} />
           <Route path="/capturar" element={<ChatGPTCapturePage />} />
         </Routes>
@@ -119,6 +148,7 @@ function Layout({ onRegister }: { onRegister: () => void }) {
 
 function AgoraPage({ onRegister }: { onRegister: () => void }) {
   const records = useStoredRecords()
+  const bridges = useAppBridges()
   const navigate = useNavigate()
 
   const focus = [
@@ -195,6 +225,36 @@ function AgoraPage({ onRegister }: { onRegister: () => void }) {
             <strong>Coisas que começaram, mudaram ou vão terminar.</strong>
             <span>Explorar ↗</span>
           </button>
+        </div>
+      </section>
+
+      <section className="home-section ecosystem-section">
+        <div className="section-heading organic-heading">
+          <div>
+            <p className="eyebrow">ECOSSISTEMA</p>
+            <h2>Sua evolução em um lugar</h2>
+          </div>
+          <button className="text-link" onClick={() => navigate('/evolucao')}>Ver evolução ↗</button>
+        </div>
+
+        <div className="ecosystem-strip">
+          {bridges.map((card, index) => (
+            <button
+              key={card.id}
+              className={'ecosystem-card ecosystem-' + card.id}
+              onClick={() => navigate('/evolucao')}
+            >
+              <div className="ecosystem-card-head">
+                <Sticker tone={index === 0 ? 'blue' : index === 1 ? 'ink' : 'sage'} tilt={index - 1}>
+                  {card.title}
+                </Sticker>
+                <span className={card.bridge ? 'bridge-dot connected' : 'bridge-dot'} />
+              </div>
+              <strong>{card.bridge ? card.bridge.status || 'sincronizado' : 'Ainda não conectado'}</strong>
+              <p>{card.bridge?.summary || 'Abra este app uma vez para o EU receber um resumo local da evolução.'}</p>
+              <span className="ecosystem-open">{card.bridge ? 'Ver detalhes ↗' : 'Conectar ↗'}</span>
+            </button>
+          ))}
         </div>
       </section>
 
@@ -467,6 +527,140 @@ function ProjectPage() {
         <Sticker tone="ink" tilt={-2}>18 SET · ATUALIZADO</Sticker>
         <Sticker tone="blue" tilt={2}>INÍCIO · CONTEXTO REGISTRADO</Sticker>
       </div>
+    </div>
+  )
+}
+
+function formatMoney(value: unknown) {
+  return typeof value === 'number'
+    ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 2 }).format(value)
+    : '—'
+}
+
+function metricValue(card: BridgeCard, key: string) {
+  return card.bridge?.metrics[key]
+}
+
+function bridgeMetrics(card: BridgeCard) {
+  if (!card.bridge) return []
+
+  if (card.id === 'folego') {
+    return [
+      ['Fôlego diário', formatMoney(metricValue(card, 'dailyFolego'))],
+      ['Orçamento usado', typeof metricValue(card, 'budgetUsedPercent') === 'number' ? metricValue(card, 'budgetUsedPercent') + '%' : '—'],
+      ['Próximo recebimento', typeof metricValue(card, 'daysUntilIncome') === 'number' ? metricValue(card, 'daysUntilIncome') + ' dias' : '—'],
+    ]
+  }
+
+  if (card.id === 'traco') {
+    return [
+      ['Semana', String(metricValue(card, 'workoutsThisWeek') ?? 0) + '/' + String(metricValue(card, 'weeklyGoal') ?? '—')],
+      ['Treinos totais', String(metricValue(card, 'totalWorkouts') ?? 0)],
+      ['Consistência', String(metricValue(card, 'streakDays') ?? 0) + ' dias'],
+    ]
+  }
+
+  return [
+    ['Concluídos', String(metricValue(card, 'completed') ?? 0)],
+    ['Semana', String(metricValue(card, 'studiedDaysThisWeek') ?? 0) + '/' + String(metricValue(card, 'weeklyGoal') ?? '—') + ' dias'],
+    ['Revisões', String(metricValue(card, 'dueReviews') ?? 0) + ' pendentes'],
+  ]
+}
+
+function evolutionDelta(card: BridgeCard) {
+  if (!card.bridge) return null
+
+  const metric = card.id === 'folego'
+    ? 'budgetUsedPercent'
+    : card.id === 'traco'
+      ? 'totalWorkouts'
+      : 'completed'
+
+  const delta = latestBridgeDelta(card.id, metric)
+  if (delta == null || delta === 0) return null
+
+  if (card.id === 'folego') {
+    return (delta > 0 ? '+' : '') + delta + ' p.p. no orçamento desde o último registro'
+  }
+
+  return (delta > 0 ? '+' : '') + delta + (card.id === 'traco' ? ' treino(s)' : ' assunto(s) concluído(s)') + ' desde o último registro'
+}
+
+function EvolutionPage() {
+  const bridges = useAppBridges()
+  const connected = bridges.filter((card) => card.bridge).length
+
+  return (
+    <div className="page evolution-page">
+      <BrandHeader />
+
+      <header className="page-intro evolution-intro">
+        <Sticker tone="ink" tilt={-2}>ECOSSISTEMA EU</Sticker>
+        <h1>O que está evoluindo.</h1>
+        <p>O EU não substitui seus outros apps. Ele junta sinais deles para você enxergar a própria evolução sem perder contexto.</p>
+      </header>
+
+      <div className="evolution-status">
+        <span>{connected}/3 conectados</span>
+        <p>Os resumos ficam neste aparelho e são atualizados quando você usa cada app.</p>
+      </div>
+
+      <div className="evolution-apps">
+        {bridges.map((card, index) => {
+          const delta = evolutionDelta(card)
+          return (
+            <article key={card.id} className={'evolution-app-card evolution-' + card.id}>
+              <div className="evolution-app-top">
+                <div>
+                  <Sticker tone={index === 0 ? 'blue' : index === 1 ? 'ink' : 'sage'} tilt={index - 1}>{card.title}</Sticker>
+                  <h2>{card.description}</h2>
+                </div>
+                <span className={card.bridge ? 'bridge-state connected' : 'bridge-state'}>
+                  {card.bridge ? 'conectado' : 'aguardando'}
+                </span>
+              </div>
+
+              {card.bridge ? (
+                <>
+                  <p className="evolution-summary">{card.bridge.summary}</p>
+                  <div className="evolution-metrics">
+                    {bridgeMetrics(card).map(([label, value]) => (
+                      <div key={label}>
+                        <span>{label}</span>
+                        <strong>{value}</strong>
+                      </div>
+                    ))}
+                  </div>
+                  {delta && <div className="evolution-delta">↗ {delta}</div>}
+                  <p className="bridge-updated">
+                    atualizado {new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }).format(new Date(card.bridge.updatedAt))}
+                  </p>
+                </>
+              ) : (
+                <div className="bridge-empty">
+                  <p>Abra o {card.title} nesta versão nova. Ele publica um resumo local e o EU reconhece automaticamente quando você voltar.</p>
+                </div>
+              )}
+
+              <a href={card.href} target="_blank" rel="noreferrer" className="open-app-link">
+                Abrir {card.title} ↗
+              </a>
+            </article>
+          )
+        })}
+      </div>
+
+      <section className="ecosystem-explainer">
+        <Sticker tone="sand" tilt={-1}>COMO FUNCIONA</Sticker>
+        <h2>Cada app continua especialista no que faz.</h2>
+        <p>Fôlego entende seu dinheiro. Traço entende seu treino. Repertório entende o que você aprende. O EU observa os sinais principais e constrói a visão de conjunto.</p>
+        <div className="ecosystem-flow" aria-hidden="true">
+          <span>FÔLEGO</span><b>↘</b>
+          <span>TRAÇO</span><b>→</b>
+          <strong>EU</strong><b>←</b>
+          <span>REPERTÓRIO</span>
+        </div>
+      </section>
     </div>
   )
 }
