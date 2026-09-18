@@ -122,7 +122,7 @@ function AgoraPage({ onRegister }: { onRegister: () => void }) {
   const navigate = useNavigate()
 
   const focus = [
-    { label: 'CARREIRA', title: 'Evolução profissional', summary: 'Custos como base. Dados entrando no próximo capítulo.', next: 'consolidar portfólio', path: '/projetos/evolucao-profissional', tone: 'sage' as StickerTone },
+    { label: 'CARREIRA', title: 'Evolução profissional', summary: 'Estratégia viva para decisões, lacunas e próximos movimentos.', next: 'abrir plano estratégico', path: '/areas', tone: 'sage' as StickerTone },
     { label: 'COMPRAS', title: 'Trocar de carro', summary: 'Pesquisa ativa dentro da faixa que faz sentido para você.', next: 'selecionar candidatos', path: '/projetos/trocar-de-carro', tone: 'sand' as StickerTone },
     { label: 'PESSOAL', title: 'EU', summary: 'Seu arquivo vivo ganhou uma direção nova.', next: 'usar e refinar', path: '/projetos/eu', tone: 'blue' as StickerTone },
   ]
@@ -235,6 +235,10 @@ function AgoraPage({ onRegister }: { onRegister: () => void }) {
 function AreasPage() {
   const [selected, setSelected] = useState(areas[0].id)
   const area = areas.find((item) => item.id === selected) ?? areas[0]
+  const records = useStoredRecords()
+  const areaRecords = records.filter((record) => record.area.toLowerCase() === area.name.toLowerCase())
+  const careerRecords = records.filter((record) => record.area.toLowerCase() === 'carreira')
+  const isCareer = area.id === 'carreira'
   const tones = ['sage', 'sand', 'blue', 'stone', 'blue', 'sage', 'sand', 'stone']
 
   return (
@@ -281,6 +285,102 @@ function AreasPage() {
           <div><span>HISTÓRICO</span><strong>2026 · 2025 · 2024</strong></div>
         </div>
       </article>
+
+      {isCareer && (
+        <section className="career-strategy">
+          <div className="career-strategy-head">
+            <div>
+              <Sticker tone="ink" tilt={-2}>PLANO ESTRATÉGICO</Sticker>
+              <h2>Carreira como direção, não só histórico.</h2>
+              <p>O que você registra em Carreira passa a alimentar decisões, prioridades e próximos movimentos.</p>
+            </div>
+            <div className="strategy-seal" aria-hidden="true">NORTE<span>↗</span></div>
+          </div>
+
+          <div className="strategy-grid">
+            <article className="strategy-card strategy-main">
+              <span>NORTE</span>
+              <h3>Avançar profissionalmente unindo profundidade de negócio com capacidade analítica.</h3>
+              <p>O objetivo não é trocar de área por impulso, e sim construir uma evolução coerente, com repertório, evidências e opções melhores.</p>
+            </article>
+
+            <article className="strategy-card">
+              <span>PRÓXIMOS 90 DIAS</span>
+              <h3>Transformar experiência em evidência.</h3>
+              <ul>
+                <li>Documentar resultados e cases relevantes.</li>
+                <li>Consolidar um portfólio enxuto e convincente.</li>
+                <li>Registrar lacunas técnicas que aparecem em vagas reais.</li>
+              </ul>
+            </article>
+
+            <article className="strategy-card">
+              <span>12 MESES</span>
+              <h3>Chegar ao próximo patamar com mais autonomia.</h3>
+              <ul>
+                <li>Ampliar análise, automação e dados aplicados ao negócio.</li>
+                <li>Fortalecer posicionamento para oportunidades mais robustas.</li>
+                <li>Usar entrevistas e vagas como fonte de inteligência de mercado.</li>
+              </ul>
+            </article>
+
+            <article className="strategy-card">
+              <span>ALAVANCAS</span>
+              <div className="strategy-tags">
+                <Sticker tone="sage">Negócio</Sticker>
+                <Sticker tone="blue">Dados</Sticker>
+                <Sticker tone="sand">Comunicação</Sticker>
+                <Sticker tone="stone">Resultados</Sticker>
+              </div>
+              <p>O EU deve mostrar onde essas quatro frentes estão fortes e onde ainda precisam de atenção.</p>
+            </article>
+          </div>
+
+          <div className="career-radar">
+            <div className="section-heading organic-heading">
+              <div>
+                <p className="eyebrow">RADAR DE CARREIRA</p>
+                <h2>O que você vem sinalizando</h2>
+              </div>
+              <span className="radar-count">{careerRecords.length} registros</span>
+            </div>
+
+            {careerRecords.length ? (
+              <div className="career-signal-list">
+                {careerRecords.slice(0, 6).map((record, index) => (
+                  <article key={record.id}>
+                    <Sticker tone={index % 3 === 0 ? 'sage' : index % 3 === 1 ? 'sand' : 'blue'} tilt={(index % 3) - 1}>{record.type}</Sticker>
+                    <p>{record.text || 'Registro com anexo'}</p>
+                    <span>{new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short' }).format(new Date(record.createdAt))}</span>
+                  </article>
+                ))}
+              </div>
+            ) : (
+              <div className="career-empty">
+                <Sticker tone="sand" tilt={-1}>COMECE POR AQUI</Sticker>
+                <p>Registre coisas como “gostei dessa vaga”, “preciso estudar isso”, “quero chegar a pleno” ou “essa empresa me interessou”. Aos poucos o plano fica cada vez mais seu.</p>
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {!isCareer && areaRecords.length > 0 && (
+        <section className="area-signals">
+          <div className="section-heading organic-heading">
+            <div><p className="eyebrow">SINAIS RECENTES</p><h2>O que apareceu por aqui</h2></div>
+          </div>
+          <div className="career-signal-list">
+            {areaRecords.slice(0, 4).map((record, index) => (
+              <article key={record.id}>
+                <Sticker tone={index % 2 ? 'stone' : 'sage'}>{record.type}</Sticker>
+                <p>{record.text || 'Registro com anexo'}</p>
+                <span>{new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short' }).format(new Date(record.createdAt))}</span>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   )
 }
@@ -386,7 +486,7 @@ function ArchivePage() {
     const matchesFacet = facet === 'Todos' || item.type.toLowerCase().includes(facet.toLowerCase())
     return matchesQuery && matchesFacet
   })
-  const facets = ['Todos', 'Nota', 'Preferência', 'Decisão', 'Projeto', 'Referência']
+  const facets = ['Todos', 'Gostei', 'Pesquisa', 'Preciso fazer', 'Decisão', 'Projeto', 'Referência']
 
   return (
     <div className="page">
