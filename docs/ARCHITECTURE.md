@@ -1,55 +1,71 @@
-# EU — arquitetura funcional inicial
+# EU — arquitetura local-first
 
 ## Princípio
 
-O banco não deve espelhar a navegação. **Agora, Áreas, Projetos, Arquivo e Eu são perspectivas sobre os mesmos dados**, e não cinco silos.
+**Agora, Áreas, Projetos, Arquivo e Eu são perspectivas sobre os mesmos dados**, não cinco bancos separados.
 
-O objeto de entrada universal é `record`. Tudo que entra pelo **Registrar** nasce como um registro bruto e imutável o suficiente para preservar o contexto original.
+O app é pessoal, instalado como PWA no iPhone e deve funcionar sem conta, sem servidor próprio e sem assinatura de infraestrutura.
 
-## Fluxo do Registrar
+## Persistência
 
-1. Cliente cria `record` com texto e anexos.
-2. Backend persiste o original imediatamente.
-3. Uma função server-side envia somente o necessário ao classificador.
-4. O classificador retorna dados estruturados:
-   - `kind`: memory | preference | milestone | decision | project_signal | reference | purchase | note
-   - entidades: pessoas, lugares, objetos, marcas
-   - datas e prazos
-   - valores e moeda
-   - área sugerida
-   - projeto existente sugerido
-   - intenção de criar novo projeto
-   - confiança por campo
-5. Regras determinísticas validam a saída.
-6. O app cria vínculos derivados, sem destruir o original.
-7. Se a confiança for baixa em algo importante, o app guarda como memória e deixa a revisão opcional para depois.
+A fonte de verdade local é o **IndexedDB** do navegador.
 
-## Regra de ouro
+O `localStorage` não é usado como banco principal. Existe apenas migração automática para registros antigos do primeiro protótipo.
 
-A IA **classifica e sugere vínculos**; ela não apaga, sobrescreve nem inventa fatos pessoais silenciosamente.
+Estrutura inicial:
 
-## Entidades centrais
+- `records`: registros capturados pelo Registrar.
+- futuramente `areas`: estado customizado das áreas.
+- futuramente `projects`: projetos criados/alterados pelo usuário.
+- futuramente `entities`: pessoas, lugares, objetos e organizações.
+- futuramente `attachments`: metadados e blobs de foto, áudio e documento.
+- futuramente `profileFacts`: fatos vivos que alimentam a tela Eu.
 
-- `records`: entrada original.
-- `areas`: contextos permanentes.
-- `projects`: ciclos com objetivo.
-- `record_links`: relações de um registro com área/projeto/pessoa/lugar.
-- `entities`: pessoas, lugares, objetos e organizações mencionadas.
-- `decisions`: decisões extraídas ou registradas.
-- `documents`: metadados de anexos.
-- `profile_facts`: fatos vivos que alimentam o dossiê Eu.
-- `timeline_events`: marcos navegáveis no tempo.
+## Registrar
 
-## IA
+1. O usuário escreve ou anexa algo.
+2. O original é salvo no aparelho imediatamente.
+3. Um interpretador local sugere tipo e área.
+4. O registro passa a aparecer em Recentes e Arquivo.
+5. Estruturas derivadas podem evoluir depois sem apagar o original.
 
-A primeira implementação recomendada usa uma **Supabase Edge Function**. A chave do provedor de IA fica somente no servidor.
+Regra de ouro: **guardar primeiro, interpretar depois**.
 
-A saída deve obedecer JSON Schema fixo. O prompt de sistema deve instruir o classificador a preferir `memory` quando não houver sinal suficiente para uma estrutura mais específica.
+## Interpretação
 
-## Privacidade
+A v1 usa regras locais leves para reconhecer sinais de:
 
-O app é de uso individual. RLS deve restringir toda linha ao próprio `auth.uid()`.
+- projeto/intenção;
+- preferência;
+- marco;
+- memória livre.
 
-Arquivos privados ficam em bucket privado com URLs assinadas de curta duração.
+Isso mantém o app 100% gratuito e offline.
 
-Informações sensíveis não devem entrar em logs de aplicação.
+Uma camada de IA pode ser adicionada depois como opção. Ela nunca deve ser necessária para abrir, buscar ou preservar os dados.
+
+## Backup
+
+Como os dados ficam no aparelho, o app oferece:
+
+- **Criar backup** → arquivo JSON;
+- **Restaurar backup** → importa um JSON do EU.
+
+No iPhone, o arquivo pode ser guardado em Arquivos/iCloud Drive.
+
+O backup deve evoluir junto com o schema e ter número de versão.
+
+## PWA / iPhone
+
+- `viewport-fit=cover`;
+- uso de `env(safe-area-inset-*)`;
+- navegação inferior respeitando home indicator;
+- áreas tocáveis de pelo menos 44 px;
+- `display: standalone`;
+- shell offline via Service Worker;
+- layout orientado primeiro a portrait;
+- sem depender de recursos exclusivos de desktop.
+
+## Limitação consciente
+
+IndexedDB é armazenamento local do navegador. Apagar dados do site, remover o PWA ou certos cenários de limpeza do iOS podem apagar o conteúdo. Por isso o backup não é um extra: é parte do produto.
