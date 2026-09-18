@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useState } from 'react'
+import { type ChangeEvent, useEffect, useState } from 'react'
 import { NavLink, Route, Routes, useNavigate, useParams } from 'react-router-dom'
 import RegisterSheet from './RegisterSheet'
 import { archiveItems, areas, projects } from './data'
+import { exportBackup, importBackup, listRecords, type StoredRecord } from './storage'
 
 const nav = [
   ['/', 'Agora'],
@@ -10,14 +11,6 @@ const nav = [
   ['/arquivo', 'Arquivo'],
   ['/eu', 'Eu'],
 ] as const
-
-type LocalRecord = {
-  id: string
-  text: string
-  type: string
-  area: string
-  createdAt: string
-}
 
 function todayLabel() {
   return new Intl.DateTimeFormat('pt-BR', {
@@ -33,6 +26,27 @@ function greeting() {
   if (hour < 12) return 'Bom dia'
   if (hour < 18) return 'Boa tarde'
   return 'Boa noite'
+}
+
+function useStoredRecords() {
+  const [records, setRecords] = useState<StoredRecord[]>([])
+
+  useEffect(() => {
+    const refresh = () => {
+      void listRecords().then(setRecords)
+    }
+
+    refresh()
+    window.addEventListener('eu-record-saved', refresh)
+    window.addEventListener('eu-records-restored', refresh)
+
+    return () => {
+      window.removeEventListener('eu-record-saved', refresh)
+      window.removeEventListener('eu-records-restored', refresh)
+    }
+  }, [])
+
+  return records
 }
 
 function Layout({ onRegister }: { onRegister: () => void }) {
@@ -70,20 +84,7 @@ function Layout({ onRegister }: { onRegister: () => void }) {
 }
 
 function AgoraPage({ onRegister }: { onRegister: () => void }) {
-  const [, force] = useState(0)
-  const records = useMemo<LocalRecord[]>(() => {
-    try {
-      return JSON.parse(localStorage.getItem('eu-records') || '[]')
-    } catch {
-      return []
-    }
-  }, [force])
-
-  useEffect(() => {
-    const handler = () => force((value) => value + 1)
-    window.addEventListener('eu-record-saved', handler)
-    return () => window.removeEventListener('eu-record-saved', handler)
-  }, [])
+  const records = useStoredRecords()
 
   const focus = [
     { label: 'CARREIRA', title: 'Evolução profissional', summary: 'Base sólida em custos, com dados entrando no próximo capítulo.', next: 'consolidar portfólio' },
@@ -275,7 +276,15 @@ function ProjectPage() {
 
 function ArchivePage() {
   const [query, setQuery] = useState('')
-  const filtered = archiveItems.filter((item) => (item.title + item.type + item.meta).toLowerCase().includes(query.toLowerCase()))
+  const records = useStoredRecords()
+  const dynamicItems = records.map((record) => ({
+    type: record.type,
+    title: record.text,
+    meta: `${record.area} · ${new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date(record.createdAt))}`,
+  }))
+  const filtered = [...dynamicItems, ...archiveItems].filter((item) =>
+    (item.title + item.type + item.meta).toLowerCase().includes(query.toLowerCase()),
+  )
 
   return (
     <div className="page">
@@ -288,8 +297,8 @@ function ArchivePage() {
         {['Pessoas', 'Lugares', 'Compras', 'Decisões', 'Referências'].map((facet) => <button key={facet}>{facet}</button>)}
       </div>
       <div className="archive-results">
-        {filtered.map((item) => (
-          <article key={item.type + item.title}>
+        {filtered.map((item, index) => (
+          <article key={item.type + item.title + index}>
             <p className="eyebrow">{item.type.toUpperCase()}</p>
             <h3>{item.title}</h3>
             <p>{item.meta}</p>
@@ -302,6 +311,32 @@ function ArchivePage() {
 }
 
 function MePage() {
+  const [backupMessage, setBackupMessage] = useState('')
+
+  async function handleExport() {
+    try {
+      await exportBackup()
+      setBackupMessage('Backup criado. Guarde o arquivo no app Arquivos ou no iCloud Drive.')
+    } catch {
+      setBackupMessage('Não consegui criar o backup agora.')
+    }
+  }
+
+  async function handleImport(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    try {
+      await importBackup(file)
+      setBackupMessage('Backup restaurado neste aparelho.')
+      window.dispatchEvent(new Event('eu-records-restored'))
+    } catch {
+      setBackupMessage('Esse arquivo não parece ser um backup válido do EU.')
+    } finally {
+      event.target.value = ''
+    }
+  }
+
   return (
     <div className="page dossier">
       <header className="me-header">
@@ -327,6 +362,20 @@ function MePage() {
         <button><span>2026</span><strong>Ver meu ano</strong><b>→</b></button>
         <button><span>HISTÓRIA</span><strong>Minha linha do tempo</strong><b>→</b></button>
       </div>
+
+      <section className="backup-block">
+        <p className="eyebrow">DADOS DESTE IPHONE</p>
+        <h2>Seu arquivo fica no aparelho.</h2>
+        <p>O EU funciona sem conta e sem servidor pago. Faça um backup de vez em quando para não depender apenas do armazenamento do navegador.</p>
+        <div className="backup-actions">
+          <button className="primary-button" onClick={handleExport}>Criar backup</button>
+          <label className="secondary-button">
+            Restaurar backup
+            <input type="file" accept="application/json,.json" onChange={handleImport} />
+          </label>
+        </div>
+        {backupMessage && <p className="backup-message">{backupMessage}</p>}
+      </section>
     </div>
   )
 }
