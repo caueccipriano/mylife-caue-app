@@ -6,7 +6,6 @@ import { exportBackup, importBackup, listRecords, saveRecord, type StoredRecord 
 
 const primaryNav = [
   ['/', 'Hoje'],
-  ['/arquivo', 'Arquivo'],
   ['/eu', 'Eu'],
 ] as const
 
@@ -85,6 +84,7 @@ function Layout({ onRegister }: { onRegister: () => void }) {
           {primaryNav.map(([path, label]) => (
             <NavLink key={path} to={path} end={path === '/'}>{label}</NavLink>
           ))}
+          <NavLink to="/arquivo">Arquivo</NavLink>
           <NavLink to="/areas">Áreas</NavLink>
           <NavLink to="/projetos">Projetos</NavLink>
         </nav>
