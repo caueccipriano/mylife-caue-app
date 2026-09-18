@@ -841,3 +841,243 @@ label {
     flex: 1 1 100%;
   }
 }
+
+
+/* Agora — iPhone-first editorial polish */
+.mobile-home-bar {
+  display: none;
+}
+
+.section-link {
+  color: var(--earth);
+  font-size: 11px;
+  letter-spacing: .1em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.focus-card {
+  width: 100%;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.focus-card:active {
+  transform: translateY(1px);
+}
+
+.home-date {
+  margin-bottom: 16px;
+}
+
+@media (max-width: 860px) {
+  .page-home {
+    width: 100%;
+    padding-left: 16px;
+    padding-right: 16px;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: calc(176px + env(safe-area-inset-bottom));
+  }
+
+  .mobile-home-bar {
+    min-height: 58px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--line);
+    margin: 0 0 32px;
+  }
+
+  .mobile-wordmark {
+    font-family: var(--serif);
+    font-size: 26px;
+    font-weight: 600;
+    letter-spacing: -.04em;
+  }
+
+  .mobile-edition {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: .18em;
+    color: var(--muted);
+  }
+
+  .home-hero {
+    margin: 0 0 46px;
+  }
+
+  .home-hero h1 {
+    max-width: 330px;
+    font-size: clamp(43px, 12.5vw, 58px);
+    line-height: .98;
+    margin-bottom: 13px;
+  }
+
+  .home-hero .hero-copy {
+    font-size: 16px;
+    line-height: 1.45;
+  }
+
+  .home-date {
+    font-size: 9px;
+    letter-spacing: .16em;
+    margin-bottom: 13px;
+  }
+
+  .home-section + .home-section {
+    margin-top: 54px;
+  }
+
+  .section-heading {
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 11px;
+  }
+
+  .section-heading h2 {
+    font-size: 24px;
+  }
+
+  .section-heading > span {
+    font-size: 9px;
+    letter-spacing: .1em;
+  }
+
+  .section-link {
+    font-size: 9px;
+    letter-spacing: .11em;
+  }
+
+  .page-home .focus-grid {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    margin: 0 -16px;
+    padding: 0 16px 5px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .page-home .focus-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  .page-home .focus-card {
+    flex: 0 0 min(82vw, 340px);
+    min-height: 250px;
+    padding: 24px 22px;
+    scroll-snap-align: start;
+    border-radius: 0;
+  }
+
+  .page-home .focus-card h3 {
+    font-size: 30px;
+    max-width: 250px;
+  }
+
+  .page-home .focus-card > p:not(.eyebrow) {
+    max-width: 270px;
+  }
+
+  .page-home .next-line {
+    padding-top: 19px;
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  .recent-list {
+    border-top-color: var(--blue);
+  }
+
+  .page-home .recent-row {
+    grid-template-columns: 58px 76px minmax(0, 1fr);
+    gap: 9px;
+    padding: 16px 0;
+    align-items: start;
+  }
+
+  .page-home .recent-row span,
+  .page-home .recent-row strong {
+    font-size: 9px;
+    line-height: 1.5;
+  }
+
+  .page-home .recent-row p {
+    padding-left: 0;
+    grid-column: auto;
+    font-size: 13px;
+    line-height: 1.45;
+    color: var(--blue);
+  }
+
+  .page-home .register-panel {
+    display: none;
+  }
+
+  .floating-register {
+    left: 16px;
+    right: 16px;
+    bottom: calc(73px + env(safe-area-inset-bottom));
+    width: auto;
+    min-width: 0;
+    min-height: 54px;
+    padding: 0 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border: 1px solid rgba(245, 241, 232, .18);
+    box-shadow: 0 8px 24px rgba(40, 55, 74, .16);
+    font-weight: 600;
+    letter-spacing: .01em;
+  }
+
+  .floating-register::after {
+    content: '+';
+    font-family: var(--serif);
+    font-size: 25px;
+    font-weight: 400;
+    line-height: 1;
+  }
+
+  .bottom-nav {
+    min-height: calc(62px + env(safe-area-inset-bottom));
+    padding: 7px 8px calc(7px + env(safe-area-inset-bottom));
+    background: rgba(245, 241, 232, .97);
+  }
+
+  .bottom-nav a {
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 3px;
+    font-size: 10px;
+    letter-spacing: .01em;
+    position: relative;
+  }
+
+  .bottom-nav a.active::after {
+    content: '';
+    position: absolute;
+    left: 22%;
+    right: 22%;
+    bottom: 2px;
+    height: 1px;
+    background: var(--earth);
+  }
+}
+
+@media (max-width: 390px) {
+  .page-home .focus-card {
+    flex-basis: 84vw;
+  }
+
+  .page-home .recent-row {
+    grid-template-columns: 52px 68px minmax(0, 1fr);
+    gap: 7px;
+  }
+}
