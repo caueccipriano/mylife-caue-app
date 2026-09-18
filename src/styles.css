@@ -762,3 +762,82 @@ label {
     max-height: calc(100dvh - env(safe-area-inset-top));
   }
 }
+
+
+.capture-page {
+  max-width: 880px;
+}
+
+.capture-title {
+  margin-bottom: 34px;
+}
+
+.capture-card {
+  border: 1px solid var(--line);
+  background: var(--sand);
+  padding: 30px;
+  margin-bottom: 24px;
+}
+
+.capture-card-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 26px;
+}
+
+.capture-card-meta span {
+  padding: 6px 9px;
+  border: 1px solid rgba(40, 55, 74, .35);
+  font-size: 10px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.capture-card > p {
+  font-family: var(--serif);
+  font-size: clamp(24px, 4vw, 38px);
+  line-height: 1.35;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.capture-actions,
+.capture-success {
+  max-width: 680px;
+}
+
+.capture-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.capture-actions .inline-error {
+  flex-basis: 100%;
+  margin: 10px 0 0;
+}
+
+.capture-success {
+  border-top: 1px solid var(--blue);
+  padding-top: 28px;
+}
+
+.capture-success h2 {
+  font-size: clamp(32px, 5vw, 48px);
+  margin-bottom: 20px;
+}
+
+@media (max-width: 860px) {
+  .capture-card {
+    padding: 22px 18px;
+  }
+
+  .capture-actions .primary-button,
+  .capture-actions .secondary-button,
+  .capture-success .primary-button,
+  .capture-success .secondary-button {
+    flex: 1 1 100%;
+  }
+}
