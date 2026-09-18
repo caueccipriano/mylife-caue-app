@@ -2,14 +2,17 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
+const base = '/mylife-caue-app/'
+
 export default defineConfig({
+  base,
   plugins: [
     react(),
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['eu-mark.svg'],
       manifest: {
-        id: '/',
+        id: base,
         name: 'EU',
         short_name: 'EU',
         description: 'Arquivo vivo pessoal.',
@@ -18,12 +21,12 @@ export default defineConfig({
         background_color: '#F5F1E8',
         display: 'standalone',
         orientation: 'portrait-primary',
-        start_url: '/',
-        scope: '/',
+        start_url: base,
+        scope: base,
         categories: ['lifestyle', 'utilities'],
         icons: [
           {
-            src: '/eu-mark.svg',
+            src: 'eu-mark.svg',
             sizes: 'any',
             type: 'image/svg+xml',
             purpose: 'any maskable'
@@ -31,7 +34,7 @@ export default defineConfig({
         ]
       },
       workbox: {
-        navigateFallback: '/index.html',
+        navigateFallback: 'index.html',
         cleanupOutdatedCaches: true
       }
     })
