@@ -10,6 +10,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      selfDestroying: true,
       includeAssets: ['eu-mark.svg'],
       manifest: {
         id: base,
@@ -17,11 +18,11 @@ export default defineConfig({
         short_name: 'EU',
         description: 'Arquivo vivo pessoal.',
         lang: 'pt-BR',
-        theme_color: '#F5F1E8',
-        background_color: '#F5F1E8',
+        theme_color: '#F6F2EA',
+        background_color: '#F6F2EA',
         display: 'standalone',
         orientation: 'portrait-primary',
-        start_url: base,
+        start_url: base + '?v=organic-2',
         scope: base,
         categories: ['lifestyle', 'utilities'],
         icons: [
@@ -30,30 +31,6 @@ export default defineConfig({
             sizes: 'any',
             type: 'image/svg+xml',
             purpose: 'any maskable'
-          }
-        ]
-      },
-      workbox: {
-        navigateFallback: 'index.html',
-        cleanupOutdatedCaches: true,
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
-            handler: 'StaleWhileRevalidate',
-            options: {
-              cacheName: 'eu-google-fonts-stylesheets'
-            }
-          },
-          {
-            urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'eu-google-fonts-webfonts',
-              expiration: {
-                maxEntries: 12,
-                maxAgeSeconds: 31536000
-              }
-            }
           }
         ]
       }
