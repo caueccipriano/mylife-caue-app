@@ -4,6 +4,7 @@ export type StoredRecord = {
   type: string
   area: string
   createdAt: string
+  source?: 'manual' | 'chatgpt' | 'import'
 }
 
 type Backup = {
@@ -82,7 +83,9 @@ async function migrateLegacyRecords() {
     const store = tx.objectStore(RECORDS_STORE)
 
     parsed.forEach((record) => {
-      if (record?.id && record?.text && record?.createdAt) store.put(record)
+      if (record?.id && record?.text && record?.createdAt) {
+        store.put({ ...record, source: record.source ?? 'manual' })
+      }
     })
 
     await new Promise<void>((resolve, reject) => {
@@ -131,7 +134,9 @@ export async function importBackup(file: File) {
   const store = tx.objectStore(RECORDS_STORE)
 
   parsed.records.forEach((record) => {
-    if (record?.id && record?.text && record?.createdAt) store.put(record)
+    if (record?.id && record?.text && record?.createdAt) {
+      store.put({ ...record, source: record.source ?? 'import' })
+    }
   })
 
   await new Promise<void>((resolve, reject) => {
