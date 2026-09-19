@@ -1,5 +1,5 @@
 import type { BridgeCard } from './integrations'
-import type { StoredRecord } from './storage'
+import { isRecordVisibleForInsights, type StoredRecord } from './storage'
 
 type VaultPayload = {
   version: 1
@@ -64,7 +64,7 @@ async function importDeviceKey() {
 }
 
 function digest(records: StoredRecord[]) {
-  const visible = records.filter((record) => !record.private && !record.trashedAt)
+  const visible = records.filter(isRecordVisibleForInsights)
   const recent = visible.filter((record) => new Date(record.updatedAt || record.createdAt).getTime() > Date.now() - 45 * 86400000)
   const areaCounts = new Map<string, number>()
   const tagCounts = new Map<string, number>()
