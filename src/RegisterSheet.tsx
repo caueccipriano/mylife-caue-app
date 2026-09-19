@@ -1,5 +1,5 @@
-import { FormEvent, useMemo, useState } from 'react'
-import { nextFollowUpDate, saveRecord } from './storage'
+import { type ChangeEvent, type FormEvent, useMemo, useRef, useState } from 'react'
+import { nextFollowUpDate, saveRecord, type StoredAttachment } from './storage'
 
 type Props = {
   open: boolean
@@ -15,6 +15,9 @@ type Interpretation = {
   track?: boolean
   followUpDays?: number
 }
+
+const MAX_FILE_SIZE = 25 * 1024 * 1024
+const MAX_ATTACHMENTS = 6
 
 function includesAny(value: string, terms: string[]) {
   return terms.some((term) => value.includes(term))
@@ -34,7 +37,6 @@ function detectArea(value: string) {
 function interpret(input: string): Interpretation {
   const value = input.toLowerCase()
   const area = detectArea(value)
-
   const startedSomething = includesAny(value, ['comecei', 'iniciei', 'me matriculei', 'entrei no curso'])
   const courseLike = includesAny(value, ['curso', 'certificação', 'certificacao', 'formação', 'formacao', 'aulas'])
 
@@ -153,18 +155,168 @@ const quickStarts = [
   'Preciso fazer ',
 ]
 
+function humanSize(size?: number) {
+  if (!size) return ''
+  if (size < 1024 * 1024) return Math.max(1, Math.round(size / 1024)) + ' KB'
+  return (size / (1024 * 1024)).toFixed(1) + ' MB'
+}
+
+function fileAttachment(file: File, kind: 'photo' | 'document'): StoredAttachment {
+  return {
+    id: crypto.randomUUID(),
+    kind,
+    name: file.name || (kind === 'photo' ? 'Foto' : 'Documento'),
+    mimeType: file.type || 'application/octet-stream',
+    size: file.size,
+    blob: file,
+  }
+}
+
 export default function RegisterSheet({ open, onClose, onSaved }: Props) {
   const [value, setValue] = useState('')
   const [saved, setSaved] = useState<Interpretation | null>(null)
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
-  const interpretation = useMemo(() => (value.trim() ? interpret(value.trim()) : null), [value])
+  const [attachments, setAttachments] = useState<StoredAttachment[]>([])
+  const [showLink, setShowLink] = useState(false)
+  const [linkValue, setLinkValue] = useState('')
+  const [recording, setRecording] = useState(false)
+  const recorderRef = useRef<MediaRecorder | null>(null)
+  const streamRef = useRef<MediaStream | null>(null)
+  const chunksRef = useRef<BlobPart[]>([])
+
+  const fallbackText = attachments[0]?.kind === 'link'
+    ? attachments[0]?.url || 'Link salvo'
+    : attachments[0]?.name || ''
+  const interpretation = useMemo(
+    () => value.trim() || fallbackText ? interpret(value.trim() || fallbackText) : null,
+    [value, fallbackText],
+  )
 
   if (!open) return null
 
+  function addFiles(event: ChangeEvent<HTMLInputElement>, kind: 'photo' | 'document') {
+    const files = Array.from(event.target.files || [])
+    event.target.value = ''
+    if (!files.length) return
+
+    const next: StoredAttachment[] = []
+    let rejected = false
+
+    for (const file of files) {
+      if (attachments.length + next.length >= MAX_ATTACHMENTS || file.size > MAX_FILE_SIZE) {
+        rejected = true
+        continue
+      }
+
+      if (kind === 'photo' && !file.type.startsWith('image/')) {
+        rejected = true
+        continue
+      }
+
+      next.push(fileAttachment(file, kind))
+    }
+
+    setAttachments((current) => [...current, ...next])
+    setError(rejected ? 'Alguns anexos foram ignorados. Limite: 6 anexos e 25 MB por arquivo.' : '')
+  }
+
+  function addLink() {
+    const raw = linkValue.trim()
+    if (!raw) return
+
+    if (attachments.length >= MAX_ATTACHMENTS) {
+      setError('Você já atingiu o limite de 6 anexos.')
+      return
+    }
+
+    try {
+      const url = new URL(raw.includes('://') ? raw : 'https://' + raw)
+      setAttachments((current) => [
+        ...current,
+        {
+          id: crypto.randomUUID(),
+          kind: 'link',
+          name: url.hostname.replace(/^www\./, ''),
+          url: url.toString(),
+        },
+      ])
+      setLinkValue('')
+      setShowLink(false)
+      setError('')
+    } catch {
+      setError('Esse link não parece válido.')
+    }
+  }
+
+  function removeAttachment(id: string) {
+    setAttachments((current) => current.filter((item) => item.id !== id))
+  }
+
+  function stopStream() {
+    streamRef.current?.getTracks().forEach((track) => track.stop())
+    streamRef.current = null
+  }
+
+  async function toggleRecording() {
+    if (recording) {
+      recorderRef.current?.stop()
+      setRecording(false)
+      return
+    }
+
+    if (attachments.length >= MAX_ATTACHMENTS) {
+      setError('Você já atingiu o limite de 6 anexos.')
+      return
+    }
+
+    if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === 'undefined') {
+      setError('A gravação de áudio não está disponível neste navegador.')
+      return
+    }
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
+      const recorder = new MediaRecorder(stream)
+      chunksRef.current = []
+      streamRef.current = stream
+      recorderRef.current = recorder
+
+      recorder.ondataavailable = (event) => {
+        if (event.data.size) chunksRef.current.push(event.data)
+      }
+
+      recorder.onstop = () => {
+        const blob = new Blob(chunksRef.current, { type: recorder.mimeType || 'audio/mp4' })
+        if (blob.size) {
+          setAttachments((current) => [
+            ...current,
+            {
+              id: crypto.randomUUID(),
+              kind: 'audio',
+              name: 'Áudio ' + new Intl.DateTimeFormat('pt-BR', { hour: '2-digit', minute: '2-digit' }).format(new Date()),
+              mimeType: blob.type,
+              size: blob.size,
+              blob,
+            },
+          ])
+        }
+        chunksRef.current = []
+        stopStream()
+      }
+
+      recorder.start()
+      setRecording(true)
+      setError('')
+    } catch {
+      stopStream()
+      setError('Não consegui acessar o microfone. Verifique a permissão do Safari.')
+    }
+  }
+
   async function submit(event: FormEvent) {
     event.preventDefault()
-    if (!value.trim() || !interpretation || saving) return
+    if ((!value.trim() && !attachments.length) || !interpretation || saving || recording) return
 
     setSaving(true)
     setError('')
@@ -184,6 +336,7 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
           ? nextFollowUpDate(interpretation.followUpDays, now)
           : undefined,
         startedAt: interpretation.track ? now.toISOString() : undefined,
+        attachments,
       })
 
       setSaved(interpretation)
@@ -196,10 +349,16 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
   }
 
   function close() {
+    if (recording) recorderRef.current?.stop()
+    stopStream()
     setValue('')
     setSaved(null)
     setError('')
     setSaving(false)
+    setAttachments([])
+    setShowLink(false)
+    setLinkValue('')
+    setRecording(false)
     onClose()
   }
 
@@ -235,11 +394,39 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
             )}
 
             <div className="capture-tools" aria-label="Tipos de anexo">
-              <button type="button">Foto</button>
-              <button type="button">Link</button>
-              <button type="button">Documento</button>
-              <button type="button">Áudio</button>
+              <label>
+                Foto
+                <input type="file" accept="image/*" multiple onChange={(event) => addFiles(event, 'photo')} />
+              </label>
+              <button type="button" onClick={() => setShowLink((current) => !current)}>Link</button>
+              <label>
+                Documento
+                <input type="file" accept=".pdf,.doc,.docx,.txt,.xls,.xlsx,.csv,.ppt,.pptx" multiple onChange={(event) => addFiles(event, 'document')} />
+              </label>
+              <button type="button" className={recording ? 'recording' : ''} onClick={toggleRecording}>{recording ? 'Parar áudio' : 'Áudio'}</button>
             </div>
+
+            {showLink && (
+              <div className="link-capture">
+                <input value={linkValue} onChange={(event) => setLinkValue(event.target.value)} placeholder="cole o link aqui" inputMode="url" />
+                <button type="button" onClick={addLink}>Adicionar</button>
+              </div>
+            )}
+
+            {attachments.length > 0 && (
+              <div className="attachment-preview">
+                {attachments.map((attachment) => (
+                  <div key={attachment.id}>
+                    <span>{attachment.kind === 'photo' ? '◫' : attachment.kind === 'audio' ? '◉' : attachment.kind === 'link' ? '↗' : '□'}</span>
+                    <div>
+                      <strong>{attachment.name}</strong>
+                      <small>{attachment.url || humanSize(attachment.size)}</small>
+                    </div>
+                    <button type="button" onClick={() => removeAttachment(attachment.id)}>×</button>
+                  </div>
+                ))}
+              </div>
+            )}
 
             {interpretation && (
               <div className="interpretation">
@@ -254,7 +441,7 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
 
             {error && <p className="inline-error">{error}</p>}
 
-            <button className="primary-button full" type="submit" disabled={!value.trim() || saving}>
+            <button className="primary-button full" type="submit" disabled={(!value.trim() && !attachments.length) || saving || recording}>
               {saving ? 'Guardando…' : 'Guardar no EU'}
             </button>
           </form>
