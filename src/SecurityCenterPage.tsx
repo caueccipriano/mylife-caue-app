@@ -221,6 +221,7 @@ export default function SecurityCenterPage() {
 
         <div className="backup-security-meta">
           <span>Último backup: {formatDate(lastBackup)}</span>
+          <span>⚠ O backup comum não é criptografado e inclui registros privados. Para guardar fora do aparelho, prefira o .eubackup seguro.</span>
           {backupInfo && <strong>{backupInfo}</strong>}
         </div>
       </section>
