@@ -18,6 +18,7 @@ function base64ToBytes(value: string) {
 }
 
 async function derive(pin: string, salt: Uint8Array) {
+  const saltBuffer = Uint8Array.from(salt).buffer
   const key = await crypto.subtle.importKey(
     'raw',
     new TextEncoder().encode(pin),
@@ -30,7 +31,7 @@ async function derive(pin: string, salt: Uint8Array) {
     {
       name: 'PBKDF2',
       hash: 'SHA-256',
-      salt,
+      salt: saltBuffer,
       iterations: 120000,
     },
     key,
