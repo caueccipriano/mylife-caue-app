@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { NavLink } from 'react-router-dom'
-import { suggestTags } from './storage'
+import { isRecordVisibleForInsights, suggestTags } from './storage'
 import { deriveEntities, detectPreferenceShifts, entitySlug } from './meaning'
 import { useRecords } from './appState'
 import { BrandTop, SectionTitle, Tag, typeTone } from './v2Ui'
@@ -20,7 +20,7 @@ function recommendation(records: ReturnType<typeof useRecords>) {
 export default function DiscoveriesPage() {
   const records = useRecords()
 
-  const visibleRecords = records.filter((record) => !record.private)
+  const visibleRecords = records.filter(isRecordVisibleForInsights)
   const insights = visibleRecords.filter((record) => ['Insight', 'Ideia', 'Preferência'].includes(record.type)).slice(0, 8)
   const savedLinks = visibleRecords.flatMap((record) =>
     (record.attachments || [])
@@ -72,7 +72,7 @@ export default function DiscoveriesPage() {
           {insights.length ? insights.map((record) => (
             <NavLink className="discovery-card discovery-record-link tappable-card" key={record.id} to={'/registro/' + record.id}>
               <Tag tone={typeTone(record.type)}>{record.type}</Tag>
-              <p>{record.private ? 'Registro privado' : record.text}</p>
+              <p>{record.text}</p>
               <small>{record.area}</small>
             </NavLink>
           )) : (
@@ -149,7 +149,7 @@ export default function DiscoveriesPage() {
               <NavLink key={tag} to={'/assunto/' + entitySlug(tag)} className={'collection-card collection-' + (index % 4)}>
                 <span>#{tag}</span>
                 <strong>{items.length} coisas conectadas</strong>
-                <p>{items[0]?.private ? 'Inclui registros privados' : items[0]?.text}</p>
+                <p>{items[0]?.text}</p>
                 <b>ver coleção ↗</b>
               </NavLink>
             ))}
