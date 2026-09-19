@@ -1,5 +1,5 @@
 import type { BridgeCard } from './integrations'
-import type { StoredRecord } from './storage'
+import { isRecordVisibleForInsights, type StoredRecord } from './storage'
 import { derivePhaseTheme, type PhaseTone } from './v3Life'
 
 export type LifeSnapshot = {
@@ -38,7 +38,7 @@ export function listLifeSnapshots(): LifeSnapshot[] {
 }
 
 export function captureCurrentLifeSnapshot(records: StoredRecord[], bridges: BridgeCard[]) {
-  const publicRecords = records.filter((record) => !record.private)
+  const publicRecords = records.filter(isRecordVisibleForInsights)
   const areaCounts = new Map<string, number>()
   publicRecords.forEach((record) => areaCounts.set(record.area, (areaCounts.get(record.area) || 0) + 1))
 
