@@ -15,6 +15,9 @@ import SnapshotsPage from './SnapshotsPage'
 import AstrologyPage from './AstrologyPage'
 import SecurityCenterPage from './SecurityCenterPage'
 import TrashPage from './TrashPage'
+import SelfPage from './SelfPage'
+import ChaptersPage from './ChaptersPage'
+import WrappedPage from './WrappedPage'
 import { initPrivacyAutoLock } from './privacy'
 import { applyDiscreetMode } from './securitySettings'
 import { emptyExpiredTrash } from './storage'
@@ -49,6 +52,9 @@ function AppShell({ onRegister }: { onRegister: () => void }) {
           <Route path="/vida/astrologia" element={<AstrologyPage />} />
           <Route path="/seguranca" element={<SecurityCenterPage />} />
           <Route path="/lixeira" element={<TrashPage />} />
+          <Route path="/vida/quem-sou" element={<SelfPage />} />
+          <Route path="/vida/capitulos" element={<ChaptersPage />} />
+          <Route path="/vida/wrapped" element={<WrappedPage />} />
 
           <Route path="/areas" element={<Navigate to="/vida" replace />} />
           <Route path="/projetos" element={<Navigate to="/vida" replace />} />
