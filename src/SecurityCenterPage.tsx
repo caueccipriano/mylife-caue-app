@@ -18,6 +18,8 @@ import {
   setPrivateTags,
 } from './securitySettings'
 import { BrandTop, SectionTitle, Tag } from './v2Ui'
+import { useBridges, useRecords } from './appState'
+import { localSyncVaultMeta, syncVaultSecurityNote, writeLocalSyncVault } from './syncVault'
 
 function formatDate(value: string | null) {
   if (!value) return 'ainda não criado'
@@ -31,6 +33,8 @@ function formatDate(value: string | null) {
 }
 
 export default function SecurityCenterPage() {
+  const records = useRecords()
+  const { bridges } = useBridges()
   const [autoLock, setAutoLock] = useState(() => getAutoLockMinutes())
   const [discreet, setDiscreet] = useState(() => getDiscreetMode())
   const [privateTags, setPrivateTagsState] = useState(() => getPrivateTags().join(', '))
@@ -38,6 +42,7 @@ export default function SecurityCenterPage() {
   const [backupInfo, setBackupInfo] = useState('')
   const [lastBackup, setLastBackup] = useState(() => getLastBackupAt())
   const [recordCount, setRecordCount] = useState(0)
+  const [vaultUpdatedAt, setVaultUpdatedAt] = useState(() => localSyncVaultMeta().updatedAt)
 
   useEffect(() => {
     void listRecords().then((records) => setRecordCount(records.length))
@@ -89,6 +94,16 @@ export default function SecurityCenterPage() {
       setBackupInfo('Backup seguro restaurado neste aparelho.')
     } catch (error) {
       setBackupInfo(error instanceof Error ? error.message : 'Não consegui restaurar o backup.')
+    }
+  }
+
+  async function refreshVault() {
+    try {
+      const updatedAt = await writeLocalSyncVault(records, bridges)
+      setVaultUpdatedAt(updatedAt)
+      setBackupInfo('Sync Vault local atualizado.')
+    } catch {
+      setBackupInfo('Não consegui atualizar o Sync Vault agora.')
     }
   }
 
@@ -172,6 +187,16 @@ export default function SecurityCenterPage() {
           <input value={privateTags} onChange={(event) => setPrivateTagsState(event.target.value)} placeholder="relacionamento, saúde, família" />
           <button onClick={savePrivateTags}>Salvar tags</button>
         </div>
+      </section>
+
+      <section className="security-panel vault-security-panel">
+        <SectionTitle eyebrow="SYNC VAULT" title="Os seus apps, num cofre local" />
+        <p>Fôlego, Traço e Repertório podem alimentar um envelope local cifrado com os resumos mais recentes e um digest do EU.</p>
+        <div className="vault-security-row">
+          <span>{vaultUpdatedAt ? 'atualizado em ' + formatDate(vaultUpdatedAt) : 'ainda não criado'}</span>
+          <button onClick={() => void refreshVault()}>Atualizar cofre</button>
+        </div>
+        <small>{syncVaultSecurityNote()}</small>
       </section>
 
       <section className="security-panel backup-security-panel">
