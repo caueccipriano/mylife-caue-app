@@ -29,16 +29,31 @@ export type StarterPack = {
   items: StarterPackItem[]
 }
 
-function decodeBase64Url(value: string) {
+function decodeBase64UrlBytes(value: string) {
   const base64 = value.replace(/-/g, '+').replace(/_/g, '/')
   const padded = base64.padEnd(Math.ceil(base64.length / 4) * 4, '=')
   const binary = atob(padded)
-  const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0))
-  return new TextDecoder().decode(bytes)
+  return Uint8Array.from(binary, (char) => char.charCodeAt(0))
 }
 
-export function decodeStarterPack(value: string): StarterPack {
-  const parsed = JSON.parse(decodeBase64Url(value)) as StarterPack
+async function gunzip(bytes: Uint8Array) {
+  if (typeof DecompressionStream === 'undefined') {
+    throw new Error('Este navegador não suporta a importação compactada.')
+  }
+
+  const stream = new Blob([Uint8Array.from(bytes).buffer])
+    .stream()
+    .pipeThrough(new DecompressionStream('gzip'))
+  return new Response(stream).text()
+}
+
+export async function decodeStarterPack(value: string): Promise<StarterPack> {
+  const compressed = value.startsWith('gz.')
+  const encoded = compressed ? value.slice(3) : value
+  const bytes = decodeBase64UrlBytes(encoded)
+  const text = compressed ? await gunzip(bytes) : new TextDecoder().decode(bytes)
+  const parsed = JSON.parse(text) as StarterPack
+
   if (parsed?.version !== 1 || !parsed.id || !Array.isArray(parsed.items)) {
     throw new Error('Pacote incompatível.')
   }
