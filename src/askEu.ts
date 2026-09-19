@@ -1,5 +1,6 @@
 import type { BridgeCard } from './integrations'
 import { smartSearch } from './intelligence'
+import { semanticSearchLocal } from './v3Life'
 import type { StoredRecord } from './storage'
 
 export type EuAnswer = {
@@ -27,7 +28,16 @@ export function answerFromEu(records: StoredRecord[], bridges: BridgeCard[], que
 
   if (!query) return { answer: 'Me pergunta qualquer coisa que você já tenha guardado no EU.', sources: [] }
 
-  const matches = smartSearch(publicRecords, query).slice(0, 8)
+  const lexical = smartSearch(publicRecords, query)
+  const semantic = semanticSearchLocal(publicRecords, query)
+  const seen = new Set<string>()
+  const matches = [...semantic, ...lexical]
+    .filter((record) => {
+      if (seen.has(record.id)) return false
+      seen.add(record.id)
+      return true
+    })
+    .slice(0, 8)
   const decisions = matches.filter((record) => record.type === 'Decisão')
   const preferences = matches.filter((record) => ['Preferência', 'Desejo', 'Pesquisa'].includes(record.type))
   const active = matches.filter((record) => record.status === 'active')
@@ -88,7 +98,7 @@ export function answerFromEu(records: StoredRecord[], bridges: BridgeCard[], que
     return {
       answer: 'Encontrei ' + matches.length + ' registros relacionados' + (areas.length ? ' em ' + areas.join(', ') : '') + '. O mais relevante agora é: “' + short(matches[0].text, 180) + '”',
       sources: matches.slice(0, 6),
-      note: 'A resposta é montada localmente a partir do seu próprio arquivo; toque nas fontes para conferir o contexto.',
+      note: 'A resposta é montada localmente por significado + palavras-chave, usando apenas seu próprio arquivo; toque nas fontes para conferir o contexto.',
     }
   }
 
