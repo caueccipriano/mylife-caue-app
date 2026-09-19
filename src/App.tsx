@@ -3,7 +3,7 @@ import { NavLink, Route, Routes, useLocation, useNavigate, useParams } from 'rea
 import RegisterSheet from './RegisterSheet'
 import { archiveItems, areas, projects } from './data'
 import { exportBackup, importBackup, listRecords, saveRecord, type StoredRecord } from './storage'
-import { latestBridgeDelta, readAppBridges, type BridgeCard } from './integrations'
+import { forceRefreshAppBridges, latestBridgeDelta, readAppBridges, type BridgeCard } from './integrations'
 
 const primaryNav = [
   ['/', 'Hoje'],
@@ -51,6 +51,7 @@ function useStoredRecords() {
 
 function useAppBridges() {
   const [bridges, setBridges] = useState<BridgeCard[]>(() => readAppBridges())
+  const [refreshing, setRefreshing] = useState(false)
 
   useEffect(() => {
     const refresh = () => setBridges(readAppBridges())
@@ -72,7 +73,17 @@ function useAppBridges() {
     }
   }, [])
 
-  return bridges
+  async function forceRefresh() {
+    if (refreshing) return
+    setRefreshing(true)
+    try {
+      setBridges(await forceRefreshAppBridges())
+    } finally {
+      setRefreshing(false)
+    }
+  }
+
+  return { bridges, refreshing, forceRefresh }
 }
 
 function Sticker({ children, tone = 'ink', tilt = 0 }: { children: ReactNode; tone?: StickerTone; tilt?: number }) {
@@ -148,7 +159,7 @@ function Layout({ onRegister }: { onRegister: () => void }) {
 
 function AgoraPage({ onRegister }: { onRegister: () => void }) {
   const records = useStoredRecords()
-  const bridges = useAppBridges()
+  const { bridges } = useAppBridges()
   const navigate = useNavigate()
 
   const focus = [
@@ -679,8 +690,17 @@ function evolutionDelta(card: BridgeCard) {
 }
 
 function EvolutionPage() {
-  const bridges = useAppBridges()
+  const { bridges, refreshing, forceRefresh } = useAppBridges()
   const connected = bridges.filter((card) => card.bridge).length
+
+  useEffect(() => {
+    const missingSummary = bridges.some((card) => !card.bridge?.summary)
+    if (missingSummary) {
+      void forceRefresh()
+    }
+    // A primeira entrada na tela dispara a sincronização forçada uma vez.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <div className="page evolution-page">
@@ -693,9 +713,21 @@ function EvolutionPage() {
       </header>
 
       <div className="evolution-status">
-        <span>{connected}/3 conectados</span>
-        <p>Os resumos ficam neste aparelho e são atualizados quando você usa cada app.</p>
+        <div>
+          <span>{connected}/3 conectados</span>
+          <p>Os resumos ficam neste aparelho e são atualizados quando você usa cada app.</p>
+        </div>
+        <button className="bridge-refresh-button" onClick={() => void forceRefresh()} disabled={refreshing}>
+          {refreshing ? 'Atualizando…' : 'Atualizar tudo ↻'}
+        </button>
       </div>
+
+      {refreshing && (
+        <div className="bridge-refresh-note">
+          <Sticker tone="blue" tilt={-1}>SINCRONIZANDO</Sticker>
+          <p>Fôlego, Traço e Repertório estão recalculando os resumos. Isso leva alguns segundos.</p>
+        </div>
+      )}
 
       <div className="evolution-apps">
         {bridges.map((card, index) => {
