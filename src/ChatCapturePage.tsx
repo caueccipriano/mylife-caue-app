@@ -2,6 +2,8 @@ import { useEffect, useMemo, useState } from 'react'
 import { NavLink, useLocation } from 'react-router-dom'
 import { enqueueChatBatch, removeChatBatch, type ChatInboxItem } from './chatInbox'
 import { nextFollowUpDate, saveRecord } from './storage'
+import { detectSensitiveContent } from './lifeModel'
+import { haptic } from './securitySettings'
 import { BrandTop, Tag, typeTone } from './v2Ui'
 
 const areaOptions = ['Carreira', 'Dinheiro', 'Estudos', 'Casa', 'Viagens', 'Compras', 'Lazer', 'Pessoal']
@@ -23,6 +25,9 @@ function parseIncoming(search: string): ChatInboxItem[] {
             area: item.area || 'Pessoal',
             track: Boolean(item.track),
             followUpDays: Number(item.followUpDays) > 0 ? Number(item.followUpDays) : undefined,
+            private: Boolean(item.private),
+            whyItMatters: item.whyItMatters?.trim() || undefined,
+            source: item.source || 'chatgpt',
           }))
       }
     } catch {
@@ -40,6 +45,9 @@ function parseIncoming(search: string): ChatInboxItem[] {
     area: params.get('area')?.trim() || 'Pessoal',
     track: params.get('acompanhar') === '1' || params.get('acompanhar') === 'true',
     followUpDays: followUpDays > 0 ? followUpDays : undefined,
+    private: params.get('privado') === '1' || params.get('privado') === 'true',
+    whyItMatters: params.get('porque')?.trim() || undefined,
+    source: params.get('origem') === 'share' ? 'share' : 'chatgpt',
   }]
 }
 
@@ -57,6 +65,19 @@ export default function ChatCapturePage() {
   }, [incoming])
 
   const kept = items.filter((item) => item.keep)
+  const summary = useMemo(() => {
+    const counts = new Map<string, number>()
+    items.filter((item) => item.keep).forEach((item) => {
+      const type = item.type || 'Memória'
+      counts.set(type, (counts.get(type) || 0) + 1)
+    })
+    const sensitiveCount = items.filter((item) => item.keep && detectSensitiveContent(item.text).length > 0).length
+    return {
+      counts: [...counts.entries()].sort((a, b) => b[1] - a[1]),
+      sensitiveCount,
+      tracked: items.filter((item) => item.keep && item.track).length,
+    }
+  }, [items])
 
   function patchItem(index: number, patch: Partial<(typeof items)[number]>) {
     setItems((current) => current.map((item, itemIndex) => itemIndex === index ? { ...item, ...patch } : item))
@@ -75,17 +96,20 @@ export default function ChatCapturePage() {
           text: item.text.trim(),
           type: item.type || 'Memória',
           area: item.area || 'Pessoal',
-          source: 'chatgpt',
+          source: item.source || 'chatgpt',
           createdAt: now.toISOString(),
           status: item.track ? 'active' : undefined,
           followUpDays: days,
           followUpAt: item.track && days ? nextFollowUpDate(days, now) : undefined,
           startedAt: item.track ? now.toISOString() : undefined,
+          private: item.private,
+          whyItMatters: item.whyItMatters?.trim() || undefined,
         })
       }
 
       if (batchId) removeChatBatch(batchId)
       window.dispatchEvent(new Event('eu-record-saved'))
+      haptic('success')
       setState('saved')
     } catch {
       setState('error')
@@ -101,6 +125,25 @@ export default function ChatCapturePage() {
         <h1>{items.length > 1 ? 'Fechamos a conversa.' : 'Isso merece ficar.'}</h1>
         <p>{items.length ? 'Revise, edite ou desmarque qualquer coisa. O pacote fica na Caixa do Chat até você decidir.' : 'Este link não trouxe nenhum item válido.'}</p>
       </header>
+
+      {items.length > 0 && (
+        <section className="conversation-summary-card">
+          <div className="conversation-summary-top">
+            <Tag tone="cobalt">O QUE SAIU DAQUI</Tag>
+            <span>{kept.length} {kept.length === 1 ? 'coisa' : 'coisas'}</span>
+          </div>
+          <div className="conversation-summary-chips">
+            {summary.counts.slice(0, 5).map(([type, count]) => <span key={type}>{count} {type}</span>)}
+            {summary.tracked > 0 && <span>{summary.tracked} em acompanhamento</span>}
+          </div>
+          {summary.sensitiveCount > 0 && (
+            <div className="conversation-security-note">
+              <Tag tone="wine">REVISAR PRIVACIDADE</Tag>
+              <p>{summary.sensitiveCount} {summary.sensitiveCount === 1 ? 'item parece conter informação pessoal/sensível.' : 'itens parecem conter informação pessoal/sensível.'} Nada entra sem sua confirmação.</p>
+            </div>
+          )}
+        </section>
+      )}
 
       {items.length > 0 && (
         <div className="chat-incoming-list editable-inbox-list">
@@ -144,6 +187,26 @@ export default function ChatCapturePage() {
                   </label>
                 )}
               </div>
+
+              {detectSensitiveContent(item.text).length > 0 && (
+                <div className="chat-sensitive-row">
+                  <Tag tone="wine">PESSOAL</Tag>
+                  <span>{detectSensitiveContent(item.text).map((hint) => hint.label).join(' · ')}</span>
+                  <label>
+                    <input type="checkbox" checked={Boolean(item.private)} onChange={(event) => patchItem(index, { private: event.target.checked })} />
+                    Privado
+                  </label>
+                </div>
+              )}
+
+              {(item.track || item.type === 'Decisão' || item.type === 'Objetivo') && (
+                <input
+                  className="chat-why-input"
+                  value={item.whyItMatters || ''}
+                  onChange={(event) => patchItem(index, { whyItMatters: event.target.value })}
+                  placeholder="Por que isso importa? (opcional)"
+                />
+              )}
             </article>
           ))}
         </div>
