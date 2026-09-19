@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { activeFollowUps, nextFollowUpDate, saveMoodCheckin, updateRecord, type MoodValue, type StoredRecord } from './storage'
 import { derivePatterns, lifePulse, periodStory, reviewCandidates } from './intelligence'
 import { deriveEcosystemInsights } from './ecosystem'
+import { buildDailyBrief } from './lifeModel'
 import { useBridges, useChatInbox, useMood, useRecords } from './appState'
 import { BrandTop, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
 import { AstroTodayPreview } from './AstrologyPage'
@@ -66,6 +67,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   const story = useMemo(() => periodStory(records, 7), [records])
   const pulse = useMemo(() => lifePulse(records), [records])
   const ecosystemInsights = useMemo(() => deriveEcosystemInsights(records, bridges), [records, bridges])
+  const dailyBrief = useMemo(() => buildDailyBrief(records, bridges), [records, bridges])
 
   async function complete(record: StoredRecord) {
     setBusyId(record.id)
@@ -74,11 +76,12 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
     setBusyId(null)
   }
 
-  async function snooze(record: StoredRecord) {
+  async function snooze(record: StoredRecord, days = record.followUpDays || 7) {
     setBusyId(record.id)
     await updateRecord(record.id, {
       status: 'active',
-      followUpAt: nextFollowUpDate(record.followUpDays || 7),
+      followUpDays: days,
+      followUpAt: nextFollowUpDate(days),
       lastPromptedAt: new Date().toISOString(),
     })
     window.dispatchEvent(new Event('eu-record-saved'))
@@ -111,6 +114,20 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
           ))}
         </div>
         <button className="mood-skip" onClick={() => undefined}>opcional, sempre</button>
+      </section>
+
+      <section className="daily-brief-card">
+        <div className="daily-brief-top">
+          <Tag tone="cobalt">DAILY BRIEF</Tag>
+          <span>20 segundos</span>
+        </div>
+        <h2>{dailyBrief.title}</h2>
+        <p>{dailyBrief.text}</p>
+        <div className="daily-brief-chips">
+          {dailyBrief.dueCount > 0 && <span>{dailyBrief.dueCount} pedindo continuidade</span>}
+          {dailyBrief.staleCount > 0 && <span>{dailyBrief.staleCount} parados</span>}
+          {dailyBrief.topArea && <span>{dailyBrief.topArea} em destaque</span>}
+        </div>
       </section>
 
       <section className="daily-idea">
@@ -159,8 +176,10 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
                 <p>Você começou isso há algum tempo. Quer manter em movimento?</p>
                 <div className="followup-actions">
                   <button onClick={() => complete(record)} disabled={busyId === record.id}>Concluí</button>
-                  <button onClick={() => snooze(record)} disabled={busyId === record.id}>Lembrar depois</button>
-                  <button onClick={() => navigate('/vida')}>Ver na Vida</button>
+                  <button onClick={() => snooze(record, 3)} disabled={busyId === record.id}>Daqui uns dias</button>
+                  <button onClick={() => snooze(record, 7)} disabled={busyId === record.id}>1 semana</button>
+                  <button onClick={() => snooze(record, 30)} disabled={busyId === record.id}>Mês que vem</button>
+                  <button onClick={() => navigate('/registro/' + record.id)}>Abrir</button>
                 </div>
               </article>
             ))}
