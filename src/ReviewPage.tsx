@@ -8,9 +8,9 @@ import { BrandTop, Tag, typeTone } from './v2Ui'
 export default function ReviewPage() {
   const records = useRecords()
   const candidates = useMemo(() => reviewCandidates(records), [records])
-  const [index, setIndex] = useState(0)
   const [done, setDone] = useState(0)
-  const record = candidates[index]
+  const record = candidates[0]
+  const total = done + candidates.length
 
   async function act(action: 'keep' | 'completed' | 'paused' | 'abandoned') {
     if (!record) return
@@ -34,7 +34,6 @@ export default function ReviewPage() {
 
     window.dispatchEvent(new Event('eu-record-saved'))
     setDone((value) => value + 1)
-    setIndex((value) => value + 1)
   }
 
   return (
@@ -47,8 +46,8 @@ export default function ReviewPage() {
       </header>
 
       <div className="review-progress">
-        <span>{Math.min(index, candidates.length)} / {candidates.length}</span>
-        <div><i style={{ width: candidates.length ? Math.min(100, (index / candidates.length) * 100) + '%' : '100%' }} /></div>
+        <span>{done} / {total}</span>
+        <div><i style={{ width: total ? Math.min(100, (done / total) * 100) + '%' : '100%' }} /></div>
       </div>
 
       {record ? (
