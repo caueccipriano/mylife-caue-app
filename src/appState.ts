@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { forceRefreshAppBridges, readAppBridges, type BridgeCard } from './integrations'
 import { listChatInbox, type ChatInboxBatch } from './chatInbox'
 import { listRecords, moodForToday, type MoodCheckin, type StoredRecord } from './storage'
+import { getPersonalProfile, type PersonalProfile } from './profile'
 
 export function useRecords() {
   const [records, setRecords] = useState<StoredRecord[]>([])
@@ -90,4 +91,17 @@ export function useChatInbox() {
   }, [])
 
   return batches
+}
+
+
+export function usePersonalProfile() {
+  const [profile, setProfile] = useState<PersonalProfile>(() => getPersonalProfile())
+
+  useEffect(() => {
+    const refresh = () => setProfile(getPersonalProfile())
+    window.addEventListener('eu-profile-updated', refresh)
+    return () => window.removeEventListener('eu-profile-updated', refresh)
+  }, [])
+
+  return profile
 }
