@@ -12,7 +12,7 @@ export default function MemoriesPage() {
   const [mode, setMode] = useState<'search' | 'timeline'>('search')
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState(params.get('origem') === 'chatgpt' ? 'chatgpt' : 'all')
-  const [tagFilter, setTagFilter] = useState('')
+  const [tagFilter, setTagFilter] = useState(params.get('tag') || '')
   const [message, setMessage] = useState('')
   const moods = listMoodCheckins().slice(-14).reverse()
 
