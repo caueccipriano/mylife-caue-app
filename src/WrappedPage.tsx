@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { yearlyStory } from './lifeModel'
+import { downloadEditorialHtml } from './v3Life'
 import { useRecords } from './appState'
 import { BrandTop, Tag } from './v2Ui'
 
@@ -13,7 +14,15 @@ export default function WrappedPage() {
       <NavLink className="back-v2" to="/vida">← Vida</NavLink>
 
       <header className="wrapped-hero">
-        <Tag tone="cobalt">EU WRAPPED · {story.year}</Tag>
+        <div className="wrapped-hero-top">
+          <Tag tone="cobalt">EU WRAPPED · {story.year}</Tag>
+          <button onClick={() => downloadEditorialHtml(
+            'EU Wrapped ' + story.year,
+            'O ano que você foi virando: decisões, desejos, ciclos e momentos que ficaram.',
+            records.filter((record) => !record.private && new Date(record.createdAt).getFullYear() === story.year),
+            'eu-wrapped-' + story.year + '.html',
+          )}>exportar edição ↗</button>
+        </div>
         <h1>O ano que<br />você foi virando.</h1>
         <p>Não é produtividade. É uma retrospectiva do que ocupou espaço, virou decisão, desejo, marco e memória.</p>
       </header>
