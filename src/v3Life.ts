@@ -54,7 +54,11 @@ export function semanticSearchLocal(records: StoredRecord[], query: string) {
   if (!queryTokens.length) return records
 
   return records
-    .filter((record) => !record.private && !record.trashedAt)
+    .filter((record) => {
+      if (record.private || record.trashedAt) return false
+      if (record.revealAt && !record.capsuleOpenedAt && new Date(record.revealAt).getTime() > Date.now()) return false
+      return true
+    })
     .map((record) => {
       const tags = record.tags?.length ? record.tags : suggestTags(record.text, record.area, record.type)
       const haystack = expandTokens([
