@@ -4978,3 +4978,67 @@ html[data-eu-discreet="1"] .ecosystem-insight p {
 .phase-now[class*="phase-tone-"] h2 {
   color: var(--snapshot-tone);
 }
+
+
+.decision-pattern-card {
+  margin-top: 18px;
+  padding: 14px;
+  border: 1px solid rgba(125,46,70,.12);
+  border-radius: 15px;
+  background: rgba(255,255,255,.5);
+}
+
+.decision-pattern-card > small {
+  display: block;
+  color: var(--wine);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+
+.decision-pattern-card > strong {
+  display: block;
+  margin-top: 8px;
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.decision-pattern-card > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.decision-pattern-card > div span {
+  padding: 6px 8px;
+  border-radius: 999px;
+  background: var(--wine-soft);
+  color: var(--wine);
+  font-size: 8px;
+}
+
+.object-state-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 14px;
+}
+
+.object-state-row button {
+  min-height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: rgba(255,255,255,.5);
+  cursor: pointer;
+  font-size: 8px;
+}
+
+.object-state-row button.active {
+  border-color: var(--pink);
+  background: var(--pink);
+  color: #fff;
+}
