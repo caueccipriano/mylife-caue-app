@@ -4,7 +4,8 @@ import { activeFollowUps, nextFollowUpDate, saveMoodCheckin, updateRecord, type 
 import { derivePatterns, lifePulse, periodStory, reviewCandidates } from './intelligence'
 import { deriveEcosystemInsights } from './ecosystem'
 import { useBridges, useChatInbox, useMood, useRecords } from './appState'
-import { BrandTop, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'\nimport { AstroTodayPreview } from './AstrologyPage'
+import { BrandTop, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
+import { AstroTodayPreview } from './AstrologyPage'
 
 function greeting() {
   const hour = new Date().getHours()
