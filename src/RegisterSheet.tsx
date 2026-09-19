@@ -259,6 +259,9 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
 
     try {
       const url = new URL(raw.includes('://') ? raw : 'https://' + raw)
+      if (!['http:', 'https:'].includes(url.protocol)) {
+        throw new Error('unsupported protocol')
+      }
       setAttachments((current) => [
         ...current,
         {
