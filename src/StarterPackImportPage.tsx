@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { getRecord, saveRecord } from './storage'
+import { getRecord, listRecords, saveRecord } from './storage'
 import { decodeStarterPack, recordFromStarterItem } from './starterPack'
 import { BrandTop, Tag } from './v2Ui'
 
@@ -21,13 +21,19 @@ export default function StarterPackImportPage() {
         if (!encoded) throw new Error('Pacote ausente.')
 
         const pack = await decodeStarterPack(encoded)
+        const existingRecords = await listRecords()
+        const normalizedExisting = new Set(existingRecords.map((record) =>
+          [record.text.trim().toLowerCase(), record.type.trim().toLowerCase(), record.area.trim().toLowerCase()].join('::'),
+        ))
         let imported = 0
 
         for (const item of pack.items) {
           const record = recordFromStarterItem(pack, item)
-          const existing = await getRecord(record.id)
-          if (existing) continue
+          const existingById = await getRecord(record.id)
+          const semanticKey = [record.text.trim().toLowerCase(), record.type.trim().toLowerCase(), record.area.trim().toLowerCase()].join('::')
+          if (existingById || normalizedExisting.has(semanticKey)) continue
           await saveRecord(record)
+          normalizedExisting.add(semanticKey)
           imported += 1
         }
 
