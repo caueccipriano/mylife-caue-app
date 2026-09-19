@@ -49,10 +49,10 @@ const APP_CONFIG: Record<BridgeAppId, Omit<BridgeCard, 'bridge'>> = {
   },
 }
 
-const BRIDGE_KEYS: Record<BridgeAppId, string> = {
-  folego: 'eu_bridge_folego_v1',
-  traco: 'eu_bridge_traco_v1',
-  repertorio: 'eu_bridge_repertorio_v1',
+const BRIDGE_KEYS: Record<BridgeAppId, string[]> = {
+  folego: ['eu_bridge_folego_v1'],
+  traco: ['eu_bridge_traco_v2', 'eu_bridge_traco_v1'],
+  repertorio: ['eu_bridge_repertorio_v1'],
 }
 
 const HISTORY_KEY = 'eu_bridge_history_v1'
@@ -93,8 +93,19 @@ function generatedSummary(bridge: AppBridge) {
   if (bridge.app === 'traco') {
     const week = typeof metrics.workoutsThisWeek === 'number' ? metrics.workoutsThisWeek : 0
     const goal = typeof metrics.weeklyGoal === 'number' ? metrics.weeklyGoal : null
-    const total = typeof metrics.totalWorkouts === 'number' ? metrics.totalWorkouts : 0
-    return (goal ? week + '/' + goal + ' treinos na semana' : week + ' treinos na semana') + ' · ' + total + ' no histórico'
+    const total = typeof metrics.totalWorkouts === 'number' ? metrics.totalWorkouts : null
+    const phase = typeof metrics.shapePhase === 'string' ? 'fase ' + metrics.shapePhase : null
+    const next = typeof metrics.nextWorkout === 'string'
+      ? 'próximo ' + metrics.nextWorkout
+      : typeof metrics.todayRecommendation === 'string'
+        ? metrics.todayRecommendation
+        : null
+    return [
+      phase,
+      goal ? week + '/' + goal + ' treinos na semana' : week + ' treinos na semana',
+      total !== null ? total + ' no histórico' : null,
+      next,
+    ].filter(Boolean).join(' · ')
   }
 
   const completed = typeof metrics.completed === 'number' ? metrics.completed : 0
@@ -113,17 +124,17 @@ function normalizeBridge(bridge: AppBridge | null) {
 }
 
 function findBridge(id: BridgeAppId) {
-  const suffix = BRIDGE_KEYS[id]
+  for (const suffix of BRIDGE_KEYS[id]) {
+    const direct = normalizeBridge(parseBridgeValue(localStorage.getItem(suffix)))
+    if (direct) return direct
 
-  const direct = normalizeBridge(parseBridgeValue(localStorage.getItem(suffix)))
-  if (direct) return direct
+    for (let index = 0; index < localStorage.length; index += 1) {
+      const key = localStorage.key(index)
+      if (!key || !key.endsWith(suffix)) continue
 
-  for (let index = 0; index < localStorage.length; index += 1) {
-    const key = localStorage.key(index)
-    if (!key || !key.endsWith(suffix)) continue
-
-    const bridge = normalizeBridge(parseBridgeValue(localStorage.getItem(key)))
-    if (bridge) return bridge
+      const bridge = normalizeBridge(parseBridgeValue(localStorage.getItem(key)))
+      if (bridge) return bridge
+    }
   }
 
   return null
