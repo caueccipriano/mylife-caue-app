@@ -55,8 +55,8 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   const [busyId, setBusyId] = useState<string | null>(null)
 
   const followups = useMemo(() => activeFollowUps(records), [records])
-  const due = followups.filter((item) => item.due).map((item) => item.record)
-  const active = followups.map((item) => item.record)
+  const due = followups.filter((item) => item.due && !item.record.private).map((item) => item.record)
+  const active = followups.filter((item) => !item.record.private).map((item) => item.record)
   const todayRecords = records.filter((record) => sameLocalDay(record.createdAt)).slice(0, 8)
   const chatToday = todayRecords.filter((record) => record.source === 'chatgpt')
   const review = useMemo(() => reviewCandidates(records), [records])
@@ -212,13 +212,22 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
         <div className="today-feed">
           {todayRecords.length ? todayRecords.map((record) => (
             <article className="feed-card" key={record.id}>
-              <div className="feed-meta">
-                <Tag tone={typeTone(record.type)}>{record.type}</Tag>
-                <span>{record.area}</span>
-                {record.source === 'chatgpt' && <Tag tone="ink">do chat</Tag>}
-              </div>
-              <p>{record.private ? 'Registro privado' : record.text || 'Registro com anexo'}</p>
-              {record.status === 'active' && <small>↻ em acompanhamento</small>}
+              {record.private ? (
+                <>
+                  <div className="feed-meta"><Tag tone="pink">privado</Tag></div>
+                  <p>Registro privado</p>
+                </>
+              ) : (
+                <>
+                  <div className="feed-meta">
+                    <Tag tone={typeTone(record.type)}>{record.type}</Tag>
+                    <span>{record.area}</span>
+                    {record.source === 'chatgpt' && <Tag tone="ink">do chat</Tag>}
+                  </div>
+                  <p>{record.text || 'Registro com anexo'}</p>
+                  {record.status === 'active' && <small>↻ em acompanhamento</small>}
+                </>
+              )}
             </article>
           )) : (
             <div className="soft-empty">
