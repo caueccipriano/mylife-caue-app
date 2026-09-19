@@ -5,6 +5,16 @@ import { deriveEntities, detectPreferenceShifts, entitySlug } from './meaning'
 import { useRecords } from './appState'
 import { BrandTop, SectionTitle, Tag, typeTone } from './v2Ui'
 
+function safeExternalUrl(value?: string) {
+  if (!value) return null
+  try {
+    const url = new URL(value)
+    return ['http:', 'https:'].includes(url.protocol) ? url.toString() : null
+  } catch {
+    return null
+  }
+}
+
 function recommendation(records: ReturnType<typeof useRecords>) {
   const counts = new Map<string, number>()
   records.slice(0, 30).forEach((record) => counts.set(record.area, (counts.get(record.area) || 0) + 1))
@@ -24,8 +34,8 @@ export default function DiscoveriesPage() {
   const insights = visibleRecords.filter((record) => ['Insight', 'Ideia', 'Preferência'].includes(record.type)).slice(0, 8)
   const savedLinks = visibleRecords.flatMap((record) =>
     (record.attachments || [])
-      .filter((attachment) => attachment.kind === 'link' && attachment.url)
-      .map((attachment) => ({ record, attachment })),
+      .filter((attachment) => attachment.kind === 'link' && safeExternalUrl(attachment.url))
+      .map((attachment) => ({ record, attachment, href: safeExternalUrl(attachment.url) as string })),
   ).slice(0, 8)
   const suggestions = useMemo(() => recommendation(visibleRecords), [records])
   const preferenceShifts = useMemo(() => detectPreferenceShifts(visibleRecords), [records])
@@ -87,8 +97,8 @@ export default function DiscoveriesPage() {
       <section className="discovery-block">
         <SectionTitle eyebrow="SALVEI" title="Links que você quis guardar" />
         <div className="saved-link-list">
-          {savedLinks.length ? savedLinks.map(({ record, attachment }) => (
-            <a key={attachment.id} href={attachment.url} target="_blank" rel="noreferrer">
+          {savedLinks.length ? savedLinks.map(({ record, attachment, href }) => (
+            <a key={attachment.id} href={href} target="_blank" rel="noopener noreferrer">
               <div>
                 <Tag tone="amber">LINK</Tag>
                 <strong>{attachment.name}</strong>
