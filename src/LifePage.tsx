@@ -1,0 +1,198 @@
+import { NavLink } from 'react-router-dom'
+import { areas, projects } from './data'
+import { useBridges, useRecords } from './appState'
+import { BrandTop, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
+
+function topRecords(records: ReturnType<typeof useRecords>, predicate: (type: string) => boolean, limit = 3) {
+  return records.filter((record) => predicate(record.type.toLowerCase())).slice(0, limit)
+}
+
+export default function LifePage() {
+  const records = useRecords()
+  const { bridges, refreshing, forceRefresh } = useBridges()
+
+  const active = records.filter((record) => record.status === 'active')
+  const wishes = topRecords(records, (type) => type.includes('desejo') || type.includes('pesquisa') || type.includes('prefer'))
+  const goals = topRecords(records, (type) => type.includes('objetivo') || type.includes('curso') || type.includes('pend'))
+  const recentByArea = (area: string) => records.filter((record) => record.area === area).slice(0, 2)
+
+  return (
+    <div className="v2-page life-page">
+      <BrandTop />
+
+      <header className="v2-hero">
+        <Tag tone="green">VIDA</Tag>
+        <h1>O que está<br />tomando forma.</h1>
+        <p>Áreas, planos, desejos e coisas que você começou. O EU organiza sem transformar tudo em tarefa.</p>
+      </header>
+
+      <section className="life-block">
+        <SectionTitle eyebrow="ÁREAS" title="O que continua com você" />
+        <div className="area-scroll">
+          {areas.map((area, index) => (
+            <article className={'life-area area-' + (index % 4)} key={area.id}>
+              <span>{['↗','●','≡','⌂','✦','□','◌','· · ·'][index]}</span>
+              <strong>{area.name}</strong>
+              <p>{recentByArea(area.name)[0]?.text || area.now}</p>
+              <small>{recentByArea(area.name).length ? recentByArea(area.name).length + ' sinais recentes' : area.status}</small>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="life-block">
+        <SectionTitle eyebrow="EM MOVIMENTO" title="Projetos, metas e começos" />
+        <div className="life-list-cards">
+          {active.slice(0, 4).map((record) => (
+            <article key={record.id} className="life-list-card">
+              <div>
+                <Tag tone={typeTone(record.type)}>{record.type}</Tag>
+                <span>{record.area}</span>
+              </div>
+              <h3>{record.text}</h3>
+              <p>Em acompanhamento desde {formatShortDate(record.startedAt || record.createdAt)}.</p>
+            </article>
+          ))}
+
+          {!active.length && projects.slice(0, 3).map((project) => (
+            <article key={project.id} className="life-list-card">
+              <div><Tag tone="coral">Projeto</Tag><span>{project.area}</span></div>
+              <h3>{project.name}</h3>
+              <p>{project.summary}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="life-block split-life-block">
+        <div>
+          <SectionTitle eyebrow="DESEJOS" title="Coisas que chamaram sua atenção" />
+          <div className="compact-stack">
+            {wishes.length ? wishes.map((record) => (
+              <article key={record.id}>
+                <Tag tone="pink">{record.type}</Tag>
+                <p>{record.text}</p>
+              </article>
+            )) : <p className="muted-copy">Quando você disser “gostei” ou “andei pesquisando pra comprar”, aparece aqui.</p>}
+          </div>
+        </div>
+
+        <div>
+          <SectionTitle eyebrow="PRÓXIMOS PASSOS" title="Coisas que pedem continuidade" />
+          <div className="compact-stack">
+            {goals.length ? goals.map((record) => (
+              <article key={record.id}>
+                <Tag tone="coral">{record.type}</Tag>
+                <p>{record.text}</p>
+              </article>
+            )) : <p className="muted-copy">Cursos, objetivos e pendências vivas aparecem aqui sem virar uma lista burocrática.</p>}
+          </div>
+        </div>
+      </section>
+
+      <section className="life-block plans-block">
+        <SectionTitle eyebrow="PLANOS" title="Pra onde isso tudo está indo" />
+        <div className="plan-grid">
+          <NavLink to="/vida/carreira" className="plan-card career-plan-card">
+            <Tag tone="green">PLANO DE CARREIRA</Tag>
+            <h3>Finanças + Dados, sem jogar sua história fora.</h3>
+            <p>Direção, próximos 90 dias, 12 meses, competências, lacunas e sinais vindos das suas próprias conversas e registros.</p>
+            <span>abrir plano ↗</span>
+          </NavLink>
+
+          <article className="plan-card life-plan-card">
+            <Tag tone="pink">PLANO DE VIDA</Tag>
+            <h3>Construir uma vida que faça sentido no conjunto.</h3>
+            <p>Trabalho, dinheiro, estudos, relações, experiências, compras e escolhas vistos juntos — sem precisar preencher planilhas sobre você.</p>
+            <span>vai ficando mais inteligente com o uso</span>
+          </article>
+        </div>
+      </section>
+
+      <section className="life-block" id="sinais">
+        <SectionTitle
+          eyebrow="SINAIS"
+          title="O que seus apps estão contando"
+          action={<button className="quiet-link" disabled={refreshing} onClick={() => void forceRefresh()}>{refreshing ? 'atualizando…' : 'atualizar ↻'}</button>}
+        />
+        <div className="signals-life-grid">
+          {bridges.map((card) => (
+            <article key={card.id}>
+              <div className="signal-title-row">
+                <strong>{card.title}</strong>
+                <span className={card.bridge ? 'signal-dot on' : 'signal-dot'} />
+              </div>
+              <p>{card.bridge?.summary || 'Abra o app uma vez para o EU receber o resumo.'}</p>
+              <small>{card.bridge?.status || 'aguardando'}</small>
+            </article>
+          ))}
+        </div>
+      </section>
+    </div>
+  )
+}
+
+export function CareerPlanPage() {
+  const records = useRecords()
+  const career = records.filter((record) => record.area === 'Carreira')
+  const gaps = career.filter((record) => /preciso|estudar|curso|sql|power bi|python|dados/i.test(record.text)).slice(0, 5)
+  const interests = career.filter((record) => /vaga|empresa|gostei|interess/i.test(record.text)).slice(0, 5)
+  const decisions = career.filter((record) => record.type === 'Decisão').slice(0, 5)
+
+  return (
+    <div className="v2-page career-v2">
+      <BrandTop />
+      <NavLink className="back-v2" to="/vida">← Vida</NavLink>
+
+      <header className="career-hero-v2">
+        <Tag tone="green">PLANO DE CARREIRA</Tag>
+        <h1>Finance Analytics<br />como destino.</h1>
+        <p>Custos e controladoria continuam sendo sua vantagem. Dados entram como multiplicador, não como recomeço.</p>
+      </header>
+
+      <div className="career-road">
+        <article><span>AGORA</span><strong>Custos + Controladoria</strong><p>SAP, Power BI, margem, inventário e visão industrial.</p></article>
+        <b>→</b>
+        <article><span>PRÓXIMO</span><strong>Pleno + Analytics</strong><p>SQL, portfólio forte, automação e posicionamento.</p></article>
+        <b>→</b>
+        <article><span>DESTINO</span><strong>Finance Analytics</strong><p>Senior, Specialist ou Lead com escopo mais amplo.</p></article>
+      </div>
+
+      <section className="career-v2-grid">
+        <article className="career-v2-card big">
+          <Tag tone="ink">NORTE</Tag>
+          <h2>Virar um profissional raro na interseção entre finanças, indústria e dados.</h2>
+          <p>O EU vai recalibrar esse plano conforme você registrar vagas, cursos, decisões, lacunas e resultados reais.</p>
+        </article>
+        <article className="career-v2-card">
+          <Tag tone="amber">90 DIAS</Tag>
+          <h3>Transformar experiência em evidência.</h3>
+          <p>Portfólio, cases reais, SQL, Power BI e uma narrativa profissional que mostre impacto.</p>
+        </article>
+        <article className="career-v2-card">
+          <Tag tone="coral">12 MESES</Tag>
+          <h3>Subir sem apagar sua senioridade.</h3>
+          <p>Mirar funções híbridas: Cost Analytics, Finance Analytics, Controlling Pleno e Performance.</p>
+        </article>
+      </section>
+
+      <section className="career-live">
+        <SectionTitle eyebrow="RADAR" title="O plano aprende com você" />
+        <div className="career-live-grid">
+          <article>
+            <Tag tone="coral">LACUNAS</Tag>
+            {gaps.length ? gaps.map((item) => <p key={item.id}>{item.text}</p>) : <p>Registre cursos, tecnologias e coisas que você percebe que precisa aprender.</p>}
+          </article>
+          <article>
+            <Tag tone="pink">INTERESSES</Tag>
+            {interests.length ? interests.map((item) => <p key={item.id}>{item.text}</p>) : <p>Vagas, empresas e caminhos que chamarem sua atenção entram aqui.</p>}
+          </article>
+          <article>
+            <Tag tone="green">DECISÕES</Tag>
+            {decisions.length ? decisions.map((item) => <p key={item.id}>{item.text}</p>) : <p>As decisões profissionais ficam registradas para o plano não perder contexto.</p>}
+          </article>
+        </div>
+      </section>
+    </div>
+  )
+}
