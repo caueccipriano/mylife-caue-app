@@ -4,7 +4,7 @@ import { activeFollowUps, nextFollowUpDate, saveMoodCheckin, updateRecord, type 
 import { derivePatterns, lifePulse, periodStory, reviewCandidates } from './intelligence'
 import { deriveEcosystemInsights } from './ecosystem'
 import { useBridges, useChatInbox, useMood, useRecords } from './appState'
-import { BrandTop, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
+import { BrandTop, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'\nimport { AstroTodayPreview } from './AstrologyPage'
 
 function greeting() {
   const hour = new Date().getHours()
@@ -119,6 +119,8 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
           <p>{advice(mood?.mood, due, active.length)}</p>
         </div>
       </section>
+
+      <AstroTodayPreview />
 
       {inbox.length > 0 && (
         <section className="adaptive-callout chat-inbox-callout" onClick={() => navigate('/inbox')}>
