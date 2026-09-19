@@ -19,16 +19,17 @@ function recommendation(records: ReturnType<typeof useRecords>) {
 export default function DiscoveriesPage() {
   const records = useRecords()
 
-  const insights = records.filter((record) => ['Insight', 'Ideia', 'Preferência'].includes(record.type)).slice(0, 8)
-  const savedLinks = records.flatMap((record) =>
+  const visibleRecords = records.filter((record) => !record.private)
+  const insights = visibleRecords.filter((record) => ['Insight', 'Ideia', 'Preferência'].includes(record.type)).slice(0, 8)
+  const savedLinks = visibleRecords.flatMap((record) =>
     (record.attachments || [])
       .filter((attachment) => attachment.kind === 'link' && attachment.url)
       .map((attachment) => ({ record, attachment })),
   ).slice(0, 8)
-  const suggestions = useMemo(() => recommendation(records), [records])
+  const suggestions = useMemo(() => recommendation(visibleRecords), [records])
   const collections = useMemo(() => {
     const grouped = new Map<string, typeof records>()
-    records.forEach((record) => {
+    visibleRecords.forEach((record) => {
       const tags = record.tags?.length ? record.tags : suggestTags(record.text, record.area, record.type)
       tags.forEach((tag) => {
         const current = grouped.get(tag) ?? []
