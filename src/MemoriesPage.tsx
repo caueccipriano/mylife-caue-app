@@ -71,18 +71,27 @@ export default function MemoriesPage() {
       <article className="tappable-card" onClick={() => navigate('/registro/' + record.id)}>
         <div className="memory-icon">{record.favorite ? '♥' : record.source === 'chatgpt' ? '↗' : '•'}</div>
         <div>
-          <div className="feed-meta">
-            <Tag tone={typeTone(record.type)}>{record.type}</Tag>
-            <span>{record.area}</span>
-            {record.source === 'chatgpt' && <Tag tone="ink">do chat</Tag>}
-            {record.private && <Tag tone="pink">privado</Tag>}
-          </div>
-          <h3>{record.private ? 'Registro privado' : record.text || 'Registro com anexo'}</h3>
-          <p>{formatShortDate(record.createdAt)}{record.status === 'active' ? ' · em acompanhamento' : ''}</p>
-          {tags.length > 0 && (
-            <div className="memory-inline-tags">
-              {tags.slice(0, 4).map((tag) => <span key={tag}>#{tag}</span>)}
-            </div>
+          {record.private ? (
+            <>
+              <div className="feed-meta"><Tag tone="pink">privado</Tag></div>
+              <h3>Registro privado</h3>
+              <p>{formatShortDate(record.createdAt)}</p>
+            </>
+          ) : (
+            <>
+              <div className="feed-meta">
+                <Tag tone={typeTone(record.type)}>{record.type}</Tag>
+                <span>{record.area}</span>
+                {record.source === 'chatgpt' && <Tag tone="ink">do chat</Tag>}
+              </div>
+              <h3>{record.text || 'Registro com anexo'}</h3>
+              <p>{formatShortDate(record.createdAt)}{record.status === 'active' ? ' · em acompanhamento' : ''}</p>
+              {tags.length > 0 && (
+                <div className="memory-inline-tags">
+                  {tags.slice(0, 4).map((tag) => <span key={tag}>#{tag}</span>)}
+                </div>
+              )}
+            </>
           )}
         </div>
       </article>
