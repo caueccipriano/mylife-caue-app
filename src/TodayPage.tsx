@@ -150,7 +150,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
                 <span>{record.area}</span>
                 {record.source === 'chatgpt' && <Tag tone="ink">do chat</Tag>}
               </div>
-              <p>{record.text || 'Registro com anexo'}</p>
+              <p>{record.private ? 'Registro privado' : record.text || 'Registro com anexo'}</p>
               {record.status === 'active' && <small>↻ em acompanhamento</small>}
             </article>
           )) : (
