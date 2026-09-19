@@ -564,7 +564,9 @@ function base64ToBytes(value: string) {
   return Uint8Array.from(binary, (char) => char.charCodeAt(0))
 }
 
-async function deriveBackupKey(password: string, salt: Uint8Array) {
+const BACKUP_PBKDF2_ITERATIONS = 310000
+
+async function deriveBackupKey(password: string, salt: Uint8Array, iterations = BACKUP_PBKDF2_ITERATIONS) {
   const material = await crypto.subtle.importKey(
     'raw',
     new TextEncoder().encode(password),
@@ -578,7 +580,7 @@ async function deriveBackupKey(password: string, salt: Uint8Array) {
       name: 'PBKDF2',
       hash: 'SHA-256',
       salt: Uint8Array.from(salt).buffer,
-      iterations: 180000,
+      iterations,
     },
     material,
     { name: 'AES-GCM', length: 256 },
@@ -607,7 +609,7 @@ export async function exportEncryptedBackup(password: string) {
     kdf: {
       name: 'PBKDF2',
       hash: 'SHA-256',
-      iterations: 180000,
+      iterations: BACKUP_PBKDF2_ITERATIONS,
       salt: bytesToBase64(salt),
     },
     cipher: {
@@ -681,7 +683,19 @@ export async function importEncryptedBackup(file: File, password: string) {
   const salt = base64ToBytes(envelope.kdf.salt)
   const iv = base64ToBytes(envelope.cipher.iv)
   const data = base64ToBytes(envelope.cipher.data)
-  const key = await deriveBackupKey(password, salt)
+  const iterations = Number(envelope.kdf?.iterations)
+  if (
+    envelope.kdf?.name !== 'PBKDF2'
+    || envelope.kdf?.hash !== 'SHA-256'
+    || !Number.isInteger(iterations)
+    || iterations < 100000
+    || iterations > 1000000
+    || envelope.cipher?.name !== 'AES-GCM'
+  ) {
+    throw new Error('Parâmetros de criptografia inválidos.')
+  }
+
+  const key = await deriveBackupKey(password, salt, iterations)
 
   try {
     const decrypted = await crypto.subtle.decrypt(
