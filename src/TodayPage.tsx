@@ -258,6 +258,11 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
                   <div className="feed-meta"><Tag tone="pink">privado</Tag></div>
                   <p>Registro privado</p>
                 </>
+              ) : record.revealAt && !record.capsuleOpenedAt && new Date(record.revealAt).getTime() > Date.now() ? (
+                <>
+                  <div className="feed-meta"><Tag tone="lilac">cápsula fechada</Tag></div>
+                  <p>Uma mensagem para o futuro.</p>
+                </>
               ) : (
                 <>
                   <div className="feed-meta">
