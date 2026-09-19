@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Navigate, NavLink, Route, Routes, useLocation } from 'react-router-dom'
 import RegisterSheet from './RegisterSheet'
 import TodayPage from './TodayPage'
@@ -13,6 +13,11 @@ import AskEuPage from './AskEuPage'
 import EntityPage from './EntityPage'
 import SnapshotsPage from './SnapshotsPage'
 import AstrologyPage from './AstrologyPage'
+import SecurityCenterPage from './SecurityCenterPage'
+import TrashPage from './TrashPage'
+import { initPrivacyAutoLock } from './privacy'
+import { applyDiscreetMode } from './securitySettings'
+import { emptyExpiredTrash } from './storage'
 
 const nav = [
   { path: '/', label: 'Hoje', icon: '☀' },
@@ -42,6 +47,8 @@ function AppShell({ onRegister }: { onRegister: () => void }) {
           <Route path="/assunto/:slug" element={<EntityPage />} />
           <Route path="/vida/fases" element={<SnapshotsPage />} />
           <Route path="/vida/astrologia" element={<AstrologyPage />} />
+          <Route path="/seguranca" element={<SecurityCenterPage />} />
+          <Route path="/lixeira" element={<TrashPage />} />
 
           <Route path="/areas" element={<Navigate to="/vida" replace />} />
           <Route path="/projetos" element={<Navigate to="/vida" replace />} />
@@ -74,6 +81,13 @@ function AppShell({ onRegister }: { onRegister: () => void }) {
 
 export default function App() {
   const [registerOpen, setRegisterOpen] = useState(false)
+
+  useEffect(() => {
+    applyDiscreetMode()
+    const disposePrivacy = initPrivacyAutoLock()
+    void emptyExpiredTrash(30)
+    return disposePrivacy
+  }, [])
 
   return (
     <>
