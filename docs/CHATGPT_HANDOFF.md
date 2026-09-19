@@ -2,30 +2,96 @@
 
 ## Regra de uso
 
-Depois de uma conversa que gere algo útil para a memória pessoal — decisão, preferência, marco, ideia, projeto, referência ou contexto — o ChatGPT pergunta:
+Depois de uma conversa que gere algo útil para a vida pessoal — decisão, preferência, desejo, curso, marco, insight, projeto, pesquisa, pendência ou contexto — o ChatGPT pergunta:
 
 > **Lançar no EU?**
 
-O conteúdo só entra no EU depois da confirmação do usuário.
+Nada entra automaticamente sem confirmação do usuário.
+
+## Formas de envio
+
+### 1. Registro único
+
+Usar quando uma conversa gerou uma coisa principal.
+
+Rota:
+
+`#/capturar?texto=...&tipo=...&area=...`
+
+Campos opcionais:
+
+- `acompanhar=1` para itens vivos;
+- `dias=7` para definir em quantos dias o EU deve voltar ao assunto.
+
+Exemplo conceitual:
+
+- texto: `Comecei um curso de SQL`
+- tipo: `Curso`
+- área: `Estudos`
+- acompanhar: `1`
+- dias: `7`
+
+### 2. Fechar conversa
+
+Quando uma conversa produz vários itens relevantes, usar o parâmetro `itens` com um array JSON codificado na URL.
+
+Cada item aceita:
+
+- `text`
+- `type`
+- `area`
+- `track`
+- `followUpDays`
+
+O EU mostra todos os itens em uma tela de revisão e só salva o pacote depois de confirmação.
+
+## Caixa de entrada do Chat
+
+Os registros vindos daqui usam `source: chatgpt`.
+
+Eles aparecem:
+
+- no feed de Hoje;
+- em Vida, quando alimentam uma área/plano;
+- em Descobertas, quando são insight/ideia/preferência;
+- em Memórias, com filtro **Do Chat**.
+
+## Acompanhamentos vivos
+
+Nem todo registro precisa de acompanhamento.
+
+Devem ser acompanhados principalmente:
+
+- cursos iniciados;
+- pesquisas de compra;
+- objetivos;
+- projetos;
+- pendências;
+- começos que ainda pedem continuidade.
+
+Um acompanhamento pode terminar como:
+
+- concluído;
+- pausado;
+- abandonado;
+- adiado para uma nova data.
 
 ## Como funciona sem backend
 
-O EU é local-first e não possui servidor de dados. Portanto o ChatGPT não grava diretamente no IndexedDB do iPhone.
+O EU é local-first e não possui servidor de dados pessoais.
 
-Após a confirmação, o registro é estruturado com:
+O ChatGPT não escreve silenciosamente no IndexedDB do iPhone. Em vez disso:
 
-- texto;
-- tipo;
-- área;
-- fonte `chatgpt`;
-- data do lançamento no aparelho.
+1. estrutura o que vale guardar;
+2. gera a captura;
+3. o usuário abre a prévia no EU;
+4. o usuário confirma;
+5. o EU salva localmente.
 
-O app possui a rota local `#/capturar`, que recebe o conteúdo no fragmento da URL, mostra uma prévia e salva no IndexedDB somente após a ação do usuário.
-
-Como o payload fica depois do caractere `#`, ele não faz parte da requisição HTTP enviada ao host.
+O payload fica depois do `#` na URL do HashRouter, então o conteúdo não faz parte da requisição HTTP normal enviada ao host.
 
 ## Princípio
 
-**Conversar primeiro. Arquivar depois.**
+**Conversar primeiro. Interpretar. Confirmar. Arquivar. Acompanhar quando fizer sentido.**
 
-O EU não deve transformar automaticamente toda fala em uma obrigação ou fato permanente. A confirmação evita ruído e preserva controle sobre a memória.
+O EU deve reduzir esforço, não transformar a vida em burocracia.
