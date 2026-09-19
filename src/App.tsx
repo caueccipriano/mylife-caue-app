@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Navigate, NavLink, Route, Routes } from 'react-router-dom'
+import { Navigate, NavLink, Route, Routes, useLocation } from 'react-router-dom'
 import RegisterSheet from './RegisterSheet'
 import TodayPage from './TodayPage'
 import LifePage, { CareerPlanPage } from './LifePage'
@@ -18,6 +18,9 @@ const nav = [
 ] as const
 
 function AppShell({ onRegister }: { onRegister: () => void }) {
+  const location = useLocation()
+  const showRegister = ['/', '/vida', '/descobertas', '/memorias'].includes(location.pathname)
+
   return (
     <div className="eu-v2-shell">
       <main className="eu-v2-main">
@@ -42,10 +45,12 @@ function AppShell({ onRegister }: { onRegister: () => void }) {
         </Routes>
       </main>
 
-      <button className="global-register-pill" onClick={onRegister} aria-label="Registrar no EU">
-        <span>＋</span>
-        registrar
-      </button>
+      {showRegister && (
+        <button className="global-register-pill" onClick={onRegister} aria-label="Registrar no EU">
+          <span>＋</span>
+          registrar
+        </button>
+      )}
 
       <nav className="v2-bottom-nav" aria-label="Navegação principal">
         {nav.map((item) => (
