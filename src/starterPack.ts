@@ -1,3 +1,4 @@
+import type { PersonalProfile } from './profile'
 import type { StoredRecord } from './storage'
 
 export type StarterPackItem = {
@@ -27,6 +28,7 @@ export type StarterPack = {
   id: string
   title: string
   items: StarterPackItem[]
+  profile?: PersonalProfile
 }
 
 function decodeBase64UrlBytes(value: string) {
@@ -60,6 +62,31 @@ export async function decodeStarterPack(value: string): Promise<StarterPack> {
 
   if (parsed.items.length > 250) {
     throw new Error('Pacote grande demais.')
+  }
+
+  if (parsed.profile?.displayName && (typeof parsed.profile.displayName !== 'string' || parsed.profile.displayName.length > 80)) {
+    throw new Error('Perfil inválido.')
+  }
+
+  const validateNatal = (points: unknown) => Array.isArray(points) && points.length <= 24 && points.every((point) => {
+    if (!point || typeof point !== 'object') return false
+    const value = point as { name?: unknown; symbol?: unknown; longitude?: unknown; house?: unknown; retrograde?: unknown }
+    return typeof value.name === 'string'
+      && value.name.length <= 40
+      && typeof value.symbol === 'string'
+      && value.symbol.length <= 8
+      && typeof value.longitude === 'number'
+      && Number.isFinite(value.longitude)
+      && value.longitude >= 0
+      && value.longitude < 360
+      && (value.house === undefined || (typeof value.house === 'number' && value.house >= 1 && value.house <= 12))
+      && (value.retrograde === undefined || typeof value.retrograde === 'boolean')
+  })
+
+  if (parsed.profile?.astrology) {
+    if (!validateNatal(parsed.profile.astrology.westernNatal) || !validateNatal(parsed.profile.astrology.vedicNatal)) {
+      throw new Error('Perfil astrológico inválido.')
+    }
   }
 
   const keys = new Set<string>()
