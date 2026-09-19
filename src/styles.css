@@ -1977,3 +1977,52 @@ h3 {
   .chat-batch-top { display: grid; }
   .chat-item-fields { grid-template-columns: 1fr; }
 }
+
+
+.month-story-card {
+  min-height: 170px;
+  padding: 22px;
+  display: grid;
+  grid-template-columns: 115px 1fr;
+  gap: 18px;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: linear-gradient(140deg, #fffdf9, #edf5f1);
+}
+.month-story-card > div {
+  text-align: center;
+}
+.month-story-card > div strong {
+  display: block;
+  font-family: var(--serif);
+  font-size: 54px;
+  font-weight: 500;
+  line-height: .9;
+  color: var(--green);
+}
+.month-story-card > div span {
+  display: block;
+  margin-top: 7px;
+  color: var(--muted);
+  font-size: 8px;
+  text-transform: uppercase;
+}
+.month-story-card > p {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 21px;
+  line-height: 1.32;
+}
+.month-story-card > .v2-tag {
+  grid-column: 2;
+}
+
+@media (max-width: 760px) {
+  .month-story-card {
+    grid-template-columns: 80px 1fr;
+    padding: 18px;
+  }
+  .month-story-card > div strong { font-size: 44px; }
+  .month-story-card > p { font-size: 18px; }
+}
