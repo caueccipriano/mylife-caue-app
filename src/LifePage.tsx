@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom'
 import { areas, projects } from './data'
+import { periodStory } from './intelligence'
 import { useBridges, useRecords } from './appState'
 import { BrandTop, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
 
@@ -15,6 +16,7 @@ export default function LifePage() {
   const wishes = topRecords(records, (type) => type.includes('desejo') || type.includes('pesquisa') || type.includes('prefer'))
   const goals = topRecords(records, (type) => type.includes('objetivo') || type.includes('curso') || type.includes('pend'))
   const recentByArea = (area: string) => records.filter((record) => record.area === area).slice(0, 2)
+  const monthStory = periodStory(records, 30)
 
   return (
     <div className="v2-page life-page">
@@ -88,6 +90,18 @@ export default function LifePage() {
             )) : <p className="muted-copy">Cursos, objetivos e pendências vivas aparecem aqui sem virar uma lista burocrática.</p>}
           </div>
         </div>
+      </section>
+
+      <section className="life-block month-story-block">
+        <SectionTitle eyebrow="SEU MÊS" title="O que tomou espaço na sua vida" />
+        <article className="month-story-card">
+          <div>
+            <strong>{monthStory.count}</strong>
+            <span>coisas registradas</span>
+          </div>
+          <p>{monthStory.text}</p>
+          {monthStory.topArea && <Tag tone="green">{monthStory.topArea} foi a área mais presente</Tag>}
+        </article>
       </section>
 
       <section className="life-block plans-block">
