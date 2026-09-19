@@ -1,7 +1,7 @@
 import { useMemo } from 'react'
 import { NavLink } from 'react-router-dom'
 import { suggestTags } from './storage'
-import { deriveEntities, detectPreferenceShifts } from './meaning'
+import { deriveEntities, detectPreferenceShifts, entitySlug } from './meaning'
 import { useRecords } from './appState'
 import { BrandTop, SectionTitle, Tag, typeTone } from './v2Ui'
 
@@ -146,7 +146,7 @@ export default function DiscoveriesPage() {
           <SectionTitle eyebrow="COLEÇÕES" title="O EU juntou pra você" />
           <div className="auto-collections">
             {collections.map(([tag, items], index) => (
-              <NavLink key={tag} to={'/assunto/' + encodeURIComponent(tag.toLowerCase().replace(/\s+/g, '-'))} className={'collection-card collection-' + (index % 4)}>
+              <NavLink key={tag} to={'/assunto/' + entitySlug(tag)} className={'collection-card collection-' + (index % 4)}>
                 <span>#{tag}</span>
                 <strong>{items.length} coisas conectadas</strong>
                 <p>{items[0]?.private ? 'Inclui registros privados' : items[0]?.text}</p>
