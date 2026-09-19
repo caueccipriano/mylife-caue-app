@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { groupTimeline, smartSearch } from './intelligence'
 import { exportBackup, importBackup, listMoodCheckins, suggestTags } from './storage'
 import { useRecords } from './appState'
+import PrivacySettings from './PrivacySettings'
 import { BrandTop, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
 
 export default function MemoriesPage() {
@@ -184,6 +185,8 @@ export default function MemoriesPage() {
           </div>
         </section>
       )}
+
+      <PrivacySettings />
 
       <section className="memory-backup">
         <Tag tone="muted">SEU ARQUIVO</Tag>
