@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { activeFollowUps, nextFollowUpDate, saveMoodCheckin, updateRecord, type MoodValue, type StoredRecord } from './storage'
 import { derivePatterns, lifePulse, periodStory, reviewCandidates } from './intelligence'
+import { deriveEcosystemInsights } from './ecosystem'
 import { useBridges, useChatInbox, useMood, useRecords } from './appState'
 import { BrandTop, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
 
@@ -63,6 +64,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   const patterns = useMemo(() => derivePatterns(records), [records])
   const story = useMemo(() => periodStory(records, 7), [records])
   const pulse = useMemo(() => lifePulse(records), [records])
+  const ecosystemInsights = useMemo(() => deriveEcosystemInsights(records, bridges), [records, bridges])
 
   async function complete(record: StoredRecord) {
     setBusyId(record.id)
@@ -211,7 +213,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
 
         <div className="today-feed">
           {todayRecords.length ? todayRecords.map((record) => (
-            <article className="feed-card" key={record.id}>
+            <article className="feed-card tappable-card" key={record.id} onClick={() => navigate('/registro/' + record.id)}>
               {record.private ? (
                 <>
                   <div className="feed-meta"><Tag tone="pink">privado</Tag></div>
@@ -254,6 +256,21 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
           ))}
         </div>
       </section>
+
+      {ecosystemInsights.length > 0 && (
+        <section className="today-block">
+          <SectionTitle eyebrow="CONEXÕES" title="O que isso significa junto" />
+          <div className="ecosystem-insights compact">
+            {ecosystemInsights.slice(0, 2).map((insight) => (
+              <article key={insight.id} className={'ecosystem-insight insight-' + insight.tone}>
+                <Tag tone={insight.tone}>SINAL CRUZADO</Tag>
+                <h3>{insight.title}</h3>
+                <p>{insight.detail}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
 
       {chatToday.length > 0 && (
         <section className="chat-receipt">
