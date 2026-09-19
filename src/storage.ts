@@ -74,6 +74,12 @@ export type StoredRecord = {
   revisions?: RecordRevision[]
 }
 
+export function isRecordVisibleForInsights(record: StoredRecord, now = Date.now()) {
+  if (record.private || record.trashedAt) return false
+  if (record.revealAt && !record.capsuleOpenedAt && new Date(record.revealAt).getTime() > now) return false
+  return true
+}
+
 export type MoodValue = 'animado' | 'ok' | 'cansado' | 'pilhado'
 
 export type MoodCheckin = {
