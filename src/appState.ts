@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { forceRefreshAppBridges, readAppBridges, type BridgeCard } from './integrations'
+import { listChatInbox, type ChatInboxBatch } from './chatInbox'
 import { listRecords, moodForToday, type MoodCheckin, type StoredRecord } from './storage'
 
 export function useRecords() {
@@ -64,4 +65,17 @@ export function useBridges() {
   }
 
   return { bridges, refreshing, forceRefresh }
+}
+
+
+export function useChatInbox() {
+  const [batches, setBatches] = useState<ChatInboxBatch[]>(() => listChatInbox())
+
+  useEffect(() => {
+    const refresh = () => setBatches(listChatInbox())
+    window.addEventListener('eu-chat-inbox-updated', refresh)
+    return () => window.removeEventListener('eu-chat-inbox-updated', refresh)
+  }, [])
+
+  return batches
 }
