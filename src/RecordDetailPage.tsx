@@ -1,6 +1,6 @@
 import { type FormEvent, useMemo, useState } from 'react'
 import { NavLink, useNavigate, useParams } from 'react-router-dom'
-import { defaultJourneyStage, deleteRecord, suggestTags, updateRecord, type RecordStatus, type StoredAttachment } from './storage'
+import { defaultJourneyStage, deleteRecord, nextFollowUpDate, suggestTags, updateRecord, type RecordStatus, type StoredAttachment } from './storage'
 import { hasPrivacyPin, isPrivateUnlocked, unlockPrivateRecords } from './privacy'
 import { useRecords } from './appState'
 import { BrandTop, Tag, formatShortDate, typeTone } from './v2Ui'
@@ -44,6 +44,8 @@ export default function RecordDetailPage() {
   const [tagDraft, setTagDraft] = useState('')
   const [tags, setTags] = useState<string[]>([])
   const [journeyStage, setJourneyStage] = useState('')
+  const [followUpDays, setFollowUpDays] = useState(7)
+  const [editAttachments, setEditAttachments] = useState<StoredAttachment[]>([])
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState('')
   const [privacyUnlocked, setPrivacyUnlocked] = useState(() => isPrivateUnlocked())
@@ -133,6 +135,8 @@ export default function RecordDetailPage() {
     setArea(currentRecord.area)
     setTags(actualTags)
     setJourneyStage(stage)
+    setFollowUpDays(currentRecord.followUpDays || 7)
+    setEditAttachments(currentRecord.attachments ?? [])
     setEditing(true)
     setMessage('')
   }
@@ -159,7 +163,11 @@ export default function RecordDetailPage() {
         journeyStage,
         status: nextStatus,
         completedAt: nextStatus === 'completed' ? currentRecord.completedAt || new Date().toISOString() : undefined,
-        followUpAt: nextStatus === 'active' ? currentRecord.followUpAt : undefined,
+        followUpDays: nextStatus === 'active' ? followUpDays : undefined,
+        followUpAt: nextStatus === 'active'
+          ? nextFollowUpDate(followUpDays)
+          : undefined,
+        attachments: editAttachments,
       })
       window.dispatchEvent(new Event('eu-record-saved'))
       setEditing(false)
@@ -341,7 +349,7 @@ export default function RecordDetailPage() {
             <label>
               Área
               <select value={area} onChange={(event) => setArea(event.target.value)}>
-                {areaOptions.map((item) => <option key={item}>{item}</option>)}
+                {[...new Set([currentRecord.area, ...areaOptions])].map((item) => <option key={item}>{item}</option>)}
               </select>
             </label>
           </div>
@@ -352,6 +360,35 @@ export default function RecordDetailPage() {
               {stagesFor(type).map((item) => <option key={item}>{item}</option>)}
             </select>
           </label>
+
+          {statusFromStage(journeyStage, currentRecord.status) === 'active' && (
+            <label>
+              Voltar a me lembrar em
+              <div className="followup-edit-row">
+                <input
+                  type="number"
+                  min="1"
+                  max="365"
+                  value={followUpDays}
+                  onChange={(event) => setFollowUpDays(Math.max(1, Number(event.target.value) || 1))}
+                />
+                <span>dias</span>
+              </div>
+            </label>
+          )}
+
+          {editAttachments.length > 0 && (
+            <div className="edit-attachments">
+              <span>Anexos</span>
+              {editAttachments.map((attachment) => (
+                <div key={attachment.id}>
+                  <b>{attachmentIcon(attachment)}</b>
+                  <div><strong>{attachment.name}</strong><small>{attachment.kind}</small></div>
+                  <button type="button" onClick={() => setEditAttachments((current) => current.filter((item) => item.id !== attachment.id))}>remover</button>
+                </div>
+              ))}
+            </div>
+          )}
 
           <div className="tag-editor">
             <span>Tags</span>
