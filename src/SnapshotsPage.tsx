@@ -45,7 +45,7 @@ export default function SnapshotsPage() {
       </header>
 
       {current && (
-        <section className="phase-now">
+        <section className={'phase-now phase-tone-' + (current.phaseTone || 'cobalt')}>
           <Tag tone="coral">AGORA</Tag>
           <h2>{current.label}</h2>
           <p>{comparison(current, previous)}</p>
@@ -69,7 +69,7 @@ export default function SnapshotsPage() {
         <SectionTitle eyebrow="ARQUIVO DE FASES" title="Seus meses" />
         <div className="phase-grid">
           {snapshots.map((snapshot, index) => (
-            <article key={snapshot.month} className={index === 0 ? 'current' : ''}>
+            <article key={snapshot.month} className={(index === 0 ? 'current ' : '') + 'phase-tone-' + (snapshot.phaseTone || 'cobalt')}>
               <div><Tag tone={index === 0 ? 'coral' : 'muted'}>{index === 0 ? 'ATUAL' : 'RETRATO'}</Tag><span>{snapshot.month}</span></div>
               <h3>{snapshot.label}</h3>
               <p>{snapshot.activeHighlights[0] || snapshot.preferenceHighlights[0] || 'Uma fase mais silenciosa no arquivo.'}</p>
