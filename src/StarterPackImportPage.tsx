@@ -20,7 +20,7 @@ export default function StarterPackImportPage() {
         const encoded = params.get('pack')
         if (!encoded) throw new Error('Pacote ausente.')
 
-        const pack = decodeStarterPack(encoded)
+        const pack = await decodeStarterPack(encoded)
         let imported = 0
 
         for (const item of pack.items) {
