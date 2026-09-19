@@ -1,9 +1,9 @@
 import { type FormEvent, useMemo, useState } from 'react'
 import { NavLink, useNavigate, useParams } from 'react-router-dom'
-import { defaultJourneyStage, deleteRecord, nextFollowUpDate, suggestTags, updateRecord, type RecordStatus, type StoredAttachment } from './storage'
+import { defaultJourneyStage, deleteRecord, nextFollowUpDate, suggestTags, updateRecord, type RecordFreshness, type RecordOutcome, type RecordProgress, type RecordStatus, type StoredAttachment } from './storage'
 import { hasPrivacyPin, isPrivateUnlocked, unlockPrivateRecords } from './privacy'
 import { useRecords } from './appState'
-import { BrandTop, Tag, formatShortDate, typeTone } from './v2Ui'
+import { BrandTop, Tag, formatShortDate, sourceLabel, sourceTone, typeTone } from './v2Ui'
 
 const areaOptions = ['Carreira', 'Dinheiro', 'Estudos', 'Casa', 'Viagens', 'Compras', 'Lazer', 'Pessoal']
 const typeOptions = ['Memória', 'Preferência', 'Desejo', 'Pesquisa', 'Curso', 'Pendência', 'Objetivo', 'Projeto', 'Decisão', 'Insight', 'Ideia', 'Marco', 'Contexto', 'Conquista']
@@ -14,6 +14,7 @@ function stagesFor(type: string) {
   if (value.includes('curso')) return ['Quero fazer', 'Comecei', 'Em andamento', 'Concluído', 'Pausado', 'Desisti']
   if (value.includes('projeto') || value.includes('objetivo')) return ['Ideia', 'Planejando', 'Em andamento', 'Concluído', 'Pausado', 'Desisti']
   if (value.includes('pend')) return ['Preciso fazer', 'Em andamento', 'Concluído', 'Pausado', 'Desisti']
+  if (value.includes('depois')) return ['Depois', 'Planejando', 'Em andamento', 'Concluído', 'Desisti']
   return ['Em andamento', 'Concluído', 'Pausado', 'Desisti']
 }
 
@@ -45,6 +46,11 @@ export default function RecordDetailPage() {
   const [tags, setTags] = useState<string[]>([])
   const [journeyStage, setJourneyStage] = useState('')
   const [followUpDays, setFollowUpDays] = useState(7)
+  const [whyItMatters, setWhyItMatters] = useState('')
+  const [freshness, setFreshness] = useState<RecordFreshness>('current')
+  const [progressLevel, setProgressLevel] = useState<RecordProgress | ''>('')
+  const [nextMove, setNextMove] = useState('')
+  const [chapterId, setChapterId] = useState('')
   const [editAttachments, setEditAttachments] = useState<StoredAttachment[]>([])
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState('')
@@ -136,6 +142,11 @@ export default function RecordDetailPage() {
     setTags(actualTags)
     setJourneyStage(stage)
     setFollowUpDays(currentRecord.followUpDays || 7)
+    setWhyItMatters(currentRecord.whyItMatters || '')
+    setFreshness(currentRecord.freshness || 'current')
+    setProgressLevel(currentRecord.progressLevel || '')
+    setNextMove(currentRecord.nextMove || '')
+    setChapterId(currentRecord.chapterId || '')
     setEditAttachments(currentRecord.attachments ?? [])
     setEditing(true)
     setMessage('')
@@ -162,6 +173,11 @@ export default function RecordDetailPage() {
         tags,
         journeyStage,
         status: nextStatus,
+        whyItMatters: whyItMatters.trim() || undefined,
+        freshness,
+        progressLevel: progressLevel || undefined,
+        nextMove: nextMove.trim() || undefined,
+        chapterId: chapterId.trim() || undefined,
         completedAt: nextStatus === 'completed' ? currentRecord.completedAt || new Date().toISOString() : undefined,
         followUpDays: nextStatus === 'active' ? followUpDays : undefined,
         followUpAt: nextStatus === 'active'
@@ -186,6 +202,7 @@ export default function RecordDetailPage() {
     await updateRecord(currentRecord.id, {
       status,
       journeyStage: status === 'completed' ? 'Concluído' : status === 'paused' ? 'Pausado' : status === 'abandoned' ? 'Desisti' : stage,
+      progressLevel: status === 'completed' && currentRecord.type === 'Curso' ? 'done' : currentRecord.progressLevel,
       completedAt: status === 'completed' ? currentRecord.completedAt || new Date().toISOString() : undefined,
       followUpAt: status === 'active' ? currentRecord.followUpAt : undefined,
     })
@@ -211,10 +228,28 @@ export default function RecordDetailPage() {
   }
 
   async function remove() {
-    if (!window.confirm('Excluir este registro do EU? Essa ação não pode ser desfeita.')) return
+    if (!window.confirm('Mover este registro para a Lixeira? Você poderá restaurá-lo por 30 dias.')) return
     await deleteRecord(currentRecord.id)
     window.dispatchEvent(new Event('eu-record-saved'))
     navigate('/memorias')
+  }
+
+  async function setOutcome(outcome: RecordOutcome) {
+    await updateRecord(currentRecord.id, {
+      outcome,
+      outcomeAt: new Date().toISOString(),
+    })
+    window.dispatchEvent(new Event('eu-record-saved'))
+  }
+
+  async function setCourseProgress(progressLevel: RecordProgress) {
+    await updateRecord(currentRecord.id, {
+      progressLevel,
+      status: progressLevel === 'done' ? 'completed' : 'active',
+      journeyStage: progressLevel === 'done' ? 'Concluído' : 'Em andamento',
+      completedAt: progressLevel === 'done' ? currentRecord.completedAt || new Date().toISOString() : undefined,
+    })
+    window.dispatchEvent(new Event('eu-record-saved'))
   }
 
   function openAttachment(attachment: StoredAttachment) {
@@ -240,8 +275,10 @@ export default function RecordDetailPage() {
             <div className="feed-meta">
               <Tag tone={typeTone(currentRecord.type)}>{currentRecord.type}</Tag>
               <span>{currentRecord.area}</span>
-              {currentRecord.source === 'chatgpt' && <Tag tone="ink">do chat</Tag>}
+              <Tag tone={sourceTone(currentRecord.source)}>{sourceLabel(currentRecord.source)}</Tag>
               {currentRecord.private && <Tag tone="pink">privado</Tag>}
+              {currentRecord.freshness === 'maybe-stale' && <Tag tone="amber">pode ter mudado</Tag>}
+              {currentRecord.freshness === 'historical' && <Tag tone="muted">histórico</Tag>}
             </div>
             <h1>{currentRecord.text || 'Registro com anexo'}</h1>
             <p>{formatShortDate(currentRecord.createdAt)}{currentRecord.updatedAt && currentRecord.updatedAt !== currentRecord.createdAt ? ' · editado' : ''}</p>
@@ -253,6 +290,52 @@ export default function RecordDetailPage() {
             <button className={currentRecord.pinned ? 'active' : ''} onClick={() => void toggleFlag('pinned')}>{currentRecord.pinned ? '⌖ Fixado' : '⌖ Fixar'}</button>
             <button className={currentRecord.private ? 'active' : ''} onClick={() => void toggleFlag('private')}>{currentRecord.private ? '◉ Privado' : '○ Privado'}</button>
           </div>
+
+          {currentRecord.whyItMatters && (
+            <section className="record-context-card why-card">
+              <Tag tone="lilac">POR QUE ISSO IMPORTA</Tag>
+              <p>{currentRecord.whyItMatters}</p>
+            </section>
+          )}
+
+          {currentRecord.type === 'Curso' && (
+            <section className="record-context-card progress-card">
+              <Tag tone="lime">PROGRESSO LEVE</Tag>
+              <h2>{currentRecord.progressLevel === 'done' ? 'Concluído' : currentRecord.progressLevel === 'almost' ? 'Quase terminando' : currentRecord.progressLevel === 'half' ? 'Na metade' : currentRecord.progressLevel === 'quarter' ? 'Pegando ritmo' : 'Começou'}</h2>
+              <div className="progress-choice-row">
+                {[
+                  ['started','Comecei'],
+                  ['quarter','25%'],
+                  ['half','Metade'],
+                  ['almost','Quase lá'],
+                  ['done','Concluí'],
+                ].map(([value,label]) => (
+                  <button key={value} className={currentRecord.progressLevel === value ? 'active' : ''} onClick={() => void setCourseProgress(value as RecordProgress)}>{label}</button>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {(currentRecord.type === 'Projeto' || currentRecord.type === 'Objetivo' || currentRecord.type === 'Pendência') && (
+            <section className="record-context-card next-move-card">
+              <Tag tone="coral">PRÓXIMO MOVIMENTO</Tag>
+              <h2>{currentRecord.nextMove || 'Ainda não definido.'}</h2>
+              <button onClick={beginEdit}>{currentRecord.nextMove ? 'mudar próximo movimento' : 'definir o que destrava isso ↗'}</button>
+            </section>
+          )}
+
+          {(currentRecord.type === 'Decisão' || currentRecord.journeyStage === 'Comprei' || currentRecord.status === 'completed') && (
+            <section className="record-context-card outcome-card">
+              <Tag tone="wine">COMO ISSO SAIU?</Tag>
+              <h2>{currentRecord.outcome === 'good' ? 'Valeu a pena.' : currentRecord.outcome === 'mixed' ? 'Mais ou menos.' : currentRecord.outcome === 'regret' ? 'Eu faria diferente.' : currentRecord.outcome === 'unknown' ? 'Ainda não sei.' : 'O EU pode voltar nisso depois.'}</h2>
+              <div className="outcome-choice-row">
+                <button className={currentRecord.outcome === 'good' ? 'active' : ''} onClick={() => void setOutcome('good')}>Foi uma boa escolha</button>
+                <button className={currentRecord.outcome === 'mixed' ? 'active' : ''} onClick={() => void setOutcome('mixed')}>Mais ou menos</button>
+                <button className={currentRecord.outcome === 'regret' ? 'active' : ''} onClick={() => void setOutcome('regret')}>Me arrependi</button>
+                <button className={currentRecord.outcome === 'unknown' ? 'active' : ''} onClick={() => void setOutcome('unknown')}>Ainda não sei</button>
+              </div>
+            </section>
+          )}
 
           {stage && (
             <section className="record-journey">
@@ -326,7 +409,23 @@ export default function RecordDetailPage() {
             )}
           </section>
 
-          <button className="delete-record-button" onClick={() => void remove()}>Excluir registro</button>
+          {(currentRecord.revisions ?? []).length > 0 && (
+            <section className="record-section revision-history">
+              <Tag tone="cobalt">HISTÓRICO</Tag>
+              <h2>Como esse registro mudou</h2>
+              <div>
+                {[...(currentRecord.revisions ?? [])].reverse().slice(0, 8).map((revision, index) => (
+                  <article key={revision.at + index}>
+                    <span>{new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }).format(new Date(revision.at))}</span>
+                    <p>{revision.text}</p>
+                    <small>{revision.type} · {revision.area}{revision.journeyStage ? ' · ' + revision.journeyStage : ''}</small>
+                  </article>
+                ))}
+              </div>
+            </section>
+          )}
+
+          <button className="delete-record-button" onClick={() => void remove()}>Mover para a Lixeira</button>
           {message && <p className="record-message">{message}</p>}
         </>
       ) : (
@@ -389,6 +488,47 @@ export default function RecordDetailPage() {
               ))}
             </div>
           )}
+
+          <label>
+            Por que isso importa? <span className="optional-label">opcional</span>
+            <textarea value={whyItMatters} onChange={(event) => setWhyItMatters(event.target.value)} rows={3} placeholder="O contexto que você gostaria de lembrar daqui a alguns meses." />
+          </label>
+
+          {(type === 'Projeto' || type === 'Objetivo' || type === 'Pendência') && (
+            <label>
+              Próximo movimento
+              <input className="record-text-input" value={nextMove} onChange={(event) => setNextMove(event.target.value)} placeholder="Uma coisa que destrava isso" />
+            </label>
+          )}
+
+          {type === 'Curso' && (
+            <label>
+              Progresso
+              <select value={progressLevel} onChange={(event) => setProgressLevel(event.target.value as RecordProgress | '')}>
+                <option value="">Sem progresso definido</option>
+                <option value="started">Comecei</option>
+                <option value="quarter">25%</option>
+                <option value="half">Metade</option>
+                <option value="almost">Quase terminando</option>
+                <option value="done">Concluído</option>
+              </select>
+            </label>
+          )}
+
+          <div className="record-edit-grid">
+            <label>
+              Frescor da memória
+              <select value={freshness} onChange={(event) => setFreshness(event.target.value as RecordFreshness)}>
+                <option value="current">Atual</option>
+                <option value="maybe-stale">Pode ter mudado</option>
+                <option value="historical">Histórico</option>
+              </select>
+            </label>
+            <label>
+              Capítulo
+              <input className="record-text-input" value={chapterId} onChange={(event) => setChapterId(event.target.value)} placeholder="Ex.: Aptar 2026" />
+            </label>
+          </div>
 
           <div className="tag-editor">
             <span>Tags</span>
