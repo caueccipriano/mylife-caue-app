@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { activeFollowUps, nextFollowUpDate, saveMoodCheckin, updateRecord, type MoodValue, type StoredRecord } from './storage'
+import { activeFollowUps, isRecordVisibleForInsights, nextFollowUpDate, saveMoodCheckin, updateRecord, type MoodValue, type StoredRecord } from './storage'
 import { derivePatterns, lifePulse, periodStory, reviewCandidates } from './intelligence'
 import { deriveEcosystemInsights } from './ecosystem'
 import { buildDailyBrief } from './lifeModel'
@@ -61,8 +61,8 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   const [simpleDay, setSimpleDay] = useState(() => getSimpleDayMode())
 
   const followups = useMemo(() => activeFollowUps(records), [records])
-  const due = followups.filter((item) => item.due && !item.record.private).map((item) => item.record)
-  const active = followups.filter((item) => !item.record.private).map((item) => item.record)
+  const due = followups.filter((item) => item.due && isRecordVisibleForInsights(item.record)).map((item) => item.record)
+  const active = followups.filter((item) => isRecordVisibleForInsights(item.record)).map((item) => item.record)
   const todayRecords = records.filter((record) => sameLocalDay(record.createdAt)).slice(0, 8)
   const chatToday = todayRecords.filter((record) => record.source === 'chatgpt')
   const review = useMemo(() => reviewCandidates(records), [records])
