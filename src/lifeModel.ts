@@ -8,6 +8,12 @@ function normalize(value: string) {
     .toLowerCase()
 }
 
+function isVisibleRecord(record: StoredRecord) {
+  if (record.private || record.trashedAt) return false
+  if (record.revealAt && !record.capsuleOpenedAt && new Date(record.revealAt).getTime() > Date.now()) return false
+  return true
+}
+
 function words(value: string) {
   return [...new Set(
     normalize(value)
@@ -22,7 +28,7 @@ export function findSimilarRecords(records: StoredRecord[], text: string) {
   if (queryWords.size < 2) return []
 
   return records
-    .filter((record) => !record.private && !record.trashedAt)
+    .filter(isVisibleRecord)
     .map((record) => {
       const candidate = new Set(words(record.text))
       const intersection = [...queryWords].filter((word) => candidate.has(word)).length
@@ -64,7 +70,7 @@ export function detectSensitiveContent(text: string): SensitiveHint[] {
 }
 
 export function buildDailyBrief(records: StoredRecord[], bridges: BridgeCard[]) {
-  const publicRecords = records.filter((record) => !record.private && !record.trashedAt)
+  const publicRecords = records.filter(isVisibleRecord)
   const now = Date.now()
   const due = publicRecords.filter((record) => record.status === 'active' && record.followUpAt && new Date(record.followUpAt).getTime() <= now)
   const stale = publicRecords.filter((record) => record.status === 'active' && new Date(record.updatedAt || record.createdAt).getTime() < now - 21 * 86400000)
@@ -102,7 +108,7 @@ export type IdentityNow = {
 }
 
 export function deriveIdentityNow(records: StoredRecord[]): IdentityNow {
-  const publicRecords = records.filter((record) => !record.private && !record.trashedAt)
+  const publicRecords = records.filter(isVisibleRecord)
   const recent = publicRecords.filter((record) => new Date(record.createdAt).getTime() > Date.now() - 90 * 86400000)
 
   const areas = new Map<string, number>()
@@ -140,7 +146,7 @@ export function deriveIdentityNow(records: StoredRecord[]): IdentityNow {
 export function deriveManifesto(records: StoredRecord[]) {
   const patterns = [/prefiro/i, /não quero/i, /nao quero/i, /quero construir/i, /é importante/i, /e importante/i, /gosto de/i, /decidi/i]
   return records
-    .filter((record) => !record.private && !record.trashedAt)
+    .filter(isVisibleRecord)
     .filter((record) => ['Preferência', 'Decisão', 'Contexto', 'Objetivo'].includes(record.type) || patterns.some((pattern) => pattern.test(record.text)))
     .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
     .slice(0, 8)
@@ -155,7 +161,7 @@ export type LifeChapter = {
 }
 
 export function deriveChapters(records: StoredRecord[]): LifeChapter[] {
-  const publicRecords = records.filter((record) => !record.private && !record.trashedAt)
+  const publicRecords = records.filter(isVisibleRecord)
   const explicit = new Map<string, StoredRecord[]>()
 
   publicRecords.forEach((record) => {
@@ -206,8 +212,7 @@ export function deriveChapters(records: StoredRecord[]): LifeChapter[] {
 
 export function yearlyStory(records: StoredRecord[], year = new Date().getFullYear()) {
   const yearRecords = records.filter((record) =>
-    !record.private
-    && !record.trashedAt
+    isVisibleRecord(record)
     && new Date(record.createdAt).getFullYear() === year,
   )
 
