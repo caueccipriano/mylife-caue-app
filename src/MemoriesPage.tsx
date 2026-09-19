@@ -1,9 +1,8 @@
 import { type ChangeEvent, useMemo, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { NavLink, useNavigate, useSearchParams } from 'react-router-dom'
 import { groupTimeline, smartSearch } from './intelligence'
 import { exportBackup, importBackup, listMoodCheckins, suggestTags } from './storage'
 import { useRecords } from './appState'
-import PrivacySettings from './PrivacySettings'
 import { BrandTop, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
 
 export default function MemoriesPage() {
@@ -204,7 +203,14 @@ export default function MemoriesPage() {
         </section>
       )}
 
-      <PrivacySettings />
+      <NavLink className="security-entry-card" to="/seguranca">
+        <div>
+          <Tag tone="cobalt">SEGURANÇA</Tag>
+          <strong>Privados, backups e recuperação.</strong>
+          <p>PIN local, bloqueio automático, modo discreto, backup criptografado e Lixeira.</p>
+        </div>
+        <b>↗</b>
+      </NavLink>
 
       <section className="memory-backup">
         <Tag tone="muted">SEU ARQUIVO</Tag>
