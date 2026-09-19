@@ -164,6 +164,12 @@ export default function LifePage() {
             <p>Decisões, desejos, ciclos, assuntos e momentos que ficaram.</p>
             <span>ver retrospectiva ↗</span>
           </NavLink>
+          <NavLink to="/vida/lab" className="self-tool-card self-tool-lab">
+            <Tag tone="wine">EU LAB</Tag>
+            <h3>Ver o que está mudando por baixo.</h3>
+            <p>Radar da mente, Life Graph, cápsulas, Decision Lab, objetos, lugares, fases e Sync Vault.</p>
+            <span>abrir laboratório ↗</span>
+          </NavLink>
         </div>
       </section>
 
