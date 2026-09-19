@@ -142,3 +142,47 @@ export function groupTimeline(records: StoredRecord[]) {
 
   return [...groups.entries()].map(([label, items]) => ({ label, items }))
 }
+
+
+export function periodStory(records: StoredRecord[], days = 7) {
+  const cutoff = Date.now() - days * 24 * 60 * 60 * 1000
+  const recent = records.filter((record) => new Date(record.createdAt).getTime() >= cutoff)
+
+  const started = recent.filter((record) => record.status === 'active' && record.startedAt).length
+  const completed = recent.filter((record) => record.status === 'completed').length
+  const decisions = recent.filter((record) => record.type === 'Decisão').length
+  const wishes = recent.filter((record) => ['Desejo', 'Pesquisa', 'Preferência'].includes(record.type)).length
+  const chat = recent.filter((record) => record.source === 'chatgpt').length
+
+  const areaCounts = new Map<string, number>()
+  recent.forEach((record) => areaCounts.set(record.area, (areaCounts.get(record.area) ?? 0) + 1))
+  const topArea = [...areaCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0]
+
+  const pieces: string[] = []
+  if (started) pieces.push(started + (started === 1 ? ' coisa começou' : ' coisas começaram'))
+  if (completed) pieces.push(completed + (completed === 1 ? ' ciclo fechou' : ' ciclos fecharam'))
+  if (decisions) pieces.push(decisions + (decisions === 1 ? ' decisão entrou' : ' decisões entraram'))
+  if (wishes) pieces.push(wishes + (wishes === 1 ? ' desejo ou pesquisa apareceu' : ' desejos/pesquisas apareceram'))
+  if (chat) pieces.push(chat + (chat === 1 ? ' registro veio do Chat' : ' registros vieram do Chat'))
+
+  return {
+    count: recent.length,
+    topArea,
+    text: pieces.length
+      ? pieces.slice(0, 3).join(' · ') + '.'
+      : 'A semana ainda está leve no EU. Tudo bem: o arquivo cresce quando existe algo que vale guardar.',
+  }
+}
+
+export function lifePulse(records: StoredRecord[]) {
+  const active = records.filter((record) => record.status === 'active')
+  const career = active.filter((record) => record.area === 'Carreira').length
+  const money = records.filter((record) => record.area === 'Dinheiro' && new Date(record.createdAt).getTime() > Date.now() - 14 * 86400000).length
+  const learning = active.filter((record) => record.area === 'Estudos').length
+
+  return [
+    { label: 'Carreira', state: career >= 2 ? 'em movimento' : career === 1 ? 'ativa' : 'quieta' },
+    { label: 'Dinheiro', state: money >= 3 ? 'pedindo atenção' : money ? 'presente' : 'estável' },
+    { label: 'Aprendizado', state: learning >= 2 ? 'ganhando ritmo' : learning === 1 ? 'ativo' : 'quieto' },
+  ]
+}
