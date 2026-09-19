@@ -10,19 +10,39 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      selfDestroying: true,
       includeAssets: ['eu-mark.svg'],
+      workbox: {
+        cleanupOutdatedCaches: true,
+        clientsClaim: true,
+        skipWaiting: true,
+        navigateFallback: 'index.html',
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+            handler: 'StaleWhileRevalidate',
+            options: { cacheName: 'eu-font-styles' },
+          },
+          {
+            urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'eu-font-files',
+              expiration: { maxEntries: 12, maxAgeSeconds: 31536000 },
+            },
+          },
+        ],
+      },
       manifest: {
         id: base,
         name: 'EU',
         short_name: 'EU',
         description: 'Arquivo vivo pessoal.',
         lang: 'pt-BR',
-        theme_color: '#F6F2EA',
-        background_color: '#F6F2EA',
+        theme_color: '#F6F2E9',
+        background_color: '#F6F2E9',
         display: 'standalone',
         orientation: 'portrait-primary',
-        start_url: base + '?v=career-plan-2026-2030',
+        start_url: base + '?v=eu-v2-life',
         scope: base,
         categories: ['lifestyle', 'utilities'],
         icons: [
