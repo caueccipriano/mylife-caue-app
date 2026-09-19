@@ -42,7 +42,7 @@ export default defineConfig({
         background_color: '#F6F2E9',
         display: 'standalone',
         orientation: 'portrait-primary',
-        start_url: base + '?v=eu-v2-5-living',
+        start_url: base + '?v=eu-v3-living-system',
         scope: base,
         categories: ['lifestyle', 'utilities'],
         share_target: {
@@ -61,6 +61,12 @@ export default defineConfig({
             short_name: 'Registrar',
             description: 'Guardar algo rapidamente no EU',
             url: base + '#/capturar'
+          },
+          {
+            name: 'EU Lab',
+            short_name: 'EU Lab',
+            description: 'Abrir radar, cápsulas, decisões e Life Graph',
+            url: base + '#/vida/lab'
           }
         ],
         icons: [
