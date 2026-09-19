@@ -1,5 +1,6 @@
 import type { BridgeCard } from './integrations'
 import type { StoredRecord } from './storage'
+import { derivePhaseTheme, type PhaseTone } from './v3Life'
 
 export type LifeSnapshot = {
   month: string
@@ -9,6 +10,7 @@ export type LifeSnapshot = {
   recordCount: number
   activeCount: number
   completedCount: number
+  phaseTone?: PhaseTone
   topAreas: Array<{ area: string; count: number }>
   activeHighlights: string[]
   preferenceHighlights: string[]
@@ -53,6 +55,7 @@ export function captureCurrentLifeSnapshot(records: StoredRecord[], bridges: Bri
     recordCount: publicRecords.length,
     activeCount: publicRecords.filter((record) => record.status === 'active').length,
     completedCount: publicRecords.filter((record) => record.status === 'completed').length,
+    phaseTone: derivePhaseTheme(publicRecords),
     topAreas: [...areaCounts.entries()]
       .map(([area, count]) => ({ area, count }))
       .sort((a, b) => b.count - a.count)
