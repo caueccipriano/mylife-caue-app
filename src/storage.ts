@@ -17,6 +17,7 @@ export type RecordSource = 'manual' | 'chatgpt' | 'import' | 'share' | 'folego' 
 export type RecordFreshness = 'current' | 'maybe-stale' | 'historical'
 export type RecordOutcome = 'good' | 'mixed' | 'regret' | 'unknown'
 export type RecordProgress = 'started' | 'quarter' | 'half' | 'almost' | 'done'
+export type ObjectState = 'researching' | 'bought' | 'using' | 'sold' | 'replaced'
 
 export type RecordRevision = {
   at: string
@@ -61,6 +62,15 @@ export type StoredRecord = {
   nextMove?: string
   someday?: boolean
   chapterId?: string
+  revealAt?: string
+  capsuleOpenedAt?: string
+  expectation?: string
+  confidence?: number
+  objectName?: string
+  objectState?: ObjectState
+  place?: string
+  phaseClosedAt?: string
+  phaseColor?: string
   revisions?: RecordRevision[]
 }
 
@@ -170,6 +180,12 @@ function revisionWorthSaving(current: StoredRecord, patch: Partial<StoredRecord>
     'progressLevel',
     'outcome',
     'freshness',
+    'expectation',
+    'confidence',
+    'objectName',
+    'objectState',
+    'place',
+    'phaseClosedAt',
   ]
 
   return keys.some((key) => {
