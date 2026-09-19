@@ -22,7 +22,11 @@ function dateLabel(value: string) {
 }
 
 export function answerFromEu(records: StoredRecord[], bridges: BridgeCard[], question: string): EuAnswer {
-  const publicRecords = records.filter((record) => !record.private)
+  const publicRecords = records.filter((record) => {
+    if (record.private) return false
+    if (record.revealAt && !record.capsuleOpenedAt && new Date(record.revealAt).getTime() > Date.now()) return false
+    return true
+  })
   const query = question.trim()
   const normalized = lower(query)
 
