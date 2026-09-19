@@ -65,13 +65,13 @@ export default function PrivacySettings() {
     <section className="privacy-settings">
       <Tag tone="pink">PRIVACIDADE</Tag>
       <h2>Seu lado mais privado pode ficar trancado.</h2>
-      <p>O PIN é local e protege a abertura dos registros marcados como Privado. Ele não envia seus dados para servidor.</p>
+      <p>O PIN é local e protege a abertura dos registros marcados como Privado. Novos PINs usam 6–8 dígitos. Ele é uma trava da interface — não substitui o backup criptografado por senha.</p>
 
       {!enabled ? (
         <div className="privacy-pin-form">
           <input type="password" inputMode="numeric" pattern="[0-9]*" maxLength={8} value={pin} onChange={(event) => setPin(event.target.value.replace(/\D/g, ''))} placeholder="crie um PIN" />
           <input type="password" inputMode="numeric" pattern="[0-9]*" maxLength={8} value={confirm} onChange={(event) => setConfirm(event.target.value.replace(/\D/g, ''))} placeholder="repita o PIN" />
-          <button onClick={() => void activate()} disabled={busy || pin.length < 4}>Ativar proteção</button>
+          <button onClick={() => void activate()} disabled={busy || pin.length < 6}>Ativar proteção</button>
         </div>
       ) : unlocked ? (
         <div className="privacy-actions">
