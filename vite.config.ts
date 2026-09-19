@@ -45,6 +45,24 @@ export default defineConfig({
         start_url: base + '?v=eu-v2-life',
         scope: base,
         categories: ['lifestyle', 'utilities'],
+        share_target: {
+          action: base + '?share=1',
+          method: 'GET',
+          enctype: 'application/x-www-form-urlencoded',
+          params: {
+            title: 'title',
+            text: 'text',
+            url: 'url'
+          }
+        },
+        shortcuts: [
+          {
+            name: 'Registrar no EU',
+            short_name: 'Registrar',
+            description: 'Guardar algo rapidamente no EU',
+            url: base + '#/capturar'
+          }
+        ],
         icons: [
           {
             src: 'eu-mark.svg',
