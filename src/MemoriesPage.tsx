@@ -65,6 +65,7 @@ export default function MemoriesPage() {
 
   function RecordCard({ record }: { record: (typeof records)[number] }) {
     const tags = record.tags?.length ? record.tags : suggestTags(record.text, record.area, record.type)
+    const sealedCapsule = Boolean(record.revealAt && !record.capsuleOpenedAt && new Date(record.revealAt).getTime() > Date.now())
 
     return (
       <article className="tappable-card" onClick={() => navigate('/registro/' + record.id)}>
@@ -75,6 +76,12 @@ export default function MemoriesPage() {
               <div className="feed-meta"><Tag tone="pink">privado</Tag></div>
               <h3>Registro privado</h3>
               <p>{formatShortDate(record.createdAt)}</p>
+            </>
+          ) : sealedCapsule ? (
+            <>
+              <div className="feed-meta"><Tag tone="lilac">cápsula fechada</Tag></div>
+              <h3>Uma mensagem para o futuro.</h3>
+              <p>abre em {new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short', year: 'numeric' }).format(new Date(record.revealAt as string))}</p>
             </>
           ) : (
             <>
