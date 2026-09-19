@@ -1,6 +1,7 @@
 import { type FormEvent, useMemo, useState } from 'react'
 import { NavLink, useNavigate, useParams } from 'react-router-dom'
 import { defaultJourneyStage, deleteRecord, suggestTags, updateRecord, type RecordStatus, type StoredAttachment } from './storage'
+import { hasPrivacyPin, isPrivateUnlocked, unlockPrivateRecords } from './privacy'
 import { useRecords } from './appState'
 import { BrandTop, Tag, formatShortDate, typeTone } from './v2Ui'
 
@@ -45,6 +46,9 @@ export default function RecordDetailPage() {
   const [journeyStage, setJourneyStage] = useState('')
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState('')
+  const [privacyUnlocked, setPrivacyUnlocked] = useState(() => isPrivateUnlocked())
+  const [privacyPin, setPrivacyPin] = useState('')
+  const [privacyError, setPrivacyError] = useState('')
 
   const relatedSuggestions = useMemo(() => {
     if (!record) return []
@@ -77,6 +81,48 @@ export default function RecordDetailPage() {
   }
 
   const currentRecord = record
+  if (currentRecord.private && hasPrivacyPin() && !privacyUnlocked) {
+    async function unlock() {
+      const valid = await unlockPrivateRecords(privacyPin)
+      if (!valid) {
+        setPrivacyError('PIN incorreto.')
+        return
+      }
+      setPrivacyUnlocked(true)
+      setPrivacyPin('')
+      setPrivacyError('')
+    }
+
+    return (
+      <div className="v2-page record-detail-page">
+        <BrandTop />
+        <button className="back-button-v2" onClick={() => navigate(-1)}>← voltar</button>
+        <section className="private-lock-screen">
+          <Tag tone="pink">PRIVADO</Tag>
+          <span>◉</span>
+          <h1>Esse registro está trancado.</h1>
+          <p>Digite seu PIN local para abrir nesta sessão.</p>
+          <div>
+            <input
+              type="password"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              maxLength={8}
+              value={privacyPin}
+              onChange={(event) => setPrivacyPin(event.target.value.replace(/\D/g, ''))}
+              placeholder="PIN"
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') void unlock()
+              }}
+            />
+            <button onClick={() => void unlock()} disabled={privacyPin.length < 4}>Abrir</button>
+          </div>
+          {privacyError && <small>{privacyError}</small>}
+        </section>
+      </div>
+    )
+  }
+
   const actualTags = currentRecord.tags?.length ? currentRecord.tags : suggestTags(currentRecord.text, currentRecord.area, currentRecord.type)
   const stage = currentRecord.journeyStage || defaultJourneyStage(currentRecord.type, currentRecord.status)
   const related = records.filter((item) => (currentRecord.relatedIds ?? []).includes(item.id))
