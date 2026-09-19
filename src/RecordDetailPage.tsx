@@ -1,12 +1,12 @@
 import { type FormEvent, useMemo, useState } from 'react'
 import { NavLink, useNavigate, useParams } from 'react-router-dom'
-import { defaultJourneyStage, deleteRecord, nextFollowUpDate, suggestTags, updateRecord, type RecordFreshness, type RecordOutcome, type RecordProgress, type RecordStatus, type StoredAttachment } from './storage'
+import { defaultJourneyStage, deleteRecord, nextFollowUpDate, suggestTags, updateRecord, type ObjectState, type RecordFreshness, type RecordOutcome, type RecordProgress, type RecordStatus, type StoredAttachment } from './storage'
 import { hasPrivacyPin, isPrivateUnlocked, unlockPrivateRecords } from './privacy'
 import { useRecords } from './appState'
 import { BrandTop, Tag, formatShortDate, sourceLabel, sourceTone, typeTone } from './v2Ui'
 
 const areaOptions = ['Carreira', 'Dinheiro', 'Estudos', 'Casa', 'Viagens', 'Compras', 'Lazer', 'Pessoal']
-const typeOptions = ['Memória', 'Preferência', 'Desejo', 'Pesquisa', 'Curso', 'Pendência', 'Objetivo', 'Projeto', 'Decisão', 'Insight', 'Ideia', 'Marco', 'Contexto', 'Conquista']
+const typeOptions = ['Memória', 'Preferência', 'Desejo', 'Pesquisa', 'Curso', 'Pendência', 'Objetivo', 'Projeto', 'Decisão', 'Insight', 'Ideia', 'Marco', 'Contexto', 'Conquista', 'Depois', 'Cápsula', 'Objeto']
 
 function stagesFor(type: string) {
   const value = type.toLowerCase()
@@ -51,6 +51,11 @@ export default function RecordDetailPage() {
   const [progressLevel, setProgressLevel] = useState<RecordProgress | ''>('')
   const [nextMove, setNextMove] = useState('')
   const [chapterId, setChapterId] = useState('')
+  const [expectation, setExpectation] = useState('')
+  const [confidence, setConfidence] = useState(70)
+  const [objectName, setObjectName] = useState('')
+  const [objectState, setObjectState] = useState<ObjectState>('researching')
+  const [place, setPlace] = useState('')
   const [editAttachments, setEditAttachments] = useState<StoredAttachment[]>([])
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState('')
@@ -89,6 +94,28 @@ export default function RecordDetailPage() {
   }
 
   const currentRecord = record
+  const capsuleLocked = Boolean(
+    currentRecord.revealAt
+    && !currentRecord.capsuleOpenedAt
+    && new Date(currentRecord.revealAt).getTime() > Date.now(),
+  )
+
+  if (capsuleLocked) {
+    return (
+      <div className="v2-page record-detail-page">
+        <BrandTop />
+        <button className="back-button-v2" onClick={() => navigate(-1)}>← voltar</button>
+        <section className="capsule-lock-screen">
+          <Tag tone="lilac">CÁPSULA FECHADA</Tag>
+          <span>◌</span>
+          <h1>Isso é para você do futuro.</h1>
+          <p>O conteúdo fica escondido até {new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }).format(new Date(currentRecord.revealAt as string))}.</p>
+          <NavLink to="/vida/lab">Ver suas cápsulas</NavLink>
+        </section>
+      </div>
+    )
+  }
+
   if (currentRecord.private && hasPrivacyPin() && !privacyUnlocked) {
     async function unlock() {
       const valid = await unlockPrivateRecords(privacyPin)
@@ -147,6 +174,11 @@ export default function RecordDetailPage() {
     setProgressLevel(currentRecord.progressLevel || '')
     setNextMove(currentRecord.nextMove || '')
     setChapterId(currentRecord.chapterId || '')
+    setExpectation(currentRecord.expectation || '')
+    setConfidence(currentRecord.confidence ?? 70)
+    setObjectName(currentRecord.objectName || '')
+    setObjectState(currentRecord.objectState || 'researching')
+    setPlace(currentRecord.place || '')
     setEditAttachments(currentRecord.attachments ?? [])
     setEditing(true)
     setMessage('')
@@ -178,6 +210,11 @@ export default function RecordDetailPage() {
         progressLevel: progressLevel || undefined,
         nextMove: nextMove.trim() || undefined,
         chapterId: chapterId.trim() || undefined,
+        expectation: expectation.trim() || undefined,
+        confidence: type === 'Decisão' ? confidence : currentRecord.confidence,
+        objectName: objectName.trim() || undefined,
+        objectState: (area === 'Compras' || type === 'Objeto') ? objectState : currentRecord.objectState,
+        place: place.trim() || undefined,
         completedAt: nextStatus === 'completed' ? currentRecord.completedAt || new Date().toISOString() : undefined,
         followUpDays: nextStatus === 'active' ? followUpDays : undefined,
         followUpAt: nextStatus === 'active'
@@ -298,6 +335,30 @@ export default function RecordDetailPage() {
             </section>
           )}
 
+          {currentRecord.type === 'Decisão' && (currentRecord.expectation || currentRecord.confidence != null) && (
+            <section className="record-context-card decision-context-card">
+              <Tag tone="wine">ANTES DO RESULTADO</Tag>
+              {currentRecord.expectation && <p>{currentRecord.expectation}</p>}
+              {currentRecord.confidence != null && <strong>{currentRecord.confidence}% de confiança quando decidiu</strong>}
+            </section>
+          )}
+
+          {(currentRecord.objectName || currentRecord.area === 'Compras') && (
+            <section className="record-context-card object-context-card">
+              <Tag tone="pink">OBJETO COM HISTÓRIA</Tag>
+              <h2>{currentRecord.objectName || currentRecord.text}</h2>
+              <p>{currentRecord.objectState === 'bought' ? 'Comprado' : currentRecord.objectState === 'using' ? 'Em uso' : currentRecord.objectState === 'sold' ? 'Vendido' : currentRecord.objectState === 'replaced' ? 'Substituído' : 'Pesquisando'}</p>
+            </section>
+          )}
+
+          {currentRecord.place && (
+            <section className="record-context-card place-context-card">
+              <Tag tone="sky">LUGAR</Tag>
+              <h2>{currentRecord.place}</h2>
+              <p>Esse lugar passa a fazer parte do seu mapa pessoal no EU.</p>
+            </section>
+          )}
+
           {currentRecord.type === 'Curso' && (
             <section className="record-context-card progress-card">
               <Tag tone="lime">PROGRESSO LEVE</Tag>
@@ -337,7 +398,7 @@ export default function RecordDetailPage() {
             </section>
           )}
 
-          {stage && (
+          {stage && currentRecord.type !== 'Cápsula' && (
             <section className="record-journey">
               <Tag tone="coral">JORNADA</Tag>
               <h2>{stage}</h2>
@@ -492,6 +553,43 @@ export default function RecordDetailPage() {
           <label>
             Por que isso importa? <span className="optional-label">opcional</span>
             <textarea value={whyItMatters} onChange={(event) => setWhyItMatters(event.target.value)} rows={3} placeholder="O contexto que você gostaria de lembrar daqui a alguns meses." />
+          </label>
+
+          {type === 'Decisão' && (
+            <div className="record-edit-grid decision-edit-grid">
+              <label>
+                O que você espera que aconteça?
+                <textarea value={expectation} onChange={(event) => setExpectation(event.target.value)} rows={3} placeholder="Sua expectativa antes de conhecer o resultado" />
+              </label>
+              <label>
+                Confiança · {confidence}%
+                <input type="range" min="0" max="100" step="5" value={confidence} onChange={(event) => setConfidence(Number(event.target.value))} />
+              </label>
+            </div>
+          )}
+
+          {(area === 'Compras' || type === 'Objeto') && (
+            <div className="record-edit-grid">
+              <label>
+                Nome do objeto
+                <input className="record-text-input" value={objectName} onChange={(event) => setObjectName(event.target.value)} placeholder="Ex.: Casio AQ-230" />
+              </label>
+              <label>
+                Etapa do objeto
+                <select value={objectState} onChange={(event) => setObjectState(event.target.value as ObjectState)}>
+                  <option value="researching">Pesquisando</option>
+                  <option value="bought">Comprei</option>
+                  <option value="using">Em uso</option>
+                  <option value="sold">Vendi</option>
+                  <option value="replaced">Troquei/substituí</option>
+                </select>
+              </label>
+            </div>
+          )}
+
+          <label>
+            Lugar <span className="optional-label">opcional</span>
+            <input className="record-text-input" value={place} onChange={(event) => setPlace(event.target.value)} placeholder="Ex.: Ouro Preto, MG" />
           </label>
 
           {(type === 'Projeto' || type === 'Objetivo' || type === 'Pendência') && (
