@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { BrandTop, SectionTitle, Tag } from './v2Ui'
-import { dailyAstrology, vedicNatal, westernNatal, zodiacPosition, type NatalPoint } from './astrology'
+import { dailyAstrology, zodiacPosition, type NatalPoint } from './astrology'
+import { usePersonalProfile } from './appState'
 
 function ChartWheel({ points, mode }: { points: NatalPoint[]; mode: 'western' | 'vedic' }) {
   const signs = ['♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓']
@@ -63,8 +64,10 @@ function PointList({ points }: { points: NatalPoint[] }) {
 }
 
 export function AstroTodayPreview() {
+  const profile = usePersonalProfile()
   const [now, setNow] = useState(() => new Date())
-  const reading = useMemo(() => dailyAstrology(now), [now.toDateString()])
+  const westernNatal = profile.astrology?.westernNatal ?? []
+  const reading = useMemo(() => dailyAstrology(now, westernNatal), [now.toDateString(), westernNatal])
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(new Date()), 30 * 60 * 1000)
@@ -84,10 +87,14 @@ export function AstroTodayPreview() {
 }
 
 export default function AstrologyPage() {
+  const profile = usePersonalProfile()
   const [mode, setMode] = useState<'western' | 'vedic'>('western')
   const [now, setNow] = useState(() => new Date())
-  const reading = useMemo(() => dailyAstrology(now), [now.toDateString()])
+  const westernNatal = profile.astrology?.westernNatal ?? []
+  const vedicNatal = profile.astrology?.vedicNatal ?? []
+  const reading = useMemo(() => dailyAstrology(now, westernNatal), [now.toDateString(), westernNatal])
   const currentPoints = mode === 'western' ? westernNatal : vedicNatal
+  const hasNatal = currentPoints.length > 0
 
   useEffect(() => {
     const timer = window.setInterval(() => setNow(new Date()), 30 * 60 * 1000)
@@ -153,34 +160,44 @@ export default function AstrologyPage() {
           <div>
             <Tag tone={mode === 'western' ? 'coral' : 'green'}>{mode === 'western' ? 'MAPA TROPICAL' : 'MAPA VÉDICO · LAHIRI'}</Tag>
             <h2>{mode === 'western' ? 'Seu mapa ocidental' : 'Seu mapa védico'}</h2>
-            <p>{mode === 'western'
-              ? 'Ascendente em Capricórnio, Sol em Virgem e Lua em Câncer. Casas pelo sistema Placidus.'
-              : 'Ascendente em Sagitário/Mula, Lua em Câncer/Punarvasu e forte concentração na Casa 9. Casas por signo inteiro.'}</p>
+            <p>{hasNatal
+              ? 'Seu mapa pessoal fica salvo apenas no perfil local deste aparelho; o código público não contém seus pontos natais.'
+              : 'Seu mapa pessoal ainda não foi importado neste aparelho. O céu do dia continua funcionando sem ele.'}</p>
           </div>
         </div>
 
-        <div className="astro-chart-layout">
-          <ChartWheel points={currentPoints} mode={mode} />
-          <PointList points={currentPoints} />
-        </div>
-      </section>
-
-      <section className="astro-interpretation">
-        <SectionTitle eyebrow="RESUMO" title={mode === 'western' ? 'Como o ocidental te descreve' : 'Como o védico te descreve'} />
-        {mode === 'western' ? (
-          <div className="astro-summary-grid">
-            <article><Tag tone="coral">ASCENDENTE</Tag><h3>Capricórnio</h3><p>Você tende a passar uma imagem mais séria, responsável e orientada a construir algo sólido.</p></article>
-            <article><Tag tone="amber">SOL</Tag><h3>Virgem · Casa 9</h3><p>Identidade analítica, curiosa e focada em aprender, melhorar e entender como as coisas funcionam.</p></article>
-            <article><Tag tone="pink">LUA</Tag><h3>Câncer · Casa 7</h3><p>Emocionalmente, vínculos, segurança e relações próximas pesam bastante no seu equilíbrio.</p></article>
+        {hasNatal ? (
+          <div className="astro-chart-layout">
+            <ChartWheel points={currentPoints} mode={mode} />
+            <PointList points={currentPoints} />
           </div>
         ) : (
-          <div className="astro-summary-grid">
-            <article><Tag tone="green">LAGNA</Tag><h3>Sagitário · Mula</h3><p>Curiosidade, expansão e necessidade de chegar à raiz dos problemas antes de aceitar respostas prontas.</p></article>
-            <article><Tag tone="pink">LUA</Tag><h3>Câncer · Punarvasu</h3><p>Sensibilidade profunda e uma capacidade recorrente de se reconstruir depois de fases intensas.</p></article>
-            <article><Tag tone="amber">CASA 9</Tag><h3>Sol + Mercúrio + Vênus + Rahu</h3><p>Estudo, especialização, exterior, conhecimento e expansão aparecem como temas centrais da trajetória.</p></article>
+          <div className="soft-empty wide">
+            <span>☼</span>
+            <p>Importe seu perfil privado para ver o mapa natal completo sem publicar seus dados no GitHub.</p>
           </div>
         )}
       </section>
+
+      {hasNatal && (
+        <section className="astro-interpretation">
+          <SectionTitle eyebrow="RESUMO" title={mode === 'western' ? 'Três pontos do mapa ocidental' : 'Três pontos do mapa védico'} />
+          <div className="astro-summary-grid">
+            {['Ascendente', 'Sol', 'Lua'].map((name, index) => {
+              const point = currentPoints.find((item) => item.name === name)
+              if (!point) return null
+              const position = zodiacPosition(point.longitude)
+              return (
+                <article key={name}>
+                  <Tag tone={index === 0 ? (mode === 'western' ? 'coral' : 'green') : index === 1 ? 'amber' : 'pink'}>{name.toUpperCase()}</Tag>
+                  <h3>{position.sign}{point.house ? ' · Casa ' + point.house : ''}</h3>
+                  <p>{mode === 'western' ? 'Posição tropical' : 'Posição sideral'} preservada no seu perfil local.</p>
+                </article>
+              )
+            })}
+          </div>
+        </section>
+      )}
     </div>
   )
 }
