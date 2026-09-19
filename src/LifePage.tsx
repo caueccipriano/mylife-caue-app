@@ -21,6 +21,7 @@ export default function LifePage() {
   const goals = topRecords(visibleRecords, (type) => type.includes('objetivo') || type.includes('curso') || type.includes('pend'))
   const recentByArea = (area: string) => visibleRecords.filter((record) => record.area === area).slice(0, 2)
   const monthStory = periodStory(visibleRecords, 30)
+  const someday = visibleRecords.filter((record) => record.someday || record.type === 'Depois').slice(0, 6)
   const ecosystemInsights = deriveEcosystemInsights(visibleRecords, bridges)
 
   useEffect(() => {
@@ -101,6 +102,24 @@ export default function LifePage() {
         </div>
       </section>
 
+      <section className="life-block someday-block">
+        <SectionTitle eyebrow="DEPOIS" title="Coisas do seu futuro, sem pressão" />
+        <div className="someday-grid">
+          {someday.length ? someday.map((record) => (
+            <NavLink key={record.id} to={'/registro/' + record.id} className="someday-card">
+              <Tag tone="lilac">{record.type}</Tag>
+              <p>{record.text}</p>
+              <span>não está cobrando você agora</span>
+            </NavLink>
+          )) : (
+            <div className="soft-empty wide">
+              <span>◌</span>
+              <p>Quando algo for “um dia eu quero…” sem precisar virar meta agora, ele pode morar aqui.</p>
+            </div>
+          )}
+        </div>
+      </section>
+
       <section className="life-block month-story-block">
         <SectionTitle eyebrow="SEU MÊS" title="O que tomou espaço na sua vida" />
         <article className="month-story-card">
@@ -122,6 +141,30 @@ export default function LifePage() {
           </div>
           <span>ver fases ↗</span>
         </NavLink>
+      </section>
+
+      <section className="life-block self-tools-block">
+        <SectionTitle eyebrow="VOCÊ" title="Olhar a vida de outros ângulos" />
+        <div className="self-tools-grid">
+          <NavLink to="/vida/quem-sou" className="self-tool-card self-tool-lilac">
+            <Tag tone="lilac">QUEM EU SOU AGORA</Tag>
+            <h3>Uma identidade viva.</h3>
+            <p>O que anda definindo esta fase e quais princípios estão ficando mais claros.</p>
+            <span>ver agora ↗</span>
+          </NavLink>
+          <NavLink to="/vida/capitulos" className="self-tool-card self-tool-sky">
+            <Tag tone="sky">CAPÍTULOS</Tag>
+            <h3>Quando um assunto vira história.</h3>
+            <p>Fases e temas que atravessaram o tempo e merecem ser vistos juntos.</p>
+            <span>abrir capítulos ↗</span>
+          </NavLink>
+          <NavLink to="/vida/wrapped" className="self-tool-card self-tool-cobalt">
+            <Tag tone="cobalt">EU WRAPPED</Tag>
+            <h3>Seu ano sem KPI corporativo.</h3>
+            <p>Decisões, desejos, ciclos, assuntos e momentos que ficaram.</p>
+            <span>ver retrospectiva ↗</span>
+          </NavLink>
+        </div>
       </section>
 
       <section className="life-block plans-block">
