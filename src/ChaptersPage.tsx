@@ -2,6 +2,7 @@ import { NavLink } from 'react-router-dom'
 import { deriveChapters } from './lifeModel'
 import { useRecords } from './appState'
 import { BrandTop, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
+import { downloadEditorialHtml } from './v3Life'
 
 export default function ChaptersPage() {
   const records = useRecords()
@@ -24,6 +25,17 @@ export default function ChaptersPage() {
             <Tag tone={index % 2 ? 'lilac' : 'sky'}>{chapter.records.length} registros</Tag>
             <h2>{chapter.label}</h2>
             <p>{formatShortDate(chapter.start)} → {formatShortDate(chapter.end)}</p>
+            <button
+              className="chapter-export-button"
+              onClick={() => downloadEditorialHtml(
+                chapter.label,
+                'Um capítulo do seu arquivo vivo, reunindo registros, decisões e contextos que fizeram parte desta fase.',
+                chapter.records,
+                'eu-capitulo-' + chapter.id.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.html',
+              )}
+            >
+              exportar capítulo ↗
+            </button>
             <div className="chapter-preview">
               {chapter.records.slice(-3).reverse().map((record) => (
                 <NavLink key={record.id} to={'/registro/' + record.id}>
