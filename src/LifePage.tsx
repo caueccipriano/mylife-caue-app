@@ -1,6 +1,9 @@
+import { useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 import { areas, projects } from './data'
 import { periodStory } from './intelligence'
+import { deriveEcosystemInsights } from './ecosystem'
+import { captureCurrentLifeSnapshot } from './snapshots'
 import { useBridges, useRecords } from './appState'
 import { BrandTop, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
 
@@ -18,6 +21,11 @@ export default function LifePage() {
   const goals = topRecords(visibleRecords, (type) => type.includes('objetivo') || type.includes('curso') || type.includes('pend'))
   const recentByArea = (area: string) => visibleRecords.filter((record) => record.area === area).slice(0, 2)
   const monthStory = periodStory(visibleRecords, 30)
+  const ecosystemInsights = deriveEcosystemInsights(visibleRecords, bridges)
+
+  useEffect(() => {
+    captureCurrentLifeSnapshot(visibleRecords, bridges)
+  }, [records, bridges])
 
   return (
     <div className="v2-page life-page">
@@ -105,6 +113,17 @@ export default function LifePage() {
         </article>
       </section>
 
+      <section className="life-block phases-entry-block">
+        <NavLink to="/vida/fases" className="phases-entry-card">
+          <div>
+            <Tag tone="pink">SUAS FASES</Tag>
+            <h2>Você de antes × você de agora.</h2>
+            <p>O EU guarda um retrato de cada mês para mostrar como seus assuntos, desejos e movimentos mudam com o tempo.</p>
+          </div>
+          <span>ver fases ↗</span>
+        </NavLink>
+      </section>
+
       <section className="life-block plans-block">
         <SectionTitle eyebrow="PLANOS" title="Pra onde isso tudo está indo" />
         <div className="plan-grid">
@@ -142,6 +161,18 @@ export default function LifePage() {
             </article>
           ))}
         </div>
+
+        {ecosystemInsights.length > 0 && (
+          <div className="ecosystem-insights">
+            {ecosystemInsights.map((insight) => (
+              <article key={insight.id} className={'ecosystem-insight insight-' + insight.tone}>
+                <Tag tone={insight.tone}>CONEXÃO</Tag>
+                <h3>{insight.title}</h3>
+                <p>{insight.detail}</p>
+              </article>
+            ))}
+          </div>
+        )}
       </section>
     </div>
   )
