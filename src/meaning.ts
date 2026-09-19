@@ -1,4 +1,4 @@
-import { suggestTags, type StoredRecord } from './storage'
+import { isRecordVisibleForInsights, suggestTags, type StoredRecord } from './storage'
 
 const genericTags = new Set(['pessoal', 'compras', 'carreira', 'estudos', 'lazer', 'dinheiro', 'viagens', 'casa'])
 
@@ -37,7 +37,7 @@ function recordTags(record: StoredRecord) {
 
 export function detectPreferenceShifts(records: StoredRecord[]): PreferenceShift[] {
   const preferenceRecords = records
-    .filter((record) => !record.private && ['Preferência', 'Desejo', 'Pesquisa'].includes(record.type))
+    .filter((record) => isRecordVisibleForInsights(record) && ['Preferência', 'Desejo', 'Pesquisa'].includes(record.type))
     .sort((a, b) => a.createdAt.localeCompare(b.createdAt))
 
   const grouped = new Map<string, StoredRecord[]>()
@@ -86,7 +86,7 @@ const knownEntities: Array<[string, string[]]> = [
 ]
 
 export function deriveEntities(records: StoredRecord[]): LifeEntity[] {
-  const publicRecords = records.filter((record) => !record.private)
+  const publicRecords = records.filter(isRecordVisibleForInsights)
   const buckets = new Map<string, { label: string; records: StoredRecord[] }>()
 
   publicRecords.forEach((record) => {
