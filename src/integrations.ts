@@ -4,6 +4,7 @@ export type BridgeMetricValue = string | number | boolean | null
 
 export type AppBridge = {
   version: number
+  schema?: string
   app: BridgeAppId
   title: string
   updatedAt: string
@@ -26,6 +27,8 @@ export type BridgeCard = {
   description: string
   href: string
   bridge: AppBridge | null
+  stale?: boolean
+  ageHours?: number | null
 }
 
 const APP_CONFIG: Record<BridgeAppId, Omit<BridgeCard, 'bridge'>> = {
@@ -50,9 +53,9 @@ const APP_CONFIG: Record<BridgeAppId, Omit<BridgeCard, 'bridge'>> = {
 }
 
 const BRIDGE_KEYS: Record<BridgeAppId, string[]> = {
-  folego: ['eu_bridge_folego_v1'],
+  folego: ['eu_bridge_folego_v2', 'eu_bridge_folego_v1'],
   traco: ['eu_bridge_traco_v2', 'eu_bridge_traco_v1'],
-  repertorio: ['eu_bridge_repertorio_v1'],
+  repertorio: ['eu_bridge_repertorio_v2', 'eu_bridge_repertorio_v1'],
 }
 
 const HISTORY_KEY = 'eu_bridge_history_v1'
@@ -111,7 +114,14 @@ function generatedSummary(bridge: AppBridge) {
   const completed = typeof metrics.completed === 'number' ? metrics.completed : 0
   const studied = typeof metrics.studiedDaysThisWeek === 'number' ? metrics.studiedDaysThisWeek : 0
   const goal = typeof metrics.weeklyGoal === 'number' ? metrics.weeklyGoal : null
-  return completed + ' concluídos · ' + (goal ? studied + '/' + goal : studied) + ' dias estudados na semana'
+  const reviews = typeof metrics.dueReviews === 'number' ? metrics.dueReviews : 0
+  const minutes = typeof metrics.studiedMinutesEstimate === 'number' ? metrics.studiedMinutesEstimate : 0
+  return [
+    completed + ' concluídos',
+    (goal ? studied + '/' + goal : studied) + ' dias estudados na semana',
+    reviews ? reviews + ' revisões esperando' : null,
+    minutes ? '~' + minutes + ' min estudados' : null,
+  ].filter(Boolean).join(' · ')
 }
 
 function normalizeBridge(bridge: AppBridge | null) {
@@ -197,10 +207,17 @@ export function readBridgeHistory(id: BridgeAppId) {
 }
 
 export function readAppBridges(): BridgeCard[] {
-  const cards = (Object.keys(APP_CONFIG) as BridgeAppId[]).map((id) => ({
-    ...APP_CONFIG[id],
-    bridge: findBridge(id),
-  }))
+  const cards = (Object.keys(APP_CONFIG) as BridgeAppId[]).map((id) => {
+    const bridge = findBridge(id)
+    const updated = bridge ? new Date(bridge.updatedAt).getTime() : NaN
+    const ageHours = Number.isFinite(updated) ? Math.max(0, (Date.now() - updated) / 3600000) : null
+    return {
+      ...APP_CONFIG[id],
+      bridge,
+      stale: ageHours !== null ? ageHours > 48 : false,
+      ageHours,
+    }
+  })
 
   captureBridgeHistory(cards.flatMap((card) => card.bridge ? [card.bridge] : []))
   return cards
@@ -218,7 +235,7 @@ export function latestBridgeDelta(id: BridgeAppId, metric: string) {
 }
 
 
-export async function forceRefreshAppBridges(timeoutMs = 9000): Promise<BridgeCard[]> {
+export async function forceRefreshAppBridges(timeoutMs = 15000): Promise<BridgeCard[]> {
   if (typeof document === 'undefined') return readAppBridges()
 
   const frames = (Object.keys(APP_CONFIG) as BridgeAppId[]).map((id) => {
@@ -234,6 +251,14 @@ export async function forceRefreshAppBridges(timeoutMs = 9000): Promise<BridgeCa
     frame.style.pointerEvents = 'none'
     frame.style.left = '-9999px'
     frame.style.bottom = '0'
+    frame.addEventListener('load', () => {
+      try {
+        const target = frame.contentWindow as (Window & { euBridgeRefresh?: () => void }) | null
+        target?.euBridgeRefresh?.()
+      } catch {
+        // O carregamento do app por si só ainda publica o resumo.
+      }
+    })
     document.body.appendChild(frame)
     return frame
   })
@@ -248,7 +273,7 @@ export async function forceRefreshAppBridges(timeoutMs = 9000): Promise<BridgeCa
 
     const poll = window.setInterval(() => {
       const cards = readAppBridges()
-      const allReady = cards.every((card) => Boolean(card.bridge?.summary))
+      const allReady = cards.every((card) => Boolean(card.bridge?.summary) && !card.stale)
       if (allReady) {
         window.clearInterval(poll)
         window.clearTimeout(timeout)
