@@ -22,8 +22,13 @@ function norm(value: string) {
   return value.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
 }
 
-function slug(value: string) {
-  return encodeURIComponent(value.toLowerCase().replace(/\s+/g, '-'))
+export function entitySlug(value: string) {
+  return value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '')
 }
 
 function recordTags(record: StoredRecord) {
@@ -107,7 +112,7 @@ export function deriveEntities(records: StoredRecord[]): LifeEntity[] {
   return [...buckets.values()]
     .filter((bucket) => bucket.records.length >= 2)
     .map((bucket) => ({
-      slug: slug(bucket.label),
+      slug: entitySlug(bucket.label),
       label: bucket.label,
       count: bucket.records.length,
       kinds: [...new Set(bucket.records.map((record) => record.type))],
