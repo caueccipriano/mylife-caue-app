@@ -1,4 +1,5 @@
 import { useMemo } from 'react'
+import { NavLink } from 'react-router-dom'
 import { useRecords } from './appState'
 import { BrandTop, SectionTitle, Tag, typeTone } from './v2Ui'
 
@@ -48,11 +49,11 @@ export default function DiscoveriesPage() {
         <SectionTitle eyebrow="SAQUEI" title="Insights seus" />
         <div className="discovery-grid">
           {insights.length ? insights.map((record) => (
-            <article className="discovery-card" key={record.id}>
+            <NavLink className="discovery-card discovery-record-link tappable-card" key={record.id} to={'/registro/' + record.id}>
               <Tag tone={typeTone(record.type)}>{record.type}</Tag>
-              <p>{record.text}</p>
+              <p>{record.private ? 'Registro privado' : record.text}</p>
               <small>{record.area}</small>
-            </article>
+            </NavLink>
           )) : (
             <div className="soft-empty wide">
               <span>✦</span>
