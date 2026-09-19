@@ -273,7 +273,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
             <article key={card.id} className={'signal-mini signal-' + card.id}>
               <strong>{card.title}</strong>
               <p>{card.bridge?.summary || 'Ainda sem resumo neste aparelho.'}</p>
-              <span>{card.bridge?.status || 'aguardando'}</span>
+              <span>{card.stale ? 'resumo antigo · atualizar' : card.bridge?.status || 'aguardando'}</span>
             </article>
           ))}
         </div>
