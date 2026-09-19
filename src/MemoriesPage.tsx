@@ -1,5 +1,5 @@
 import { type ChangeEvent, useMemo, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { exportBackup, importBackup, listMoodCheckins } from './storage'
 import { useRecords } from './appState'
 import { BrandTop, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
@@ -7,6 +7,7 @@ import { BrandTop, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
 export default function MemoriesPage() {
   const records = useRecords()
   const [params] = useSearchParams()
+  const navigate = useNavigate()
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState(params.get('origem') === 'chatgpt' ? 'chatgpt' : 'all')
   const [message, setMessage] = useState('')
@@ -80,7 +81,7 @@ export default function MemoriesPage() {
         <SectionTitle eyebrow="ARQUIVO" title={filtered.length + (filtered.length === 1 ? ' registro' : ' registros')} />
         <div className="memory-list">
           {filtered.map((record) => (
-            <article key={record.id}>
+            <article key={record.id} className="tappable-card" onClick={() => navigate('/registro/' + record.id)}>
               <div className="memory-icon">{record.source === 'chatgpt' ? '↗' : '•'}</div>
               <div>
                 <div className="feed-meta">
@@ -88,7 +89,7 @@ export default function MemoriesPage() {
                   <span>{record.area}</span>
                   {record.source === 'chatgpt' && <Tag tone="ink">do chat</Tag>}
                 </div>
-                <h3>{record.text || 'Registro com anexo'}</h3>
+                <h3>{record.private ? 'Registro privado' : record.text || 'Registro com anexo'}</h3>
                 <p>{formatShortDate(record.createdAt)}{record.status === 'active' ? ' · em acompanhamento' : ''}</p>
               </div>
             </article>
