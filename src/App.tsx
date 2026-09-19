@@ -18,6 +18,8 @@ import TrashPage from './TrashPage'
 import SelfPage from './SelfPage'
 import ChaptersPage from './ChaptersPage'
 import WrappedPage from './WrappedPage'
+import LifeLabPage from './LifeLabPage'
+import PhaseThemeSync from './PhaseThemeSync'
 import { initPrivacyAutoLock } from './privacy'
 import { applyDiscreetMode } from './securitySettings'
 import { emptyExpiredTrash } from './storage'
@@ -55,6 +57,7 @@ function AppShell({ onRegister }: { onRegister: () => void }) {
           <Route path="/vida/quem-sou" element={<SelfPage />} />
           <Route path="/vida/capitulos" element={<ChaptersPage />} />
           <Route path="/vida/wrapped" element={<WrappedPage />} />
+          <Route path="/vida/lab" element={<LifeLabPage />} />
 
           <Route path="/areas" element={<Navigate to="/vida" replace />} />
           <Route path="/projetos" element={<Navigate to="/vida" replace />} />
@@ -97,6 +100,7 @@ export default function App() {
 
   return (
     <>
+      <PhaseThemeSync />
       <AppShell onRegister={() => setRegisterOpen(true)} />
       <RegisterSheet
         open={registerOpen}
