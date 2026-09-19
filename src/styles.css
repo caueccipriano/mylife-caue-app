@@ -1659,3 +1659,104 @@ h3 {
 
   .v2-bottom-nav a > small { font-size: 8px; }
 }
+
+
+/* Registrar attachments */
+.capture-tools input {
+  display: none;
+}
+
+.capture-tools .recording {
+  color: #fff;
+  border-color: var(--pink);
+  background: var(--pink);
+}
+
+.link-capture {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 7px;
+  margin: 10px 0 4px;
+}
+
+.link-capture input {
+  min-height: 42px;
+  width: 100%;
+  padding: 0 13px;
+  border: 1px solid var(--line-strong);
+  border-radius: 14px;
+  outline: 0;
+  background: var(--card);
+  color: var(--ink);
+  font-size: 12px;
+}
+
+.link-capture button {
+  min-height: 42px;
+  padding: 0 13px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--amber);
+  color: #fff;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.attachment-preview {
+  display: grid;
+  gap: 7px;
+  margin: 11px 0;
+}
+
+.attachment-preview > div {
+  min-height: 52px;
+  padding: 8px 10px;
+  display: grid;
+  grid-template-columns: 31px minmax(0,1fr) 28px;
+  gap: 8px;
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: var(--card);
+}
+
+.attachment-preview > div > span {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 9px;
+  background: var(--amber-soft);
+  color: var(--amber);
+  font-family: var(--serif);
+}
+
+.attachment-preview strong,
+.attachment-preview small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.attachment-preview strong {
+  font-size: 10px;
+}
+
+.attachment-preview small {
+  margin-top: 3px;
+  color: var(--muted);
+  font-size: 8px;
+}
+
+.attachment-preview button {
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 18px;
+}
