@@ -332,10 +332,20 @@ export function deriveDecisionPattern(records: StoredRecord[]) {
   }
 }
 
+function inferredPlace(record: StoredRecord) {
+  if (record.place?.trim()) return record.place.trim()
+  if (record.area !== 'Viagens' && !/(viagem|viajei|visitei|fui para|fui a)/i.test(record.text)) return ''
+
+  const match = record.text.match(/\b(?:em|para|visitei|viajei para|fui para|fui a)\s+([A-ZÁÉÍÓÚÂÊÔÃÕÇ][A-Za-zÁÉÍÓÚÂÊÔÃÕÇáéíóúâêôãõç\s-]{2,38})/)
+  if (!match?.[1]) return ''
+  return match[1].trim().replace(/\s+(?:e|com|pra|para|porque|onde)\s+.*$/i, '').trim()
+}
+
 export function derivePlaces(records: StoredRecord[]) {
   const groups = new Map<string, StoredRecord[]>()
-  records.filter((record) => !record.private && record.place).forEach((record) => {
-    const key = record.place!.trim()
+  records.filter((record) => !record.private && !record.trashedAt).forEach((record) => {
+    const key = inferredPlace(record)
+    if (!key) return
     const current = groups.get(key) || []
     current.push(record)
     groups.set(key, current)
@@ -347,6 +357,7 @@ export function derivePlaces(records: StoredRecord[]) {
       count: items.length,
       latest: [...items].sort((a, b) => b.createdAt.localeCompare(a.createdAt))[0],
       records: items,
+      inferred: items.every((item) => !item.place),
     }))
     .sort((a, b) => b.latest.createdAt.localeCompare(a.latest.createdAt))
 }
