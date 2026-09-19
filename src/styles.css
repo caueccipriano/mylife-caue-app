@@ -2782,3 +2782,69 @@ h1, h2, h3 {
     gap: 12px;
   }
 }
+
+
+/* Forced ecosystem refresh */
+.evolution-status > div:first-child {
+  display: grid;
+  gap: 4px;
+}
+
+.evolution-status > div:first-child > p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.bridge-refresh-button {
+  min-height: 42px;
+  padding: 0 15px;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  background: var(--ink);
+  color: var(--paper);
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .04em;
+  white-space: nowrap;
+}
+
+.bridge-refresh-button:disabled {
+  opacity: .56;
+  cursor: default;
+}
+
+.bridge-refresh-note {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: -10px 0 24px;
+  padding: 14px 16px;
+  border: 1px dashed var(--line-strong);
+  border-radius: 14px 22px 13px 20px;
+  background: rgba(214,224,229,.28);
+}
+
+.bridge-refresh-note p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+@media (max-width: 860px) {
+  .evolution-status {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .bridge-refresh-button {
+    width: 100%;
+    margin-top: 8px;
+  }
+
+  .bridge-refresh-note {
+    align-items: flex-start;
+  }
+}
