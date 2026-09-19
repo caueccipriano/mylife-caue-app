@@ -289,6 +289,15 @@ export default function RecordDetailPage() {
     window.dispatchEvent(new Event('eu-record-saved'))
   }
 
+  async function setObjectStateQuick(objectState: ObjectState) {
+    await updateRecord(currentRecord.id, {
+      objectState,
+      journeyStage: objectState === 'bought' || objectState === 'using' ? 'Comprei' : currentRecord.journeyStage,
+      status: objectState === 'sold' || objectState === 'replaced' ? 'completed' : currentRecord.status,
+    })
+    window.dispatchEvent(new Event('eu-record-saved'))
+  }
+
   function openAttachment(attachment: StoredAttachment) {
     if (attachment.url) {
       window.open(attachment.url, '_blank', 'noopener,noreferrer')
@@ -348,6 +357,17 @@ export default function RecordDetailPage() {
               <Tag tone="pink">OBJETO COM HISTÓRIA</Tag>
               <h2>{currentRecord.objectName || currentRecord.text}</h2>
               <p>{currentRecord.objectState === 'bought' ? 'Comprado' : currentRecord.objectState === 'using' ? 'Em uso' : currentRecord.objectState === 'sold' ? 'Vendido' : currentRecord.objectState === 'replaced' ? 'Substituído' : 'Pesquisando'}</p>
+              <div className="object-state-row">
+                {[
+                  ['researching','Pesquisando'],
+                  ['bought','Comprei'],
+                  ['using','Uso'],
+                  ['sold','Vendi'],
+                  ['replaced','Troquei'],
+                ].map(([value,label]) => (
+                  <button key={value} className={currentRecord.objectState === value ? 'active' : ''} onClick={() => void setObjectStateQuick(value as ObjectState)}>{label}</button>
+                ))}
+              </div>
             </section>
           )}
 
