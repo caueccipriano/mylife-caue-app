@@ -32,35 +32,6 @@ export type DailyAstrology = {
   signals: DailySignal[]
 }
 
-export const westernNatal: NatalPoint[] = [
-  { name: 'Ascendente', symbol: 'ASC', longitude: 276.2516, house: 1 },
-  { name: 'Sol', symbol: '☉', longitude: 172.5767, house: 9 },
-  { name: 'Lua', symbol: '☾', longitude: 114.3086, house: 7 },
-  { name: 'Mercúrio', symbol: '☿', longitude: 163.6103, house: 9 },
-  { name: 'Vênus', symbol: '♀', longitude: 160.9285, house: 9 },
-  { name: 'Marte', symbol: '♂', longitude: 136.4330, house: 8 },
-  { name: 'Júpiter', symbol: '♃', longitude: 353.1206, house: 3, retrograde: true },
-  { name: 'Saturno', symbol: '♄', longitude: 32.8211, house: 5, retrograde: true },
-  { name: 'Urano', symbol: '♅', longitude: 309.2511, house: 2, retrograde: true },
-  { name: 'Netuno', symbol: '♆', longitude: 299.5651, house: 1, retrograde: true },
-  { name: 'Plutão', symbol: '♇', longitude: 245.5514, house: 12 },
-  { name: 'Nodo Norte', symbol: '☊', longitude: 150.0821, house: 9 },
-  { name: 'MC', symbol: 'MC', longitude: 176.0136, house: 10 },
-]
-
-export const vedicNatal: NatalPoint[] = [
-  { name: 'Ascendente', symbol: 'ASC', longitude: 252.4149, house: 1 },
-  { name: 'Sol', symbol: '☉', longitude: 148.7400, house: 9 },
-  { name: 'Lua', symbol: '☾', longitude: 90.4719, house: 8 },
-  { name: 'Mercúrio', symbol: '☿', longitude: 139.7736, house: 9 },
-  { name: 'Vênus', symbol: '♀', longitude: 137.0918, house: 9 },
-  { name: 'Marte', symbol: '♂', longitude: 112.5963, house: 8 },
-  { name: 'Júpiter', symbol: '♃', longitude: 329.2839, house: 3, retrograde: true },
-  { name: 'Saturno', symbol: '♄', longitude: 8.9844, house: 5, retrograde: true },
-  { name: 'Rahu', symbol: '☊', longitude: 126.2455, house: 9 },
-  { name: 'Ketu', symbol: '☋', longitude: 306.2455, house: 3 },
-]
-
 const signs = [
   'Áries', 'Touro', 'Gêmeos', 'Câncer', 'Leão', 'Virgem',
   'Libra', 'Escorpião', 'Sagitário', 'Capricórnio', 'Aquário', 'Peixes',
@@ -211,8 +182,8 @@ function signalCopy(transit: string, aspect: string, natal: string) {
   return ['Foco do dia', supportive ? 'O dia favorece colocar energia no que já importa para você.' : 'Vale equilibrar vontade de agir com leitura do contexto.', 'green'] as const
 }
 
-function buildSignals(transits: DailyTransit[]) {
-  const targets = westernNatal.filter((point) => ['Sol','Lua','Mercúrio','Vênus','Marte','Júpiter','Saturno','Ascendente','MC'].includes(point.name))
+function buildSignals(transits: DailyTransit[], natalPoints: NatalPoint[]) {
+  const targets = natalPoints.filter((point) => ['Sol','Lua','Mercúrio','Vênus','Marte','Júpiter','Saturno','Ascendente','MC'].includes(point.name))
   const candidates: DailySignal[] = []
 
   for (const transit of transits) {
@@ -256,10 +227,10 @@ function fallbackSignal(date: Date): DailySignal {
   }
 }
 
-export function dailyAstrology(date = new Date()): DailyAstrology {
+export function dailyAstrology(date = new Date(), natalPoints: NatalPoint[] = []): DailyAstrology {
   const moment = dailyNoon(date)
   const transits = currentTransits(moment)
-  const signals = buildSignals(transits)
+  const signals = natalPoints.length ? buildSignals(transits, natalPoints) : []
   if (!signals.length) signals.push(fallbackSignal(moment))
 
   const main = signals[0]
