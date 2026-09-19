@@ -1,4 +1,4 @@
-import { suggestTags, type StoredRecord } from './storage'
+import { isRecordVisibleForInsights, suggestTags, type StoredRecord } from './storage'
 
 const SIMPLE_DAY_KEY = 'eu-simple-day-v1'
 
@@ -54,11 +54,7 @@ export function semanticSearchLocal(records: StoredRecord[], query: string) {
   if (!queryTokens.length) return records
 
   return records
-    .filter((record) => {
-      if (record.private || record.trashedAt) return false
-      if (record.revealAt && !record.capsuleOpenedAt && new Date(record.revealAt).getTime() > Date.now()) return false
-      return true
-    })
+    .filter(isRecordVisibleForInsights)
     .map((record) => {
       const tags = record.tags?.length ? record.tags : suggestTags(record.text, record.area, record.type)
       const haystack = expandTokens([
@@ -96,7 +92,7 @@ function recordTags(record: StoredRecord) {
 }
 
 export function derivePhaseTheme(records: StoredRecord[]): PhaseTone {
-  const recent = records.filter((record) => !record.private && !record.trashedAt && new Date(record.createdAt).getTime() > Date.now() - 45 * 86400000)
+  const recent = records.filter((record) => isRecordVisibleForInsights(record) && new Date(record.createdAt).getTime() > Date.now() - 45 * 86400000)
   const counts = new Map<string, number>()
 
   recent.forEach((record) => counts.set(record.area, (counts.get(record.area) || 0) + 1))
@@ -136,7 +132,7 @@ function countTopics(records: StoredRecord[]) {
 }
 
 export function deriveRadar(records: StoredRecord[]): RadarTopic[] {
-  const publicRecords = records.filter((record) => !record.private && !record.trashedAt)
+  const publicRecords = records.filter(isRecordVisibleForInsights)
   const now = Date.now()
   const current = publicRecords.filter((record) => {
     const time = new Date(record.createdAt).getTime()
@@ -173,7 +169,7 @@ export type LifeChange = {
 }
 
 export function deriveChanges(records: StoredRecord[]): LifeChange[] {
-  const publicRecords = records.filter((record) => !record.private && !record.trashedAt)
+  const publicRecords = records.filter(isRecordVisibleForInsights)
   const radar = deriveRadar(publicRecords)
   const changes: LifeChange[] = []
 
@@ -293,12 +289,12 @@ export function deriveLifeGraph(records: StoredRecord[]) {
 }
 
 export function deriveDecisionPattern(records: StoredRecord[]) {
-  const decisions = records.filter((record) => !record.private && record.type === 'Decisão' && record.outcome && record.outcome !== 'unknown')
+  const decisions = records.filter((record) => isRecordVisibleForInsights(record) && record.type === 'Decisão' && record.outcome && record.outcome !== 'unknown')
   const scored = decisions.map((decision) => {
     const decisionTags = new Set(recordTags(decision))
     const decisionTime = new Date(decision.createdAt).getTime()
     const researched = records.some((candidate) => {
-      if (candidate.private || candidate.type !== 'Pesquisa') return false
+      if (!isRecordVisibleForInsights(candidate) || candidate.type !== 'Pesquisa') return false
       const time = new Date(candidate.createdAt).getTime()
       if (time >= decisionTime || time < decisionTime - 90 * 86400000) return false
       if (candidate.area === decision.area) return true
@@ -343,7 +339,7 @@ function inferredPlace(record: StoredRecord) {
 
 export function derivePlaces(records: StoredRecord[]) {
   const groups = new Map<string, StoredRecord[]>()
-  records.filter((record) => !record.private && !record.trashedAt).forEach((record) => {
+  records.filter(isRecordVisibleForInsights).forEach((record) => {
     const key = inferredPlace(record)
     if (!key) return
     const current = groups.get(key) || []
@@ -364,7 +360,7 @@ export function derivePlaces(records: StoredRecord[]) {
 
 export function deriveObjects(records: StoredRecord[]) {
   return records
-    .filter((record) => !record.private && !record.trashedAt && (record.objectName || record.area === 'Compras'))
+    .filter((record) => isRecordVisibleForInsights(record) && (record.objectName || record.area === 'Compras'))
     .map((record) => ({
       record,
       name: record.objectName || record.text.slice(0, 56),
@@ -375,14 +371,14 @@ export function deriveObjects(records: StoredRecord[]) {
 
 export function dueCapsules(records: StoredRecord[], now = new Date()) {
   return records
-    .filter((record) => !record.trashedAt && record.revealAt && !record.capsuleOpenedAt)
+    .filter((record) => !record.private && !record.trashedAt && record.revealAt && !record.capsuleOpenedAt)
     .filter((record) => new Date(record.revealAt as string).getTime() <= now.getTime())
     .sort((a, b) => String(a.revealAt).localeCompare(String(b.revealAt)))
 }
 
 export function futureCapsules(records: StoredRecord[]) {
   return records
-    .filter((record) => !record.trashedAt && record.revealAt && !record.capsuleOpenedAt)
+    .filter((record) => !record.private && !record.trashedAt && record.revealAt && !record.capsuleOpenedAt)
     .sort((a, b) => String(a.revealAt).localeCompare(String(b.revealAt)))
 }
 
@@ -397,7 +393,8 @@ function escapeHtml(value: string) {
 }
 
 export function downloadEditorialHtml(title: string, subtitle: string, records: StoredRecord[], filename: string) {
-  const body = records.map((record) => `
+  const safeRecords = records.filter(isRecordVisibleForInsights)
+  const body = safeRecords.map((record) => `
     <article>
       <div class="meta">${escapeHtml(record.type)} · ${escapeHtml(record.area)} · ${new Intl.DateTimeFormat('pt-BR', { dateStyle: 'medium' }).format(new Date(record.createdAt))}</div>
       <h2>${escapeHtml(record.text || 'Registro com anexo')}</h2>
