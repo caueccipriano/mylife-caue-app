@@ -6,6 +6,7 @@ import LifePage, { CareerPlanPage } from './LifePage'
 import DiscoveriesPage from './DiscoveriesPage'
 import MemoriesPage from './MemoriesPage'
 import ChatCapturePage from './ChatCapturePage'
+import RecordDetailPage from './RecordDetailPage'
 
 const nav = [
   { path: '/', label: 'Hoje', icon: '☀' },
@@ -25,6 +26,7 @@ function AppShell({ onRegister }: { onRegister: () => void }) {
           <Route path="/descobertas" element={<DiscoveriesPage />} />
           <Route path="/memorias" element={<MemoriesPage />} />
           <Route path="/capturar" element={<ChatCapturePage />} />
+          <Route path="/registro/:id" element={<RecordDetailPage />} />
 
           <Route path="/areas" element={<Navigate to="/vida" replace />} />
           <Route path="/projetos" element={<Navigate to="/vida" replace />} />
