@@ -11,7 +11,8 @@ import ChatInboxPage from './ChatInboxPage'
 import ReviewPage from './ReviewPage'
 import AskEuPage from './AskEuPage'
 import EntityPage from './EntityPage'
-import SnapshotsPage from './SnapshotsPage'\nimport AstrologyPage from './AstrologyPage'
+import SnapshotsPage from './SnapshotsPage'
+import AstrologyPage from './AstrologyPage'
 
 const nav = [
   { path: '/', label: 'Hoje', icon: '☀' },
@@ -39,7 +40,8 @@ function AppShell({ onRegister }: { onRegister: () => void }) {
           <Route path="/revisao" element={<ReviewPage />} />
           <Route path="/pergunte" element={<AskEuPage />} />
           <Route path="/assunto/:slug" element={<EntityPage />} />
-          <Route path="/vida/fases" element={<SnapshotsPage />} />\n          <Route path="/vida/astrologia" element={<AstrologyPage />} />
+          <Route path="/vida/fases" element={<SnapshotsPage />} />
+          <Route path="/vida/astrologia" element={<AstrologyPage />} />
 
           <Route path="/areas" element={<Navigate to="/vida" replace />} />
           <Route path="/projetos" element={<Navigate to="/vida" replace />} />
