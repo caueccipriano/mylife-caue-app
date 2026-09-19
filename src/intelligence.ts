@@ -1,4 +1,4 @@
-import type { StoredRecord } from './storage'
+import { isRecordVisibleForInsights, type StoredRecord } from './storage'
 
 const stopwords = new Set([
   'qual','era','aquele','aquela','que','eu','o','a','os','as','de','do','da','dos','das',
@@ -51,7 +51,7 @@ export type PersonalPattern = {
 }
 
 export function derivePatterns(records: StoredRecord[]): PersonalPattern[] {
-  records = records.filter((record) => !record.private)
+  records = records.filter(isRecordVisibleForInsights)
   const recentCutoff = Date.now() - 30 * 24 * 60 * 60 * 1000
   const recent = records.filter((record) => new Date(record.createdAt).getTime() >= recentCutoff)
   const patterns: PersonalPattern[] = []
@@ -117,7 +117,7 @@ export function derivePatterns(records: StoredRecord[]): PersonalPattern[] {
 }
 
 export function reviewCandidates(records: StoredRecord[]) {
-  records = records.filter((record) => !record.private)
+  records = records.filter(isRecordVisibleForInsights)
   const now = Date.now()
   return records
     .filter((record) => {
@@ -147,7 +147,7 @@ export function groupTimeline(records: StoredRecord[]) {
 
 
 export function periodStory(records: StoredRecord[], days = 7) {
-  records = records.filter((record) => !record.private)
+  records = records.filter(isRecordVisibleForInsights)
   const cutoff = Date.now() - days * 24 * 60 * 60 * 1000
   const recent = records.filter((record) => new Date(record.createdAt).getTime() >= cutoff)
 
@@ -178,7 +178,7 @@ export function periodStory(records: StoredRecord[], days = 7) {
 }
 
 export function lifePulse(records: StoredRecord[]) {
-  records = records.filter((record) => !record.private)
+  records = records.filter(isRecordVisibleForInsights)
   const active = records.filter((record) => record.status === 'active')
   const career = active.filter((record) => record.area === 'Carreira').length
   const money = records.filter((record) => record.area === 'Dinheiro' && new Date(record.createdAt).getTime() > Date.now() - 14 * 86400000).length
