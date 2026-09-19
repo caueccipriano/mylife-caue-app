@@ -41,6 +41,18 @@ export function useBridges() {
     const visible = () => !document.hidden && refresh()
 
     refresh()
+
+    const current = readAppBridges()
+    const needsRefresh = current.some((card) => !card.bridge?.summary || card.stale)
+    const lastAutoRefresh = Number(sessionStorage.getItem('eu-bridge-auto-refresh-at') || 0)
+    if (needsRefresh && Date.now() - lastAutoRefresh > 60000) {
+      sessionStorage.setItem('eu-bridge-auto-refresh-at', String(Date.now()))
+      setRefreshing(true)
+      void forceRefreshAppBridges()
+        .then(setBridges)
+        .finally(() => setRefreshing(false))
+    }
+
     window.addEventListener('focus', refresh)
     window.addEventListener('storage', refresh)
     document.addEventListener('visibilitychange', visible)
