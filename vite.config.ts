@@ -22,7 +22,7 @@ export default defineConfig({
         background_color: '#F6F2EA',
         display: 'standalone',
         orientation: 'portrait-primary',
-        start_url: base + '?v=organic-2',
+        start_url: base + '?v=career-plan-2026-2030',
         scope: base,
         categories: ['lifestyle', 'utilities'],
         icons: [
