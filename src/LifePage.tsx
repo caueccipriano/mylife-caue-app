@@ -12,11 +12,12 @@ export default function LifePage() {
   const records = useRecords()
   const { bridges, refreshing, forceRefresh } = useBridges()
 
-  const active = records.filter((record) => record.status === 'active')
-  const wishes = topRecords(records, (type) => type.includes('desejo') || type.includes('pesquisa') || type.includes('prefer'))
-  const goals = topRecords(records, (type) => type.includes('objetivo') || type.includes('curso') || type.includes('pend'))
-  const recentByArea = (area: string) => records.filter((record) => record.area === area).slice(0, 2)
-  const monthStory = periodStory(records, 30)
+  const visibleRecords = records.filter((record) => !record.private)
+  const active = visibleRecords.filter((record) => record.status === 'active')
+  const wishes = topRecords(visibleRecords, (type) => type.includes('desejo') || type.includes('pesquisa') || type.includes('prefer'))
+  const goals = topRecords(visibleRecords, (type) => type.includes('objetivo') || type.includes('curso') || type.includes('pend'))
+  const recentByArea = (area: string) => visibleRecords.filter((record) => record.area === area).slice(0, 2)
+  const monthStory = periodStory(visibleRecords, 30)
 
   return (
     <div className="v2-page life-page">
