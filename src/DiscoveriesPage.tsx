@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { NavLink } from 'react-router-dom'
 import { suggestTags } from './storage'
+import { deriveEntities, detectPreferenceShifts } from './meaning'
 import { useRecords } from './appState'
 import { BrandTop, SectionTitle, Tag, typeTone } from './v2Ui'
 
@@ -27,6 +28,8 @@ export default function DiscoveriesPage() {
       .map((attachment) => ({ record, attachment })),
   ).slice(0, 8)
   const suggestions = useMemo(() => recommendation(visibleRecords), [records])
+  const preferenceShifts = useMemo(() => detectPreferenceShifts(visibleRecords), [records])
+  const entities = useMemo(() => deriveEntities(visibleRecords).slice(0, 8), [records])
   const collections = useMemo(() => {
     const grouped = new Map<string, typeof records>()
     visibleRecords.forEach((record) => {
@@ -97,12 +100,53 @@ export default function DiscoveriesPage() {
         </div>
       </section>
 
+      {preferenceShifts.length > 0 && (
+        <section className="discovery-block">
+          <SectionTitle eyebrow="VOCÊ MUDOU DE IDEIA?" title="Seu gosto também evolui" />
+          <div className="preference-shifts">
+            {preferenceShifts.map((shift) => (
+              <article key={shift.id}>
+                <div className="preference-shift-head">
+                  <Tag tone="pink">#{shift.topic}</Tag>
+                  <span>{shift.explicit ? 'mudança explícita' : 'evolução percebida'}</span>
+                </div>
+                <div className="before-after">
+                  <NavLink to={'/registro/' + shift.previous.id}>
+                    <small>ANTES</small>
+                    <p>{shift.previous.text}</p>
+                  </NavLink>
+                  <b>→</b>
+                  <NavLink to={'/registro/' + shift.current.id}>
+                    <small>AGORA</small>
+                    <p>{shift.current.text}</p>
+                  </NavLink>
+                </div>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {entities.length > 0 && (
+        <section className="discovery-block">
+          <SectionTitle eyebrow="ASSUNTOS VIVOS" title="Coisas que ganharam uma página própria" />
+          <div className="entity-cloud">
+            {entities.map((entity, index) => (
+              <NavLink key={entity.slug} to={'/assunto/' + entity.slug} className={'entity-chip entity-chip-' + (index % 4)}>
+                <strong>{entity.label}</strong>
+                <span>{entity.count} conexões</span>
+              </NavLink>
+            ))}
+          </div>
+        </section>
+      )}
+
       {collections.length > 0 && (
         <section className="discovery-block">
           <SectionTitle eyebrow="COLEÇÕES" title="O EU juntou pra você" />
           <div className="auto-collections">
             {collections.map(([tag, items], index) => (
-              <NavLink key={tag} to={'/memorias?tag=' + encodeURIComponent(tag)} className={'collection-card collection-' + (index % 4)}>
+              <NavLink key={tag} to={'/assunto/' + encodeURIComponent(tag.toLowerCase().replace(/\s+/g, '-'))} className={'collection-card collection-' + (index % 4)}>
                 <span>#{tag}</span>
                 <strong>{items.length} coisas conectadas</strong>
                 <p>{items[0]?.private ? 'Inclui registros privados' : items[0]?.text}</p>
