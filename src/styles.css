@@ -2026,3 +2026,196 @@ h3 {
   .month-story-card > div strong { font-size: 44px; }
   .month-story-card > p { font-size: 18px; }
 }
+
+
+/* Privacy */
+.privacy-settings {
+  margin-top: 48px;
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: linear-gradient(140deg, var(--pink-soft), #fffdf9);
+}
+.privacy-settings h2 {
+  margin: 17px 0 8px;
+  font-size: 31px;
+  line-height: 1.08;
+}
+.privacy-settings > p {
+  max-width: 560px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+.privacy-pin-form {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 7px;
+  margin-top: 18px;
+}
+.privacy-pin-form input {
+  min-height: 42px;
+  min-width: 0;
+  padding: 0 11px;
+  border: 1px solid var(--line-strong);
+  border-radius: 13px;
+  background: var(--card);
+  outline: 0;
+}
+.privacy-pin-form button,
+.privacy-actions button {
+  min-height: 42px;
+  padding: 0 13px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--pink);
+  color: #fff;
+  cursor: pointer;
+  font-size: 9px;
+}
+.privacy-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 18px;
+}
+.privacy-actions .quiet {
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--muted);
+}
+.privacy-settings > small {
+  display: block;
+  margin-top: 11px;
+  color: var(--pink);
+  font-size: 9px;
+}
+.private-lock-screen {
+  max-width: 520px;
+  margin: 65px auto 0;
+  padding: 34px;
+  border: 1px solid var(--line);
+  border-radius: 27px;
+  background: linear-gradient(145deg, var(--pink-soft), #fffdf9);
+  text-align: center;
+}
+.private-lock-screen > span {
+  width: 60px;
+  height: 60px;
+  margin: 22px auto 15px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--pink);
+  color: #fff;
+  font-size: 24px;
+}
+.private-lock-screen h1 {
+  margin: 0 0 8px;
+  font-size: 39px;
+  line-height: 1.05;
+}
+.private-lock-screen > p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+}
+.private-lock-screen > div {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 7px;
+  margin-top: 22px;
+}
+.private-lock-screen input {
+  min-height: 44px;
+  padding: 0 13px;
+  border: 1px solid var(--line-strong);
+  border-radius: 14px;
+  background: var(--card);
+  outline: 0;
+}
+.private-lock-screen button:not(.back-button-v2) {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--pink);
+  color: #fff;
+  cursor: pointer;
+}
+.private-lock-screen > small {
+  display: block;
+  margin-top: 10px;
+  color: var(--pink);
+  font-size: 9px;
+}
+
+/* Deep record editing */
+.followup-edit-row {
+  display: grid;
+  grid-template-columns: 90px auto;
+  gap: 9px;
+  align-items: center;
+}
+.followup-edit-row input {
+  min-height: 42px;
+  padding: 0 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 13px;
+  background: var(--card);
+  color: var(--ink);
+}
+.followup-edit-row span {
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.edit-attachments {
+  margin-top: 22px;
+}
+.edit-attachments > span {
+  display: block;
+  margin-bottom: 9px;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.edit-attachments > div {
+  min-height: 52px;
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+}
+.edit-attachments b {
+  color: var(--amber);
+  font-family: var(--serif);
+  font-weight: 400;
+}
+.edit-attachments strong,
+.edit-attachments small {
+  display: block;
+}
+.edit-attachments strong { font-size: 10px; }
+.edit-attachments small { margin-top: 3px; color: var(--muted); font-size: 8px; }
+.edit-attachments button {
+  border: 0;
+  background: transparent;
+  color: var(--pink);
+  cursor: pointer;
+  font-size: 9px;
+}
+
+@media (max-width: 760px) {
+  .privacy-pin-form {
+    grid-template-columns: 1fr;
+  }
+  .privacy-pin-form button {
+    width: 100%;
+  }
+}
