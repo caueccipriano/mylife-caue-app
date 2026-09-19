@@ -292,6 +292,46 @@ export function deriveLifeGraph(records: StoredRecord[]) {
   }
 }
 
+export function deriveDecisionPattern(records: StoredRecord[]) {
+  const decisions = records.filter((record) => !record.private && record.type === 'Decisão' && record.outcome && record.outcome !== 'unknown')
+  const scored = decisions.map((decision) => {
+    const decisionTags = new Set(recordTags(decision))
+    const decisionTime = new Date(decision.createdAt).getTime()
+    const researched = records.some((candidate) => {
+      if (candidate.private || candidate.type !== 'Pesquisa') return false
+      const time = new Date(candidate.createdAt).getTime()
+      if (time >= decisionTime || time < decisionTime - 90 * 86400000) return false
+      if (candidate.area === decision.area) return true
+      return recordTags(candidate).some((tag) => decisionTags.has(tag))
+    })
+    return { decision, researched, good: decision.outcome === 'good' }
+  })
+
+  const withResearch = scored.filter((item) => item.researched)
+  const withoutResearch = scored.filter((item) => !item.researched)
+  const rate = (items: typeof scored) => items.length ? Math.round(items.filter((item) => item.good).length / items.length * 100) : null
+  const withRate = rate(withResearch)
+  const withoutRate = rate(withoutResearch)
+
+  let insight = 'Ainda não há decisões avaliadas o suficiente para reconhecer um padrão.'
+  if (withRate != null && withoutRate != null && withResearch.length >= 2 && withoutResearch.length >= 2) {
+    if (withRate > withoutRate + 15) insight = 'Até aqui, decisões precedidas por pesquisa têm saído melhor para você.'
+    else if (withoutRate > withRate + 15) insight = 'Até aqui, pesquisar antes não foi o fator que mais diferenciou suas boas decisões.'
+    else insight = 'Até aqui, pesquisar antes e decidir mais direto tiveram resultados parecidos.'
+  } else if (scored.length >= 2) {
+    insight = scored.filter((item) => item.good).length + '/' + scored.length + ' decisões avaliadas foram marcadas como boas escolhas.'
+  }
+
+  return {
+    total: scored.length,
+    withResearch: withResearch.length,
+    withoutResearch: withoutResearch.length,
+    withResearchGoodRate: withRate,
+    withoutResearchGoodRate: withoutRate,
+    insight,
+  }
+}
+
 export function derivePlaces(records: StoredRecord[]) {
   const groups = new Map<string, StoredRecord[]>()
   records.filter((record) => !record.private && record.place).forEach((record) => {
