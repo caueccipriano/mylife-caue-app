@@ -76,14 +76,15 @@ export default function RecordDetailPage() {
     )
   }
 
-  const actualTags = record.tags?.length ? record.tags : suggestTags(record.text, record.area, record.type)
-  const stage = record.journeyStage || defaultJourneyStage(record.type, record.status)
-  const related = records.filter((item) => (record.relatedIds ?? []).includes(item.id))
+  const currentRecord = record
+  const actualTags = currentRecord.tags?.length ? currentRecord.tags : suggestTags(currentRecord.text, currentRecord.area, currentRecord.type)
+  const stage = currentRecord.journeyStage || defaultJourneyStage(currentRecord.type, currentRecord.status)
+  const related = records.filter((item) => (currentRecord.relatedIds ?? []).includes(item.id))
 
   function beginEdit() {
-    setText(record.text)
-    setType(record.type)
-    setArea(record.area)
+    setText(currentRecord.text)
+    setType(currentRecord.type)
+    setArea(currentRecord.area)
     setTags(actualTags)
     setJourneyStage(stage)
     setEditing(true)
@@ -103,16 +104,16 @@ export default function RecordDetailPage() {
 
     setSaving(true)
     try {
-      const nextStatus = statusFromStage(journeyStage, record.status)
-      await updateRecord(record.id, {
+      const nextStatus = statusFromStage(journeyStage, currentRecord.status)
+      await updateRecord(currentRecord.id, {
         text: text.trim(),
         type,
         area,
         tags,
         journeyStage,
         status: nextStatus,
-        completedAt: nextStatus === 'completed' ? record.completedAt || new Date().toISOString() : undefined,
-        followUpAt: nextStatus === 'active' ? record.followUpAt : undefined,
+        completedAt: nextStatus === 'completed' ? currentRecord.completedAt || new Date().toISOString() : undefined,
+        followUpAt: nextStatus === 'active' ? currentRecord.followUpAt : undefined,
       })
       window.dispatchEvent(new Event('eu-record-saved'))
       setEditing(false)
@@ -123,16 +124,16 @@ export default function RecordDetailPage() {
   }
 
   async function toggleFlag(flag: 'favorite' | 'pinned' | 'private') {
-    await updateRecord(record.id, { [flag]: !record[flag] })
+    await updateRecord(currentRecord.id, { [flag]: !currentRecord[flag] })
     window.dispatchEvent(new Event('eu-record-saved'))
   }
 
   async function setStatus(status: RecordStatus) {
-    await updateRecord(record.id, {
+    await updateRecord(currentRecord.id, {
       status,
       journeyStage: status === 'completed' ? 'Concluído' : status === 'paused' ? 'Pausado' : status === 'abandoned' ? 'Desisti' : stage,
-      completedAt: status === 'completed' ? record.completedAt || new Date().toISOString() : undefined,
-      followUpAt: status === 'active' ? record.followUpAt : undefined,
+      completedAt: status === 'completed' ? currentRecord.completedAt || new Date().toISOString() : undefined,
+      followUpAt: status === 'active' ? currentRecord.followUpAt : undefined,
     })
     window.dispatchEvent(new Event('eu-record-saved'))
   }
@@ -141,23 +142,23 @@ export default function RecordDetailPage() {
     const other = records.find((item) => item.id === otherId)
     if (!other) return
 
-    await updateRecord(record.id, { relatedIds: [...new Set([...(record.relatedIds ?? []), otherId])] })
-    await updateRecord(other.id, { relatedIds: [...new Set([...(other.relatedIds ?? []), record.id])] })
+    await updateRecord(currentRecord.id, { relatedIds: [...new Set([...(currentRecord.relatedIds ?? []), otherId])] })
+    await updateRecord(other.id, { relatedIds: [...new Set([...(other.relatedIds ?? []), currentRecord.id])] })
     window.dispatchEvent(new Event('eu-record-saved'))
   }
 
   async function disconnect(otherId: string) {
     const other = records.find((item) => item.id === otherId)
-    await updateRecord(record.id, { relatedIds: (record.relatedIds ?? []).filter((value) => value !== otherId) })
+    await updateRecord(currentRecord.id, { relatedIds: (currentRecord.relatedIds ?? []).filter((value) => value !== otherId) })
     if (other) {
-      await updateRecord(other.id, { relatedIds: (other.relatedIds ?? []).filter((value) => value !== record.id) })
+      await updateRecord(other.id, { relatedIds: (other.relatedIds ?? []).filter((value) => value !== currentRecord.id) })
     }
     window.dispatchEvent(new Event('eu-record-saved'))
   }
 
   async function remove() {
     if (!window.confirm('Excluir este registro do EU? Essa ação não pode ser desfeita.')) return
-    await deleteRecord(record.id)
+    await deleteRecord(currentRecord.id)
     window.dispatchEvent(new Event('eu-record-saved'))
     navigate('/memorias')
   }
@@ -183,20 +184,20 @@ export default function RecordDetailPage() {
         <>
           <header className="record-detail-hero">
             <div className="feed-meta">
-              <Tag tone={typeTone(record.type)}>{record.type}</Tag>
-              <span>{record.area}</span>
-              {record.source === 'chatgpt' && <Tag tone="ink">do chat</Tag>}
-              {record.private && <Tag tone="pink">privado</Tag>}
+              <Tag tone={typeTone(currentRecord.type)}>{currentRecord.type}</Tag>
+              <span>{currentRecord.area}</span>
+              {currentRecord.source === 'chatgpt' && <Tag tone="ink">do chat</Tag>}
+              {currentRecord.private && <Tag tone="pink">privado</Tag>}
             </div>
-            <h1>{record.text || 'Registro com anexo'}</h1>
-            <p>{formatShortDate(record.createdAt)}{record.updatedAt && record.updatedAt !== record.createdAt ? ' · editado' : ''}</p>
+            <h1>{currentRecord.text || 'Registro com anexo'}</h1>
+            <p>{formatShortDate(currentRecord.createdAt)}{currentRecord.updatedAt && currentRecord.updatedAt !== currentRecord.createdAt ? ' · editado' : ''}</p>
           </header>
 
           <div className="record-actions-row">
             <button onClick={beginEdit}>Editar</button>
-            <button className={record.favorite ? 'active' : ''} onClick={() => void toggleFlag('favorite')}>{record.favorite ? '♥ Favorito' : '♡ Favoritar'}</button>
-            <button className={record.pinned ? 'active' : ''} onClick={() => void toggleFlag('pinned')}>{record.pinned ? '⌖ Fixado' : '⌖ Fixar'}</button>
-            <button className={record.private ? 'active' : ''} onClick={() => void toggleFlag('private')}>{record.private ? '◉ Privado' : '○ Privado'}</button>
+            <button className={currentRecord.favorite ? 'active' : ''} onClick={() => void toggleFlag('favorite')}>{currentRecord.favorite ? '♥ Favorito' : '♡ Favoritar'}</button>
+            <button className={currentRecord.pinned ? 'active' : ''} onClick={() => void toggleFlag('pinned')}>{currentRecord.pinned ? '⌖ Fixado' : '⌖ Fixar'}</button>
+            <button className={currentRecord.private ? 'active' : ''} onClick={() => void toggleFlag('private')}>{currentRecord.private ? '◉ Privado' : '○ Privado'}</button>
           </div>
 
           {stage && (
@@ -204,13 +205,13 @@ export default function RecordDetailPage() {
               <Tag tone="coral">JORNADA</Tag>
               <h2>{stage}</h2>
               <div className="journey-steps">
-                {stagesFor(record.type).map((item) => <span key={item} className={item === stage ? 'active' : ''}>{item}</span>)}
+                {stagesFor(currentRecord.type).map((item) => <span key={item} className={item === stage ? 'active' : ''}>{item}</span>)}
               </div>
               <div className="journey-actions">
-                {record.status !== 'completed' && <button onClick={() => void setStatus('completed')}>Concluir</button>}
-                {record.status !== 'paused' && <button onClick={() => void setStatus('paused')}>Pausar</button>}
-                {record.status !== 'abandoned' && <button onClick={() => void setStatus('abandoned')}>Desisti</button>}
-                {(record.status === 'paused' || record.status === 'abandoned') && <button onClick={() => void setStatus('active')}>Retomar</button>}
+                {currentRecord.status !== 'completed' && <button onClick={() => void setStatus('completed')}>Concluir</button>}
+                {currentRecord.status !== 'paused' && <button onClick={() => void setStatus('paused')}>Pausar</button>}
+                {currentRecord.status !== 'abandoned' && <button onClick={() => void setStatus('abandoned')}>Desisti</button>}
+                {(currentRecord.status === 'paused' || currentRecord.status === 'abandoned') && <button onClick={() => void setStatus('active')}>Retomar</button>}
               </div>
             </section>
           )}
@@ -218,18 +219,18 @@ export default function RecordDetailPage() {
           <section className="record-belongs">
             <Tag tone="amber">ISSO FAZ PARTE DE…</Tag>
             <div className="belongs-chips">
-              <span>{record.area}</span>
+              <span>{currentRecord.area}</span>
               {actualTags.map((tag) => <span key={tag}>#{tag}</span>)}
-              {record.source === 'chatgpt' && <span>Do Chat</span>}
-              {record.status === 'active' && <span>Em movimento</span>}
+              {currentRecord.source === 'chatgpt' && <span>Do Chat</span>}
+              {currentRecord.status === 'active' && <span>Em movimento</span>}
             </div>
           </section>
 
-          {(record.attachments ?? []).length > 0 && (
+          {(currentRecord.attachments ?? []).length > 0 && (
             <section className="record-section">
               <Tag tone="muted">ANEXOS</Tag>
               <div className="record-attachments">
-                {(record.attachments ?? []).map((attachment) => (
+                {(currentRecord.attachments ?? []).map((attachment) => (
                   <button key={attachment.id} onClick={() => openAttachment(attachment)}>
                     <span>{attachmentIcon(attachment)}</span>
                     <div><strong>{attachment.name}</strong><small>{attachment.kind}</small></div>
