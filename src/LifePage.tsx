@@ -6,6 +6,7 @@ import { deriveEcosystemInsights } from './ecosystem'
 import { captureCurrentLifeSnapshot } from './snapshots'
 import { useBridges, useRecords } from './appState'
 import { BrandTop, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
+import { isRecordVisibleForInsights } from './storage'
 
 function topRecords(records: ReturnType<typeof useRecords>, predicate: (type: string) => boolean, limit = 3) {
   return records.filter((record) => predicate(record.type.toLowerCase())).slice(0, limit)
@@ -15,7 +16,7 @@ export default function LifePage() {
   const records = useRecords()
   const { bridges, refreshing, forceRefresh } = useBridges()
 
-  const visibleRecords = records.filter((record) => !record.private)
+  const visibleRecords = records.filter(isRecordVisibleForInsights)
   const active = visibleRecords.filter((record) => record.status === 'active')
   const wishes = topRecords(visibleRecords, (type) => type.includes('desejo') || type.includes('pesquisa') || type.includes('prefer'))
   const goals = topRecords(visibleRecords, (type) => type.includes('objetivo') || type.includes('curso') || type.includes('pend'))
@@ -61,7 +62,7 @@ export default function LifePage() {
                 <Tag tone={typeTone(record.type)}>{record.type}</Tag>
                 <span>{record.area}</span>
               </div>
-              <h3>{record.private ? 'Registro privado' : record.text}</h3>
+              <h3>{record.text}</h3>
               <p>Em acompanhamento desde {formatShortDate(record.startedAt || record.createdAt)}.</p>
             </NavLink>
           ))}
@@ -83,7 +84,7 @@ export default function LifePage() {
             {wishes.length ? wishes.map((record) => (
               <NavLink key={record.id} className="compact-record-link" to={'/registro/' + record.id}>
                 <Tag tone="pink">{record.type}</Tag>
-                <p>{record.private ? 'Registro privado' : record.text}</p>
+                <p>{record.text}</p>
               </NavLink>
             )) : <p className="muted-copy">Quando você disser “gostei” ou “andei pesquisando pra comprar”, aparece aqui.</p>}
           </div>
@@ -236,7 +237,7 @@ export default function LifePage() {
 
 export function CareerPlanPage() {
   const records = useRecords()
-  const career = records.filter((record) => record.area === 'Carreira')
+  const career = records.filter((record) => isRecordVisibleForInsights(record) && record.area === 'Carreira')
   const gaps = career.filter((record) => /preciso|estudar|curso|sql|power bi|python|dados/i.test(record.text)).slice(0, 5)
   const interests = career.filter((record) => /vaga|empresa|gostei|interess/i.test(record.text)).slice(0, 5)
   const decisions = career.filter((record) => record.type === 'Decisão').slice(0, 5)
