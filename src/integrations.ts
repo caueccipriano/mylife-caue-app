@@ -78,17 +78,51 @@ function parseBridgeValue(raw: string | null): AppBridge | null {
   }
 }
 
+function generatedSummary(bridge: AppBridge) {
+  const metrics = bridge.metrics || {}
+
+  if (bridge.app === 'folego') {
+    const used = typeof metrics.budgetUsedPercent === 'number' ? metrics.budgetUsedPercent + '% do orçamento usado' : null
+    const days = typeof metrics.daysUntilIncome === 'number' ? metrics.daysUntilIncome + ' dias até o próximo recebimento' : null
+    const daily = typeof metrics.dailyFolego === 'number'
+      ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 2 }).format(metrics.dailyFolego) + ' por dia'
+      : null
+    return [daily, used, days].filter(Boolean).join(' · ') || 'Resumo financeiro atualizado.'
+  }
+
+  if (bridge.app === 'traco') {
+    const week = typeof metrics.workoutsThisWeek === 'number' ? metrics.workoutsThisWeek : 0
+    const goal = typeof metrics.weeklyGoal === 'number' ? metrics.weeklyGoal : null
+    const total = typeof metrics.totalWorkouts === 'number' ? metrics.totalWorkouts : 0
+    return (goal ? week + '/' + goal + ' treinos na semana' : week + ' treinos na semana') + ' · ' + total + ' no histórico'
+  }
+
+  const completed = typeof metrics.completed === 'number' ? metrics.completed : 0
+  const studied = typeof metrics.studiedDaysThisWeek === 'number' ? metrics.studiedDaysThisWeek : 0
+  const goal = typeof metrics.weeklyGoal === 'number' ? metrics.weeklyGoal : null
+  return completed + ' concluídos · ' + (goal ? studied + '/' + goal : studied) + ' dias estudados na semana'
+}
+
+function normalizeBridge(bridge: AppBridge | null) {
+  if (!bridge) return null
+  return {
+    ...bridge,
+    summary: bridge.summary?.trim() || generatedSummary(bridge),
+    status: bridge.status?.trim() || 'atualizado',
+  }
+}
+
 function findBridge(id: BridgeAppId) {
   const suffix = BRIDGE_KEYS[id]
 
-  const direct = parseBridgeValue(localStorage.getItem(suffix))
+  const direct = normalizeBridge(parseBridgeValue(localStorage.getItem(suffix)))
   if (direct) return direct
 
   for (let index = 0; index < localStorage.length; index += 1) {
     const key = localStorage.key(index)
     if (!key || !key.endsWith(suffix)) continue
 
-    const bridge = parseBridgeValue(localStorage.getItem(key))
+    const bridge = normalizeBridge(parseBridgeValue(localStorage.getItem(key)))
     if (bridge) return bridge
   }
 
@@ -170,4 +204,56 @@ export function latestBridgeDelta(id: BridgeAppId, metric: string) {
 
   if (typeof current !== 'number' || typeof previous !== 'number') return null
   return current - previous
+}
+
+
+export async function forceRefreshAppBridges(timeoutMs = 9000): Promise<BridgeCard[]> {
+  if (typeof document === 'undefined') return readAppBridges()
+
+  const frames = (Object.keys(APP_CONFIG) as BridgeAppId[]).map((id) => {
+    const frame = document.createElement('iframe')
+    const separator = APP_CONFIG[id].href.includes('?') ? '&' : '?'
+    frame.src = APP_CONFIG[id].href + separator + 'eu_bridge_refresh=' + Date.now()
+    frame.setAttribute('aria-hidden', 'true')
+    frame.tabIndex = -1
+    frame.style.position = 'fixed'
+    frame.style.width = '1px'
+    frame.style.height = '1px'
+    frame.style.opacity = '0'
+    frame.style.pointerEvents = 'none'
+    frame.style.left = '-9999px'
+    frame.style.bottom = '0'
+    document.body.appendChild(frame)
+    return frame
+  })
+
+  const started = Date.now()
+
+  return await new Promise((resolve) => {
+    const finish = () => {
+      frames.forEach((frame) => frame.remove())
+      resolve(readAppBridges())
+    }
+
+    const poll = window.setInterval(() => {
+      const cards = readAppBridges()
+      const allReady = cards.every((card) => Boolean(card.bridge?.summary))
+      if (allReady) {
+        window.clearInterval(poll)
+        window.clearTimeout(timeout)
+        finish()
+      }
+    }, 700)
+
+    const timeout = window.setTimeout(() => {
+      window.clearInterval(poll)
+      finish()
+    }, Math.max(2500, timeoutMs))
+
+    if (Date.now() - started > timeoutMs) {
+      window.clearInterval(poll)
+      window.clearTimeout(timeout)
+      finish()
+    }
+  })
 }
