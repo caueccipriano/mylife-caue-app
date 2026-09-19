@@ -207,7 +207,7 @@ export default function LifePage() {
                 <span className={card.bridge ? 'signal-dot on' : 'signal-dot'} />
               </div>
               <p>{card.bridge?.summary || 'Abra o app uma vez para o EU receber o resumo.'}</p>
-              <small>{card.bridge?.status || 'aguardando'}</small>
+              <small>{card.stale ? 'resumo antigo · atualizar' : card.bridge?.status || 'aguardando'}</small>
             </article>
           ))}
         </div>
