@@ -5,6 +5,7 @@ import { useBridges, useRecords } from './appState'
 import { nextFollowUpDate, saveRecord, updateRecord, type StoredRecord } from './storage'
 import {
   deriveChanges,
+  deriveDecisionPattern,
   deriveLifeGraph,
   deriveObjects,
   derivePhaseTheme,
@@ -37,6 +38,7 @@ export default function LifeLabPage() {
   const changes = useMemo(() => deriveChanges(records), [records])
   const radar = useMemo(() => deriveRadar(records), [records])
   const graph = useMemo(() => deriveLifeGraph(records), [records])
+  const decisionPattern = useMemo(() => deriveDecisionPattern(records), [records])
   const places = useMemo(() => derivePlaces(records), [records])
   const objects = useMemo(() => deriveObjects(records), [records])
   const chapters = useMemo(() => deriveChapters(records), [records])
@@ -299,6 +301,17 @@ export default function LifeLabPage() {
             </label>
             <button type="submit">Guardar decisão</button>
           </form>
+
+          <div className="decision-pattern-card">
+            <small>O QUE O EU ESTÁ APRENDENDO</small>
+            <strong>{decisionPattern.insight}</strong>
+            {decisionPattern.withResearchGoodRate != null && (
+              <div>
+                <span>com pesquisa · {decisionPattern.withResearchGoodRate}% boas</span>
+                {decisionPattern.withoutResearchGoodRate != null && <span>sem pesquisa · {decisionPattern.withoutResearchGoodRate}% boas</span>}
+              </div>
+            )}
+          </div>
 
           <div className="decision-history-mini">
             {records.filter((record) => record.type === 'Decisão' && !record.private).slice(0, 5).map((record) => (
