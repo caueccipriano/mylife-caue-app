@@ -20,16 +20,53 @@ import ChaptersPage from './ChaptersPage'
 import WrappedPage from './WrappedPage'
 import LifeLabPage from './LifeLabPage'
 import PhaseThemeSync from './PhaseThemeSync'
+import StarterPackImportPage from './StarterPackImportPage'
 import { initPrivacyAutoLock } from './privacy'
 import { applyDiscreetMode } from './securitySettings'
 import { emptyExpiredTrash } from './storage'
 
 const nav = [
-  { path: '/', label: 'Hoje', icon: '☀' },
-  { path: '/vida', label: 'Vida', icon: '◇' },
-  { path: '/descobertas', label: 'Descobertas', icon: '✦' },
-  { path: '/memorias', label: 'Memórias', icon: '⌕' },
+  { path: '/', label: 'Hoje', icon: 'sun' },
+  { path: '/vida', label: 'Vida', icon: 'compass' },
+  { path: '/descobertas', label: 'Descobertas', icon: 'sparkles' },
+  { path: '/memorias', label: 'Memórias', icon: 'search' },
 ] as const
+
+function NavIcon({ name }: { name: typeof nav[number]['icon'] }) {
+  if (name === 'sun') {
+    return (
+      <svg className="bottom-nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="3.6" />
+        <path d="M12 2.5v2.1M12 19.4v2.1M2.5 12h2.1M19.4 12h2.1M5.3 5.3l1.5 1.5M17.2 17.2l1.5 1.5M18.7 5.3l-1.5 1.5M6.8 17.2l-1.5 1.5" />
+      </svg>
+    )
+  }
+
+  if (name === 'compass') {
+    return (
+      <svg className="bottom-nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="8.4" />
+        <path d="M14.9 9.1l-2 4-3.8 1.8 1.9-3.8 3.9-2z" />
+      </svg>
+    )
+  }
+
+  if (name === 'sparkles') {
+    return (
+      <svg className="bottom-nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 3.2c.6 4.1 2.7 6.2 6.8 6.8-4.1.6-6.2 2.7-6.8 6.8-.6-4.1-2.7-6.2-6.8-6.8 4.1-.6 6.2-2.7 6.8-6.8z" />
+        <path d="M18.6 15.8c.3 2 1.4 3.1 3.4 3.4-2 .3-3.1 1.4-3.4 3.4-.3-2-1.4-3.1-3.4-3.4 2-.3 3.1-1.4 3.4-3.4z" />
+      </svg>
+    )
+  }
+
+  return (
+    <svg className="bottom-nav-icon" viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="10.7" cy="10.7" r="6.4" />
+      <path d="M15.5 15.5L21 21" />
+    </svg>
+  )
+}
 
 function AppShell({ onRegister }: { onRegister: () => void }) {
   const location = useLocation()
@@ -58,6 +95,7 @@ function AppShell({ onRegister }: { onRegister: () => void }) {
           <Route path="/vida/capitulos" element={<ChaptersPage />} />
           <Route path="/vida/wrapped" element={<WrappedPage />} />
           <Route path="/vida/lab" element={<LifeLabPage />} />
+          <Route path="/importar" element={<StarterPackImportPage />} />
 
           <Route path="/areas" element={<Navigate to="/vida" replace />} />
           <Route path="/projetos" element={<Navigate to="/vida" replace />} />
@@ -79,7 +117,7 @@ function AppShell({ onRegister }: { onRegister: () => void }) {
       <nav className="v2-bottom-nav" aria-label="Navegação principal">
         {nav.map((item) => (
           <NavLink key={item.path} to={item.path} end={item.path === '/'}>
-            <span aria-hidden="true">{item.icon}</span>
+            <span className="bottom-nav-icon-wrap"><NavIcon name={item.icon} /></span>
             <small>{item.label}</small>
           </NavLink>
         ))}
