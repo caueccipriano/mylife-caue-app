@@ -44,14 +44,14 @@ export default function LifePage() {
         <SectionTitle eyebrow="EM MOVIMENTO" title="Projetos, metas e começos" />
         <div className="life-list-cards">
           {active.slice(0, 4).map((record) => (
-            <article key={record.id} className="life-list-card">
+            <NavLink key={record.id} className="life-list-card tappable-card record-link-card" to={'/registro/' + record.id}>
               <div>
                 <Tag tone={typeTone(record.type)}>{record.type}</Tag>
                 <span>{record.area}</span>
               </div>
-              <h3>{record.text}</h3>
+              <h3>{record.private ? 'Registro privado' : record.text}</h3>
               <p>Em acompanhamento desde {formatShortDate(record.startedAt || record.createdAt)}.</p>
-            </article>
+            </NavLink>
           ))}
 
           {!active.length && projects.slice(0, 3).map((project) => (
@@ -69,10 +69,10 @@ export default function LifePage() {
           <SectionTitle eyebrow="DESEJOS" title="Coisas que chamaram sua atenção" />
           <div className="compact-stack">
             {wishes.length ? wishes.map((record) => (
-              <article key={record.id}>
+              <NavLink key={record.id} className="compact-record-link" to={'/registro/' + record.id}>
                 <Tag tone="pink">{record.type}</Tag>
-                <p>{record.text}</p>
-              </article>
+                <p>{record.private ? 'Registro privado' : record.text}</p>
+              </NavLink>
             )) : <p className="muted-copy">Quando você disser “gostei” ou “andei pesquisando pra comprar”, aparece aqui.</p>}
           </div>
         </div>
@@ -81,10 +81,10 @@ export default function LifePage() {
           <SectionTitle eyebrow="PRÓXIMOS PASSOS" title="Coisas que pedem continuidade" />
           <div className="compact-stack">
             {goals.length ? goals.map((record) => (
-              <article key={record.id}>
+              <NavLink key={record.id} className="compact-record-link" to={'/registro/' + record.id}>
                 <Tag tone="coral">{record.type}</Tag>
-                <p>{record.text}</p>
-              </article>
+                <p>{record.private ? 'Registro privado' : record.text}</p>
+              </NavLink>
             )) : <p className="muted-copy">Cursos, objetivos e pendências vivas aparecem aqui sem virar uma lista burocrática.</p>}
           </div>
         </div>
