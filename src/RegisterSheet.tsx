@@ -1,5 +1,5 @@
 import { FormEvent, useMemo, useState } from 'react'
-import { saveRecord } from './storage'
+import { nextFollowUpDate, saveRecord } from './storage'
 
 type Props = {
   open: boolean
@@ -12,6 +12,8 @@ type Interpretation = {
   area: string
   title: string
   detail: string
+  track?: boolean
+  followUpDays?: number
 }
 
 function includesAny(value: string, terms: string[]) {
@@ -20,7 +22,7 @@ function includesAny(value: string, terms: string[]) {
 
 function detectArea(value: string) {
   if (includesAny(value, ['trabalho', 'carreira', 'vaga', 'entrevista', 'currículo', 'curriculo', 'promoção', 'promocao', 'pleno', 'sênior', 'senior', 'salário', 'salario', 'power bi', 'sap', 'dados'])) return 'Carreira'
-  if (includesAny(value, ['curso', 'faculdade', 'estudo', 'prova', 'idioma', 'aula'])) return 'Estudos'
+  if (includesAny(value, ['curso', 'faculdade', 'estudo', 'prova', 'idioma', 'aula', 'certificação', 'certificacao'])) return 'Estudos'
   if (includesAny(value, ['carro', 'tênis', 'tenis', 'relógio', 'relogio', 'perfume', 'notebook', 'celular', 'comprar', 'preço', 'preco'])) return 'Compras'
   if (includesAny(value, ['viagem', 'viajar', 'hotel', 'passagem', 'cidade', 'roteiro'])) return 'Viagens'
   if (includesAny(value, ['dinheiro', 'guardar', 'investir', 'conta', 'cartão', 'cartao', 'parcela', 'orçamento', 'orcamento'])) return 'Dinheiro'
@@ -33,12 +35,17 @@ function interpret(input: string): Interpretation {
   const value = input.toLowerCase()
   const area = detectArea(value)
 
-  if (includesAny(value, ['gostei', 'curti', 'prefiro', 'amo', 'achei lindo', 'achei legal', 'quero lembrar desse'])) {
+  const startedSomething = includesAny(value, ['comecei', 'iniciei', 'me matriculei', 'entrei no curso'])
+  const courseLike = includesAny(value, ['curso', 'certificação', 'certificacao', 'formação', 'formacao', 'aulas'])
+
+  if (startedSomething && courseLike) {
     return {
-      kind: 'Gostei',
-      area,
-      title: input.slice(0, 72),
-      detail: 'Preferência detectada. O EU vai usar isso como referência para escolhas futuras.',
+      kind: 'Curso',
+      area: 'Estudos',
+      title: input.slice(0, 88),
+      detail: 'Começo detectado. O EU vai manter isso vivo e voltar a perguntar pelo andamento até você concluir, pausar ou desistir.',
+      track: true,
+      followUpDays: 7,
     }
   }
 
@@ -46,17 +53,41 @@ function interpret(input: string): Interpretation {
     return {
       kind: 'Pesquisa',
       area: area === 'Pessoal' ? 'Compras' : area,
-      title: input.slice(0, 72),
-      detail: 'Pesquisa em andamento detectada. Isso entra no seu radar para comparação e decisão depois.',
+      title: input.slice(0, 88),
+      detail: 'Pesquisa em andamento. O EU volta nisso depois para saber se virou decisão, compra ou se perdeu o sentido.',
+      track: true,
+      followUpDays: 7,
     }
   }
 
   if (includesAny(value, ['preciso fazer', 'tenho que', 'não posso esquecer', 'nao posso esquecer', 'lembrar de', 'preciso resolver', 'tenho de'])) {
     return {
-      kind: 'Preciso fazer',
+      kind: 'Pendência',
       area,
-      title: input.slice(0, 72),
-      detail: 'Pendência detectada. Ela fica visível como próximo movimento, sem transformar tudo em uma lista de tarefas.',
+      title: input.slice(0, 88),
+      detail: 'Algo que precisa acontecer. O EU vai trazer isso de volta sem transformar sua vida numa lista infinita.',
+      track: true,
+      followUpDays: 3,
+    }
+  }
+
+  if (includesAny(value, ['quero', 'meta', 'objetivo', 'pretendo']) && includesAny(value, ['comprar', 'mudar', 'conseguir', 'terminar', 'chegar', 'virar', 'fazer', 'aprender'])) {
+    return {
+      kind: area === 'Compras' ? 'Desejo' : 'Objetivo',
+      area,
+      title: input.slice(0, 88),
+      detail: 'Direção futura detectada. O EU vai acompanhar se isso continua importante e qual foi o próximo movimento.',
+      track: true,
+      followUpDays: 14,
+    }
+  }
+
+  if (includesAny(value, ['gostei', 'curti', 'prefiro', 'amo', 'achei lindo', 'achei legal', 'quero lembrar desse'])) {
+    return {
+      kind: area === 'Compras' ? 'Desejo' : 'Preferência',
+      area,
+      title: input.slice(0, 88),
+      detail: 'Preferência detectada. Isso ajuda o EU a entender seu gosto e recuperar referências depois.',
     }
   }
 
@@ -64,26 +95,37 @@ function interpret(input: string): Interpretation {
     return {
       kind: 'Decisão',
       area,
-      title: input.slice(0, 72),
+      title: input.slice(0, 88),
       detail: 'Decisão detectada e pronta para entrar no histórico da área.',
     }
   }
 
-  if (includesAny(value, ['quero', 'meta', 'até ', 'objetivo']) && includesAny(value, ['comprar', 'mudar', 'conseguir', 'terminar', 'chegar', 'virar', 'fazer'])) {
+  if (includesAny(value, ['saquei', 'percebi que', 'entendi que', 'insight', 'me dei conta'])) {
     return {
-      kind: 'Projeto',
+      kind: 'Insight',
       area,
-      title: input.slice(0, 72),
-      detail: 'Intenção com objetivo detectada. O EU vai tratar isso como algo que tem direção e evolução.',
+      title: input.slice(0, 88),
+      detail: 'Insight guardado. Ele também aparece em Descobertas para você conectar ideias ao longo do tempo.',
     }
   }
 
-  if (includesAny(value, ['comecei', 'terminei', 'concluí', 'conclui', 'entrei', 'saí', 'sai'])) {
+  if (startedSomething) {
     return {
       kind: 'Marco',
       area,
-      title: input.slice(0, 72),
-      detail: 'Marco temporal detectado e pronto para entrar na sua linha do tempo.',
+      title: input.slice(0, 88),
+      detail: 'Um começo foi detectado e entrou na sua linha do tempo.',
+      track: true,
+      followUpDays: 14,
+    }
+  }
+
+  if (includesAny(value, ['terminei', 'concluí', 'conclui', 'finalizei'])) {
+    return {
+      kind: 'Marco',
+      area,
+      title: input.slice(0, 88),
+      detail: 'Conclusão detectada e pronta para entrar na sua linha do tempo.',
     }
   }
 
@@ -91,24 +133,24 @@ function interpret(input: string): Interpretation {
     return {
       kind: 'Ideia',
       area,
-      title: input.slice(0, 72),
-      detail: 'Ideia guardada sem compromisso. Ela pode virar projeto, decisão ou referência depois.',
+      title: input.slice(0, 88),
+      detail: 'Ideia guardada sem compromisso. Ela pode virar projeto, decisão ou descoberta depois.',
     }
   }
 
   return {
     kind: 'Memória',
     area,
-    title: input.slice(0, 72),
-    detail: 'Registro livre. O EU guarda o contexto mesmo quando ele não precisa virar ação.',
+    title: input.slice(0, 88),
+    detail: 'Registro livre. Nem tudo precisa virar objetivo, tarefa ou projeto.',
   }
 }
 
 const quickStarts = [
+  'Comecei um curso de ',
   'Gostei de ',
   'Andei pesquisando pra comprar ',
   'Preciso fazer ',
-  'Na carreira, quero ',
 ]
 
 export default function RegisterSheet({ open, onClose, onSaved }: Props) {
@@ -128,13 +170,20 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
     setError('')
 
     try {
+      const now = new Date()
       await saveRecord({
         id: crypto.randomUUID(),
         text: value.trim(),
         type: interpretation.kind,
         area: interpretation.area,
-        createdAt: new Date().toISOString(),
+        createdAt: now.toISOString(),
         source: 'manual',
+        status: interpretation.track ? 'active' : undefined,
+        followUpDays: interpretation.track ? interpretation.followUpDays : undefined,
+        followUpAt: interpretation.track && interpretation.followUpDays
+          ? nextFollowUpDate(interpretation.followUpDays, now)
+          : undefined,
+        startedAt: interpretation.track ? now.toISOString() : undefined,
       })
 
       setSaved(interpretation)
@@ -171,7 +220,7 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
             <textarea
               autoFocus
               className="capture-input"
-              placeholder="Ex.: gostei muito daquele relógio, andei pesquisando um carro, preciso atualizar meu currículo..."
+              placeholder="Ex.: comecei um curso de SQL, gostei daquele relógio, andei pesquisando um carro..."
               value={value}
               onChange={(event) => setValue(event.target.value)}
               rows={6}
@@ -197,6 +246,9 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
                 <span>{interpretation.kind}</span>
                 <strong>{interpretation.area}</strong>
                 <p>{interpretation.detail}</p>
+                {interpretation.track && (
+                  <small className="followup-preview">↻ vou voltar nisso em {interpretation.followUpDays} dias</small>
+                )}
               </div>
             )}
 
@@ -212,6 +264,7 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
             <h3>{saved.kind}</h3>
             <p>{saved.title}</p>
             <div className="saved-meta">{saved.area}</div>
+            {saved.track && <p className="saved-followup">Eu volto nisso com você. Sem precisar lembrar sozinho.</p>}
             <button className="primary-button full" onClick={close}>Concluir</button>
           </div>
         )}
