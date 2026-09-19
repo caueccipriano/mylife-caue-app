@@ -1,7 +1,7 @@
 import { type ChangeEvent, useMemo, useState } from 'react'
 import { NavLink, useNavigate, useSearchParams } from 'react-router-dom'
 import { groupTimeline, smartSearch } from './intelligence'
-import { exportBackup, importBackup, listMoodCheckins, suggestTags } from './storage'
+import { exportBackup, importBackup, isRecordVisibleForInsights, listMoodCheckins, suggestTags } from './storage'
 import { useRecords } from './appState'
 import { BrandTop, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
 
@@ -18,7 +18,7 @@ export default function MemoriesPage() {
 
   const topTags = useMemo(() => {
     const counts = new Map<string, number>()
-    records.forEach((record) => {
+    records.filter(isRecordVisibleForInsights).forEach((record) => {
       const tags = record.tags?.length ? record.tags : suggestTags(record.text, record.area, record.type)
       tags.forEach((tag) => counts.set(tag, (counts.get(tag) || 0) + 1))
     })
@@ -26,7 +26,8 @@ export default function MemoriesPage() {
   }, [records])
 
   const filtered = useMemo(() => {
-    const searched = smartSearch(records, query)
+    const searchBase = query.trim() ? records.filter(isRecordVisibleForInsights) : records
+    const searched = smartSearch(searchBase, query)
     return searched.filter((record) => {
       const sourceOk = filter === 'all'
         || (filter === 'chatgpt' && record.source === 'chatgpt')
