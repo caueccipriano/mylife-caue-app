@@ -1,9 +1,10 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { activeFollowUps, nextFollowUpDate, saveMoodCheckin, updateRecord, type MoodValue, type StoredRecord } from './storage'
 import { derivePatterns, lifePulse, periodStory, reviewCandidates } from './intelligence'
 import { deriveEcosystemInsights } from './ecosystem'
 import { buildDailyBrief } from './lifeModel'
+import { dueCapsules, getSimpleDayMode, setSimpleDayMode } from './v3Life'
 import { useBridges, useChatInbox, useMood, useRecords } from './appState'
 import { BrandTop, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
 import { AstroTodayPreview } from './AstrologyPage'
@@ -56,6 +57,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   const inbox = useChatInbox()
   const navigate = useNavigate()
   const [busyId, setBusyId] = useState<string | null>(null)
+  const [simpleDay, setSimpleDay] = useState(() => getSimpleDayMode())
 
   const followups = useMemo(() => activeFollowUps(records), [records])
   const due = followups.filter((item) => item.due && !item.record.private).map((item) => item.record)
@@ -68,6 +70,13 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   const pulse = useMemo(() => lifePulse(records), [records])
   const ecosystemInsights = useMemo(() => deriveEcosystemInsights(records, bridges), [records, bridges])
   const dailyBrief = useMemo(() => buildDailyBrief(records, bridges), [records, bridges])
+  const readyCapsules = useMemo(() => dueCapsules(records), [records])
+
+  useEffect(() => {
+    const refresh = () => setSimpleDay(getSimpleDayMode())
+    window.addEventListener('eu-simple-day-updated', refresh)
+    return () => window.removeEventListener('eu-simple-day-updated', refresh)
+  }, [])
 
   async function complete(record: StoredRecord) {
     setBusyId(record.id)
@@ -89,7 +98,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   }
 
   return (
-    <div className="v2-page today-page">
+    <div className={'v2-page today-page' + (simpleDay ? ' simple-day' : '')}>
       <BrandTop />
 
       <section className="today-hello">
@@ -119,7 +128,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
       <section className="daily-brief-card">
         <div className="daily-brief-top">
           <Tag tone="cobalt">DAILY BRIEF</Tag>
-          <span>20 segundos</span>
+          <button className="simple-day-toggle" onClick={() => { const next = !simpleDay; setSimpleDayMode(next); setSimpleDay(next) }}>{simpleDay ? 'mostrar tudo' : 'hoje sem administrar'}</button>
         </div>
         <h2>{dailyBrief.title}</h2>
         <p>{dailyBrief.text}</p>
@@ -129,6 +138,14 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
           {dailyBrief.topArea && <span>{dailyBrief.topArea} em destaque</span>}
         </div>
       </section>
+
+      {readyCapsules.length > 0 && (
+        <button className="capsule-ready-callout" onClick={() => navigate('/vida/lab')}>
+          <Tag tone="lilac">CÁPSULA DO FUTURO</Tag>
+          <strong>{readyCapsules.length === 1 ? 'Uma mensagem sua chegou.' : readyCapsules.length + ' mensagens suas chegaram.'}</strong>
+          <span>abrir no EU Lab ↗</span>
+        </button>
+      )}
 
       <section className="daily-idea">
         <span aria-hidden="true">✦</span>
