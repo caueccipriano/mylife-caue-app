@@ -5,7 +5,7 @@ import { derivePatterns, lifePulse, periodStory, reviewCandidates } from './inte
 import { deriveEcosystemInsights } from './ecosystem'
 import { buildDailyBrief } from './lifeModel'
 import { dueCapsules, getSimpleDayMode, setSimpleDayMode } from './v3Life'
-import { useBridges, useChatInbox, useMood, useRecords } from './appState'
+import { useBridges, useChatInbox, useMood, usePersonalProfile, useRecords } from './appState'
 import { BrandTop, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
 import { AstroTodayPreview } from './AstrologyPage'
 
@@ -52,6 +52,7 @@ const moods: { value: MoodValue; icon: string; label: string }[] = [
 
 export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   const records = useRecords()
+  const profile = usePersonalProfile()
   const mood = useMood()
   const { bridges } = useBridges()
   const inbox = useChatInbox()
@@ -103,7 +104,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
 
       <section className="today-hello">
         <p>{dayLabel()}</p>
-        <h1>{greeting()}, Cauê</h1>
+        <h1>{greeting()}{profile.displayName ? ', ' + profile.displayName : ''}</h1>
         <span>como você chega hoje?</span>
       </section>
 
