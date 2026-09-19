@@ -350,51 +350,143 @@ function AreasPage() {
         <section className="career-strategy">
           <div className="career-strategy-head">
             <div>
-              <Sticker tone="ink" tilt={-2}>PLANO ESTRATÉGICO</Sticker>
-              <h2>Carreira como direção, não só histórico.</h2>
-              <p>O que você registra em Carreira passa a alimentar decisões, prioridades e próximos movimentos.</p>
+              <Sticker tone="ink" tilt={-2}>PLANO MESTRE 2026–2030</Sticker>
+              <h2>Finanças + Dados, sem recomeçar do zero.</h2>
+              <p>Sua experiência em custos e controladoria é a base. A estratégia é adicionar Analytics por cima até Finance Analytics virar o centro da sua carreira.</p>
             </div>
             <div className="strategy-seal" aria-hidden="true">NORTE<span>↗</span></div>
+          </div>
+
+          <div className="career-now-strip">
+            <div><span>HOJE</span><strong>Custos + Controladoria</strong><small>SAP · Power BI · visão de negócio</small></div>
+            <b>→</b>
+            <div><span>PRÓXIMO</span><strong>Pleno + Analytics</strong><small>SQL · portfólio · PL-300</small></div>
+            <b>→</b>
+            <div><span>DESTINO</span><strong>Finance Analytics</strong><small>Senior · Specialist · Lead</small></div>
           </div>
 
           <div className="strategy-grid">
             <article className="strategy-card strategy-main">
               <span>NORTE</span>
-              <h3>Avançar profissionalmente unindo profundidade de negócio com capacidade analítica.</h3>
-              <p>O objetivo não é trocar de área por impulso, e sim construir uma evolução coerente, com repertório, evidências e opções melhores.</p>
+              <h3>Virar um profissional raro na interseção entre finanças, indústria e dados.</h3>
+              <p>O plano não é abandonar sua história para virar Data Analyst Jr. É transformar conhecimento de custos, SAP, margem, inventário e controladoria em vantagem dentro de Analytics.</p>
             </article>
 
             <article className="strategy-card">
-              <span>PRÓXIMOS 90 DIAS</span>
-              <h3>Transformar experiência em evidência.</h3>
+              <span>AGORA · SET–DEZ/2026</span>
+              <h3>Preparar o próximo salto.</h3>
               <ul>
-                <li>Documentar resultados e cases relevantes.</li>
-                <li>Consolidar um portfólio enxuto e convincente.</li>
-                <li>Registrar lacunas técnicas que aparecem em vagas reais.</li>
+                <li>Fechar PL-300 e fortalecer Power BI profissional.</li>
+                <li>Levar SQL até nível intermediário/forte.</li>
+                <li>Criar 2 cases: Cost & Margin + Inventory & Working Capital.</li>
+                <li>Reposicionar CV e LinkedIn para Pleno / Analytics.</li>
               </ul>
             </article>
 
             <article className="strategy-card">
-              <span>12 MESES</span>
-              <h3>Chegar ao próximo patamar com mais autonomia.</h3>
+              <span>PRÓXIMO MOVIMENTO</span>
+              <h3>Subir de senioridade sem perder valor de mercado.</h3>
               <ul>
-                <li>Ampliar análise, automação e dados aplicados ao negócio.</li>
-                <li>Fortalecer posicionamento para oportunidades mais robustas.</li>
-                <li>Usar entrevistas e vagas como fonte de inteligência de mercado.</li>
+                <li>Cost Analyst / Controlling Analyst Pleno.</li>
+                <li>Cost Analytics / Finance Analytics.</li>
+                <li>Manufacturing Finance / Performance Analyst.</li>
+                <li>Meta de faixa no próximo salto: R$ 7,5–9 mil.</li>
               </ul>
             </article>
 
             <article className="strategy-card">
               <span>ALAVANCAS</span>
               <div className="strategy-tags">
-                <Sticker tone="sage">Negócio</Sticker>
+                <Sticker tone="sage">Finanças</Sticker>
                 <Sticker tone="blue">Dados</Sticker>
-                <Sticker tone="sand">Comunicação</Sticker>
-                <Sticker tone="stone">Resultados</Sticker>
+                <Sticker tone="sand">Tecnologia</Sticker>
+                <Sticker tone="stone">Comunicação</Sticker>
               </div>
-              <p>O EU deve mostrar onde essas quatro frentes estão fortes e onde ainda precisam de atenção.</p>
+              <p>O diferencial é conseguir conversar com fábrica, Finance, SAP, liderança e time de dados — e traduzir análise em decisão.</p>
             </article>
           </div>
+
+          <section className="career-roadmap">
+            <div className="section-heading organic-heading">
+              <div>
+                <p className="eyebrow">LINHA DO TEMPO</p>
+                <h2>Construção do próximo nível</h2>
+              </div>
+              <span className="radar-count">2026 → 2030+</span>
+            </div>
+
+            <div className="career-timeline">
+              <article>
+                <span>2026</span>
+                <strong>Fundação</strong>
+                <p>PL-300, SQL, portfólio e posicionamento para vagas de Pleno / Analytics.</p>
+              </article>
+              <article>
+                <span>1º SEM · 2027</span>
+                <strong>Transição oficial</strong>
+                <p>Entrar em Cost/Finance Analytics, Controlling Pleno ou função híbrida negócio + dados.</p>
+              </article>
+              <article>
+                <span>2º SEM · 2027</span>
+                <strong>Python aplicado</strong>
+                <p>pandas, automações, tratamento de arquivos, APIs e análises ligadas ao trabalho real.</p>
+              </article>
+              <article>
+                <span>2028</span>
+                <strong>Analytics de verdade</strong>
+                <p>Microsoft Fabric, modelagem mais robusta e projetos ponta a ponta. Deixar de ser “custos que sabe BI”.</p>
+              </article>
+              <article>
+                <span>2029</span>
+                <strong>Referência técnica</strong>
+                <p>Business partnering, storytelling executivo e participação direta em decisões.</p>
+              </article>
+              <article>
+                <span>2030+</span>
+                <strong>Senior / Specialist / Lead</strong>
+                <p>Escopo internacional, liderança ou especialização. Meta de longo prazo: R$ 20 mil+.</p>
+              </article>
+            </div>
+          </section>
+
+          <section className="career-stack">
+            <div className="section-heading organic-heading">
+              <div>
+                <p className="eyebrow">STACK DE CARREIRA</p>
+                <h2>O que estudar — na ordem certa</h2>
+              </div>
+            </div>
+
+            <div className="skill-track">
+              <article><span>01 · AGORA</span><strong>Power BI + PL-300</strong><p>Transformar experiência prática em credencial e aprofundar modelagem, DAX e apresentação.</p></article>
+              <article><span>02 · AGORA</span><strong>SQL</strong><p>JOIN, GROUP BY, CTE, CASE, subqueries, funções de janela e datas.</p></article>
+              <article><span>03 · 2027</span><strong>Python</strong><p>pandas, openpyxl, APIs e automações aplicadas a dados financeiros e industriais.</p></article>
+              <article><span>04 · 2028</span><strong>Microsoft Fabric</strong><p>Subir de BI para soluções analíticas mais completas e preparar DP-600.</p></article>
+              <article><span>05 · CONTÍNUO</span><strong>Inglês + storytelling</strong><p>Apresentar análise, defender recomendação e atuar em escopo LATAM/global.</p></article>
+            </div>
+          </section>
+
+          <section className="career-targets">
+            <div>
+              <p className="eyebrow">CARGOS-ALVO</p>
+              <h2>Palavras que devem aparecer nas buscas.</h2>
+            </div>
+            <div className="career-target-tags">
+              <Sticker tone="sage">Cost Analyst Pleno</Sticker>
+              <Sticker tone="blue">Finance Analytics</Sticker>
+              <Sticker tone="sand">Cost Analytics</Sticker>
+              <Sticker tone="stone">Manufacturing Finance</Sticker>
+              <Sticker tone="blue">Controlling Analyst</Sticker>
+              <Sticker tone="sage">Performance Analyst</Sticker>
+              <Sticker tone="sand">Finance BI</Sticker>
+              <Sticker tone="stone">Financial Data Analyst</Sticker>
+            </div>
+          </section>
+
+          <aside className="career-compass">
+            <Sticker tone="blue" tilt={-1}>BÚSSOLA SIMBÓLICA</Sticker>
+            <p>A leitura védica reforça temas de conhecimento, análise, tecnologia, comunicação e crescimento por especialização. Ela entra como lente de reflexão; as decisões continuam baseadas na sua experiência, no mercado e nas oportunidades reais.</p>
+          </aside>
 
           <div className="career-radar">
             <div className="section-heading organic-heading">
