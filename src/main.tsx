@@ -4,7 +4,7 @@ import { HashRouter } from 'react-router-dom'
 import App from './App'
 import './styles.css'
 
-const APP_VERSION = 'eu-v2-life'
+const APP_VERSION = 'eu-v2-intelligence'
 
 async function refreshPwaShell() {
   if (!('serviceWorker' in navigator)) return
@@ -24,6 +24,28 @@ async function refreshPwaShell() {
     // A atualização do shell não pode impedir o app de abrir.
   }
 }
+
+function routeSharedContent() {
+  const params = new URLSearchParams(window.location.search)
+  if (params.get('share') !== '1') return
+
+  const title = params.get('title')?.trim()
+  const text = params.get('text')?.trim()
+  const url = params.get('url')?.trim()
+  const parts = [title, text, url].filter(Boolean) as string[]
+  if (!parts.length) return
+
+  const capture = new URLSearchParams({
+    texto: parts.join('\n'),
+    tipo: url ? 'Referência' : 'Memória',
+    area: 'Pessoal',
+  })
+
+  window.history.replaceState({}, '', window.location.pathname)
+  window.location.hash = '/capturar?' + capture.toString()
+}
+
+routeSharedContent()
 
 window.addEventListener('load', () => {
   void refreshPwaShell()
