@@ -16,21 +16,7 @@ export default defineConfig({
         clientsClaim: true,
         skipWaiting: true,
         navigateFallback: 'index.html',
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
-            handler: 'StaleWhileRevalidate',
-            options: { cacheName: 'eu-font-styles' },
-          },
-          {
-            urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'eu-font-files',
-              expiration: { maxEntries: 12, maxAgeSeconds: 31536000 },
-            },
-          },
-        ],
+        runtimeCaching: [],
       },
       manifest: {
         id: base,
