@@ -4,6 +4,9 @@ export type ChatInboxItem = {
   area?: string
   track?: boolean
   followUpDays?: number
+  private?: boolean
+  whyItMatters?: string
+  source?: 'chatgpt' | 'share'
 }
 
 export type ChatInboxBatch = {
