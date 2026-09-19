@@ -57,6 +57,26 @@ export async function decodeStarterPack(value: string): Promise<StarterPack> {
   if (parsed?.version !== 1 || !parsed.id || !Array.isArray(parsed.items)) {
     throw new Error('Pacote incompatível.')
   }
+
+  if (parsed.items.length > 250) {
+    throw new Error('Pacote grande demais.')
+  }
+
+  const keys = new Set<string>()
+  for (const item of parsed.items) {
+    if (!item || typeof item.key !== 'string' || typeof item.text !== 'string' || typeof item.type !== 'string' || typeof item.area !== 'string') {
+      throw new Error('Pacote contém registros inválidos.')
+    }
+    if (!item.key.trim() || item.key.length > 120 || item.text.length > 5000 || item.type.length > 80 || item.area.length > 80) {
+      throw new Error('Pacote contém um registro fora dos limites.')
+    }
+    if (keys.has(item.key)) throw new Error('Pacote contém chaves duplicadas.')
+    keys.add(item.key)
+    if (item.tags && (!Array.isArray(item.tags) || item.tags.length > 20 || item.tags.some((tag) => typeof tag !== 'string' || tag.length > 80))) {
+      throw new Error('Pacote contém tags inválidas.')
+    }
+  }
+
   return parsed
 }
 
