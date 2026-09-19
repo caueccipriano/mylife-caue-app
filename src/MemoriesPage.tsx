@@ -108,6 +108,15 @@ export default function MemoriesPage() {
         <p>Decisões, desejos, cursos, conversas, referências e coisas que você nem lembrava que tinha guardado.</p>
       </header>
 
+      <button className="ask-eu-entry" onClick={() => navigate('/pergunte')}>
+        <div>
+          <Tag tone="ink">PERGUNTE AO EU</Tag>
+          <strong>“O que eu já falei sobre isso?”</strong>
+          <span>Pergunte em linguagem natural e veja as fontes.</span>
+        </div>
+        <b>↗</b>
+      </button>
+
       <div className="memory-mode-switch">
         <button className={mode === 'search' ? 'active' : ''} onClick={() => setMode('search')}>⌕ Buscar</button>
         <button className={mode === 'timeline' ? 'active' : ''} onClick={() => setMode('timeline')}>↕ Linha do tempo</button>
