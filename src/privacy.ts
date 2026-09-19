@@ -57,8 +57,8 @@ export function lockPrivateRecords() {
 }
 
 export async function setPrivacyPin(pin: string) {
-  if (!/^\d{4,8}$/.test(pin)) {
-    throw new Error('Use de 4 a 8 números.')
+  if (!/^\d{6,8}$/.test(pin)) {
+    throw new Error('Use de 6 a 8 números.')
   }
 
   const salt = crypto.getRandomValues(new Uint8Array(16))
