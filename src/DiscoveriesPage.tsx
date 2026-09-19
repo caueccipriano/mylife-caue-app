@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
 import { NavLink } from 'react-router-dom'
+import { suggestTags } from './storage'
 import { useRecords } from './appState'
 import { BrandTop, SectionTitle, Tag, typeTone } from './v2Ui'
 
@@ -25,6 +26,22 @@ export default function DiscoveriesPage() {
       .map((attachment) => ({ record, attachment })),
   ).slice(0, 8)
   const suggestions = useMemo(() => recommendation(records), [records])
+  const collections = useMemo(() => {
+    const grouped = new Map<string, typeof records>()
+    records.forEach((record) => {
+      const tags = record.tags?.length ? record.tags : suggestTags(record.text, record.area, record.type)
+      tags.forEach((tag) => {
+        const current = grouped.get(tag) ?? []
+        current.push(record)
+        grouped.set(tag, current)
+      })
+    })
+
+    return [...grouped.entries()]
+      .filter(([, items]) => items.length >= 2)
+      .sort((a, b) => b[1].length - a[1].length)
+      .slice(0, 6)
+  }, [records])
 
   return (
     <div className="v2-page discoveries-page">
@@ -78,6 +95,22 @@ export default function DiscoveriesPage() {
           )) : <p className="muted-copy">Ainda não há links salvos. No Registrar, você poderá colar um link e deixar o EU guardar o contexto junto.</p>}
         </div>
       </section>
+
+      {collections.length > 0 && (
+        <section className="discovery-block">
+          <SectionTitle eyebrow="COLEÇÕES" title="O EU juntou pra você" />
+          <div className="auto-collections">
+            {collections.map(([tag, items], index) => (
+              <NavLink key={tag} to={'/memorias?tag=' + encodeURIComponent(tag)} className={'collection-card collection-' + (index % 4)}>
+                <span>#{tag}</span>
+                <strong>{items.length} coisas conectadas</strong>
+                <p>{items[0]?.private ? 'Inclui registros privados' : items[0]?.text}</p>
+                <b>ver coleção ↗</b>
+              </NavLink>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className="discovery-block">
         <SectionTitle eyebrow="EXPLORAR" title="Talvez valha olhar isso" />
