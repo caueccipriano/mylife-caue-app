@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { activeFollowUps, nextFollowUpDate, saveMoodCheckin, updateRecord, type MoodValue, type StoredRecord } from './storage'
-import { useBridges, useMood, useRecords } from './appState'
+import { derivePatterns, lifePulse, periodStory, reviewCandidates } from './intelligence'
+import { useBridges, useChatInbox, useMood, useRecords } from './appState'
 import { BrandTop, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
 
 function greeting() {
@@ -49,6 +50,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   const records = useRecords()
   const mood = useMood()
   const { bridges } = useBridges()
+  const inbox = useChatInbox()
   const navigate = useNavigate()
   const [busyId, setBusyId] = useState<string | null>(null)
 
@@ -57,6 +59,10 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   const active = followups.map((item) => item.record)
   const todayRecords = records.filter((record) => sameLocalDay(record.createdAt)).slice(0, 8)
   const chatToday = todayRecords.filter((record) => record.source === 'chatgpt')
+  const review = useMemo(() => reviewCandidates(records), [records])
+  const patterns = useMemo(() => derivePatterns(records), [records])
+  const story = useMemo(() => periodStory(records, 7), [records])
+  const pulse = useMemo(() => lifePulse(records), [records])
 
   async function complete(record: StoredRecord) {
     setBusyId(record.id)
@@ -112,6 +118,28 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
         </div>
       </section>
 
+      {inbox.length > 0 && (
+        <section className="adaptive-callout chat-inbox-callout" onClick={() => navigate('/inbox')}>
+          <div>
+            <Tag tone="ink">CAIXA DO CHAT</Tag>
+            <h2>{inbox.length === 1 ? 'Uma conversa esperando por você.' : inbox.length + ' conversas esperando por você.'}</h2>
+            <p>Revise o que vale guardar antes de entrar no seu EU.</p>
+          </div>
+          <span>↗</span>
+        </section>
+      )}
+
+      {review.length > 0 && (
+        <section className="adaptive-callout review-callout" onClick={() => navigate('/revisao')}>
+          <div>
+            <Tag tone="amber">REVISÃO</Tag>
+            <h2>{review.length === 1 ? 'Uma coisa pede uma resposta.' : review.length + ' coisas pedem uma resposta.'}</h2>
+            <p>Continuar, concluir, pausar ou deixar pra lá. Leva poucos minutos.</p>
+          </div>
+          <span>↗</span>
+        </section>
+      )}
+
       {due.length > 0 && (
         <section className="today-block">
           <SectionTitle eyebrow="VOLTOU PRA VOCÊ" title="Isso ainda está vivo?" />
@@ -134,6 +162,45 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
           </div>
         </section>
       )}
+
+      <section className="today-block">
+        <SectionTitle eyebrow="ESSA SEMANA" title="O que sua vida contou" />
+        <article className="weekly-story-card">
+          <div>
+            <span>{story.count}</span>
+            <small>registros</small>
+          </div>
+          <p>{story.text}</p>
+          {story.topArea && <Tag tone="green">{story.topArea} apareceu mais</Tag>}
+        </article>
+      </section>
+
+      {patterns.length > 0 && (
+        <section className="today-block">
+          <SectionTitle eyebrow="PADRÕES" title="Coisas que o EU percebeu" />
+          <div className="pattern-grid">
+            {patterns.map((pattern) => (
+              <article key={pattern.id} className={'pattern-card pattern-' + pattern.tone}>
+                <Tag tone={pattern.tone}>{pattern.id === 'top-tag' ? 'TEMA' : pattern.id === 'stale' ? 'ATENÇÃO' : 'SINAL'}</Tag>
+                <h3>{pattern.title}</h3>
+                <p>{pattern.detail}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <section className="today-block">
+        <SectionTitle eyebrow="NESTA FASE" title="Um olhar rápido" />
+        <div className="life-pulse">
+          {pulse.map((item) => (
+            <article key={item.label}>
+              <strong>{item.label}</strong>
+              <span>{item.state}</span>
+            </article>
+          ))}
+        </div>
+      </section>
 
       <section className="today-block">
         <SectionTitle
