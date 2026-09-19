@@ -42,7 +42,7 @@ export default defineConfig({
         background_color: '#F6F2E9',
         display: 'standalone',
         orientation: 'portrait-primary',
-        start_url: base + '?v=eu-v2-5-intelligence',
+        start_url: base + '?v=eu-v2-5-living',
         scope: base,
         categories: ['lifestyle', 'utilities'],
         share_target: {
