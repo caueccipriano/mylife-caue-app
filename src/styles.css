@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
   color: #2e2b27;
   background: #f6f2e9;
   font-synthesis: none;
@@ -30,7 +30,7 @@
   --wine-soft: #f2e3e7;
   --sky: #3189a8;
   --sky-soft: #e1f1f6;
-  --serif: 'Fraunces', Georgia, serif;
+  --serif: ui-serif, 'Iowan Old Style', Baskerville, Georgia, 'Times New Roman', serif;
   --shadow: 0 16px 42px rgba(78, 58, 43, .075);
 }
 
@@ -397,7 +397,7 @@ h3 {
 
 .followup-card h3 {
   margin: 16px 0 7px;
-  font-family: 'Inter', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
   font-size: 17px;
   font-weight: 600;
   letter-spacing: -.015em;
@@ -610,7 +610,7 @@ h3 {
 
 .life-list-card h3 {
   margin: 16px 0 7px;
-  font-family: 'Inter', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
   font-size: 16px;
   font-weight: 600;
   letter-spacing: -.015em;
@@ -1037,7 +1037,7 @@ h3 {
 
 .memory-list h3 {
   margin: 12px 0 5px;
-  font-family: 'Inter', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
   font-size: 14px;
   font-weight: 600;
   line-height: 1.4;
@@ -1146,7 +1146,7 @@ h3 {
 
 .chat-incoming-list h3 {
   margin: 15px 0 0;
-  font-family: 'Inter', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
   font-size: 16px;
   font-weight: 600;
   line-height: 1.45;
@@ -3527,7 +3527,7 @@ html[data-eu-discreet="1"] .ecosystem-insight p {
 
 .trash-list h2 {
   margin: 17px 0 7px;
-  font-family: 'Inter', sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
   font-size: 15px;
   line-height: 1.4;
   letter-spacing: -.01em;
