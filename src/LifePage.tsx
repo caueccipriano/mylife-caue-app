@@ -140,6 +140,13 @@ export default function LifePage() {
             <p>Trabalho, dinheiro, estudos, relações, experiências, compras e escolhas vistos juntos — sem precisar preencher planilhas sobre você.</p>
             <span>vai ficando mais inteligente com o uso</span>
           </article>
+
+          <NavLink to="/vida/astrologia" className="plan-card astrology-plan-card">
+            <Tag tone="amber">MAPAS + CÉU DIÁRIO</Tag>
+            <h3>Seu mapa ocidental e védico, vivos no EU.</h3>
+            <p>Veja os dois mapas natais e uma leitura diária dos trânsitos calculada automaticamente no próprio aparelho.</p>
+            <span>abrir astrologia ↗</span>
+          </NavLink>
         </div>
       </section>
 
