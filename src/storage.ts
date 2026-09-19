@@ -26,6 +26,13 @@ export type StoredRecord = {
   startedAt?: string
   completedAt?: string
   lastPromptedAt?: string
+  tags?: string[]
+  favorite?: boolean
+  pinned?: boolean
+  private?: boolean
+  journeyStage?: string
+  relatedIds?: string[]
+  updatedAt?: string
 }
 
 export type MoodValue = 'animado' | 'ok' | 'cansado' | 'pilhado'
@@ -45,14 +52,14 @@ type BackupRecord = Omit<StoredRecord, 'attachments'> & {
 }
 
 type Backup = {
-  version: 3
+  version: 4
   exportedAt: string
   records: BackupRecord[]
   moods: MoodCheckin[]
 }
 
 type LegacyBackup = {
-  version: 1 | 2
+  version: 1 | 2 | 3
   exportedAt: string
   records: StoredRecord[]
 }
@@ -91,7 +98,13 @@ function requestToPromise<T>(request: IDBRequest<T>): Promise<T> {
 export async function saveRecord(record: StoredRecord) {
   const db = await openDatabase()
   const tx = db.transaction(RECORDS_STORE, 'readwrite')
-  tx.objectStore(RECORDS_STORE).put(record)
+  tx.objectStore(RECORDS_STORE).put({
+    ...record,
+    tags: record.tags ?? suggestTags(record.text, record.area, record.type),
+    journeyStage: record.journeyStage ?? defaultJourneyStage(record.type, record.status),
+    relatedIds: record.relatedIds ?? [],
+    updatedAt: record.updatedAt ?? record.createdAt,
+  })
 
   await new Promise<void>((resolve, reject) => {
     tx.oncomplete = () => resolve()
@@ -113,7 +126,11 @@ export async function updateRecord(id: string, patch: Partial<StoredRecord>) {
     throw new Error('Registro não encontrado.')
   }
 
-  store.put({ ...current, ...patch })
+  store.put({
+    ...current,
+    ...patch,
+    updatedAt: new Date().toISOString(),
+  })
 
   await new Promise<void>((resolve, reject) => {
     tx.oncomplete = () => resolve()
@@ -122,6 +139,70 @@ export async function updateRecord(id: string, patch: Partial<StoredRecord>) {
   })
 
   db.close()
+}
+
+export async function getRecord(id: string): Promise<StoredRecord | null> {
+  const db = await openDatabase()
+  const tx = db.transaction(RECORDS_STORE, 'readonly')
+  const record = await requestToPromise(tx.objectStore(RECORDS_STORE).get(id)) as StoredRecord | undefined
+  db.close()
+  return record ?? null
+}
+
+export async function deleteRecord(id: string) {
+  const db = await openDatabase()
+  const tx = db.transaction(RECORDS_STORE, 'readwrite')
+  tx.objectStore(RECORDS_STORE).delete(id)
+
+  await new Promise<void>((resolve, reject) => {
+    tx.oncomplete = () => resolve()
+    tx.onerror = () => reject(tx.error)
+    tx.onabort = () => reject(tx.error)
+  })
+
+  db.close()
+}
+
+export function suggestTags(text: string, area: string, type: string) {
+  const source = (text + ' ' + area + ' ' + type).toLowerCase()
+  const rules: Array<[string, string[]]> = [
+    ['carreira', ['carreira', 'vaga', 'trabalho', 'pleno', 'senior', 'sênior', 'currículo', 'curriculo']],
+    ['dados', ['dados', 'sql', 'python', 'power bi', 'analytics']],
+    ['sql', ['sql', 't-sql']],
+    ['powerbi', ['power bi', 'powerbi']],
+    ['curso', ['curso', 'certificação', 'certificacao', 'aula', 'estudo']],
+    ['compras', ['comprar', 'compra', 'preço', 'preco', 'pesquisando']],
+    ['carro', ['carro', 'onix', 'gol', 'veículo', 'veiculo']],
+    ['relógios', ['relógio', 'relogio', 'casio']],
+    ['viagem', ['viagem', 'viajar', 'hotel', 'passagem', 'roteiro']],
+    ['finanças', ['dinheiro', 'orçamento', 'orcamento', 'cartão', 'cartao', 'investir']],
+    ['leitura', ['livro', 'kindle', 'leitura']],
+    ['design', ['design', 'layout', 'interface', 'branding']],
+    ['apps', ['app', 'pwa', 'aplicativo']],
+  ]
+
+  const tags = rules
+    .filter(([, terms]) => terms.some((term) => source.includes(term)))
+    .map(([tag]) => tag)
+
+  const normalizedArea = area.trim().toLowerCase()
+  if (normalizedArea && !tags.includes(normalizedArea)) tags.unshift(normalizedArea)
+
+  return [...new Set(tags)].slice(0, 6)
+}
+
+export function defaultJourneyStage(type: string, status?: RecordStatus) {
+  if (status === 'completed') return 'Concluído'
+  if (status === 'paused') return 'Pausado'
+  if (status === 'abandoned') return 'Desisti'
+
+  const value = type.toLowerCase()
+  if (value.includes('pesquisa')) return 'Pesquisando'
+  if (value.includes('desejo')) return 'Gostei'
+  if (value.includes('curso')) return 'Em andamento'
+  if (value.includes('objetivo') || value.includes('projeto')) return 'Planejando'
+  if (value.includes('pend')) return 'Preciso fazer'
+  return status === 'active' ? 'Em andamento' : ''
 }
 
 export async function listRecords(): Promise<StoredRecord[]> {
@@ -273,7 +354,7 @@ async function deserializeRecord(record: BackupRecord): Promise<StoredRecord> {
 export async function exportBackup() {
   const records = await listRecords()
   const backup: Backup = {
-    version: 3,
+    version: 4,
     exportedAt: new Date().toISOString(),
     records: await Promise.all(records.map(serializeRecord)),
     moods: listMoodCheckins(),
@@ -296,7 +377,7 @@ export async function importBackup(file: File) {
   const text = await file.text()
   const parsed = JSON.parse(text) as Backup | LegacyBackup
 
-  if (!Array.isArray(parsed?.records) || ![1, 2, 3].includes(parsed.version)) {
+  if (!Array.isArray(parsed?.records) || ![1, 2, 3, 4].includes(parsed.version)) {
     throw new Error('Backup incompatível.')
   }
 
@@ -323,7 +404,7 @@ export async function importBackup(file: File) {
 
   db.close()
 
-  if (parsed.version === 3 && Array.isArray(parsed.moods)) {
-    localStorage.setItem(MOOD_KEY, JSON.stringify(parsed.moods.slice(-365)))
+  if (parsed.version >= 3 && Array.isArray((parsed as Backup).moods)) {
+    localStorage.setItem(MOOD_KEY, JSON.stringify((parsed as Backup).moods.slice(-365)))
   }
 }
