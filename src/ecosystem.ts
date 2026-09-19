@@ -1,5 +1,5 @@
 import type { BridgeCard } from './integrations'
-import type { StoredRecord } from './storage'
+import { isRecordVisibleForInsights, type StoredRecord } from './storage'
 
 export type EcosystemInsight = {
   id: string
@@ -13,7 +13,7 @@ function metric(card: BridgeCard | undefined, key: string) {
 }
 
 export function deriveEcosystemInsights(records: StoredRecord[], bridges: BridgeCard[]): EcosystemInsight[] {
-  const publicRecords = records.filter((record) => !record.private)
+  const publicRecords = records.filter(isRecordVisibleForInsights)
   const insights: EcosystemInsight[] = []
   const folego = bridges.find((card) => card.id === 'folego')
   const traco = bridges.find((card) => card.id === 'traco')
