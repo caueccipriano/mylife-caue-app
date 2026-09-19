@@ -1,5 +1,8 @@
 import { type ChangeEvent, type FormEvent, useMemo, useRef, useState } from 'react'
-import { nextFollowUpDate, saveRecord, type StoredAttachment } from './storage'
+import { nextFollowUpDate, saveRecord, updateRecord, type StoredAttachment } from './storage'
+import { useRecords } from './appState'
+import { detectSensitiveContent, findSimilarRecords } from './lifeModel'
+import { haptic } from './securitySettings'
 
 type Props = {
   open: boolean
@@ -14,6 +17,7 @@ type Interpretation = {
   detail: string
   track?: boolean
   followUpDays?: number
+  someday?: boolean
 }
 
 const MAX_FILE_SIZE = 25 * 1024 * 1024
@@ -84,6 +88,16 @@ function interpret(input: string): Interpretation {
     }
   }
 
+  if (includesAny(value, ['um dia eu quero', 'um dia quero', 'depois eu quero', 'mais pra frente', 'futuramente', 'no futuro', 'quem sabe um dia'])) {
+    return {
+      kind: 'Depois',
+      area,
+      title: input.slice(0, 88),
+      detail: 'Algo do seu futuro, sem pressão. O EU guarda perto, mas não transforma em cobrança agora.',
+      someday: true,
+    }
+  }
+
   if (includesAny(value, ['gostei', 'curti', 'prefiro', 'amo', 'achei lindo', 'achei legal', 'quero lembrar desse'])) {
     return {
       kind: area === 'Compras' ? 'Desejo' : 'Preferência',
@@ -149,10 +163,14 @@ function interpret(input: string): Interpretation {
 }
 
 const quickStarts = [
-  'Comecei um curso de ',
   'Gostei de ',
-  'Andei pesquisando pra comprar ',
+  'Comecei ',
+  'Decidi ',
   'Preciso fazer ',
+  'Saquei que ',
+  'Andei pesquisando pra comprar ',
+  'Um dia eu quero ',
+  'Quero lembrar que ',
 ]
 
 function humanSize(size?: number) {
@@ -173,6 +191,7 @@ function fileAttachment(file: File, kind: 'photo' | 'document'): StoredAttachmen
 }
 
 export default function RegisterSheet({ open, onClose, onSaved }: Props) {
+  const records = useRecords()
   const [value, setValue] = useState('')
   const [saved, setSaved] = useState<Interpretation | null>(null)
   const [error, setError] = useState('')
@@ -181,6 +200,9 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
   const [showLink, setShowLink] = useState(false)
   const [linkValue, setLinkValue] = useState('')
   const [recording, setRecording] = useState(false)
+  const [whyItMatters, setWhyItMatters] = useState('')
+  const [forcePrivate, setForcePrivate] = useState(false)
+  const [connectId, setConnectId] = useState<string | null>(null)
   const recorderRef = useRef<MediaRecorder | null>(null)
   const streamRef = useRef<MediaStream | null>(null)
   const chunksRef = useRef<BlobPart[]>([])
@@ -192,6 +214,11 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
     () => value.trim() || fallbackText ? interpret(value.trim() || fallbackText) : null,
     [value, fallbackText],
   )
+  const similar = useMemo(
+    () => value.trim().length >= 10 ? findSimilarRecords(records, value.trim()) : [],
+    [records, value],
+  )
+  const sensitive = useMemo(() => detectSensitiveContent(value), [value])
 
   if (!open) return null
 
@@ -323,8 +350,9 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
 
     try {
       const now = new Date()
+      const id = crypto.randomUUID()
       await saveRecord({
-        id: crypto.randomUUID(),
+        id,
         text: value.trim(),
         type: interpretation.kind,
         area: interpretation.area,
@@ -336,9 +364,23 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
           ? nextFollowUpDate(interpretation.followUpDays, now)
           : undefined,
         startedAt: interpretation.track ? now.toISOString() : undefined,
+        someday: interpretation.someday,
+        whyItMatters: whyItMatters.trim() || undefined,
+        private: forcePrivate || undefined,
+        relatedIds: connectId ? [connectId] : [],
         attachments,
       })
 
+      if (connectId) {
+        const related = records.find((record) => record.id === connectId)
+        if (related) {
+          await updateRecord(connectId, {
+            relatedIds: [...new Set([...(related.relatedIds ?? []), id])],
+          })
+        }
+      }
+
+      haptic('success')
       setSaved(interpretation)
       onSaved()
     } catch {
@@ -359,6 +401,9 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
     setShowLink(false)
     setLinkValue('')
     setRecording(false)
+    setWhyItMatters('')
+    setForcePrivate(false)
+    setConnectId(null)
     onClose()
   }
 
@@ -436,6 +481,44 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
                 {interpretation.track && (
                   <small className="followup-preview">↻ vou voltar nisso em {interpretation.followUpDays} dias</small>
                 )}
+              </div>
+            )}
+
+            {sensitive.length > 0 && (
+              <div className="sensitive-hint">
+                <strong>Isso parece mais pessoal.</strong>
+                <p>{sensitive.map((hint) => hint.label).join(' · ')}</p>
+                <label>
+                  <input type="checkbox" checked={forcePrivate} onChange={(event) => setForcePrivate(event.target.checked)} />
+                  guardar como Privado
+                </label>
+              </div>
+            )}
+
+            {similar.length > 0 && (
+              <div className="duplicate-hint">
+                <span>VOCÊ JÁ ESTEVE AQUI ANTES</span>
+                {similar.slice(0, 2).map(({ record, score }) => (
+                  <button type="button" key={record.id} className={connectId === record.id ? 'active' : ''} onClick={() => setConnectId(connectId === record.id ? null : record.id)}>
+                    <div>
+                      <strong>{record.type} · {record.area}</strong>
+                      <p>{record.text}</p>
+                    </div>
+                    <small>{connectId === record.id ? 'conectado ✓' : Math.round(score * 100) + '% parecido · conectar'}</small>
+                  </button>
+                ))}
+              </div>
+            )}
+
+            {(interpretation?.track || interpretation?.someday || interpretation?.kind === 'Decisão') && (
+              <div className="why-it-matters">
+                <label htmlFor="why-it-matters">Por que isso importa? <span>opcional</span></label>
+                <input
+                  id="why-it-matters"
+                  value={whyItMatters}
+                  onChange={(event) => setWhyItMatters(event.target.value)}
+                  placeholder="Ex.: porque quero migrar para dados sem perder minha base financeira"
+                />
               </div>
             )}
 
