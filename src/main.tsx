@@ -4,7 +4,7 @@ import { HashRouter } from 'react-router-dom'
 import App from './App'
 import './styles.css'
 
-const APP_VERSION = 'eu-v2-astrology'
+const APP_VERSION = 'eu-v2-5-intelligence'
 
 async function refreshPwaShell() {
   if (!('serviceWorker' in navigator)) return
@@ -39,6 +39,7 @@ function routeSharedContent() {
     texto: parts.join('\n'),
     tipo: url ? 'Referência' : 'Memória',
     area: 'Pessoal',
+    origem: 'share',
   })
 
   window.history.replaceState({}, '', window.location.pathname)
