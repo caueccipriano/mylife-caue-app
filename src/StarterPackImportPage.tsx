@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { getRecord, listRecords, saveRecord } from './storage'
 import { decodeStarterPack, recordFromStarterItem } from './starterPack'
+import { mergePersonalProfile } from './profile'
 import { BrandTop, Tag } from './v2Ui'
 
 export default function StarterPackImportPage() {
@@ -21,6 +22,7 @@ export default function StarterPackImportPage() {
         if (!encoded) throw new Error('Pacote ausente.')
 
         const pack = await decodeStarterPack(encoded)
+        if (pack.profile) mergePersonalProfile(pack.profile)
         const existingRecords = await listRecords()
         const normalizedExisting = new Set(existingRecords.map((record) =>
           [record.text.trim().toLowerCase(), record.type.trim().toLowerCase(), record.area.trim().toLowerCase()].join('::'),
@@ -42,7 +44,9 @@ export default function StarterPackImportPage() {
         setCount(imported)
         setMessage(imported
           ? imported + (imported === 1 ? ' registro entrou no EU.' : ' registros entraram no EU.')
-          : 'Esse pacote já estava no seu EU.')
+          : pack.profile
+            ? 'Seu perfil local foi atualizado sem duplicar registros.'
+            : 'Esse pacote já estava no seu EU.')
         setState('done')
         window.dispatchEvent(new Event('eu-record-saved'))
 
