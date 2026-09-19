@@ -1,3 +1,5 @@
+import { getAutoLockMinutes } from './securitySettings'
+
 const CONFIG_KEY = 'eu-private-pin-v1'
 const SESSION_KEY = 'eu-private-unlocked-v1'
 
@@ -103,4 +105,32 @@ export function removePrivacyPin() {
   localStorage.removeItem(CONFIG_KEY)
   sessionStorage.removeItem(SESSION_KEY)
   window.dispatchEvent(new Event('eu-privacy-updated'))
+}
+
+
+let hiddenAt: number | null = null
+
+export function initPrivacyAutoLock() {
+  const handler = () => {
+    if (document.hidden) {
+      hiddenAt = Date.now()
+      return
+    }
+
+    if (hiddenAt == null || !hasPrivacyPin()) {
+      hiddenAt = null
+      return
+    }
+
+    const elapsed = Date.now() - hiddenAt
+    const threshold = getAutoLockMinutes() * 60 * 1000
+    hiddenAt = null
+
+    if (elapsed >= threshold) {
+      lockPrivateRecords()
+    }
+  }
+
+  document.addEventListener('visibilitychange', handler)
+  return () => document.removeEventListener('visibilitychange', handler)
 }
