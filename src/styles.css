@@ -6216,3 +6216,26 @@ html[data-eu-discreet="1"] .ecosystem-insight p {
   font-size: 8px;
   line-height: 1.4;
 }
+
+
+.global-register-pill {
+  transition: width .2s ease, min-height .2s ease, left .2s ease, transform .2s ease, padding .2s ease, box-shadow .2s ease;
+}
+
+.global-register-pill.compact {
+  left: auto;
+  right: max(16px, env(safe-area-inset-right));
+  width: 52px;
+  min-height: 52px;
+  padding: 0;
+  transform: none;
+  border-radius: 50%;
+  overflow: hidden;
+  font-size: 0;
+  box-shadow: 0 10px 24px rgba(53,95,201,.2);
+}
+
+.global-register-pill.compact > span {
+  font-size: 24px;
+  line-height: 1;
+}
