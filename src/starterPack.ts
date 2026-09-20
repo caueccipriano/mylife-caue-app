@@ -1,6 +1,11 @@
 import type { PersonalProfile } from './profile'
 import type { StoredRecord } from './storage'
 
+export type StarterPackLink = {
+  name: string
+  url: string
+}
+
 export type StarterPackItem = {
   key: string
   text: string
@@ -21,6 +26,7 @@ export type StarterPackItem = {
   objectState?: StoredRecord['objectState']
   place?: string
   followUpDays?: number
+  links?: StarterPackLink[]
 }
 
 export type StarterPack = {
@@ -102,6 +108,16 @@ export async function decodeStarterPack(value: string): Promise<StarterPack> {
     if (item.tags && (!Array.isArray(item.tags) || item.tags.length > 20 || item.tags.some((tag) => typeof tag !== 'string' || tag.length > 80))) {
       throw new Error('Pacote contém tags inválidas.')
     }
+    if (item.links) {
+      if (!Array.isArray(item.links) || item.links.length > 10) throw new Error('Pacote contém links inválidos.')
+      for (const link of item.links) {
+        if (!link || typeof link.name !== 'string' || typeof link.url !== 'string' || link.name.length > 120 || link.url.length > 2048) {
+          throw new Error('Pacote contém links inválidos.')
+        }
+        const url = new URL(link.url)
+        if (!['http:', 'https:'].includes(url.protocol)) throw new Error('Pacote contém protocolo de link inválido.')
+      }
+    }
   }
 
   return parsed
@@ -126,6 +142,13 @@ export function recordFromStarterItem(pack: StarterPack, item: StarterPackItem, 
   const followUpAt = followUpDays
     ? new Date(now.getFullYear(), now.getMonth(), now.getDate() + followUpDays, 9, 0, 0, 0).toISOString()
     : undefined
+
+  const attachments = (item.links ?? []).map((link, index) => ({
+    id: stableId(pack.id, item.key + ':link:' + index),
+    kind: 'link' as const,
+    name: link.name,
+    url: link.url,
+  }))
 
   return {
     id: stableId(pack.id, item.key),
@@ -152,5 +175,6 @@ export function recordFromStarterItem(pack: StarterPack, item: StarterPackItem, 
     objectName: item.objectName,
     objectState: item.objectState,
     place: item.place,
+    attachments: attachments.length ? attachments : undefined,
   }
 }
