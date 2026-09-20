@@ -61,6 +61,14 @@ export default function MemoriesPage() {
   }, [records, query, filter, tagFilter, areaFilter, statusFilter, periodFilter, moodFilter, initialCollection, moodByDate])
 
   const timeline = useMemo(() => groupTimeline(filtered), [filtered])
+  const activeFilterCount = [
+    filter !== 'all',
+    Boolean(tagFilter),
+    Boolean(areaFilter),
+    Boolean(statusFilter),
+    periodFilter !== 'all',
+    Boolean(moodFilter),
+  ].filter(Boolean).length
 
   function RecordCard({ record }: { record: (typeof records)[number] }) {
     const tags = record.tags?.length ? record.tags : suggestTags(record.text, record.area, record.type)
@@ -70,7 +78,7 @@ export default function MemoriesPage() {
     const iconName = record.favorite ? 'heart' : record.source === 'chatgpt' ? 'arrow-up-right' : 'note'
 
     return (
-      <article className="tappable-card" onClick={() => navigate('/registro/' + record.id)}>
+      <article className={'tappable-card memory-record-card type-border-' + typeTone(record.type)} onClick={() => navigate('/registro/' + record.id)}>
         <div className={'memory-icon memory-icon-' + iconTone}><EuIcon name={iconName} /></div>
         <div>
           {record.private ? (
@@ -163,44 +171,50 @@ export default function MemoriesPage() {
         ))}
       </div>
 
-      <div className="memory-advanced-filters">
-        <label>
-          <span>Área</span>
-          <select value={areaFilter} onChange={(event) => setAreaFilter(event.target.value)}>
-            <option value="">Todas</option>
-            {['Carreira','Dinheiro','Estudos','Casa','Viagens','Compras','Lazer','Pessoal'].map((area) => <option key={area}>{area}</option>)}
-          </select>
-        </label>
-        <label>
-          <span>Estado</span>
-          <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
-            <option value="">Todos</option>
-            <option value="pinned">Fixados</option>
-            <option value="active">Em movimento</option>
-            <option value="completed">Concluídos</option>
-            <option value="paused">Pausados</option>
-          </select>
-        </label>
-        <label>
-          <span>Período</span>
-          <select value={periodFilter} onChange={(event) => setPeriodFilter(event.target.value as 'all' | '30' | '90' | '365')}>
-            <option value="all">Todo o tempo</option>
-            <option value="30">30 dias</option>
-            <option value="90">90 dias</option>
-            <option value="365">1 ano</option>
-          </select>
-        </label>
-        <label>
-          <span>Humor</span>
-          <select value={moodFilter} onChange={(event) => setMoodFilter(event.target.value)}>
-            <option value="">Todos</option>
-            <option value="animado">Bem</option>
-            <option value="ok">Ok</option>
-            <option value="cansado">Cansado</option>
-            <option value="pilhado">Pilhado</option>
-          </select>
-        </label>
-      </div>
+      <details className="memory-filter-panel">
+        <summary>
+          <span><EuIcon name="settings" />Filtros avançados</span>
+          <b>{activeFilterCount ? activeFilterCount + ' ativos' : 'opcional'}</b>
+        </summary>
+        <div className="memory-advanced-filters">
+          <label>
+            <span>Área</span>
+            <select value={areaFilter} onChange={(event) => setAreaFilter(event.target.value)}>
+              <option value="">Todas</option>
+              {['Carreira','Dinheiro','Estudos','Casa','Viagens','Compras','Lazer','Pessoal'].map((area) => <option key={area}>{area}</option>)}
+            </select>
+          </label>
+          <label>
+            <span>Estado</span>
+            <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
+              <option value="">Todos</option>
+              <option value="pinned">Fixados</option>
+              <option value="active">Em movimento</option>
+              <option value="completed">Concluídos</option>
+              <option value="paused">Pausados</option>
+            </select>
+          </label>
+          <label>
+            <span>Período</span>
+            <select value={periodFilter} onChange={(event) => setPeriodFilter(event.target.value as 'all' | '30' | '90' | '365')}>
+              <option value="all">Todo o tempo</option>
+              <option value="30">30 dias</option>
+              <option value="90">90 dias</option>
+              <option value="365">1 ano</option>
+            </select>
+          </label>
+          <label>
+            <span>Humor</span>
+            <select value={moodFilter} onChange={(event) => setMoodFilter(event.target.value)}>
+              <option value="">Todos</option>
+              <option value="animado">Bem</option>
+              <option value="ok">Ok</option>
+              <option value="cansado">Cansado</option>
+              <option value="pilhado">Pilhado</option>
+            </select>
+          </label>
+        </div>
+      </details>
 
       {topTags.length > 0 && (
         <div className="memory-tag-strip">
