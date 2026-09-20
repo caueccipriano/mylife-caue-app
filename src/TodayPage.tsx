@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { NavLink, useNavigate, useSearchParams } from 'react-router-dom'
 import { activeFollowUps, isRecordVisibleForInsights, nextFollowUpDate, saveMoodCheckin, updateRecord, type MoodValue, type StoredRecord } from './storage'
 import { derivePatterns, lifePulse, reviewCandidates } from './intelligence'
 import { deriveEcosystemInsights } from './ecosystem'
@@ -9,6 +9,7 @@ import { deriveContinue, deriveWeeklyDigest, getFocusAreas } from './uxFeatures'
 import { useBridges, useChatInbox, useMood, useMoodHistory, usePersonalProfile, useRecords } from './appState'
 import { BrandTop, EuIcon, SectionTitle, Tag, formatShortDate, typeTone, type EuIconName } from './v2Ui'
 import { AstroTodayPreview } from './AstrologyPage'
+import { haptic } from './securitySettings'
 
 function greeting() {
   const hour = new Date().getHours()
@@ -131,7 +132,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
             <button
               key={item.value}
               className={'mood-option mood-' + item.value + (mood?.mood === item.value ? ' active' : '')}
-              onClick={() => saveMoodCheckin(item.value)}
+              onClick={() => { saveMoodCheckin(item.value); haptic('light') }}
               aria-label={item.label}
               aria-pressed={mood?.mood === item.value}
               title={item.label}
@@ -180,7 +181,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
           />
           <div className="continue-strip">
             {continueRecords.slice(0, 4).map((record, index) => (
-              <article key={record.id} className={'continue-card continue-card-' + index} onClick={() => navigate('/registro/' + record.id)}>
+              <NavLink key={record.id} className={'continue-card continue-card-' + index} to={'/registro/' + record.id}>
                 <div>
                   <Tag tone={record.pinned ? 'cobalt' : typeTone(record.type)}>{record.pinned ? 'FIXADO' : record.type}</Tag>
                   <span>{record.area}</span>
@@ -188,7 +189,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
                 <h3>{record.text}</h3>
                 <p>{record.nextMove || (record.progressLevel ? 'Retomar o progresso' : record.followUpAt ? 'Tem continuidade marcada' : 'Continuar de onde parou')}</p>
                 <small>abrir <EuIcon name="arrow-up-right" /></small>
-              </article>
+              </NavLink>
             ))}
           </div>
         </section>
@@ -205,25 +206,25 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
       <AstroTodayPreview />
 
       {inbox.length > 0 && (
-        <section className="adaptive-callout chat-inbox-callout now-only" onClick={() => navigate('/inbox')}>
+        <NavLink className="adaptive-callout chat-inbox-callout now-only" to="/inbox">
           <div>
             <Tag tone="ink">CAIXA DO CHAT</Tag>
             <h2>{inbox.length === 1 ? 'Uma conversa esperando por você.' : inbox.length + ' conversas esperando por você.'}</h2>
             <p>Revise o que vale guardar antes de entrar no seu EU.</p>
           </div>
           <span className="callout-arrow"><EuIcon name="arrow-up-right" /></span>
-        </section>
+        </NavLink>
       )}
 
       {review.length > 0 && (
-        <section className="adaptive-callout review-callout now-only" onClick={() => navigate('/revisao')}>
+        <NavLink className="adaptive-callout review-callout now-only" to="/revisao">
           <div>
             <Tag tone="amber">REVISÃO</Tag>
             <h2>{review.length === 1 ? 'Uma coisa pede uma resposta.' : review.length + ' coisas pedem uma resposta.'}</h2>
             <p>Continuar, concluir, pausar ou deixar pra lá. Leva poucos minutos.</p>
           </div>
           <span className="callout-arrow"><EuIcon name="arrow-up-right" /></span>
-        </section>
+        </NavLink>
       )}
 
       {due.length > 0 && (
@@ -305,7 +306,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
 
         <div className="today-feed">
           {todayRecords.length ? todayRecords.map((record) => (
-            <article className="feed-card tappable-card" key={record.id} onClick={() => navigate('/registro/' + record.id)}>
+            <NavLink className="feed-card tappable-card" key={record.id} to={'/registro/' + record.id}>
               {record.private ? (
                 <>
                   <div className="feed-meta"><Tag tone="pink">privado</Tag></div>
@@ -327,7 +328,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
                   {record.status === 'active' && <small className="feed-followup"><EuIcon name="refresh" />em acompanhamento</small>}
                 </>
               )}
-            </article>
+            </NavLink>
           )) : (
             <div className="soft-empty today-empty">
               <span><EuIcon name="note" /></span>
