@@ -45,9 +45,9 @@ export default function ReviewPage() {
         <p>Uma passada rápida por coisas que ficaram abertas ou antigas. Sem culpa: continuar, concluir, pausar e desistir são respostas válidas.</p>
       </header>
 
-      <div className="review-progress">
-        <span>{done} / {total}</span>
-        <div><i style={{ width: total ? Math.min(100, (done / total) * 100) + '%' : '100%' }} /></div>
+      <div className="review-progress" aria-label={done + ' de ' + total + ' revisados'}>
+        <span><strong>{done}</strong> de {total} revisados</span>
+        <div role="progressbar" aria-valuemin={0} aria-valuemax={Math.max(1, total)} aria-valuenow={done}><i style={{ width: total ? Math.min(100, (done / total) * 100) + '%' : '100%' }} /></div>
       </div>
 
       {record ? (
