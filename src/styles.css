@@ -7873,3 +7873,24 @@ body {
     grid-template-columns: 1fr;
   }
 }
+
+
+/* EU visual polish v6.1: navigation icon alignment */
+.life-view-tabs button,
+.today-view-tabs button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.life-view-tabs .eu-icon,
+.today-view-tabs .eu-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.mood-skip {
+  cursor: default;
+  pointer-events: none;
+}
