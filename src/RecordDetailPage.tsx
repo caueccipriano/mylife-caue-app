@@ -59,6 +59,10 @@ export default function RecordDetailPage() {
   const [objectState, setObjectState] = useState<ObjectState>('researching')
   const [place, setPlace] = useState('')
   const [editAttachments, setEditAttachments] = useState<StoredAttachment[]>([])
+  const [favorite, setFavorite] = useState(false)
+  const [pinned, setPinned] = useState(false)
+  const [isPrivate, setIsPrivate] = useState(false)
+  const [directStatus, setDirectStatus] = useState<RecordStatus | ''>('')
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState('')
   const [privacyUnlocked, setPrivacyUnlocked] = useState(() => isPrivateUnlocked())
@@ -193,6 +197,10 @@ export default function RecordDetailPage() {
     setObjectState(currentRecord.objectState || 'researching')
     setPlace(currentRecord.place || '')
     setEditAttachments(currentRecord.attachments ?? [])
+    setFavorite(Boolean(currentRecord.favorite))
+    setPinned(Boolean(currentRecord.pinned))
+    setIsPrivate(Boolean(currentRecord.private))
+    setDirectStatus(currentRecord.status || '')
     setEditing(true)
     setMessage('')
   }
@@ -210,7 +218,7 @@ export default function RecordDetailPage() {
 
     setSaving(true)
     try {
-      const nextStatus = statusFromStage(journeyStage, currentRecord.status)
+      const nextStatus = directStatus || statusFromStage(journeyStage, currentRecord.status)
       await updateRecord(currentRecord.id, {
         text: text.trim(),
         type,
@@ -234,6 +242,10 @@ export default function RecordDetailPage() {
           ? nextFollowUpDate(followUpDays)
           : undefined,
         attachments: editAttachments,
+        favorite,
+        pinned,
+        private: isPrivate,
+        status: nextStatus,
       })
       window.dispatchEvent(new Event('eu-record-saved'))
       setEditing(false)
@@ -340,20 +352,28 @@ export default function RecordDetailPage() {
       {!editing ? (
         <>
           <header className="record-detail-hero">
-            <div className="feed-meta">
+            <div className="record-detail-kicker">
+              <div className="feed-meta">
               <Tag tone={typeTone(currentRecord.type)}>{currentRecord.type}</Tag>
               <span>{currentRecord.area}</span>
               <Tag tone={sourceTone(currentRecord.source)}>{sourceLabel(currentRecord.source)}</Tag>
               {currentRecord.private && <Tag tone="pink">privado</Tag>}
               {currentRecord.freshness === 'maybe-stale' && <Tag tone="amber">pode ter mudado</Tag>}
               {currentRecord.freshness === 'historical' && <Tag tone="muted">histórico</Tag>}
+              </div>
+              <button className="record-inline-edit" onClick={beginEdit}><EuIcon name="edit" />Editar tudo</button>
             </div>
-            <h1>{currentRecord.text || 'Registro com anexo'}</h1>
+            <h1 className={
+              currentRecord.text.length > 170 ? 'record-title record-title-xlong'
+              : currentRecord.text.length > 100 ? 'record-title record-title-long'
+              : currentRecord.text.length > 55 ? 'record-title record-title-medium'
+              : 'record-title record-title-short'
+            }>{currentRecord.text || 'Registro com anexo'}</h1>
             <p>{formatShortDate(currentRecord.createdAt)}{currentRecord.updatedAt && currentRecord.updatedAt !== currentRecord.createdAt ? ' · editado' : ''}</p>
           </header>
 
           <div className="record-actions-row">
-            <button onClick={beginEdit}><EuIcon name="edit" />Editar</button>
+            <button onClick={beginEdit}><EuIcon name="edit" />Editar tudo</button>
             <button className={currentRecord.favorite ? 'active' : ''} onClick={() => void toggleFlag('favorite')}><EuIcon name="heart" />{currentRecord.favorite ? 'Favorito' : 'Favoritar'}</button>
             <button className={currentRecord.pinned ? 'active' : ''} onClick={() => void toggleFlag('pinned')}><EuIcon name="pin" />{currentRecord.pinned ? 'Fixado' : 'Fixar'}</button>
             <button className={currentRecord.private ? 'active' : ''} onClick={() => void toggleFlag('private')}><EuIcon name="lock" />{currentRecord.private ? 'Privado' : 'Privado'}</button>
@@ -578,6 +598,29 @@ export default function RecordDetailPage() {
               </select>
             </label>
           </div>
+
+          <section className="record-edit-organize">
+            <div>
+              <span>Organização</span>
+              <small>Você pode mudar tudo isso depois.</small>
+            </div>
+            <div className="record-edit-toggle-grid">
+              <button type="button" className={favorite ? 'active favorite' : ''} onClick={() => setFavorite((value) => !value)} aria-pressed={favorite}><EuIcon name="heart" />Favorito</button>
+              <button type="button" className={pinned ? 'active pinned' : ''} onClick={() => setPinned((value) => !value)} aria-pressed={pinned}><EuIcon name="pin" />Fixado</button>
+              <button type="button" className={isPrivate ? 'active private' : ''} onClick={() => setIsPrivate((value) => !value)} aria-pressed={isPrivate}><EuIcon name="lock" />Privado</button>
+            </div>
+          </section>
+
+          <label>
+            Estado
+            <select value={directStatus} onChange={(event) => setDirectStatus(event.target.value as RecordStatus | '')}>
+              <option value="">Automático pela etapa</option>
+              <option value="active">Em movimento</option>
+              <option value="completed">Concluído</option>
+              <option value="paused">Pausado</option>
+              <option value="abandoned">Desisti</option>
+            </select>
+          </label>
 
           <label>
             Etapa
