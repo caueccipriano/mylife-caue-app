@@ -13738,3 +13738,323 @@ body {
     border-radius: 23px;
   }
 }
+
+
+/* EU v18.4: product finish */
+
+/* Splash: short, editorial and session-only. */
+.eu-splash {
+  position: fixed;
+  z-index: 9999;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 18px;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(70,221,255,.15), transparent 17rem),
+    radial-gradient(circle at 83% 22%, rgba(255,79,179,.11), transparent 18rem),
+    radial-gradient(circle at 66% 83%, rgba(216,255,63,.08), transparent 16rem),
+    #fbf7ef;
+  animation: eu-splash-exit .82s cubic-bezier(.22,.8,.22,1) both;
+}
+
+.eu-splash::before {
+  content: '';
+  position: absolute;
+  width: min(76vw, 320px);
+  aspect-ratio: 1;
+  border: 1px solid rgba(105,113,151,.15);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 22px rgba(142,98,255,.025),
+    0 0 0 44px rgba(70,221,255,.018);
+  transform: rotate(-16deg) scaleY(.66);
+}
+
+.eu-splash-orbit {
+  position: absolute;
+  width: min(70vw, 292px);
+  aspect-ratio: 1.65;
+  border: 2px solid transparent;
+  border-top-color: rgba(116,126,158,.34);
+  border-right-color: rgba(255,255,255,.78);
+  border-radius: 50%;
+  transform: rotate(-16deg);
+  filter: drop-shadow(0 5px 10px rgba(37,48,91,.05));
+}
+
+.eu-splash-mark {
+  position: relative;
+  z-index: 2;
+  width: 118px;
+  height: 118px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(105,113,151,.12);
+  border-radius: 35px 43px 33px 46px;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255,255,255,.82), transparent 24%),
+    linear-gradient(145deg, rgba(255,255,255,.88), rgba(234,238,255,.72));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.96),
+    0 18px 42px rgba(49,86,255,.12);
+}
+
+.eu-splash-mark strong {
+  font-family: var(--display-bubble);
+  font-size: 53px;
+  font-weight: 400;
+  letter-spacing: -.09em;
+  background: linear-gradient(120deg, #3156ff 0%, #805be8 55%, #e64a9e 112%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.eu-splash-mark i {
+  position: absolute;
+  right: 16px;
+  top: 13px;
+  color: #9ca7bd;
+  font-family: var(--display-wide);
+  font-size: 10px;
+  font-style: normal;
+}
+
+.eu-splash > span {
+  position: relative;
+  z-index: 2;
+  font-family: var(--display-wide);
+  color: #72778c;
+  font-size: 8px;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+@keyframes eu-splash-exit {
+  0% { opacity: 1; transform: scale(1); }
+  56% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.018); visibility: hidden; }
+}
+
+/* Route transitions: quiet enough not to feel like a slideshow. */
+.route-stage {
+  min-height: 100dvh;
+  animation: eu-route-enter .28s cubic-bezier(.22,.78,.3,1) both;
+}
+
+@keyframes eu-route-enter {
+  from {
+    opacity: .01;
+    transform: translateY(5px) scale(.998);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Global rhythm — consistent vertical spacing across all generations of screens. */
+.v2-page {
+  --section-space: 44px;
+}
+
+.v2-hero + * {
+  scroll-margin-top: 100px;
+}
+
+.v2-section-title {
+  margin-bottom: 16px;
+}
+
+.v2-section-title h2 {
+  max-width: 560px;
+  line-height: 1.02;
+}
+
+.v2-section-title > div > span {
+  margin-bottom: 6px;
+}
+
+.today-block,
+.life-block,
+.discovery-block,
+.memory-results,
+.memory-timeline,
+.memory-moods,
+.record-section {
+  margin-top: var(--section-space);
+}
+
+/* Long-form text gets slightly more breathing room. */
+.v2-hero > p,
+.daily-brief-card > p,
+.followup-card > p,
+.record-context-card p,
+.ask-answer p,
+.discovery-card p,
+.life-list-card p,
+.plan-card p,
+.self-tool-card p {
+  text-wrap: pretty;
+}
+
+/* Better optical sizing across phone widths. */
+.v2-hero h1,
+.today-hello h1,
+.record-detail-hero h1,
+.ask-eu-hero h1,
+.career-hero-v2 h1,
+.life-lab-page .v2-hero h1,
+.astrology-page .v2-hero h1 {
+  text-wrap: balance;
+  max-width: 680px;
+}
+
+button,
+a,
+input,
+textarea,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* iPhone typography / spacing calibration. */
+@media (max-width: 760px) {
+  .v2-page {
+    width: min(720px, calc(100% - 32px));
+    --section-space: 38px;
+  }
+
+  .v2-hero {
+    padding-top: 38px;
+    padding-bottom: 30px;
+  }
+
+  .v2-hero h1 {
+    font-size: clamp(38px, 11.2vw, 54px);
+    line-height: .94;
+  }
+
+  .v2-hero > p {
+    max-width: 94%;
+    font-size: 13px;
+    line-height: 1.58;
+  }
+
+  .v2-section-title h2 {
+    font-size: clamp(24px, 7vw, 29px);
+  }
+
+  .v2-section-title > div > span {
+    font-size: 7.5px;
+  }
+
+  .feed-card,
+  .followup-card,
+  .memory-record-card,
+  .discovery-card,
+  .life-list-card,
+  .collection-card,
+  .plan-card,
+  .self-tool-card {
+    border-radius: 22px;
+  }
+
+  .daily-brief-card,
+  .mood-heatmap-card,
+  .mood-insight-panel,
+  .review-card,
+  .area-hero {
+    border-radius: 27px;
+  }
+
+  .v2-bottom-nav {
+    width: calc(100% - 24px);
+    max-width: 420px;
+  }
+}
+
+@media (max-width: 430px) {
+  .v2-page {
+    width: calc(100% - 28px);
+    --section-space: 34px;
+  }
+
+  .v2-hero {
+    padding-top: 32px;
+    padding-bottom: 26px;
+  }
+
+  .v2-hero h1 {
+    font-size: clamp(35px, 10.8vw, 47px);
+  }
+
+  .v2-hero > p {
+    font-size: 12.5px;
+  }
+
+  .v2-section-title h2 {
+    font-size: 25px;
+  }
+
+  .v2-topbar {
+    min-height: 68px;
+  }
+
+  .top-icon-action {
+    width: 36px;
+    height: 36px;
+  }
+
+  .v2-bottom-nav {
+    width: calc(100% - 18px);
+  }
+}
+
+/* Tiny phones: prevent Y2K display type from overpowering content. */
+@media (max-width: 370px) {
+  .v2-page {
+    width: calc(100% - 24px);
+  }
+
+  .v2-hero h1,
+  .today-glance .today-hello h1 {
+    font-size: 34px;
+  }
+
+  .v2-section-title h2 {
+    font-size: 23px;
+  }
+
+  .v2-brand strong {
+    font-size: 27px;
+  }
+
+  .bottom-nav-icon-wrap {
+    width: 31px;
+    height: 31px;
+  }
+
+  .v2-bottom-nav a > small {
+    font-size: 6.5px;
+  }
+}
+
+/* Accessible motion fallback. */
+@media (prefers-reduced-motion: reduce) {
+  .eu-splash {
+    animation-duration: .12s;
+  }
+
+  .eu-splash-orbit {
+    display: none;
+  }
+
+  .route-stage {
+    animation: none;
+  }
+}
