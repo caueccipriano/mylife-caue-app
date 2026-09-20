@@ -116,6 +116,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
               className={'mood-option mood-' + item.value + (mood?.mood === item.value ? ' active' : '')}
               onClick={() => saveMoodCheckin(item.value)}
               aria-label={item.label}
+              aria-pressed={mood?.mood === item.value}
               title={item.label}
             >
               <span>{item.icon}</span>
