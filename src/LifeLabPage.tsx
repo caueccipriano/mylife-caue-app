@@ -54,7 +54,10 @@ export default function LifeLabPage() {
   const [phaseNote, setPhaseNote] = useState('')
   const [phaseChoice, setPhaseChoice] = useState('')
   const [message, setMessage] = useState('')
-  const [labView, setLabView] = useState<'radar' | 'decisions' | 'capsules' | 'connections'>('radar')
+  const [labView, setLabView] = useState<'radar' | 'decisions' | 'capsules' | 'connections'>(() => {
+    const saved = localStorage.getItem('eu-lab-view')
+    return saved === 'decisions' || saved === 'capsules' || saved === 'connections' ? saved : 'radar'
+  })
   const [vaultUpdatedAt, setVaultUpdatedAt] = useState(() => localSyncVaultMeta().updatedAt)
 
   async function createCapsule(event: FormEvent) {
@@ -154,6 +157,11 @@ export default function LifeLabPage() {
     window.dispatchEvent(new Event('eu-record-saved'))
   }
 
+  function selectLabView(value: 'radar' | 'decisions' | 'capsules' | 'connections') {
+    setLabView(value)
+    localStorage.setItem('eu-lab-view', value)
+  }
+
   async function refreshVault() {
     const updatedAt = await writeLocalSyncVault(records, bridges)
     setVaultUpdatedAt(updatedAt)
@@ -189,10 +197,10 @@ export default function LifeLabPage() {
       </header>
 
       <nav className="lab-view-tabs" aria-label="Áreas do EU Lab">
-        <button className={labView === 'radar' ? 'active' : ''} onClick={() => setLabView('radar')}><EuIcon name="sparkles" />Radar</button>
-        <button className={labView === 'decisions' ? 'active' : ''} onClick={() => setLabView('decisions')}><EuIcon name="check" />Decisões</button>
-        <button className={labView === 'capsules' ? 'active' : ''} onClick={() => setLabView('capsules')}><EuIcon name="clock" />Cápsulas</button>
-        <button className={labView === 'connections' ? 'active' : ''} onClick={() => setLabView('connections')}><EuIcon name="collections" />Conexões</button>
+        <button className={labView === 'radar' ? 'active' : ''} onClick={() => selectLabView('radar')}><EuIcon name="sparkles" />Radar</button>
+        <button className={labView === 'decisions' ? 'active' : ''} onClick={() => selectLabView('decisions')}><EuIcon name="check" />Decisões</button>
+        <button className={labView === 'capsules' ? 'active' : ''} onClick={() => selectLabView('capsules')}><EuIcon name="clock" />Cápsulas</button>
+        <button className={labView === 'connections' ? 'active' : ''} onClick={() => selectLabView('connections')}><EuIcon name="collections" />Conexões</button>
       </nav>
 
       {message && <p className="lab-message">{message}</p>}
@@ -202,7 +210,7 @@ export default function LifeLabPage() {
         <div className="change-grid">
           {changes.map((change) => (
             <article key={change.id} className={'change-card change-' + change.tone}>
-              <Tag tone={change.tone}>{change.direction === 'up' ? '↑ CRESCEU' : change.direction === 'down' ? '↓ CAIU' : change.direction === 'new' ? '✦ NOVO' : change.direction === 'closed' ? '✓ FECHOU' : 'SINAL'}</Tag>
+              <Tag tone={change.tone}>{change.direction === 'up' ? <><EuIcon name="trend-up" />CRESCEU</> : change.direction === 'down' ? <><EuIcon name="trend-down" />CAIU</> : change.direction === 'new' ? <><EuIcon name="sparkles" />NOVO</> : change.direction === 'closed' ? <><EuIcon name="check" />FECHOU</> : 'SINAL'}</Tag>
               <h3>{change.label}</h3>
               <p>{change.detail}</p>
             </article>
