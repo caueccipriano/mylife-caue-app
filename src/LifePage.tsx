@@ -73,12 +73,13 @@ export default function LifePage() {
       {view === 'overview' && (
         <>
           <section className="life-block focus-panel">
-            <SectionTitle eyebrow="FOCO DO MOMENTO" title="O que merece mais espaço agora" />
+            <SectionTitle eyebrow="FOCO DO MOMENTO" title="O que merece mais espaço agora" action={focusAreas.length ? <button className="quiet-link" onClick={() => setFocusAreasState(setFocusAreas([]))}><EuIcon name="x" />limpar foco</button> : undefined} />
             <p className="muted-copy">Escolha até 3 áreas. O EU usa isso para ordenar “Continuar” e destacar o que importa sem esconder o resto.</p>
             <div className="focus-area-chips">
               {areas.map((area) => (
-                <button key={area.id} className={focusAreas.includes(area.name) ? 'active' : ''} onClick={() => toggleFocus(area.name)}>
-                  {area.name}
+                <button key={area.id} aria-pressed={focusAreas.includes(area.name)} className={focusAreas.includes(area.name) ? 'active' : ''} onClick={() => toggleFocus(area.name)}>
+                  <EuIcon name={areaIcons[area.id] || 'sparkles'} />
+                  <span>{area.name}</span>
                 </button>
               ))}
             </div>
