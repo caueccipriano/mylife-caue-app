@@ -117,7 +117,12 @@ export default function MemoriesPage() {
                 {record.source === 'chatgpt' && <Tag tone="ink">do chat</Tag>}
               </div>
               <h3>{record.text || 'Registro com anexo'}</h3>
-              <p>{formatShortDate(record.createdAt)}{record.status === 'active' ? ' · em acompanhamento' : ''}</p>
+              <div className="memory-record-state-row">
+                <span>{formatShortDate(record.createdAt)}</span>
+                {record.status === 'active' && (
+                  <span className="memory-followup-badge"><EuIcon name="refresh" />em acompanhamento</span>
+                )}
+              </div>
               {tags.length > 0 && (
                 <div className="memory-inline-tags">
                   {tags.slice(0, 4).map((tag) => <span key={tag}>#{tag}</span>)}
