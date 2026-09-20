@@ -9559,3 +9559,94 @@ button:disabled {
     display: none;
   }
 }
+
+
+/* EU v9.5: Life and record icon consistency */
+.flow-arrow {
+  align-self: center;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255,255,255,.58);
+  color: var(--cobalt);
+  font-size: 0;
+  font-weight: 400;
+}
+
+.flow-arrow .eu-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.fold-icon {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: rgba(255,255,255,.58);
+  font-size: 0;
+  transition: transform .16s ease;
+}
+
+.fold-icon .eu-icon {
+  width: 15px;
+  height: 15px;
+}
+
+.life-fold[open] .fold-icon {
+  transform: rotate(45deg);
+}
+
+.self-tool-card > span,
+.plan-card > span,
+.phases-entry-card > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.self-tool-card > span .eu-icon,
+.plan-card > span .eu-icon,
+.phases-entry-card > span .eu-icon {
+  width: 13px;
+  height: 13px;
+}
+
+.area-focus-toggle {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.area-focus-toggle .eu-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.back-button-v2 {
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.back-button-v2 .eu-icon {
+  width: 15px;
+  height: 15px;
+}
+
+.editable-tags button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.editable-tags button .eu-icon {
+  width: 11px;
+  height: 11px;
+}
