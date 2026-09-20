@@ -7,7 +7,7 @@ import {
   markEuNotificationRead,
   type EuNotification,
 } from './notifications'
-import { nextFollowUpDate, updateRecord } from './storage'
+import { nextFollowUpDate, saveMoodCheckin, updateRecord, type MoodValue } from './storage'
 import { BrandTop, Tag } from './v2Ui'
 
 function categoryLabel(category: EuNotification['category']) {
@@ -98,6 +98,11 @@ export default function NotificationsPage() {
     }
   }
 
+  function answerMood(item: EuNotification, mood: MoodValue) {
+    saveMoodCheckin(mood)
+    deleteEuNotification(item.id)
+  }
+
   return (
     <div className="v2-page notifications-page">
       <BrandTop />
@@ -141,6 +146,14 @@ export default function NotificationsPage() {
                 <button disabled={busyId === item.id} onClick={() => void setDecisionOutcome(item, 'mixed')}>~ mais ou menos</button>
                 <button disabled={busyId === item.id} onClick={() => void setDecisionOutcome(item, 'regret')}>↶ me arrependi</button>
                 <button disabled={busyId === item.id} onClick={() => void setDecisionOutcome(item, 'unknown')}>? ainda não sei</button>
+              </div>
+            )}
+            {item.category === 'humor' && (
+              <div className="notification-mood-actions" aria-label="Responder humor">
+                <button onClick={() => answerMood(item, 'animado')}>☺ bem</button>
+                <button onClick={() => answerMood(item, 'ok')}>◡ ok</button>
+                <button onClick={() => answerMood(item, 'cansado')}>– cansado</button>
+                <button onClick={() => answerMood(item, 'pilhado')}>↟ pilhado</button>
               </div>
             )}
             <button className="notification-delete" aria-label="Apagar notificação" onClick={() => deleteEuNotification(item.id)}>×</button>
