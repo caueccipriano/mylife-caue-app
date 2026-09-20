@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom'
 import { reviewCandidates } from './intelligence'
 import { nextFollowUpDate, updateRecord, type RecordStatus, type StoredRecord } from './storage'
 import { useRecords } from './appState'
-import { BrandTop, Tag, typeTone } from './v2Ui'
+import { BrandTop, EuIcon, Tag, typeTone } from './v2Ui'
 
 export default function ReviewPage() {
   const records = useRecords()
@@ -61,17 +61,17 @@ export default function ReviewPage() {
           <p>Último movimento: {new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'long' }).format(new Date(record.updatedAt || record.createdAt))}</p>
 
           <div className="review-actions">
-            <button className="keep" onClick={() => void act('keep')}>Ainda importa</button>
-            <button onClick={() => void act('completed')}>Concluí</button>
-            <button onClick={() => void act('paused')}>Pausar</button>
-            <button className="quiet" onClick={() => void act('abandoned')}>Deixei pra lá</button>
+            <button className="keep" onClick={() => void act('keep')}><EuIcon name="heart" />Ainda importa</button>
+            <button onClick={() => void act('completed')}><EuIcon name="check" />Concluí</button>
+            <button onClick={() => void act('paused')}><EuIcon name="clock" />Pausar</button>
+            <button className="quiet" onClick={() => void act('abandoned')}><EuIcon name="x" />Deixei pra lá</button>
           </div>
 
-          <NavLink to={'/registro/' + record.id}>ver registro completo ↗</NavLink>
+          <NavLink to={'/registro/' + record.id}>ver registro completo <EuIcon name="arrow-up-right" /></NavLink>
         </article>
       ) : (
         <section className="review-finished">
-          <span>✦</span>
+          <span><EuIcon name="sparkles" /></span>
           <h2>{done ? 'Revisão feita.' : 'Nada pedindo revisão.'}</h2>
           <p>{done ? done + ' coisas passaram pela sua atenção. Seu EU ficou mais atual.' : 'Seu arquivo está coerente com o que você vem vivendo.'}</p>
           <NavLink to="/">Voltar para Hoje</NavLink>
