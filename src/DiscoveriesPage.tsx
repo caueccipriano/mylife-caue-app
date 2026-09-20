@@ -112,11 +112,14 @@ export default function DiscoveriesPage() {
             <SectionTitle eyebrow="EXPLORAR" title="Talvez valha olhar isso" />
             <div className="suggestion-stack">
               {suggestions.slice(1).map((item, index) => (
-                <article key={item}>
+                <NavLink key={item} className="suggestion-card-link" to={'/pergunte?q=' + encodeURIComponent(item)}>
                   <span>0{index + 1}</span>
-                  <h3>{item}</h3>
-                  <p>{suggestionContext}. Sem obrigação de abrir.</p>
-                </article>
+                  <div>
+                    <h3>{item}</h3>
+                    <p>{suggestionContext}. Se quiser, o EU procura isso no seu arquivo.</p>
+                  </div>
+                  <b><EuIcon name="arrow-up-right" /></b>
+                </NavLink>
               ))}
             </div>
           </section>
