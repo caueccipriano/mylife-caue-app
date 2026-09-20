@@ -9406,3 +9406,46 @@ button:disabled {
     animation: none !important;
   }
 }
+
+
+/* EU v9.1: safer capture sheet */
+.sheet-heading {
+  position: sticky;
+  z-index: 6;
+  top: -14px;
+  padding: 14px 0 9px;
+  background: linear-gradient(to bottom, var(--paper) 78%, rgba(246,243,235,0));
+}
+
+.sheet-close-button {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: rgba(255,255,255,.62);
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.sheet-close-button .eu-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.sheet-close-button:active {
+  transform: scale(.95);
+}
+
+.register-sheet form {
+  padding-bottom: 2px;
+}
+
+@media (max-width: 760px) {
+  .sheet-heading {
+    top: -13px;
+    padding-top: 13px;
+  }
+}
