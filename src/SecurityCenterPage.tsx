@@ -208,6 +208,17 @@ export default function SecurityCenterPage() {
         </button>
       </section>
 
+      <section className="security-panel">
+        <SectionTitle eyebrow="PRIVACIDADE AUTOMÁTICA" title="Tags que sempre nascem privadas" />
+        <p>Ex.: relacionamento, saúde, família. Qualquer novo registro com uma dessas tags será marcado como Privado automaticamente.</p>
+        <div className="private-tags-editor">
+          <input value={privateTags} onChange={(event) => setPrivateTagsState(event.target.value)} placeholder="relacionamento, saúde, família" />
+          <button onClick={savePrivateTags}>Salvar tags</button>
+        </div>
+      </section>
+        </div>
+      </details>
+
       <details className="security-group" id="notifications">
         <summary><span><EuIcon name="mood" />Notificações</span><small>frequência, categorias e silêncio</small></summary>
         <div className="security-group-body">
@@ -298,16 +309,6 @@ export default function SecurityCenterPage() {
         </div>
       </details>
 
-      <section className="security-panel">
-        <SectionTitle eyebrow="PRIVACIDADE AUTOMÁTICA" title="Tags que sempre nascem privadas" />
-        <p>Ex.: relacionamento, saúde, família. Qualquer novo registro com uma dessas tags será marcado como Privado automaticamente.</p>
-        <div className="private-tags-editor">
-          <input value={privateTags} onChange={(event) => setPrivateTagsState(event.target.value)} placeholder="relacionamento, saúde, família" />
-          <button onClick={savePrivateTags}>Salvar tags</button>
-        </div>
-      </section>
-        </div>
-      </details>
 
       <details className="security-group" id="data">
         <summary><span><EuIcon name="file" />Backup & dados</span><small>cofre local, exportação e recuperação</small></summary>
