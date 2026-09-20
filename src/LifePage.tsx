@@ -5,12 +5,23 @@ import { periodStory } from './intelligence'
 import { deriveEcosystemInsights } from './ecosystem'
 import { captureCurrentLifeSnapshot } from './snapshots'
 import { useBridges, useMoodHistory, useRecords } from './appState'
-import { BrandTop, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
+import { BrandTop, EuIcon, SectionTitle, Tag, formatShortDate, typeTone, type EuIconName } from './v2Ui'
 import { isRecordVisibleForInsights } from './storage'
 import { deriveBeforeNow, deriveLifeStats, getFocusAreas, setFocusAreas } from './uxFeatures'
 
 function topRecords(records: ReturnType<typeof useRecords>, predicate: (type: string) => boolean, limit = 3) {
   return records.filter((record) => predicate(record.type.toLowerCase())).slice(0, limit)
+}
+
+const areaIcons: Record<string, EuIconName> = {
+  carreira: 'briefcase',
+  dinheiro: 'wallet',
+  estudos: 'book',
+  casa: 'home',
+  viagens: 'plane',
+  compras: 'bag',
+  lazer: 'sparkles',
+  pessoal: 'user',
 }
 
 export default function LifePage() {
@@ -156,7 +167,7 @@ export default function LifePage() {
                   key={area.id}
                   to={'/vida/area/' + area.id}
                 >
-                  <span>{['↗','●','≡','⌂','✦','□','◌','· · ·'][index]}</span>
+                  <span className="life-area-icon"><EuIcon name={areaIcons[area.id] || 'sparkles'} /></span>
                   <strong>{area.name}</strong>
                   <p>{recent[0]?.text || area.now}</p>
                   <small>{count ? count + ' registros' : area.status}</small>
@@ -174,14 +185,14 @@ export default function LifePage() {
             <SectionTitle eyebrow="AGORA" title="Projetos, metas e começos" />
             <div className="life-list-cards">
               {active.slice(0, 8).map((record) => (
-                <NavLink key={record.id} className={'life-list-card tappable-card record-link-card' + (record.pinned ? ' pinned' : '')} to={'/registro/' + record.id}>
+                <NavLink key={record.id} className={'life-list-card tappable-card record-link-card type-border-' + typeTone(record.type) + (record.pinned ? ' pinned' : '')} to={'/registro/' + record.id}>
                   <div><Tag tone={record.pinned ? 'cobalt' : typeTone(record.type)}>{record.pinned ? 'FIXADO' : record.type}</Tag><span>{record.area}</span></div>
                   <h3>{record.text}</h3>
                   <p>{record.nextMove || 'Em acompanhamento desde ' + formatShortDate(record.startedAt || record.createdAt) + '.'}</p>
                 </NavLink>
               ))}
               {!active.length && projects.slice(0, 3).map((project) => (
-                <article key={project.id} className="life-list-card">
+                <article key={project.id} className="life-list-card type-border-coral">
                   <div><Tag tone="coral">Projeto</Tag><span>{project.area}</span></div>
                   <h3>{project.name}</h3><p>{project.summary}</p>
                 </article>
