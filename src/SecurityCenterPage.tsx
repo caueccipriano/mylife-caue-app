@@ -294,17 +294,17 @@ export default function SecurityCenterPage() {
             className={notificationPrefs.quietHours.enabled ? 'active' : ''}
             onClick={() => patchNotificationPrefs({ quietHours: { ...notificationPrefs.quietHours, enabled: !notificationPrefs.quietHours.enabled } })}
           >
-            {notificationPrefs.quietHours.enabled ? '✓' : '○'} horário silencioso
+            <EuIcon name={notificationPrefs.quietHours.enabled ? 'check' : 'clock'} />horário silencioso
           </button>
           <button
             className={notificationPrefs.discreetPreview ? 'active' : ''}
             onClick={() => patchNotificationPrefs({ discreetPreview: !notificationPrefs.discreetPreview })}
           >
-            {notificationPrefs.discreetPreview ? '✓' : '○'} prévia discreta
+            <EuIcon name={notificationPrefs.discreetPreview ? 'check' : 'user'} />prévia discreta
           </button>
         </div>
 
-        <NavLink className="notification-center-link" to="/notificacoes">abrir Central de notificações ↗</NavLink>
+        <NavLink className="notification-center-link" to="/notificacoes"><span>abrir Central de notificações</span><EuIcon name="arrow-up-right" /></NavLink>
       </section>
         </div>
       </details>
@@ -354,7 +354,7 @@ export default function SecurityCenterPage() {
         <div>
           <Tag tone="wine">LIXEIRA</Tag>
           <strong>Exclusões ficam recuperáveis por 30 dias.</strong>
-          <span>Ver itens excluídos e restaurar ↗</span>
+          <span className="trash-entry-action">Ver itens excluídos e restaurar <EuIcon name="arrow-up-right" /></span>
         </div>
       </NavLink>
         </div>
