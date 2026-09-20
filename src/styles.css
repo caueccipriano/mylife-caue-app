@@ -10891,3 +10891,418 @@ button:disabled {
     width: fit-content;
   }
 }
+
+
+/* EU v16: Y2K clean premium system */
+:root {
+  --display: ui-rounded, 'SF Pro Rounded', 'Arial Rounded MT Bold', 'Avenir Next', 'Trebuchet MS', sans-serif;
+  --ui: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Avenir Next', 'Helvetica Neue', Arial, sans-serif;
+  --serif: var(--display);
+  --paper: #f7f4ee;
+  --card: #fffdf9;
+  --ink: #202a43;
+  --muted: #767c90;
+  --faint: #a1a7b8;
+  --line: rgba(32, 42, 67, .085);
+  --line-strong: rgba(32, 42, 67, .15);
+  --cobalt: #315cff;
+  --cobalt-soft: #e9eeff;
+  --lilac: #9587ff;
+  --lilac-soft: #efecff;
+  --sky: #70b8e8;
+  --sky-soft: #e7f5ff;
+  --green: #45b99d;
+  --green-soft: #e4f8f1;
+  --amber: #dbad35;
+  --amber-soft: #fff2c9;
+  --pink: #786de2;
+  --pink-soft: #efedff;
+  --coral: #eb9a62;
+  --coral-soft: #ffeadf;
+  --shadow-soft: 0 10px 30px rgba(32,42,67,.055);
+  --shadow-float: 0 18px 46px rgba(49,92,255,.12);
+  font-family: var(--ui);
+}
+
+html,
+body,
+button,
+input,
+textarea,
+select,
+label {
+  font-family: var(--ui);
+}
+
+body {
+  background:
+    radial-gradient(circle at 8% -2%, rgba(49,92,255,.095), transparent 25rem),
+    radial-gradient(circle at 100% 19%, rgba(149,135,255,.085), transparent 27rem),
+    radial-gradient(circle at 48% 82%, rgba(112,184,232,.05), transparent 30rem),
+    var(--paper);
+}
+
+/* Rounded editorial typography: playful Y2K without sacrificing readability. */
+h1,
+h2,
+h3,
+.v2-brand strong,
+.daily-brief-card h2,
+.memory-list h3,
+.chat-incoming-list h3,
+.review-progress > span strong,
+.weekly-story-card > p,
+.mood-insight-numbers strong,
+.mood-day-detail strong,
+.collection-card > strong,
+.wrapped-card strong {
+  font-family: var(--display);
+}
+
+h1,
+h2,
+h3 {
+  letter-spacing: -.052em;
+  text-wrap: balance;
+}
+
+.v2-hero h1,
+.today-hello h1,
+.record-detail-hero h1,
+.career-hero-v2 h1 {
+  font-weight: 800;
+  letter-spacing: -.065em;
+}
+
+.v2-section-title h2,
+.daily-brief-card h2,
+.mood-heatmap-head h2,
+.mood-insight-panel h2,
+.collection-v2 h2 {
+  font-weight: 750;
+}
+
+.v2-brand strong {
+  font-weight: 900;
+  background: linear-gradient(145deg, #2148d7 0%, #315cff 48%, #8d7cff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 7px 22px rgba(49,92,255,.12);
+}
+
+.v2-brand span,
+.v2-top-note,
+.v2-section-title > div > span,
+.today-hello > p,
+.daily-idea small,
+.feed-meta > span:not(.v2-tag) {
+  letter-spacing: .13em;
+}
+
+/* Glassy shell */
+.v2-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  margin-inline: -12px;
+  padding-inline: 12px;
+  background: linear-gradient(180deg, rgba(247,244,238,.94), rgba(247,244,238,.76));
+  border-bottom-color: rgba(32,42,67,.065);
+  backdrop-filter: blur(18px) saturate(1.15);
+  -webkit-backdrop-filter: blur(18px) saturate(1.15);
+}
+
+.top-icon-action {
+  border: 1px solid rgba(32,42,67,.075);
+  background: rgba(255,255,255,.56);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.86),
+    0 6px 18px rgba(32,42,67,.035);
+}
+
+.top-ask-action {
+  background: linear-gradient(145deg, rgba(239,236,255,.92), rgba(233,238,255,.86));
+  color: #6255d5;
+}
+
+/* Main surfaces receive a soft liquid-glass treatment. */
+.daily-brief-card,
+.followup-card,
+.feed-card,
+.collection-card,
+.collection-v2,
+.memory-record-card,
+.mood-heatmap-card,
+.mood-insight-panel,
+.review-card,
+.adaptive-callout,
+.signal-mini,
+.ecosystem-insight,
+.chat-receipt,
+.area-hero,
+.pattern-card,
+.ask-eu-box,
+.soft-empty,
+.record-advanced-edit,
+.memory-filter-panel {
+  border-color: rgba(32,42,67,.085);
+  background:
+    linear-gradient(155deg, rgba(255,255,255,.78), rgba(255,253,249,.54));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.82),
+    var(--shadow-soft);
+  backdrop-filter: blur(14px) saturate(1.08);
+  -webkit-backdrop-filter: blur(14px) saturate(1.08);
+}
+
+.daily-brief-card,
+.mood-heatmap-card,
+.mood-insight-panel,
+.review-card,
+.area-hero {
+  border-radius: 30px;
+}
+
+.feed-card,
+.memory-record-card,
+.collection-card,
+.followup-card,
+.signal-mini,
+.pattern-card,
+.adaptive-callout {
+  border-radius: 24px;
+}
+
+.daily-brief-card {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 91% 10%, rgba(149,135,255,.18), transparent 9rem),
+    linear-gradient(150deg, rgba(255,255,255,.88), rgba(233,238,255,.60));
+}
+
+.daily-brief-card::after {
+  content: '';
+  position: absolute;
+  right: -34px;
+  top: -42px;
+  width: 130px;
+  height: 130px;
+  border: 1px solid rgba(49,92,255,.14);
+  border-radius: 50%;
+  box-shadow: inset 0 0 38px rgba(149,135,255,.06);
+  pointer-events: none;
+}
+
+.v2-tag {
+  min-height: 25px;
+  padding: 5px 9px;
+  border: 1px solid rgba(32,42,67,.07);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.54);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.tag-cobalt {
+  color: #2449c9;
+  background: linear-gradient(180deg, #eef2ff, #e5ebff);
+}
+
+.tag-lilac,
+.tag-pink {
+  color: #6254c9;
+  background: linear-gradient(180deg, #f4f1ff, #ebe8ff);
+}
+
+/* Buttons feel like small glossy hardware controls. */
+.primary-button,
+.record-edit-actions button[type='submit'],
+.ask-eu-box button,
+.chat-capture-actions button,
+.chat-capture-success a,
+.starter-done-actions button,
+.starter-import-card > button {
+  border-color: rgba(49,92,255,.20);
+  background: linear-gradient(180deg, #5276ff 0%, #315cff 62%, #294fe0 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.28),
+    0 10px 24px rgba(49,92,255,.20);
+}
+
+.followup-actions button,
+.today-empty button,
+.record-actions-row button,
+.journey-actions button,
+.memory-backup label {
+  border-color: rgba(32,42,67,.10);
+  background: rgba(255,255,255,.60);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.82);
+}
+
+/* Y2K navigation: floating glass capsule. */
+.v2-bottom-nav {
+  border: 1px solid rgba(32,42,67,.09);
+  background: rgba(255,255,255,.72);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.92),
+    0 16px 42px rgba(32,42,67,.10);
+  backdrop-filter: blur(22px) saturate(1.2);
+  -webkit-backdrop-filter: blur(22px) saturate(1.2);
+}
+
+.bottom-nav-icon-wrap {
+  border: 1px solid rgba(32,42,67,.06);
+  background: rgba(255,255,255,.50);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.82);
+}
+
+.v2-bottom-nav a.active .bottom-nav-icon-wrap {
+  border-color: rgba(49,92,255,.10);
+  background: linear-gradient(145deg, #f4f6ff, #e8edff);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.92),
+    0 7px 18px rgba(49,92,255,.12);
+}
+
+.v2-bottom-nav a.active > small {
+  font-weight: 800;
+}
+
+/* Mood becomes a glossy, playful control rather than a flat utility. */
+.mood-row button {
+  border: 1px solid rgba(32,42,67,.075);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.62),
+    0 9px 21px rgba(32,42,67,.05);
+}
+
+.mood-row button.active,
+.mood-row button[aria-pressed='true'] {
+  box-shadow:
+    0 0 0 2px var(--paper),
+    0 0 0 4px color-mix(in srgb, var(--mood-active) 88%, white),
+    0 11px 26px color-mix(in srgb, var(--mood-active) 24%, transparent);
+}
+
+.mood-heatmap-card {
+  background:
+    radial-gradient(circle at 100% 0%, rgba(149,135,255,.16), transparent 12rem),
+    linear-gradient(145deg, #f9fbff, #f0edff);
+}
+
+.mood-day {
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.30);
+}
+
+/* Inputs: translucent but still high-contrast. */
+.capture-input,
+.record-edit-form textarea,
+.record-edit-form select,
+.link-capture input,
+.ask-eu-box,
+.memory-search {
+  border-color: rgba(32,42,67,.095);
+  background: rgba(255,255,255,.70);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.82),
+    0 7px 18px rgba(32,42,67,.035);
+}
+
+/* Distinctive highlights: tiny chrome-like glints, kept intentionally sparse. */
+.v2-hero .v2-tag:first-child,
+.today-hello > p:first-child {
+  position: relative;
+}
+
+.v2-hero .v2-tag:first-child::after {
+  content: '✦';
+  margin-left: 6px;
+  color: #7787b6;
+  font-size: 9px;
+}
+
+.global-register-pill.compact {
+  border: 1px solid rgba(255,255,255,.72);
+  background:
+    radial-gradient(circle at 30% 18%, rgba(255,255,255,.52), transparent 28%),
+    linear-gradient(145deg, #6382ff, #315cff 55%, #7568e7);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.35),
+    0 13px 30px rgba(49,92,255,.28);
+}
+
+/* More tactile, but never bouncy. */
+.tappable-card,
+.feed-card,
+.collection-card,
+.followup-card,
+.life-area,
+.plan-card,
+.self-tool-card,
+.top-icon-action,
+.bottom-nav-icon-wrap,
+button {
+  transition:
+    transform .17s ease,
+    box-shadow .17s ease,
+    background .17s ease,
+    border-color .17s ease;
+}
+
+.tappable-card:active,
+.feed-card:active,
+.collection-card:active,
+.followup-card:active,
+.life-area:active,
+.plan-card:active,
+.self-tool-card:active {
+  transform: scale(.987);
+}
+
+@media (max-width: 760px) {
+  .v2-topbar {
+    margin-inline: -18px;
+    padding-inline: 18px;
+  }
+
+  .v2-hero h1 {
+    font-size: clamp(42px, 11.5vw, 58px);
+  }
+
+  .today-hello h1 {
+    font-size: clamp(39px, 10.5vw, 49px);
+  }
+
+  .v2-section-title h2 {
+    font-size: 28px;
+  }
+
+  .daily-brief-card h2 {
+    font-size: 30px;
+  }
+}
+
+@media (max-width: 430px) {
+  .v2-topbar {
+    margin-inline: -16px;
+    padding-inline: 16px;
+  }
+
+  .v2-brand strong {
+    font-size: 30px;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .v2-topbar,
+  .v2-bottom-nav,
+  .daily-brief-card,
+  .feed-card,
+  .memory-record-card,
+  .collection-card {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background: var(--card);
+  }
+}
