@@ -29,6 +29,7 @@ import NotificationRuleSync from './NotificationRuleSync'
 import { initPrivacyAutoLock } from './privacy'
 import { applyDiscreetMode } from './securitySettings'
 import { emptyExpiredTrash } from './storage'
+import { EuIcon } from './v2Ui'
 
 const nav = [
   { path: '/', label: 'Hoje', icon: 'sun' },
@@ -117,7 +118,7 @@ function AppShell({ onRegister }: { onRegister: () => void }) {
 
       {showRegister && (
         <button className="global-register-pill compact" onClick={onRegister} aria-label="Registrar no EU">
-          <span>＋</span>
+          <span><EuIcon name="plus" /></span>
           registrar
         </button>
       )}
