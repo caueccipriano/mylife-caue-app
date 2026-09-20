@@ -25,6 +25,7 @@ import MoodPage from './MoodPage'
 import CollectionsPage from './CollectionsPage'
 import AreaPage from './AreaPage'
 import NotificationsPage from './NotificationsPage'
+import NotificationRuleSync from './NotificationRuleSync'
 import { initPrivacyAutoLock } from './privacy'
 import { applyDiscreetMode } from './securitySettings'
 import { emptyExpiredTrash } from './storage'
@@ -155,6 +156,7 @@ export default function App() {
   return (
     <>
       <PhaseThemeSync />
+      <NotificationRuleSync />
       <AppShell onRegister={() => setRegisterOpen(true)} />
       <RegisterSheet
         open={registerOpen}
