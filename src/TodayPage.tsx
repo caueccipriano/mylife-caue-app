@@ -128,7 +128,8 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
     <div className={'v2-page today-page today-view-' + todayView + (simpleDay ? ' simple-day' : '')}>
       <BrandTop />
 
-      <section className="today-hello">
+      <section className="today-glance" aria-label="Seu dia no EU">
+        <section className="today-hello">
         <p>{dayLabel()}</p>
         <h1>{greeting()}{profile.displayName ? ', ' + profile.displayName : ''}</h1>
         <span>como tá seu humor hoje?</span>
@@ -171,6 +172,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
         <button role="tab" aria-selected={todayView === 'now'} className={todayView === 'now' ? 'active' : ''} onClick={() => selectTodayView('now')}><EuIcon name="bolt" />Agora</button>
         <button role="tab" aria-selected={todayView === 'signals'} className={todayView === 'signals' ? 'active' : ''} onClick={() => selectTodayView('signals')}><EuIcon name="sparkles" />Sinais</button>
       </nav>
+      </section>
 
       {readyCapsules.length > 0 && (
         <button className="capsule-ready-callout now-only" onClick={() => navigate('/vida/lab')}>
