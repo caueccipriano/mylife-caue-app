@@ -64,7 +64,10 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   const requestedView = searchParams.get('view')
   const [busyId, setBusyId] = useState<string | null>(null)
   const [simpleDay, setSimpleDay] = useState(() => getSimpleDayMode())
-  const [todayView, setTodayView] = useState<'now' | 'signals'>(() => requestedView === 'signals' ? 'signals' : 'now')
+  const [todayView, setTodayView] = useState<'now' | 'signals'>(() => {
+    if (requestedView === 'signals' || requestedView === 'now') return requestedView
+    return localStorage.getItem('eu-today-view') === 'signals' ? 'signals' : 'now'
+  })
   const [focusAreas, setFocusAreasState] = useState(() => getFocusAreas())
 
   const followups = useMemo(() => activeFollowUps(records), [records])
@@ -85,6 +88,11 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
     if (requestedView === 'signals') setTodayView('signals')
     if (requestedView === 'now') setTodayView('now')
   }, [requestedView])
+
+  function selectTodayView(value: 'now' | 'signals') {
+    setTodayView(value)
+    localStorage.setItem('eu-today-view', value)
+  }
 
   useEffect(() => {
     const refreshSimple = () => setSimpleDay(getSimpleDayMode())
@@ -160,8 +168,8 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
       </section>
 
       <nav className="today-view-tabs" aria-label="Visões de Hoje">
-        <button className={todayView === 'now' ? 'active' : ''} onClick={() => setTodayView('now')}><EuIcon name="bolt" />Agora</button>
-        <button className={todayView === 'signals' ? 'active' : ''} onClick={() => setTodayView('signals')}><EuIcon name="sparkles" />Sinais</button>
+        <button className={todayView === 'now' ? 'active' : ''} onClick={() => selectTodayView('now')}><EuIcon name="bolt" />Agora</button>
+        <button className={todayView === 'signals' ? 'active' : ''} onClick={() => selectTodayView('signals')}><EuIcon name="sparkles" />Sinais</button>
       </nav>
 
       {readyCapsules.length > 0 && (
