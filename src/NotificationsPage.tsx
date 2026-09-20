@@ -7,6 +7,7 @@ import {
   markEuNotificationRead,
   type EuNotification,
 } from './notifications'
+import { nextFollowUpDate, updateRecord } from './storage'
 import { BrandTop, Tag } from './v2Ui'
 
 function categoryLabel(category: EuNotification['category']) {
@@ -34,6 +35,7 @@ function tone(category: EuNotification['category']) {
 export default function NotificationsPage() {
   const navigate = useNavigate()
   const [items, setItems] = useState(() => listEuNotifications())
+  const [busyId, setBusyId] = useState<string | null>(null)
 
   useEffect(() => {
     const refresh = () => setItems(listEuNotifications())
@@ -46,6 +48,39 @@ export default function NotificationsPage() {
   function open(item: EuNotification) {
     markEuNotificationRead(item.id)
     if (item.actionUrl) navigate(item.actionUrl)
+  }
+
+  async function completeFollowup(item: EuNotification) {
+    if (!item.sourceId || busyId) return
+    setBusyId(item.id)
+    try {
+      await updateRecord(item.sourceId, {
+        status: 'completed',
+        completedAt: new Date().toISOString(),
+        followUpAt: undefined,
+      })
+      deleteEuNotification(item.id)
+      window.dispatchEvent(new Event('eu-record-saved'))
+    } finally {
+      setBusyId(null)
+    }
+  }
+
+  async function snoozeFollowup(item: EuNotification) {
+    if (!item.sourceId || busyId) return
+    setBusyId(item.id)
+    try {
+      await updateRecord(item.sourceId, {
+        status: 'active',
+        followUpDays: 7,
+        followUpAt: nextFollowUpDate(7),
+        lastPromptedAt: new Date().toISOString(),
+      })
+      deleteEuNotification(item.id)
+      window.dispatchEvent(new Event('eu-record-saved'))
+    } finally {
+      setBusyId(null)
+    }
   }
 
   return (
@@ -79,6 +114,12 @@ export default function NotificationsPage() {
               <p>{item.body}</p>
               <small>{new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }).format(new Date(item.createdAt))}</small>
             </button>
+            {item.category === 'followup' && item.sourceId && (
+              <div className="notification-quick-actions">
+                <button disabled={busyId === item.id} onClick={() => void completeFollowup(item)}>✓ concluir</button>
+                <button disabled={busyId === item.id} onClick={() => void snoozeFollowup(item)}>↻ adiar 7 dias</button>
+              </div>
+            )}
             <button className="notification-delete" aria-label="Apagar notificação" onClick={() => deleteEuNotification(item.id)}>×</button>
           </article>
         ))}
