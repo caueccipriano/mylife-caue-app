@@ -150,7 +150,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
             </button>
           ))}
         </div>
-        <span className="mood-skip">opcional, sempre</span>
+        <span className={'mood-skip' + (mood ? ' saved' : '')} aria-live="polite">{mood ? <><EuIcon name="check" />salvo para hoje</> : 'opcional, sempre'}</span>
       </section>
 
       <section className="daily-brief-card">
