@@ -1,6 +1,7 @@
-import type { ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { NavLink } from 'react-router-dom'
 import type { RecordSource } from './storage'
+import { unreadEuNotifications } from './notifications'
 
 export type Accent = 'coral' | 'green' | 'amber' | 'pink' | 'cobalt' | 'lilac' | 'lime' | 'wine' | 'sky' | 'ink' | 'muted'
 
@@ -9,13 +10,30 @@ export function Tag({ children, tone = 'ink' }: { children: ReactNode; tone?: Ac
 }
 
 export function BrandTop() {
+  const [unread, setUnread] = useState(() => unreadEuNotifications().length)
+
+  useEffect(() => {
+    const refresh = () => setUnread(unreadEuNotifications().length)
+    window.addEventListener('eu-notifications-updated', refresh)
+    return () => window.removeEventListener('eu-notifications-updated', refresh)
+  }, [])
+
   return (
     <header className="v2-topbar">
       <NavLink to="/" className="v2-brand" aria-label="EU, Hoje">
         <strong>EU</strong>
         <span>arquivo vivo</span>
       </NavLink>
-      <span className="v2-top-note">mais vida, menos ruído</span>
+      <div className="v2-top-actions">
+        <span className="v2-top-note">mais vida, menos ruído</span>
+        <NavLink to="/notificacoes" className="notification-bell" aria-label={unread ? unread + ' notificações não lidas' : 'Notificações'}>
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6.8 9.7a5.2 5.2 0 0 1 10.4 0c0 5.8 2.2 6.4 2.2 6.4H4.6s2.2-.6 2.2-6.4Z" />
+            <path d="M9.8 19.1a2.4 2.4 0 0 0 4.4 0" />
+          </svg>
+          {unread > 0 && <b>{unread > 9 ? '9+' : unread}</b>}
+        </NavLink>
+      </div>
     </header>
   )
 }
