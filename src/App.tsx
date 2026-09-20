@@ -73,6 +73,14 @@ function NavIcon({ name }: { name: typeof nav[number]['icon'] }) {
 function AppShell({ onRegister }: { onRegister: () => void }) {
   const location = useLocation()
   const showRegister = ['/', '/vida', '/descobertas', '/memorias'].includes(location.pathname)
+  const [registerCompact, setRegisterCompact] = useState(false)
+
+  useEffect(() => {
+    const onScroll = () => setRegisterCompact(window.scrollY > 180)
+    onScroll()
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [location.pathname])
 
   return (
     <div className="eu-v2-shell">
@@ -112,7 +120,7 @@ function AppShell({ onRegister }: { onRegister: () => void }) {
       </main>
 
       {showRegister && (
-        <button className="global-register-pill" onClick={onRegister} aria-label="Registrar no EU">
+        <button className={'global-register-pill' + (registerCompact ? ' compact' : '')} onClick={onRegister} aria-label="Registrar no EU">
           <span>＋</span>
           registrar
         </button>
