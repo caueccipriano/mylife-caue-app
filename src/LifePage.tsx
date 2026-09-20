@@ -1,12 +1,13 @@
-import { useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { areas, projects } from './data'
 import { periodStory } from './intelligence'
 import { deriveEcosystemInsights } from './ecosystem'
 import { captureCurrentLifeSnapshot } from './snapshots'
-import { useBridges, useRecords } from './appState'
+import { useBridges, useMoodHistory, useRecords } from './appState'
 import { BrandTop, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
 import { isRecordVisibleForInsights } from './storage'
+import { deriveBeforeNow, deriveLifeStats, getFocusAreas, setFocusAreas } from './uxFeatures'
 
 function topRecords(records: ReturnType<typeof useRecords>, predicate: (type: string) => boolean, limit = 3) {
   return records.filter((record) => predicate(record.type.toLowerCase())).slice(0, limit)
@@ -14,20 +15,32 @@ function topRecords(records: ReturnType<typeof useRecords>, predicate: (type: st
 
 export default function LifePage() {
   const records = useRecords()
+  const moods = useMoodHistory()
   const { bridges, refreshing, forceRefresh } = useBridges()
+  const [view, setView] = useState<'overview' | 'areas' | 'moving' | 'you'>('overview')
+  const [focusAreas, setFocusAreasState] = useState(() => getFocusAreas())
 
   const visibleRecords = records.filter(isRecordVisibleForInsights)
   const active = visibleRecords.filter((record) => record.status === 'active')
-  const wishes = topRecords(visibleRecords, (type) => type.includes('desejo') || type.includes('pesquisa') || type.includes('prefer'))
-  const goals = topRecords(visibleRecords, (type) => type.includes('objetivo') || type.includes('curso') || type.includes('pend'))
+  const wishes = topRecords(visibleRecords, (type) => type.includes('desejo') || type.includes('pesquisa') || type.includes('prefer'), 6)
+  const goals = topRecords(visibleRecords, (type) => type.includes('objetivo') || type.includes('curso') || type.includes('pend'), 6)
   const recentByArea = (area: string) => visibleRecords.filter((record) => record.area === area).slice(0, 2)
   const monthStory = periodStory(visibleRecords, 30)
-  const someday = visibleRecords.filter((record) => record.someday || record.type === 'Depois').slice(0, 6)
+  const someday = visibleRecords.filter((record) => record.someday || record.type === 'Depois').slice(0, 8)
   const ecosystemInsights = deriveEcosystemInsights(visibleRecords, bridges)
+  const beforeNow = useMemo(() => deriveBeforeNow(visibleRecords), [records])
+  const stats = useMemo(() => deriveLifeStats(visibleRecords, moods), [records, moods])
 
   useEffect(() => {
     captureCurrentLifeSnapshot(visibleRecords, bridges)
   }, [records, bridges])
+
+  function toggleFocus(area: string) {
+    const next = focusAreas.includes(area)
+      ? focusAreas.filter((item) => item !== area)
+      : [...focusAreas, area].slice(-3)
+    setFocusAreasState(setFocusAreas(next))
+  }
 
   return (
     <div className="v2-page life-page">
@@ -36,201 +49,206 @@ export default function LifePage() {
       <header className="v2-hero">
         <Tag tone="green">VIDA</Tag>
         <h1>O que está<br />tomando forma.</h1>
-        <p>Áreas, planos, desejos e coisas que você começou. O EU organiza sem transformar tudo em tarefa.</p>
+        <p>Áreas, planos, desejos e coisas que você começou — agora separados para você achar tudo mais rápido.</p>
       </header>
 
-      <section className="life-block">
-        <SectionTitle eyebrow="ÁREAS" title="O que continua com você" />
-        <div className="area-scroll">
-          {areas.map((area, index) => (
-            <article className={'life-area area-' + (index % 4)} key={area.id}>
-              <span>{['↗','●','≡','⌂','✦','□','◌','· · ·'][index]}</span>
-              <strong>{area.name}</strong>
-              <p>{recentByArea(area.name)[0]?.text || area.now}</p>
-              <small>{recentByArea(area.name).length ? recentByArea(area.name).length + ' sinais recentes' : area.status}</small>
-            </article>
-          ))}
-        </div>
-      </section>
+      <nav className="life-view-tabs" aria-label="Visões da Vida">
+        <button className={view === 'overview' ? 'active' : ''} onClick={() => setView('overview')}>Visão geral</button>
+        <button className={view === 'areas' ? 'active' : ''} onClick={() => setView('areas')}>Áreas</button>
+        <button className={view === 'moving' ? 'active' : ''} onClick={() => setView('moving')}>Em movimento</button>
+        <button className={view === 'you' ? 'active' : ''} onClick={() => setView('you')}>Você</button>
+      </nav>
 
-      <section className="life-block">
-        <SectionTitle eyebrow="EM MOVIMENTO" title="Projetos, metas e começos" />
-        <div className="life-list-cards">
-          {active.slice(0, 4).map((record) => (
-            <NavLink key={record.id} className="life-list-card tappable-card record-link-card" to={'/registro/' + record.id}>
-              <div>
-                <Tag tone={typeTone(record.type)}>{record.type}</Tag>
-                <span>{record.area}</span>
-              </div>
-              <h3>{record.text}</h3>
-              <p>Em acompanhamento desde {formatShortDate(record.startedAt || record.createdAt)}.</p>
-            </NavLink>
-          ))}
-
-          {!active.length && projects.slice(0, 3).map((project) => (
-            <article key={project.id} className="life-list-card">
-              <div><Tag tone="coral">Projeto</Tag><span>{project.area}</span></div>
-              <h3>{project.name}</h3>
-              <p>{project.summary}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="life-block split-life-block">
-        <div>
-          <SectionTitle eyebrow="DESEJOS" title="Coisas que chamaram sua atenção" />
-          <div className="compact-stack">
-            {wishes.length ? wishes.map((record) => (
-              <NavLink key={record.id} className="compact-record-link" to={'/registro/' + record.id}>
-                <Tag tone="pink">{record.type}</Tag>
-                <p>{record.text}</p>
-              </NavLink>
-            )) : <p className="muted-copy">Quando você disser “gostei” ou “andei pesquisando pra comprar”, aparece aqui.</p>}
-          </div>
-        </div>
-
-        <div>
-          <SectionTitle eyebrow="PRÓXIMOS PASSOS" title="Coisas que pedem continuidade" />
-          <div className="compact-stack">
-            {goals.length ? goals.map((record) => (
-              <NavLink key={record.id} className="compact-record-link" to={'/registro/' + record.id}>
-                <Tag tone="coral">{record.type}</Tag>
-                <p>{record.private ? 'Registro privado' : record.text}</p>
-              </NavLink>
-            )) : <p className="muted-copy">Cursos, objetivos e pendências vivas aparecem aqui sem virar uma lista burocrática.</p>}
-          </div>
-        </div>
-      </section>
-
-      <section className="life-block someday-block">
-        <SectionTitle eyebrow="DEPOIS" title="Coisas do seu futuro, sem pressão" />
-        <div className="someday-grid">
-          {someday.length ? someday.map((record) => (
-            <NavLink key={record.id} to={'/registro/' + record.id} className="someday-card">
-              <Tag tone="lilac">{record.type}</Tag>
-              <p>{record.text}</p>
-              <span>não está cobrando você agora</span>
-            </NavLink>
-          )) : (
-            <div className="soft-empty wide">
-              <span>◌</span>
-              <p>Quando algo for “um dia eu quero…” sem precisar virar meta agora, ele pode morar aqui.</p>
+      {view === 'overview' && (
+        <>
+          <section className="life-block focus-panel">
+            <SectionTitle eyebrow="FOCO DO MOMENTO" title="O que merece mais espaço agora" />
+            <p className="muted-copy">Escolha até 3 áreas. O EU usa isso para ordenar “Continuar” e destacar o que importa sem esconder o resto.</p>
+            <div className="focus-area-chips">
+              {areas.map((area) => (
+                <button key={area.id} className={focusAreas.includes(area.name) ? 'active' : ''} onClick={() => toggleFocus(area.name)}>
+                  {area.name}
+                </button>
+              ))}
             </div>
-          )}
-        </div>
-      </section>
+          </section>
 
-      <section className="life-block month-story-block">
-        <SectionTitle eyebrow="SEU MÊS" title="O que tomou espaço na sua vida" />
-        <article className="month-story-card">
-          <div>
-            <strong>{monthStory.count}</strong>
-            <span>coisas registradas</span>
-          </div>
-          <p>{monthStory.text}</p>
-          {monthStory.topArea && <Tag tone="green">{monthStory.topArea} foi a área mais presente</Tag>}
-        </article>
-      </section>
+          <section className="life-block stats-panel">
+            <SectionTitle eyebrow="VOCÊ EM NÚMEROS" title="Só o bastante para enxergar a fase" />
+            <div className="life-stats-grid">
+              <article><strong>{stats.active}</strong><span>em movimento</span></article>
+              <article><strong>{stats.wishes}</strong><span>desejos/pesquisas</span></article>
+              <article><strong>{stats.completed}</strong><span>ciclos fechados</span></article>
+              <article><strong>{stats.areas}</strong><span>áreas vivas</span></article>
+              <article><strong>{stats.favorites}</strong><span>favoritos</span></article>
+              <article><strong>{stats.moods}</strong><span>check-ins de humor</span></article>
+            </div>
+          </section>
 
-      <section className="life-block phases-entry-block">
-        <NavLink to="/vida/fases" className="phases-entry-card">
-          <div>
-            <Tag tone="pink">SUAS FASES</Tag>
-            <h2>Você de antes × você de agora.</h2>
-            <p>O EU guarda um retrato de cada mês para mostrar como seus assuntos, desejos e movimentos mudam com o tempo.</p>
-          </div>
-          <span>ver fases ↗</span>
-        </NavLink>
-      </section>
-
-      <section className="life-block self-tools-block">
-        <SectionTitle eyebrow="VOCÊ" title="Olhar a vida de outros ângulos" />
-        <div className="self-tools-grid">
-          <NavLink to="/vida/quem-sou" className="self-tool-card self-tool-lilac">
-            <Tag tone="lilac">QUEM EU SOU AGORA</Tag>
-            <h3>Uma identidade viva.</h3>
-            <p>O que anda definindo esta fase e quais princípios estão ficando mais claros.</p>
-            <span>ver agora ↗</span>
-          </NavLink>
-          <NavLink to="/vida/capitulos" className="self-tool-card self-tool-sky">
-            <Tag tone="sky">CAPÍTULOS</Tag>
-            <h3>Quando um assunto vira história.</h3>
-            <p>Fases e temas que atravessaram o tempo e merecem ser vistos juntos.</p>
-            <span>abrir capítulos ↗</span>
-          </NavLink>
-          <NavLink to="/vida/wrapped" className="self-tool-card self-tool-cobalt">
-            <Tag tone="cobalt">EU WRAPPED</Tag>
-            <h3>Seu ano sem KPI corporativo.</h3>
-            <p>Decisões, desejos, ciclos, assuntos e momentos que ficaram.</p>
-            <span>ver retrospectiva ↗</span>
-          </NavLink>
-          <NavLink to="/vida/lab" className="self-tool-card self-tool-lab">
-            <Tag tone="wine">EU LAB</Tag>
-            <h3>Ver o que está mudando por baixo.</h3>
-            <p>Radar da mente, Life Graph, cápsulas, Decision Lab, objetos, lugares, fases e Sync Vault.</p>
-            <span>abrir laboratório ↗</span>
-          </NavLink>
-        </div>
-      </section>
-
-      <section className="life-block plans-block">
-        <SectionTitle eyebrow="PLANOS" title="Pra onde isso tudo está indo" />
-        <div className="plan-grid">
-          <NavLink to="/vida/carreira" className="plan-card career-plan-card">
-            <Tag tone="green">PLANO DE CARREIRA</Tag>
-            <h3>Finanças + Dados, sem jogar sua história fora.</h3>
-            <p>Direção, próximos 90 dias, 12 meses, competências, lacunas e sinais vindos das suas próprias conversas e registros.</p>
-            <span>abrir plano ↗</span>
-          </NavLink>
-
-          <article className="plan-card life-plan-card">
-            <Tag tone="pink">PLANO DE VIDA</Tag>
-            <h3>Construir uma vida que faça sentido no conjunto.</h3>
-            <p>Trabalho, dinheiro, estudos, relações, experiências, compras e escolhas vistos juntos — sem precisar preencher planilhas sobre você.</p>
-            <span>vai ficando mais inteligente com o uso</span>
-          </article>
-
-          <NavLink to="/vida/astrologia" className="plan-card astrology-plan-card">
-            <Tag tone="amber">MAPAS + CÉU DIÁRIO</Tag>
-            <h3>Seu mapa ocidental e védico, vivos no EU.</h3>
-            <p>Veja os dois mapas natais e uma leitura diária dos trânsitos calculada automaticamente no próprio aparelho.</p>
-            <span>abrir astrologia ↗</span>
-          </NavLink>
-        </div>
-      </section>
-
-      <section className="life-block" id="sinais">
-        <SectionTitle
-          eyebrow="SINAIS"
-          title="O que seus apps estão contando"
-          action={<button className="quiet-link" disabled={refreshing} onClick={() => void forceRefresh()}>{refreshing ? 'atualizando…' : 'atualizar ↻'}</button>}
-        />
-        <div className="signals-life-grid">
-          {bridges.map((card) => (
-            <article key={card.id}>
-              <div className="signal-title-row">
-                <strong>{card.title}</strong>
-                <span className={card.bridge ? 'signal-dot on' : 'signal-dot'} />
-              </div>
-              <p>{card.bridge?.summary || 'Abra o app uma vez para o EU receber o resumo.'}</p>
-              <small>{card.stale ? 'resumo antigo · atualizar' : card.bridge?.status || 'aguardando'}</small>
-            </article>
-          ))}
-        </div>
-
-        {ecosystemInsights.length > 0 && (
-          <div className="ecosystem-insights">
-            {ecosystemInsights.map((insight) => (
-              <article key={insight.id} className={'ecosystem-insight insight-' + insight.tone}>
-                <Tag tone={insight.tone}>CONEXÃO</Tag>
-                <h3>{insight.title}</h3>
-                <p>{insight.detail}</p>
+          <section className="life-block before-now-panel">
+            <SectionTitle eyebrow="ANTES × AGORA" title="O que mudou nos últimos dois meses" />
+            <div className="before-now-grid">
+              <article>
+                <Tag tone="muted">ANTES · 30–60 DIAS</Tag>
+                <h3>{beforeNow.previous.topArea || 'fase mais quieta'}</h3>
+                <p>{beforeNow.previous.count} registros · {beforeNow.previous.completed} concluídos</p>
+                <div>{beforeNow.previous.topTags.map((tag) => <span key={tag}>#{tag}</span>)}</div>
               </article>
-            ))}
+              <b>→</b>
+              <article>
+                <Tag tone="cobalt">AGORA · 30 DIAS</Tag>
+                <h3>{beforeNow.current.topArea || 'ganhando forma'}</h3>
+                <p>{beforeNow.current.count} registros · {beforeNow.current.completed} concluídos</p>
+                <div>{beforeNow.current.topTags.map((tag) => <span key={tag}>#{tag}</span>)}</div>
+              </article>
+            </div>
+          </section>
+
+          <section className="life-block month-story-block">
+            <SectionTitle eyebrow="SEU MÊS" title="O que tomou espaço na sua vida" />
+            <article className="month-story-card">
+              <div><strong>{monthStory.count}</strong><span>coisas registradas</span></div>
+              <p>{monthStory.text}</p>
+              {monthStory.topArea && <Tag tone="green">{monthStory.topArea} foi a área mais presente</Tag>}
+            </article>
+          </section>
+
+          <section className="life-block" id="sinais">
+            <SectionTitle
+              eyebrow="SINAIS"
+              title="O que seus apps estão contando"
+              action={<button className="quiet-link" disabled={refreshing} onClick={() => void forceRefresh()}>{refreshing ? 'atualizando…' : 'atualizar ↻'}</button>}
+            />
+            <div className="signals-life-grid">
+              {bridges.map((card) => (
+                <article key={card.id}>
+                  <div className="signal-title-row"><strong>{card.title}</strong><span className={card.bridge ? 'signal-dot on' : 'signal-dot'} /></div>
+                  <p>{card.bridge?.summary || 'Abra o app uma vez para o EU receber o resumo.'}</p>
+                  <small>{card.stale ? 'resumo antigo · atualizar' : card.bridge?.status || 'aguardando'}</small>
+                </article>
+              ))}
+            </div>
+            {ecosystemInsights.length > 0 && (
+              <div className="ecosystem-insights">
+                {ecosystemInsights.slice(0, 3).map((insight) => (
+                  <article key={insight.id} className={'ecosystem-insight insight-' + insight.tone}>
+                    <Tag tone={insight.tone}>CONEXÃO</Tag>
+                    <h3>{insight.title}</h3>
+                    <p>{insight.detail}</p>
+                  </article>
+                ))}
+              </div>
+            )}
+          </section>
+        </>
+      )}
+
+      {view === 'areas' && (
+        <section className="life-block life-view-section">
+          <SectionTitle eyebrow="ÁREAS" title="Cada parte da sua vida, no lugar dela" />
+          <div className="area-grid-v4">
+            {areas.map((area, index) => {
+              const recent = recentByArea(area.name)
+              const count = visibleRecords.filter((record) => record.area === area.name).length
+              return (
+                <article className={'life-area area-semantic-' + area.id} key={area.id}>
+                  <span>{['↗','●','≡','⌂','✦','□','◌','· · ·'][index]}</span>
+                  <strong>{area.name}</strong>
+                  <p>{recent[0]?.text || area.now}</p>
+                  <small>{count ? count + ' registros' : area.status}</small>
+                  {focusAreas.includes(area.name) && <Tag tone="cobalt">FOCO</Tag>}
+                </article>
+              )
+            })}
           </div>
-        )}
-      </section>
+        </section>
+      )}
+
+      {view === 'moving' && (
+        <>
+          <section className="life-block">
+            <SectionTitle eyebrow="AGORA" title="Projetos, metas e começos" />
+            <div className="life-list-cards">
+              {active.slice(0, 8).map((record) => (
+                <NavLink key={record.id} className={'life-list-card tappable-card record-link-card' + (record.pinned ? ' pinned' : '')} to={'/registro/' + record.id}>
+                  <div><Tag tone={record.pinned ? 'cobalt' : typeTone(record.type)}>{record.pinned ? 'FIXADO' : record.type}</Tag><span>{record.area}</span></div>
+                  <h3>{record.text}</h3>
+                  <p>{record.nextMove || 'Em acompanhamento desde ' + formatShortDate(record.startedAt || record.createdAt) + '.'}</p>
+                </NavLink>
+              ))}
+              {!active.length && projects.slice(0, 3).map((project) => (
+                <article key={project.id} className="life-list-card">
+                  <div><Tag tone="coral">Projeto</Tag><span>{project.area}</span></div>
+                  <h3>{project.name}</h3><p>{project.summary}</p>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <details className="life-fold" open>
+            <summary><span><small>DESEJOS</small><strong>Coisas que chamaram sua atenção</strong></span><b>＋</b></summary>
+            <div className="compact-stack">
+              {wishes.length ? wishes.map((record) => (
+                <NavLink key={record.id} className="compact-record-link" to={'/registro/' + record.id}>
+                  <Tag tone="pink">{record.type}</Tag><p>{record.text}</p>
+                </NavLink>
+              )) : <p className="muted-copy">Quando você disser “gostei” ou “andei pesquisando pra comprar”, aparece aqui.</p>}
+            </div>
+          </details>
+
+          <details className="life-fold" open>
+            <summary><span><small>PRÓXIMOS PASSOS</small><strong>Coisas que pedem continuidade</strong></span><b>＋</b></summary>
+            <div className="compact-stack">
+              {goals.length ? goals.map((record) => (
+                <NavLink key={record.id} className="compact-record-link" to={'/registro/' + record.id}>
+                  <Tag tone="coral">{record.type}</Tag><p>{record.text}</p>
+                </NavLink>
+              )) : <p className="muted-copy">Cursos, objetivos e pendências vivas aparecem aqui.</p>}
+            </div>
+          </details>
+
+          <details className="life-fold">
+            <summary><span><small>DEPOIS</small><strong>Futuro sem pressão</strong></span><b>＋</b></summary>
+            <div className="someday-grid">
+              {someday.length ? someday.map((record) => (
+                <NavLink key={record.id} to={'/registro/' + record.id} className="someday-card">
+                  <Tag tone="lilac">{record.type}</Tag><p>{record.text}</p><span>não está cobrando você agora</span>
+                </NavLink>
+              )) : <p className="muted-copy">Coisas de “um dia eu quero…” moram aqui.</p>}
+            </div>
+          </details>
+        </>
+      )}
+
+      {view === 'you' && (
+        <>
+          <section className="life-block self-tools-block">
+            <SectionTitle eyebrow="VOCÊ" title="Olhar a vida de outros ângulos" />
+            <div className="self-tools-grid">
+              <NavLink to="/vida/quem-sou" className="self-tool-card self-tool-lilac"><Tag tone="lilac">QUEM EU SOU AGORA</Tag><h3>Uma identidade viva.</h3><p>O que anda definindo esta fase.</p><span>ver agora ↗</span></NavLink>
+              <NavLink to="/vida/capitulos" className="self-tool-card self-tool-sky"><Tag tone="sky">CAPÍTULOS</Tag><h3>Quando um assunto vira história.</h3><p>Fases e temas que atravessaram o tempo.</p><span>abrir capítulos ↗</span></NavLink>
+              <NavLink to="/vida/wrapped" className="self-tool-card self-tool-cobalt"><Tag tone="cobalt">EU WRAPPED</Tag><h3>Seu ano sem KPI corporativo.</h3><p>Decisões, desejos, ciclos e momentos.</p><span>ver retrospectiva ↗</span></NavLink>
+              <NavLink to="/vida/lab" className="self-tool-card self-tool-lab"><Tag tone="wine">EU LAB</Tag><h3>Ver o que está mudando por baixo.</h3><p>Radar, Life Graph, cápsulas e decisões.</p><span>abrir laboratório ↗</span></NavLink>
+            </div>
+          </section>
+
+          <section className="life-block plans-block">
+            <SectionTitle eyebrow="PLANOS" title="Pra onde isso tudo está indo" />
+            <div className="plan-grid">
+              <NavLink to="/vida/carreira" className="plan-card career-plan-card"><Tag tone="green">PLANO DE CARREIRA</Tag><h3>Seu caminho profissional.</h3><p>Direção, competências, lacunas e sinais dos seus registros.</p><span>abrir plano ↗</span></NavLink>
+              <article className="plan-card life-plan-card"><Tag tone="lilac">PLANO DE VIDA</Tag><h3>O conjunto importa.</h3><p>Trabalho, dinheiro, estudos, relações, experiências e escolhas vistos juntos.</p><span>fica mais inteligente com o uso</span></article>
+              <NavLink to="/vida/astrologia" className="plan-card astrology-plan-card"><Tag tone="amber">MAPAS + CÉU</Tag><h3>Astrologia dentro do arquivo.</h3><p>Mapa local privado + céu diário calculado no aparelho.</p><span>abrir astrologia ↗</span></NavLink>
+            </div>
+          </section>
+
+          <section className="life-block phases-entry-block">
+            <NavLink to="/vida/fases" className="phases-entry-card">
+              <div><Tag tone="cobalt">SUAS FASES</Tag><h2>Você de antes × você de agora.</h2><p>Retratos mensais para perceber como seus assuntos e movimentos mudam.</p></div>
+              <span>ver fases ↗</span>
+            </NavLink>
+          </section>
+        </>
+      )}
     </div>
   )
 }
