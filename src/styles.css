@@ -9963,3 +9963,21 @@ button:disabled {
 .v2-bottom-nav a.active > small {
   font-weight: 720;
 }
+
+
+/* EU v10.4: stack sticky controls below the header */
+.life-view-tabs,
+.discovery-view-tabs,
+.memory-section-nav,
+.lab-view-tabs {
+  top: 78px;
+}
+
+@media (max-width: 760px) {
+  .life-view-tabs,
+  .discovery-view-tabs,
+  .memory-section-nav,
+  .lab-view-tabs {
+    top: calc(66px + env(safe-area-inset-top));
+  }
+}
