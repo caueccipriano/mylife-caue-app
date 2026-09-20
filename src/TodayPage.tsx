@@ -105,7 +105,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
       <section className="today-hello">
         <p>{dayLabel()}</p>
         <h1>{greeting()}{profile.displayName ? ', ' + profile.displayName : ''}</h1>
-        <span>como você chega hoje?</span>
+        <span>como você tá hoje?</span>
       </section>
 
       <section className="mood-checkin" aria-label="Check-in do dia">
@@ -113,7 +113,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
           {moods.map((item) => (
             <button
               key={item.value}
-              className={mood?.mood === item.value ? 'active' : ''}
+              className={'mood-option mood-' + item.value + (mood?.mood === item.value ? ' active' : '')}
               onClick={() => saveMoodCheckin(item.value)}
               aria-label={item.label}
               title={item.label}
