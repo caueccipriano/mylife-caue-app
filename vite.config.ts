@@ -28,7 +28,7 @@ export default defineConfig({
         background_color: '#F6F3EB',
         display: 'standalone',
         orientation: 'portrait-primary',
-        start_url: base + '?v=eu-v12-storytelling-polish',
+        start_url: base + '?v=eu-v13-semantic-polish',
         scope: base,
         categories: ['lifestyle', 'utilities'],
         share_target: {
