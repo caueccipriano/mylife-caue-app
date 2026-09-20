@@ -14,6 +14,7 @@ export type EuIconName =
   | 'image' | 'file' | 'mic' | 'x' | 'check'
   | 'clock' | 'undo' | 'help' | 'location' | 'link' | 'refresh'
   | 'lock' | 'pin' | 'edit' | 'plus'
+  | 'arrow-left' | 'inbox' | 'trash' | 'shield' | 'download' | 'chat'
 
 export function EuIcon({ name, className = 'eu-icon' }: { name: EuIconName; className?: string }) {
   let body: ReactNode = null
@@ -120,6 +121,24 @@ export function EuIcon({ name, className = 'eu-icon' }: { name: EuIconName; clas
       break
     case 'plus':
       body = <path d="M12 5v14M5 12h14" />
+      break
+    case 'arrow-left':
+      body = <><path d="M19 12H5" /><path d="m10 7-5 5 5 5" /></>
+      break
+    case 'inbox':
+      body = <><path d="M4 5.5h16v13H4Z" /><path d="M4 13h4l1.8 2.3h4.4L16 13h4" /></>
+      break
+    case 'trash':
+      body = <><path d="M5.5 7h13M9 7V4.7h6V7M7.2 7l.8 12.3h8L16.8 7" /><path d="M10 10.5v5.3M14 10.5v5.3" /></>
+      break
+    case 'shield':
+      body = <><path d="M12 3.3 19 6v5.4c0 4.2-2.3 7.5-7 9.3-4.7-1.8-7-5.1-7-9.3V6Z" /><path d="m9.2 12.2 1.8 1.8 3.8-4" /></>
+      break
+    case 'download':
+      body = <><path d="M12 4v10" /><path d="m8.2 10.5 3.8 3.8 3.8-3.8M5 19h14" /></>
+      break
+    case 'chat':
+      body = <><path d="M5 5h14v10.5H9l-4 3Z" /><path d="M8 9h8M8 12h5" /></>
       break
   }
 
