@@ -183,6 +183,9 @@ export function BrandTop() {
       </NavLink>
       <div className="v2-top-actions">
         <span className="v2-top-note">mais vida, menos ruído</span>
+        <NavLink to="/pergunte" className="top-icon-action top-ask-action" aria-label="Pergunte ao EU">
+          <EuIcon name="search" />
+        </NavLink>
         <NavLink to="/inbox" className="top-icon-action" aria-label={inboxCount ? inboxCount + ' entradas aguardando revisão' : 'Caixa do Chat'}>
           <EuIcon name="inbox" />
           {inboxCount > 0 && <b>{inboxCount > 9 ? '9+' : inboxCount}</b>}
