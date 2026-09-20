@@ -11,7 +11,7 @@ export default function ChaptersPage() {
   return (
     <div className="v2-page chapters-page">
       <BrandTop />
-      <NavLink className="back-v2" to="/vida">← Vida</NavLink>
+      <NavLink className="back-v2" to="/vida"><EuIcon name="arrow-left" />Vida</NavLink>
 
       <header className="v2-hero">
         <Tag tone="sky">CAPÍTULOS</Tag>
