@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { useBridges, useRecords } from './appState'
 import { captureCurrentLifeSnapshot, listLifeSnapshots, type LifeSnapshot } from './snapshots'
-import { BrandTop, SectionTitle, Tag } from './v2Ui'
+import { BrandTop, EuIcon, SectionTitle, Tag } from './v2Ui'
 
 function comparison(current: LifeSnapshot, previous?: LifeSnapshot) {
   if (!previous) return 'Este é o primeiro retrato mensal salvo pelo EU.'
@@ -36,7 +36,7 @@ export default function SnapshotsPage() {
   return (
     <div className="v2-page snapshots-page">
       <BrandTop />
-      <NavLink className="back-v2" to="/vida">← Vida</NavLink>
+      <NavLink className="back-v2" to="/vida"><EuIcon name="arrow-left" />Vida</NavLink>
 
       <header className="v2-hero snapshots-hero">
         <Tag tone="pink">SUAS FASES</Tag>
