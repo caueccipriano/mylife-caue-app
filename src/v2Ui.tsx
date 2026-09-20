@@ -13,6 +13,7 @@ export type EuIconName =
   | 'plane' | 'bag' | 'sparkles' | 'user'
   | 'image' | 'file' | 'mic' | 'x' | 'check'
   | 'clock' | 'undo' | 'help' | 'location' | 'link' | 'refresh'
+  | 'lock' | 'pin' | 'edit' | 'plus'
 
 export function EuIcon({ name, className = 'eu-icon' }: { name: EuIconName; className?: string }) {
   let body: ReactNode = null
@@ -107,6 +108,18 @@ export function EuIcon({ name, className = 'eu-icon' }: { name: EuIconName; clas
       break
     case 'refresh':
       body = <><path d="M18.8 8.2V4.5h-3.7" /><path d="M18.3 7.2a7.7 7.7 0 1 0 1.1 8.7" /></>
+      break
+    case 'lock':
+      body = <><rect x="5" y="10" width="14" height="10.5" rx="2.2" /><path d="M8.2 10V7a3.8 3.8 0 0 1 7.6 0v3M12 14v2.7" /></>
+      break
+    case 'pin':
+      body = <><path d="M8.2 4.5h7.6l-1.4 5 2.2 2.4H7.4l2.2-2.4Z" /><path d="M12 11.9v8.3" /></>
+      break
+    case 'edit':
+      body = <><path d="M4.5 19.5h4l10-10a2.1 2.1 0 0 0-3-3l-10 10Z" /><path d="m14.3 7.7 3 3" /></>
+      break
+    case 'plus':
+      body = <path d="M12 5v14M5 12h14" />
       break
   }
 
