@@ -278,7 +278,7 @@ export function CareerPlanPage() {
   return (
     <div className="v2-page career-v2">
       <BrandTop />
-      <NavLink className="back-v2" to="/vida">← Vida</NavLink>
+      <NavLink className="back-v2" to="/vida"><EuIcon name="arrow-left" />Vida</NavLink>
 
       <header className="career-hero-v2">
         <Tag tone="green">PLANO DE CARREIRA</Tag>
