@@ -15435,3 +15435,472 @@ select {
     max-width: 100%;
   }
 }
+
+
+/* EU v18.7: locked viewport + compact mobile */
+
+/* The app itself never pans sideways. Horizontal movement is only allowed
+   inside explicitly scrollable controls. */
+html,
+body,
+#root {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+  overscroll-behavior-x: none;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+.eu-v2-shell,
+.eu-v2-main,
+.route-stage,
+.v2-page {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: clip;
+}
+
+.eu-v2-shell {
+  position: relative;
+  touch-action: pan-y;
+}
+
+.eu-v2-main {
+  position: relative;
+}
+
+.v2-page {
+  width: min(720px, calc(100% - 32px));
+}
+
+/* Decorative graphics may leave their card visually, but never the viewport. */
+.v2-hero,
+.today-glance,
+.record-detail-hero,
+.discovery-hero,
+.mood-hero,
+.self-hero,
+.lab-hero,
+.astro-hero,
+.snapshots-hero,
+.security-hero,
+.area-hero,
+.career-hero-v2 {
+  max-width: 100%;
+  overflow: clip;
+}
+
+.v2-hero::before,
+.v2-hero::after,
+.today-glance::before,
+.today-glance::after,
+.record-detail-hero::before,
+.record-detail-hero::after,
+.discovery-hero::before,
+.discovery-hero::after,
+.mood-hero::before,
+.mood-hero::after,
+.self-hero::before,
+.self-hero::after,
+.lab-hero::before,
+.lab-hero::after,
+.astro-hero::before,
+.astro-hero::after,
+.snapshots-hero::before,
+.snapshots-hero::after,
+.security-hero::before,
+.security-hero::after {
+  pointer-events: none;
+}
+
+/* Kill old negative-edge tricks that could enlarge the document width. */
+.focus-area-chips,
+.mood-heatmap-scroll,
+.astro-transit-strip,
+.entity-cloud-v4,
+.quick-starts,
+.capture-tools,
+.memory-tag-strip {
+  max-width: 100%;
+}
+
+.focus-area-chips {
+  margin-right: 0 !important;
+  padding-right: 0 !important;
+}
+
+/* Main app tabs should fit the screen instead of making the whole UI feel draggable. */
+.life-view-tabs,
+.discovery-view-tabs,
+.today-view-tabs {
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.life-view-tabs {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.discovery-view-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.today-view-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.life-view-tabs button,
+.discovery-view-tabs button,
+.today-view-tabs button {
+  min-width: 0;
+  width: 100%;
+  padding-inline: 8px;
+  white-space: normal;
+  line-height: 1.05;
+  text-align: center;
+}
+
+.life-view-tabs button .eu-icon,
+.discovery-view-tabs button .eu-icon,
+.today-view-tabs button .eu-icon {
+  flex: 0 0 auto;
+}
+
+/* Secondary tab bars can scroll inside themselves without moving the page. */
+.memory-section-nav,
+.lab-view-tabs,
+.astro-mode-switch {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  touch-action: pan-x;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.memory-section-nav::-webkit-scrollbar,
+.lab-view-tabs::-webkit-scrollbar,
+.astro-mode-switch::-webkit-scrollbar {
+  display: none;
+}
+
+/* FAB is positioned from the safe viewport, never from an oversized child. */
+.global-register-pill.compact {
+  position: fixed;
+  right: max(14px, env(safe-area-inset-right));
+  bottom: calc(92px + env(safe-area-inset-bottom));
+  margin: 0;
+  transform: none;
+  max-width: calc(100dvw - 28px);
+  z-index: 42;
+}
+
+/* Bottom dock stays optically centered inside the actual viewport. */
+.v2-bottom-nav {
+  left: 50%;
+  right: auto;
+  width: min(420px, calc(100dvw - 18px));
+  max-width: calc(100dvw - 18px);
+  margin: 0;
+  transform: translateX(-50%);
+  overflow: hidden;
+}
+
+.v2-bottom-nav a {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.v2-bottom-nav a > small {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Compact the big landing areas: content appears sooner without losing identity. */
+.life-page > .v2-hero,
+.discovery-hero,
+.memories-hero,
+.today-glance,
+.mood-hero,
+.collections-page > .v2-hero,
+.self-hero,
+.lab-hero,
+.astro-hero,
+.snapshots-hero,
+.security-hero {
+  margin-bottom: 18px;
+}
+
+.life-page > .v2-hero,
+.discovery-hero,
+.memories-hero {
+  padding-top: 24px;
+  padding-bottom: 17px;
+}
+
+.life-page > .v2-hero h1,
+.discovery-hero h1,
+.memories-hero h1 {
+  max-width: 92%;
+  margin-top: 13px;
+  margin-bottom: 10px;
+  font-size: clamp(31px, 6.7vw, 39px);
+  line-height: .98;
+}
+
+.life-page > .v2-hero > p,
+.discovery-hero > p,
+.memories-hero > p {
+  max-width: 94%;
+  font-size: 12.5px;
+  line-height: 1.48;
+}
+
+/* Hero ornaments stay visible but no longer sit half outside the page. */
+.life-page > .v2-hero::before,
+.discovery-hero::before,
+.mood-hero::before,
+.collections-page > .v2-hero::before,
+.self-hero::before,
+.lab-hero::before,
+.astro-hero::before,
+.snapshots-hero::before,
+.security-hero::before {
+  right: -16px !important;
+  max-width: 132px;
+  max-height: 132px;
+}
+
+.life-page > .v2-hero::after,
+.discovery-hero::after,
+.mood-hero::after,
+.collections-page > .v2-hero::after,
+.self-hero::after,
+.lab-hero::after,
+.astro-hero::after,
+.snapshots-hero::after,
+.security-hero::after {
+  right: 24px !important;
+}
+
+/* First-useful-card density. */
+.focus-panel,
+.discovery-feature,
+.identity-now-card,
+.phase-now,
+.astro-daily-card,
+.mood-heatmap-card {
+  padding: 18px;
+  border-radius: 24px;
+}
+
+.discovery-feature {
+  min-height: 0;
+}
+
+.discovery-feature h2,
+.identity-now-card h2,
+.phase-now h2 {
+  max-width: 88%;
+  font-size: clamp(23px, 5.6vw, 29px);
+  line-height: 1.05;
+}
+
+.discovery-feature p,
+.identity-now-card > p,
+.phase-now > p,
+.focus-panel > .muted-copy {
+  font-size: 12.5px;
+  line-height: 1.48;
+}
+
+/* Focus-area buttons: cleaner density and no accidental over-width. */
+.focus-area-chips {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: 8px;
+  overflow: visible;
+}
+
+.focus-area-chips button {
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  padding: 0 9px;
+  justify-content: center;
+}
+
+.focus-area-chips button span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Guard common flexible rows against intrinsic-width overflow. */
+.feed-meta,
+.record-detail-kicker,
+.v2-section-title,
+.signal-title-row,
+.discovery-feature,
+.discovery-card,
+.life-area,
+.life-list-card,
+.plan-card,
+.self-tool-card,
+.memory-record-card,
+.collection-v2,
+.phase-grid > article {
+  min-width: 0;
+}
+
+img,
+video,
+canvas,
+svg {
+  max-width: 100%;
+}
+
+/* iPhone-specific density and fixed-width behavior. */
+@media (max-width: 760px) {
+  .v2-page {
+    width: calc(100% - 28px);
+  }
+
+  .life-view-tabs,
+  .discovery-view-tabs {
+    position: sticky;
+    top: calc(68px + env(safe-area-inset-top));
+    z-index: 11;
+  }
+
+  .life-view-tabs button,
+  .discovery-view-tabs button {
+    min-height: 49px;
+    padding: 5px 6px;
+    font-size: 7px;
+  }
+
+  .life-view-tabs button {
+    gap: 4px;
+  }
+
+  .life-view-tabs button .eu-icon,
+  .discovery-view-tabs button .eu-icon {
+    width: 15px;
+    height: 15px;
+  }
+
+  .focus-panel {
+    padding: 17px;
+  }
+
+  .discovery-feature {
+    padding: 18px;
+  }
+
+  .global-register-pill.compact {
+    right: max(12px, env(safe-area-inset-right));
+    bottom: calc(88px + env(safe-area-inset-bottom));
+    width: 52px;
+    min-height: 52px;
+  }
+
+  .v2-bottom-nav {
+    width: calc(100dvw - 14px);
+    max-width: 420px;
+  }
+}
+
+@media (max-width: 430px) {
+  .v2-page {
+    width: calc(100% - 24px);
+  }
+
+  .life-page > .v2-hero,
+  .discovery-hero,
+  .memories-hero {
+    padding-top: 20px;
+    padding-bottom: 14px;
+  }
+
+  .life-page > .v2-hero h1,
+  .discovery-hero h1,
+  .memories-hero h1 {
+    max-width: 88%;
+    font-size: clamp(29px, 7.7vw, 34px);
+  }
+
+  .life-view-tabs {
+    grid-template-columns: repeat(4, minmax(0,1fr));
+  }
+
+  .life-view-tabs button,
+  .discovery-view-tabs button {
+    padding-inline: 4px;
+  }
+
+  .life-view-tabs button {
+    flex-direction: column;
+    min-height: 52px;
+    gap: 3px;
+  }
+
+  .life-view-tabs button .eu-icon {
+    width: 14px;
+    height: 14px;
+  }
+
+  .focus-area-chips {
+    grid-template-columns: repeat(2, minmax(0,1fr));
+  }
+
+  .focus-area-chips button {
+    justify-content: flex-start;
+    padding-inline: 13px;
+  }
+
+  .discovery-feature h2,
+  .identity-now-card h2,
+  .phase-now h2 {
+    max-width: 90%;
+    font-size: 24px;
+  }
+
+  .v2-bottom-nav a > small {
+    font-size: 6.5px;
+  }
+}
+
+/* Tiny screens: no horizontal escape, even with long Portuguese labels. */
+@media (max-width: 370px) {
+  .v2-page {
+    width: calc(100% - 20px);
+  }
+
+  .life-view-tabs button,
+  .discovery-view-tabs button {
+    font-size: 6.5px;
+  }
+
+  .focus-area-chips button {
+    font-size: 11px;
+  }
+}
