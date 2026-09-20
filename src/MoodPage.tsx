@@ -3,13 +3,13 @@ import { NavLink } from 'react-router-dom'
 import { listMoodCheckins, type MoodValue } from './storage'
 import { useRecords } from './appState'
 import { deriveMoodInsights, moodLabel } from './uxFeatures'
-import { BrandTop, SectionTitle, Tag } from './v2Ui'
+import { BrandTop, EuIcon, SectionTitle, Tag, type EuIconName } from './v2Ui'
 
-const moods: Array<{ value: MoodValue; label: string; icon: string }> = [
-  { value: 'animado', label: 'bem', icon: '☺' },
-  { value: 'ok', label: 'ok', icon: '◡' },
-  { value: 'cansado', label: 'cansado', icon: '–' },
-  { value: 'pilhado', label: 'pilhado', icon: '↟' },
+const moods: Array<{ value: MoodValue; label: string; icon: EuIconName }> = [
+  { value: 'animado', label: 'bem', icon: 'smile' },
+  { value: 'ok', label: 'ok', icon: 'neutral' },
+  { value: 'cansado', label: 'cansado', icon: 'moon' },
+  { value: 'pilhado', label: 'pilhado', icon: 'bolt' },
 ]
 
 function key(date: Date) {
@@ -71,6 +71,13 @@ export default function MoodPage() {
         </div>
 
         <div className="mood-heatmap-scroll">
+          <div className="mood-month-labels" aria-hidden="true">
+            {Array.from({ length: 12 }, (_, index) => {
+              const date = new Date()
+              date.setMonth(date.getMonth() - (11 - index), 1)
+              return <span key={index}>{new Intl.DateTimeFormat('pt-BR', { month: 'short' }).format(date).replace('.', '')}</span>
+            })}
+          </div>
           <div className="mood-heatmap-grid" aria-label="Heatmap de humor dos últimos 365 dias">
             {days.map((date) => {
               const item = byDate.get(key(date))
@@ -127,7 +134,7 @@ export default function MoodPage() {
         <div className="mood-summary-grid">
           {counts.map((item) => (
             <article key={item.value} className={'mood-summary mood-summary-' + item.value}>
-              <span>{item.icon}</span>
+              <span className="mood-summary-icon"><EuIcon name={item.icon} /></span>
               <strong>{item.count}</strong>
               <small>{item.label}</small>
             </article>
@@ -147,7 +154,7 @@ export default function MoodPage() {
               </div>
             </article>
           )) : (
-            <div className="soft-empty wide"><span>◌</span><p>Quando você fizer check-ins, o histórico aparece aqui.</p></div>
+            <div className="soft-empty wide"><span><EuIcon name="mood" /></span><p>Quando você fizer check-ins, o histórico aparece aqui.</p></div>
           )}
         </div>
       </section>
