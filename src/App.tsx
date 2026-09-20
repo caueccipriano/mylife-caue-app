@@ -23,6 +23,7 @@ import PhaseThemeSync from './PhaseThemeSync'
 import StarterPackImportPage from './StarterPackImportPage'
 import MoodPage from './MoodPage'
 import CollectionsPage from './CollectionsPage'
+import AreaPage from './AreaPage'
 import { initPrivacyAutoLock } from './privacy'
 import { applyDiscreetMode } from './securitySettings'
 import { emptyExpiredTrash } from './storage'
@@ -89,6 +90,7 @@ function AppShell({ onRegister }: { onRegister: () => void }) {
           <Route path="/" element={<TodayPage onRegister={onRegister} />} />
           <Route path="/vida" element={<LifePage />} />
           <Route path="/vida/carreira" element={<CareerPlanPage />} />
+          <Route path="/vida/area/:id" element={<AreaPage />} />
           <Route path="/descobertas" element={<DiscoveriesPage />} />
           <Route path="/memorias" element={<MemoriesPage />} />
           <Route path="/memorias/humor" element={<MoodPage />} />
