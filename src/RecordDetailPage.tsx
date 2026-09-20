@@ -3,7 +3,7 @@ import { NavLink, useNavigate, useParams } from 'react-router-dom'
 import { defaultJourneyStage, deleteRecord, nextFollowUpDate, suggestTags, updateRecord, type ObjectState, type RecordFreshness, type RecordOutcome, type RecordProgress, type RecordStatus, type StoredAttachment } from './storage'
 import { hasPrivacyPin, isPrivateUnlocked, unlockPrivateRecords } from './privacy'
 import { useBridges, useRecords } from './appState'
-import { BrandTop, Tag, formatShortDate, sourceLabel, sourceTone, typeTone } from './v2Ui'
+import { BrandTop, EuIcon, Tag, formatShortDate, sourceLabel, sourceTone, typeTone, type EuIconName } from './v2Ui'
 import { crossAppHint } from './uxFeatures'
 
 const areaOptions = ['Carreira', 'Dinheiro', 'Estudos', 'Casa', 'Viagens', 'Compras', 'Lazer', 'Pessoal']
@@ -27,11 +27,11 @@ function statusFromStage(stage: string, current?: RecordStatus): RecordStatus | 
   return current
 }
 
-function attachmentIcon(attachment: StoredAttachment) {
-  if (attachment.kind === 'photo') return '◫'
-  if (attachment.kind === 'audio') return '◉'
-  if (attachment.kind === 'link') return '↗'
-  return '□'
+function attachmentIcon(attachment: StoredAttachment): EuIconName {
+  if (attachment.kind === 'photo') return 'image'
+  if (attachment.kind === 'audio') return 'mic'
+  if (attachment.kind === 'link') return 'link'
+  return 'file'
 }
 
 export default function RecordDetailPage() {
@@ -109,7 +109,7 @@ export default function RecordDetailPage() {
         <button className="back-button-v2" onClick={() => navigate(-1)}>← voltar</button>
         <section className="capsule-lock-screen">
           <Tag tone="lilac">CÁPSULA FECHADA</Tag>
-          <span>◌</span>
+          <span><EuIcon name="clock" /></span>
           <h1>Isso é para você do futuro.</h1>
           <p>O conteúdo fica escondido até {new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }).format(new Date(currentRecord.revealAt as string))}.</p>
           <NavLink to="/vida/lab">Ver suas cápsulas</NavLink>
@@ -136,7 +136,7 @@ export default function RecordDetailPage() {
         <button className="back-button-v2" onClick={() => navigate(-1)}>← voltar</button>
         <section className="private-lock-screen">
           <Tag tone="pink">PRIVADO</Tag>
-          <span>◉</span>
+          <span><EuIcon name="lock" /></span>
           <h1>Esse registro está trancado.</h1>
           <p>Digite seu PIN local para abrir nesta sessão.</p>
           <div>
@@ -353,10 +353,10 @@ export default function RecordDetailPage() {
           </header>
 
           <div className="record-actions-row">
-            <button onClick={beginEdit}>Editar</button>
-            <button className={currentRecord.favorite ? 'active' : ''} onClick={() => void toggleFlag('favorite')}>{currentRecord.favorite ? '♥ Favorito' : '♡ Favoritar'}</button>
-            <button className={currentRecord.pinned ? 'active' : ''} onClick={() => void toggleFlag('pinned')}>{currentRecord.pinned ? '⌖ Fixado' : '⌖ Fixar'}</button>
-            <button className={currentRecord.private ? 'active' : ''} onClick={() => void toggleFlag('private')}>{currentRecord.private ? '◉ Privado' : '○ Privado'}</button>
+            <button onClick={beginEdit}><EuIcon name="edit" />Editar</button>
+            <button className={currentRecord.favorite ? 'active' : ''} onClick={() => void toggleFlag('favorite')}><EuIcon name="heart" />{currentRecord.favorite ? 'Favorito' : 'Favoritar'}</button>
+            <button className={currentRecord.pinned ? 'active' : ''} onClick={() => void toggleFlag('pinned')}><EuIcon name="pin" />{currentRecord.pinned ? 'Fixado' : 'Fixar'}</button>
+            <button className={currentRecord.private ? 'active' : ''} onClick={() => void toggleFlag('private')}><EuIcon name="lock" />{currentRecord.private ? 'Privado' : 'Privado'}</button>
           </div>
 
           <section className="record-quick-organize">
@@ -378,7 +378,7 @@ export default function RecordDetailPage() {
                 <strong>Isso também conversa com {linkedApp.title}.</strong>
                 <p>{linkedApp.bridge.summary || linkedApp.description}</p>
               </div>
-              <span>↗</span>
+              <span className="record-cross-app-arrow"><EuIcon name="arrow-up-right" /></span>
             </a>
           )}
 
@@ -446,7 +446,7 @@ export default function RecordDetailPage() {
             <section className="record-context-card next-move-card">
               <Tag tone="coral">PRÓXIMO MOVIMENTO</Tag>
               <h2>{currentRecord.nextMove || 'Ainda não definido.'}</h2>
-              <button onClick={beginEdit}>{currentRecord.nextMove ? 'mudar próximo movimento' : 'definir o que destrava isso ↗'}</button>
+              <button onClick={beginEdit}>{currentRecord.nextMove ? 'mudar próximo movimento' : 'definir o que destrava isso'} <EuIcon name="arrow-up-right" /></button>
             </section>
           )}
 
@@ -495,9 +495,9 @@ export default function RecordDetailPage() {
               <div className="record-attachments">
                 {(currentRecord.attachments ?? []).map((attachment) => (
                   <button key={attachment.id} onClick={() => openAttachment(attachment)}>
-                    <span>{attachmentIcon(attachment)}</span>
+                    <span><EuIcon name={attachmentIcon(attachment)} /></span>
                     <div><strong>{attachment.name}</strong><small>{attachment.kind}</small></div>
-                    <b>↗</b>
+                    <b><EuIcon name="arrow-up-right" /></b>
                   </button>
                 ))}
               </div>
@@ -516,7 +516,7 @@ export default function RecordDetailPage() {
                     <Tag tone={typeTone(item.type)}>{item.type}</Tag>
                     <p>{item.private ? 'Registro privado' : item.text}</p>
                   </NavLink>
-                  <button onClick={() => void disconnect(item.id)}>×</button>
+                  <button aria-label="Desconectar registro" onClick={() => void disconnect(item.id)}><EuIcon name="x" /></button>
                 </article>
               ))}
               {!related.length && <p className="muted-copy">Nenhuma conexão confirmada ainda.</p>}
@@ -527,7 +527,7 @@ export default function RecordDetailPage() {
                 <small>O EU acha que também pode ter relação:</small>
                 {relatedSuggestions.map((item) => (
                   <button key={item.id} onClick={() => void connect(item.id)}>
-                    <span>＋</span>
+                    <span><EuIcon name="plus" /></span>
                     <div><strong>{item.type} · {item.area}</strong><p>{item.private ? 'Registro privado' : item.text}</p></div>
                   </button>
                 ))}
@@ -551,7 +551,7 @@ export default function RecordDetailPage() {
             </section>
           )}
 
-          <button className="delete-record-button" onClick={() => void remove()}>Mover para a Lixeira</button>
+          <button className="delete-record-button" onClick={() => void remove()}><EuIcon name="x" />Mover para a Lixeira</button>
           {message && <p className="record-message">{message}</p>}
         </>
       ) : (
