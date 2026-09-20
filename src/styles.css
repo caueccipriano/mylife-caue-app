@@ -15968,3 +15968,426 @@ svg {
     max-width: calc(100dvw - 46px);
   }
 }
+
+
+/* EU v18.8: micro polish */
+
+/* ---------- Top chrome ---------- */
+.v2-topbar {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  margin-inline: 0;
+  padding-inline: 0;
+  border-bottom-color: rgba(63,73,111,.065);
+  background:
+    linear-gradient(180deg, rgba(251,247,239,.94), rgba(251,247,239,.78));
+  box-shadow: 0 8px 22px rgba(42,49,82,.022);
+}
+
+.v2-brand {
+  min-width: 0;
+  gap: 9px;
+}
+
+.v2-brand strong {
+  font-size: 30px;
+}
+
+.v2-brand span {
+  min-height: 21px;
+  padding-inline: 8px;
+  font-size: 7.5px;
+}
+
+.v2-top-actions {
+  min-width: 0;
+  gap: 7px;
+}
+
+.top-icon-action {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+}
+
+.top-icon-action .eu-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.top-icon-action b {
+  min-width: 17px;
+  height: 17px;
+  font-size: 7px;
+}
+
+.v2-top-note {
+  color: #8a8d9d;
+  font-size: 8px;
+}
+
+/* ---------- Bottom dock: smaller footprint, same tap comfort ---------- */
+.v2-bottom-nav {
+  min-height: calc(64px + env(safe-area-inset-bottom));
+  padding:
+    4px
+    max(6px, env(safe-area-inset-left))
+    calc(4px + env(safe-area-inset-bottom))
+    max(6px, env(safe-area-inset-right));
+  border-radius: 24px 24px 0 0;
+}
+
+.v2-bottom-nav a {
+  min-height: 50px;
+  gap: 3px;
+  border-radius: 17px;
+}
+
+.bottom-nav-icon-wrap {
+  width: 32px;
+  height: 32px;
+  border-radius: 12px;
+}
+
+.bottom-nav-icon {
+  width: 19px;
+  height: 19px;
+}
+
+.v2-bottom-nav a > small {
+  font-size: 8.5px;
+  font-weight: 600;
+}
+
+.global-register-pill.compact {
+  width: 50px;
+  min-height: 50px;
+  bottom: calc(78px + env(safe-area-inset-bottom));
+  border-radius: 18px 21px 17px 22px;
+}
+
+.global-register-pill.compact > span .eu-icon {
+  width: 25px;
+  height: 25px;
+}
+
+/* ---------- Readability: small text should still feel premium ---------- */
+.v2-tag {
+  min-height: 24px;
+  padding: 5px 9px;
+  font-size: 8.5px;
+  line-height: 1;
+}
+
+.v2-section-title > div > span,
+.feed-meta > span:not(.v2-tag),
+.memory-followup-badge,
+.discovery-feature small,
+.life-area small,
+.collection-v2 small,
+.phase-card-top span,
+.record-detail-hero > p {
+  font-size: 8.5px;
+}
+
+.muted-copy,
+.life-area p,
+.discovery-feature p,
+.plan-card p,
+.self-tool-card p,
+.memory-record-card p,
+.followup-card p,
+.feed-card p,
+.collection-preview-list a > span {
+  color: #727688;
+}
+
+.life-area p,
+.plan-card p,
+.self-tool-card p,
+.memory-record-card p,
+.followup-card p,
+.feed-card p {
+  font-size: 11.5px;
+  line-height: 1.48;
+}
+
+/* ---------- Section headers: never crush actions on iPhone ---------- */
+.v2-section-title {
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.v2-section-title > div {
+  min-width: 0;
+}
+
+.v2-section-title h2 {
+  text-wrap: balance;
+}
+
+.v2-section-title > button,
+.v2-section-title > a,
+.v2-section-title > .quiet-link {
+  flex: 0 0 auto;
+}
+
+.quiet-link {
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 0 4px;
+  font-size: 8.5px;
+  font-family: var(--display-wide);
+}
+
+/* ---------- Tabs: lighter, clearer selected state ---------- */
+.life-view-tabs,
+.discovery-view-tabs,
+.today-view-tabs,
+.memory-mode-switch,
+.memory-section-nav {
+  border-color: rgba(78,86,126,.075);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.86),
+    0 8px 20px rgba(49,57,95,.032);
+}
+
+.life-view-tabs button,
+.discovery-view-tabs button,
+.today-view-tabs button,
+.memory-mode-switch button,
+.memory-section-nav a {
+  font-size: 8px;
+  font-weight: 600;
+}
+
+.life-view-tabs button.active,
+.discovery-view-tabs button.active,
+.today-view-tabs button.active,
+.memory-mode-switch button.active {
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.24),
+    0 6px 14px color-mix(in srgb, var(--page-accent, var(--cobalt)) 18%, transparent);
+}
+
+/* ---------- Card rhythm + touch ---------- */
+.feed-card,
+.followup-card,
+.memory-record-card,
+.life-list-card,
+.life-area,
+.discovery-card,
+.suggestion-card-link,
+.collection-v2,
+.collection-card,
+.self-tool-card,
+.plan-card,
+.phase-grid > article {
+  transition:
+    transform .15s cubic-bezier(.2,.8,.2,1),
+    box-shadow .15s ease,
+    border-color .15s ease,
+    background .15s ease;
+}
+
+.feed-card:active,
+.followup-card:active,
+.memory-record-card:active,
+.life-list-card:active,
+.life-area:active,
+.discovery-card:active,
+.suggestion-card-link:active,
+.collection-v2:active,
+.collection-card:active,
+.self-tool-card:active,
+.plan-card:active,
+.phase-grid > article:active {
+  transform: scale(.987);
+}
+
+.memory-record-card,
+.life-list-card,
+.discovery-card,
+.collection-v2,
+.plan-card,
+.self-tool-card {
+  border-color: rgba(76,84,119,.075);
+}
+
+.memory-list,
+.life-list-cards,
+.discovery-grid,
+.collections-grid-v2,
+.plan-grid,
+.self-tools-grid {
+  gap: 10px;
+}
+
+/* ---------- Icons: one perceived weight across the app ---------- */
+.life-area-icon .eu-icon,
+.memory-icon .eu-icon,
+.discovery-feature-icon .eu-icon,
+.plan-card-icon .eu-icon,
+.self-tool-icon .eu-icon,
+.collection-v2-icon .eu-icon,
+.saved-link-icon .eu-icon,
+.record-cross-app-arrow .eu-icon {
+  stroke-width: 1.9;
+}
+
+/* ---------- Small-screen optical corrections ---------- */
+@media (max-width: 760px) {
+  .v2-topbar {
+    min-height: calc(52px + env(safe-area-inset-top));
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .v2-brand strong {
+    font-size: 28px;
+  }
+
+  .top-icon-action {
+    width: 40px;
+    height: 40px;
+  }
+
+  .v2-bottom-nav {
+    width: calc(100dvw - 12px);
+    max-width: 420px;
+  }
+
+  .v2-bottom-nav a {
+    min-height: 49px;
+  }
+
+  .global-register-pill.compact {
+    right: max(11px, env(safe-area-inset-right));
+    width: 50px;
+    min-height: 50px;
+  }
+
+  .v2-section-title {
+    margin-bottom: 14px;
+  }
+
+  .v2-section-title h2 {
+    font-size: clamp(23px, 6.4vw, 27px);
+  }
+
+  .v2-tag {
+    font-size: 8px;
+  }
+
+  .life-area p,
+  .plan-card p,
+  .self-tool-card p,
+  .memory-record-card p,
+  .followup-card p,
+  .feed-card p {
+    font-size: 11px;
+  }
+
+  .area-grid-v4 .life-area {
+    min-height: 168px;
+    padding: 15px;
+  }
+
+  .life-area strong {
+    font-size: 19px;
+  }
+
+  .discovery-card {
+    padding: 16px;
+  }
+
+  .collection-v2 {
+    padding: 16px;
+  }
+}
+
+@media (max-width: 430px) {
+  .v2-brand {
+    gap: 7px;
+  }
+
+  .v2-brand strong {
+    font-size: 27px;
+  }
+
+  .v2-brand span {
+    min-height: 20px;
+    padding-inline: 7px;
+    font-size: 7px;
+  }
+
+  .v2-top-actions {
+    gap: 5px;
+  }
+
+  .top-icon-action {
+    width: 38px;
+    height: 38px;
+    border-radius: 13px;
+  }
+
+  .v2-top-note {
+    display: none;
+  }
+
+  .v2-bottom-nav {
+    border-radius: 22px 22px 0 0;
+  }
+
+  .v2-bottom-nav a > small {
+    font-size: 8px;
+  }
+
+  .bottom-nav-icon-wrap {
+    width: 30px;
+    height: 30px;
+  }
+
+  .v2-section-title {
+    align-items: flex-start;
+  }
+
+  .v2-section-title:has(> .quiet-link) {
+    flex-wrap: wrap;
+  }
+
+  .v2-section-title > .quiet-link {
+    margin-top: -2px;
+  }
+
+  .life-view-tabs button,
+  .discovery-view-tabs button,
+  .today-view-tabs button {
+    font-size: 7.5px;
+  }
+
+  .area-grid-v4 .life-area {
+    min-height: 158px;
+  }
+}
+
+/* More room for fingers without visual bloat. */
+button,
+a,
+summary,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+
+a.top-icon-action,
+.memory-section-nav a,
+.life-view-tabs button,
+.discovery-view-tabs button,
+.today-view-tabs button,
+.memory-mode-switch button {
+  min-height: 44px;
+}
