@@ -9906,3 +9906,26 @@ button:disabled {
     height: 34px;
   }
 }
+
+
+/* EU v10.2: persistent lab and trend language */
+.v2-tag .eu-icon {
+  width: 11px;
+  height: 11px;
+  margin-right: 4px;
+}
+
+.topic-trend {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 4px;
+}
+
+.topic-trend .eu-icon {
+  width: 13px;
+  height: 13px;
+}
+
+.topic-trend-up { color: var(--green); }
+.topic-trend-down { color: var(--coral); }
+.topic-trend-new { color: var(--lilac); }
