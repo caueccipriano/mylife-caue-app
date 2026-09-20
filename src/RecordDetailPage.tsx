@@ -106,7 +106,7 @@ export default function RecordDetailPage() {
     return (
       <div className="v2-page record-detail-page">
         <BrandTop />
-        <button className="back-button-v2" onClick={() => navigate(-1)}>← voltar</button>
+        <button className="back-button-v2" onClick={() => navigate(-1)}><EuIcon name="arrow-left" />voltar</button>
         <section className="capsule-lock-screen">
           <Tag tone="lilac">CÁPSULA FECHADA</Tag>
           <span><EuIcon name="clock" /></span>
@@ -133,7 +133,7 @@ export default function RecordDetailPage() {
     return (
       <div className="v2-page record-detail-page">
         <BrandTop />
-        <button className="back-button-v2" onClick={() => navigate(-1)}>← voltar</button>
+        <button className="back-button-v2" onClick={() => navigate(-1)}><EuIcon name="arrow-left" />voltar</button>
         <section className="private-lock-screen">
           <Tag tone="pink">PRIVADO</Tag>
           <span><EuIcon name="lock" /></span>
@@ -335,7 +335,7 @@ export default function RecordDetailPage() {
   return (
     <div className="v2-page record-detail-page">
       <BrandTop />
-      <button className="back-button-v2" onClick={() => navigate(-1)}>← voltar</button>
+      <button className="back-button-v2" onClick={() => navigate(-1)}><EuIcon name="arrow-left" />voltar</button>
 
       {!editing ? (
         <>
@@ -697,7 +697,7 @@ export default function RecordDetailPage() {
             <span>Tags</span>
             <div className="editable-tags">
               {tags.map((tag) => (
-                <button type="button" key={tag} onClick={() => setTags((current) => current.filter((item) => item !== tag))}>#{tag} ×</button>
+                <button type="button" key={tag} onClick={() => setTags((current) => current.filter((item) => item !== tag))}>#{tag}<EuIcon name="x" /></button>
               ))}
             </div>
             <div className="tag-add-row">
