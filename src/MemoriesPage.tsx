@@ -17,7 +17,10 @@ export default function MemoriesPage() {
   const [areaFilter, setAreaFilter] = useState('')
   const [statusFilter, setStatusFilter] = useState(initialCollection === 'pinned' ? 'pinned' : initialCollection === 'completed' ? 'completed' : '')
   const [periodFilter, setPeriodFilter] = useState<'all' | '30' | '90' | '365'>('all')
-  const moods = listMoodCheckins().slice(-14).reverse()
+  const [moodFilter, setMoodFilter] = useState('')
+  const allMoods = listMoodCheckins()
+  const moods = allMoods.slice(-14).reverse()
+  const moodByDate = useMemo(() => new Map(allMoods.map((item) => [item.date, item.mood])), [allMoods.length])
 
   const topTags = useMemo(() => {
     const counts = new Map<string, number>()
@@ -47,14 +50,15 @@ export default function MemoriesPage() {
         || (statusFilter === 'paused' && record.status === 'paused')
       const periodOk = periodFilter === 'all'
         || new Date(record.createdAt).getTime() >= Date.now() - Number(periodFilter) * 86400000
+      const moodOk = !moodFilter || moodByDate.get(record.createdAt.slice(0, 10)) === moodFilter
       const collectionOk = !initialCollection
         || !['wishes','decisions','links'].includes(initialCollection)
         || (initialCollection === 'wishes' && ['Desejo','Pesquisa','Preferência'].includes(record.type))
         || (initialCollection === 'decisions' && record.type === 'Decisão')
         || (initialCollection === 'links' && (record.attachments ?? []).some((attachment) => attachment.kind === 'link'))
-      return sourceOk && tagOk && areaOk && statusOk && periodOk && collectionOk
+      return sourceOk && tagOk && areaOk && statusOk && periodOk && moodOk && collectionOk
     })
-  }, [records, query, filter, tagFilter, areaFilter, statusFilter, periodFilter, initialCollection])
+  }, [records, query, filter, tagFilter, areaFilter, statusFilter, periodFilter, moodFilter, initialCollection, moodByDate])
 
   const timeline = useMemo(() => groupTimeline(filtered), [filtered])
 
@@ -181,6 +185,16 @@ export default function MemoriesPage() {
             <option value="30">30 dias</option>
             <option value="90">90 dias</option>
             <option value="365">1 ano</option>
+          </select>
+        </label>
+        <label>
+          <span>Humor</span>
+          <select value={moodFilter} onChange={(event) => setMoodFilter(event.target.value)}>
+            <option value="">Todos</option>
+            <option value="animado">Bem</option>
+            <option value="ok">Ok</option>
+            <option value="cansado">Cansado</option>
+            <option value="pilhado">Pilhado</option>
           </select>
         </label>
       </div>
