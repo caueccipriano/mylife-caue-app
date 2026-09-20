@@ -245,7 +245,6 @@ export default function RecordDetailPage() {
         favorite,
         pinned,
         private: isPrivate,
-        status: nextStatus,
       })
       window.dispatchEvent(new Event('eu-record-saved'))
       setEditing(false)
