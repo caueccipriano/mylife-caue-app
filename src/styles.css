@@ -12,24 +12,24 @@
   --faint: #aaa398;
   --line: rgba(46, 43, 39, .10);
   --line-strong: rgba(46, 43, 39, .17);
-  --coral: #d85a30;
-  --coral-soft: #fae7df;
-  --green: #1d9e75;
-  --green-soft: #e2f3ed;
-  --amber: #ba7517;
-  --amber-soft: #faefd9;
-  --pink: #993556;
-  --pink-soft: #f6e5eb;
-  --cobalt: #3157c8;
-  --cobalt-soft: #e6ebfb;
-  --lilac: #7656b5;
-  --lilac-soft: #eee8fb;
-  --lime: #7f991d;
-  --lime-soft: #edf3d7;
-  --wine: #7d2e46;
-  --wine-soft: #f2e3e7;
-  --sky: #3189a8;
-  --sky-soft: #e1f1f6;
+  --coral: #f08a4b;
+  --coral-soft: #fdebdc;
+  --green: #169b7a;
+  --green-soft: #def4ec;
+  --amber: #c38b22;
+  --amber-soft: #fcf1d6;
+  --pink: #655fd0;
+  --pink-soft: #eceafd;
+  --cobalt: #355fc9;
+  --cobalt-soft: #e8edfc;
+  --lilac: #8568c8;
+  --lilac-soft: #f0ebfa;
+  --lime: #6e9a35;
+  --lime-soft: #edf5dd;
+  --wine: #2e7f88;
+  --wine-soft: #e1f1f2;
+  --sky: #3a9fc4;
+  --sky-soft: #e3f3fa;
   --serif: ui-serif, 'Iowan Old Style', Baskerville, Georgia, 'Times New Roman', serif;
   --shadow: 0 16px 42px rgba(78, 58, 43, .075);
 }
@@ -52,8 +52,9 @@ body {
   min-height: 100dvh;
   color: var(--ink);
   background:
-    radial-gradient(circle at 0% 0%, rgba(216, 90, 48, .045), transparent 24rem),
-    radial-gradient(circle at 100% 28%, rgba(29, 158, 117, .04), transparent 28rem),
+    radial-gradient(circle at 0% 0%, rgba(53, 95, 201, .055), transparent 25rem),
+    radial-gradient(circle at 100% 24%, rgba(22, 155, 122, .05), transparent 28rem),
+    radial-gradient(circle at 45% 90%, rgba(133, 104, 200, .035), transparent 26rem),
     var(--paper);
   -webkit-font-smoothing: antialiased;
   overscroll-behavior-y: none;
@@ -81,7 +82,7 @@ button:focus-visible,
 a:focus-visible,
 input:focus-visible,
 textarea:focus-visible {
-  outline: 2px solid var(--coral);
+  outline: 2px solid var(--cobalt);
   outline-offset: 3px;
 }
 
@@ -272,14 +273,15 @@ h3 {
 .mood-row::-webkit-scrollbar { display: none; }
 
 .mood-row button {
-  --mood-soft: #f3efe8;
-  --mood-active: #d7d1c8;
-  --mood-ink: #5f5a52;
-  width: 76px;
-  height: 76px;
-  min-width: 76px;
-  min-height: 76px;
-  flex: 0 0 76px;
+  --mood-soft: #eef1f4;
+  --mood-active: #708090;
+  --mood-ink: #4f5963;
+  --mood-active-ink: #ffffff;
+  width: 78px;
+  height: 78px;
+  min-width: 78px;
+  min-height: 78px;
+  flex: 0 0 78px;
   display: grid;
   place-items: center;
   align-content: center;
@@ -287,55 +289,72 @@ h3 {
   padding: 0;
   border: 0;
   border-radius: 50%;
-  background: var(--mood-soft);
+  background-color: var(--mood-soft);
+  background-image: none !important;
   cursor: pointer;
   color: var(--mood-ink);
-  box-shadow: inset 0 0 0 1px rgba(46,43,39,.035);
-  transition: transform .15s ease, background .15s ease, color .15s ease, box-shadow .15s ease;
+  opacity: 1;
+  box-shadow: none;
+  overflow: hidden;
+  transition: transform .15s ease, background-color .15s ease, color .15s ease, box-shadow .15s ease;
   -webkit-tap-highlight-color: transparent;
+  appearance: none;
+  -webkit-appearance: none;
 }
 
 .mood-row button.mood-animado {
-  --mood-soft: #fff0c9;
-  --mood-active: #f4bd4f;
-  --mood-ink: #6e4a0d;
+  --mood-soft: #fff1b9;
+  --mood-active: #f4c84c;
+  --mood-ink: #6c5207;
+  --mood-active-ink: #4a3700;
 }
 
 .mood-row button.mood-ok {
-  --mood-soft: #e3f1f7;
-  --mood-active: #72b7cf;
-  --mood-ink: #214f60;
+  --mood-soft: #ddf4ee;
+  --mood-active: #45b29d;
+  --mood-ink: #20594f;
+  --mood-active-ink: #ffffff;
 }
 
 .mood-row button.mood-cansado {
-  --mood-soft: #eee7f8;
-  --mood-active: #9d82c9;
-  --mood-ink: #493766;
+  --mood-soft: #e5ebfa;
+  --mood-active: #6f8fd8;
+  --mood-ink: #35496f;
+  --mood-active-ink: #ffffff;
 }
 
 .mood-row button.mood-pilhado {
-  --mood-soft: #f9e3da;
-  --mood-active: #e26d43;
-  --mood-ink: #6b2d18;
+  --mood-soft: #fde6d5;
+  --mood-active: #ef8a4b;
+  --mood-ink: #6c3a1d;
+  --mood-active-ink: #ffffff;
 }
 
 .mood-row button span {
+  position: relative;
+  z-index: 1;
   font-family: var(--serif);
   font-size: 27px;
   line-height: 1;
+  background: transparent !important;
 }
 
 .mood-row button small {
+  position: relative;
+  z-index: 1;
   font-size: 8px;
   text-transform: uppercase;
   letter-spacing: .05em;
+  background: transparent !important;
 }
 
-.mood-row button.active {
-  color: #fff;
-  background: var(--mood-active);
-  box-shadow: 0 8px 18px color-mix(in srgb, var(--mood-active) 28%, transparent);
-  transform: translateY(-2px) scale(1.03);
+.mood-row button.active,
+.mood-row button[aria-pressed="true"] {
+  color: var(--mood-active-ink);
+  background-color: var(--mood-active) !important;
+  background-image: none !important;
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--mood-active) 30%, transparent);
+  transform: translateY(-2px) scale(1.035);
 }
 
 .mood-row button:active {
@@ -359,7 +378,7 @@ h3 {
   grid-template-columns: 38px 1fr;
   gap: 10px;
   border-radius: 22px;
-  background: linear-gradient(135deg, #fae9df, #fff3eb);
+  background: linear-gradient(135deg, #e8edfc, #f3f8ff);
 }
 
 .daily-idea > span {
@@ -4637,7 +4656,7 @@ html[data-eu-discreet="1"] .ecosystem-insight p {
 }
 
 .capsule-panel { background: linear-gradient(145deg, var(--lilac-soft), #fffdf9); }
-.decision-panel { background: linear-gradient(145deg, var(--wine-soft), #fffdf9); }
+.decision-panel { background: linear-gradient(145deg, var(--sky-soft), #fffdf9); }
 
 .lab-panel h2,
 .close-phase-panel h2,
@@ -5130,7 +5149,7 @@ html[data-eu-discreet="1"] .ecosystem-insight p {
 .starter-import-card.state-error {
   background:
     radial-gradient(circle at 50% 15%, rgba(125,46,70,.12), transparent 34%),
-    linear-gradient(145deg, var(--wine-soft), #fffdf9);
+    linear-gradient(145deg, var(--sky-soft), #fffdf9);
 }
 
 .starter-import-card > span {
