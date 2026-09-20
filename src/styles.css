@@ -8604,3 +8604,487 @@ body {
 .trash-entry-action .eu-icon {
   flex: 0 0 auto;
 }
+
+
+/* EU v8: remaining flows, accessibility and tactile consistency */
+/* Back links behave like real navigation controls everywhere. */
+.back-v2,
+.entity-empty a {
+  width: fit-content;
+  min-height: 38px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.back-v2 .eu-icon,
+.entity-empty a .eu-icon {
+  width: 15px;
+  height: 15px;
+}
+
+/* Keyboard and switch-control users get an obvious focus ring. */
+:where(button, a, input, textarea, select, summary):focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--cobalt) 34%, transparent);
+  outline-offset: 3px;
+}
+
+:where(button, a, summary) {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Global capture button */
+.global-register-pill.compact > span {
+  display: grid;
+  place-items: center;
+}
+
+.global-register-pill.compact > span .eu-icon {
+  width: 25px;
+  height: 25px;
+}
+
+/* Ask EU */
+.ask-eu-box {
+  grid-template-columns: 36px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 76px;
+  padding: 11px 12px;
+  border: 1px solid rgba(24,36,59,.10);
+  border-radius: 23px;
+  background: rgba(255,253,249,.82);
+  box-shadow: var(--shadow-soft);
+}
+
+.ask-eu-search-icon {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  background: var(--cobalt-soft);
+  color: var(--cobalt);
+}
+
+.ask-eu-search-icon .eu-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.ask-eu-box textarea {
+  min-height: 48px;
+  padding: 11px 0;
+  border: 0;
+  background: transparent;
+  resize: none;
+}
+
+.ask-eu-box button {
+  min-height: 44px;
+  padding: 0 15px;
+  border-radius: 14px;
+  font-weight: 700;
+}
+
+.ask-suggestions {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.ask-suggestions button {
+  min-height: 54px;
+  padding: 10px 14px;
+  display: grid;
+  grid-template-columns: 28px minmax(0,1fr);
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  background: rgba(255,253,249,.62);
+  color: var(--ink);
+  text-align: left;
+  box-shadow: 0 5px 16px rgba(24,36,59,.025);
+}
+
+.ask-suggestions button .eu-icon {
+  width: 17px;
+  height: 17px;
+  color: var(--lilac);
+}
+
+.ask-answer {
+  border-radius: 27px;
+  box-shadow: var(--shadow-soft);
+}
+
+.ask-sources a {
+  min-height: 84px;
+  padding: 14px;
+  border-radius: 17px;
+}
+
+.ask-sources a > b {
+  width: 31px;
+  height: 31px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--cobalt-soft);
+  color: var(--cobalt);
+}
+
+.ask-sources a > b .eu-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.ask-again {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ask-again .eu-icon {
+  width: 14px;
+  height: 14px;
+}
+
+/* Chat inbox / import review */
+.conversation-summary-card,
+.chat-inbox-batches > article,
+.chat-incoming-list > article {
+  box-shadow: var(--shadow-soft);
+}
+
+.chat-incoming-list > article {
+  border-radius: 23px;
+}
+
+.chat-item-toolbar {
+  min-height: 36px;
+}
+
+.keep-toggle {
+  min-height: 34px;
+  padding: 0 9px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.62);
+}
+
+.chat-item-fields select,
+.chat-track-row input[type="number"],
+.chat-why-input {
+  min-height: 44px;
+  border-radius: 13px;
+}
+
+.chat-capture-actions {
+  position: sticky;
+  z-index: 7;
+  bottom: calc(84px + env(safe-area-inset-bottom));
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: rgba(246,243,235,.92);
+  box-shadow: var(--shadow-float);
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
+}
+
+.chat-capture-success {
+  box-shadow: var(--shadow-soft);
+}
+
+.chat-success-icon {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  background: var(--green-soft);
+  color: #16785f;
+}
+
+.chat-success-icon .eu-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.chat-batch-actions a,
+.chat-batch-actions button {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Collections */
+.collections-grid-v2 {
+  gap: 11px;
+}
+
+.collection-v2 {
+  position: relative;
+  min-height: 290px;
+  padding: 20px;
+  border: 1px solid rgba(24,36,59,.07);
+  border-radius: 25px;
+  box-shadow: var(--shadow-soft);
+}
+
+.collection-v2-icon {
+  width: 43px;
+  height: 43px;
+  margin-bottom: 17px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: rgba(255,255,255,.58);
+  color: var(--ink);
+}
+
+.collection-v2-icon .eu-icon {
+  width: 21px;
+  height: 21px;
+}
+
+.collection-v2 h2 {
+  font-size: 27px;
+  line-height: 1.05;
+  letter-spacing: -.035em;
+}
+
+.collection-preview-list a {
+  min-height: 54px;
+}
+
+.collection-see-all {
+  min-height: 40px;
+  display: inline-flex !important;
+  align-items: center;
+  gap: 5px;
+}
+
+.collection-see-all .eu-icon {
+  width: 14px;
+  height: 14px;
+}
+
+/* Living topic pages */
+.entity-hero {
+  padding-bottom: 32px;
+}
+
+.entity-stats article,
+.entity-story {
+  box-shadow: var(--shadow-soft);
+}
+
+.entity-record-card {
+  --entity-accent: #b8b2a9;
+  position: relative;
+  border-left: 4px solid var(--entity-accent);
+}
+
+.entity-record-card.type-border-coral { --entity-accent: var(--coral); }
+.entity-record-card.type-border-green { --entity-accent: var(--green); }
+.entity-record-card.type-border-amber { --entity-accent: var(--amber); }
+.entity-record-card.type-border-pink { --entity-accent: var(--pink); }
+.entity-record-card.type-border-cobalt { --entity-accent: var(--cobalt); }
+.entity-record-card.type-border-lilac { --entity-accent: var(--lilac); }
+.entity-record-card.type-border-lime { --entity-accent: var(--lime); }
+.entity-record-card.type-border-wine { --entity-accent: var(--wine); }
+.entity-record-card.type-border-sky { --entity-accent: var(--sky); }
+.entity-record-card.type-border-ink { --entity-accent: var(--ink); }
+
+.entity-record-card .memory-icon .eu-icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* Review becomes a calmer one-card decision flow. */
+.review-progress {
+  margin-bottom: 17px;
+}
+
+.review-card {
+  border-radius: 28px;
+  box-shadow: var(--shadow-soft);
+}
+
+.review-card h2 {
+  font-size: clamp(30px, 6vw, 42px);
+  line-height: 1.05;
+  letter-spacing: -.04em;
+}
+
+.review-actions {
+  gap: 8px;
+}
+
+.review-actions button {
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 15px;
+}
+
+.review-actions button .eu-icon {
+  width: 15px;
+  height: 15px;
+}
+
+.review-card > a {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.review-card > a .eu-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.review-finished > span {
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  background: var(--lilac-soft);
+  color: var(--lilac);
+}
+
+.review-finished > span .eu-icon {
+  width: 24px;
+  height: 24px;
+}
+
+/* Import / starter state */
+.starter-state-icon {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  border-radius: 19px;
+  background: rgba(255,255,255,.6);
+}
+
+.starter-state-icon .eu-icon {
+  width: 29px;
+  height: 29px;
+}
+
+.state-done .starter-state-icon { color: var(--green); }
+.state-error .starter-state-icon { color: #a44a4a; }
+.state-loading .starter-state-icon { color: var(--cobalt); }
+
+/* Trash */
+.trash-list {
+  gap: 10px;
+}
+
+.trash-list > article {
+  border-radius: 23px;
+  box-shadow: var(--shadow-soft);
+}
+
+.trash-list > article > div:last-child {
+  gap: 7px;
+}
+
+.trash-list > article > div:last-child button {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border-radius: 13px;
+}
+
+.trash-list button .eu-icon {
+  width: 14px;
+  height: 14px;
+}
+
+/* Privacy */
+.privacy-pin-form button,
+.privacy-actions button {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.privacy-pin-form button .eu-icon,
+.privacy-actions button .eu-icon {
+  width: 15px;
+  height: 15px;
+}
+
+/* Small system refinements */
+.soft-empty > span {
+  color: var(--faint);
+}
+
+.soft-empty > span .eu-icon {
+  width: 22px;
+  height: 22px;
+}
+
+button:disabled {
+  cursor: default;
+}
+
+@media (max-width: 760px) {
+  /* Prevent iOS zooming into forms while keeping display text compact. */
+  .register-sheet input,
+  .register-sheet textarea,
+  .ask-eu-box textarea,
+  .chat-incoming-list textarea,
+  .chat-incoming-list input,
+  .chat-incoming-list select,
+  .security-center-page input,
+  .security-center-page select,
+  .record-edit-form input,
+  .record-edit-form textarea,
+  .record-edit-form select {
+    font-size: 16px;
+  }
+
+  .ask-eu-box {
+    grid-template-columns: 34px minmax(0,1fr);
+  }
+
+  .ask-eu-box button {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .collection-v2 {
+    min-height: 250px;
+  }
+
+  .chat-capture-actions {
+    bottom: calc(86px + env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width: 430px) {
+  .review-actions {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .review-actions button {
+    width: 100%;
+  }
+}
