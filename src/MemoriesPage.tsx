@@ -9,7 +9,7 @@ export default function MemoriesPage() {
   const records = useRecords()
   const [params] = useSearchParams()
   const navigate = useNavigate()
-  const [mode, setMode] = useState<'search' | 'timeline'>('search')
+  const [mode, setMode] = useState<'search' | 'timeline'>(() => localStorage.getItem('eu-memories-mode') === 'timeline' ? 'timeline' : 'search')
   const [query, setQuery] = useState('')
   const initialCollection = params.get('colecao') || ''
   const [filter, setFilter] = useState(params.get('origem') === 'chatgpt' ? 'chatgpt' : initialCollection === 'favorites' ? 'favorites' : initialCollection === 'chat' ? 'chatgpt' : 'all')
@@ -59,6 +59,11 @@ export default function MemoriesPage() {
       return sourceOk && tagOk && areaOk && statusOk && periodOk && moodOk && collectionOk
     })
   }, [records, query, filter, tagFilter, areaFilter, statusFilter, periodFilter, moodFilter, initialCollection, moodByDate])
+
+  function selectMode(value: 'search' | 'timeline') {
+    setMode(value)
+    localStorage.setItem('eu-memories-mode', value)
+  }
 
   const timeline = useMemo(() => groupTimeline(filtered), [filtered])
   const activeFilterCount = [
@@ -152,8 +157,8 @@ export default function MemoriesPage() {
       </button>
 
       <div className="memory-mode-switch">
-        <button className={mode === 'search' ? 'active' : ''} onClick={() => setMode('search')}><EuIcon name="search" />Buscar</button>
-        <button className={mode === 'timeline' ? 'active' : ''} onClick={() => setMode('timeline')}><EuIcon name="note" />Linha do tempo</button>
+        <button className={mode === 'search' ? 'active' : ''} onClick={() => selectMode('search')}><EuIcon name="search" />Buscar</button>
+        <button className={mode === 'timeline' ? 'active' : ''} onClick={() => selectMode('timeline')}><EuIcon name="note" />Linha do tempo</button>
       </div>
 
       {mode === 'search' && (
