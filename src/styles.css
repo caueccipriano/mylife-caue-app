@@ -13240,3 +13240,501 @@ body {
     transition: none;
   }
 }
+
+
+/* EU v18.3: secondary surfaces refinement */
+
+/* REGISTER — capture should feel like opening a personal console, not a generic modal. */
+.sheet-backdrop {
+  background:
+    radial-gradient(circle at 18% 16%, rgba(70,221,255,.08), transparent 18rem),
+    radial-gradient(circle at 88% 24%, rgba(255,79,179,.08), transparent 18rem),
+    rgba(24,28,48,.34);
+  backdrop-filter: blur(10px) saturate(.95);
+  -webkit-backdrop-filter: blur(10px) saturate(.95);
+}
+
+.register-sheet {
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,.72);
+  background:
+    radial-gradient(circle at 92% 4%, rgba(142,98,255,.12), transparent 11rem),
+    radial-gradient(circle at 8% 14%, rgba(70,221,255,.10), transparent 12rem),
+    linear-gradient(180deg, rgba(255,253,249,.98), rgba(248,245,252,.96));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.94),
+    0 -18px 60px rgba(28,32,57,.18);
+}
+
+.sheet-handle {
+  width: 46px;
+  height: 5px;
+  border-radius: 999px;
+  background:
+    linear-gradient(90deg, #c8d2e7, #eef2fa 35%, #aeb8cc 68%, #e6ebf4);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.72);
+}
+
+.sheet-heading {
+  position: relative;
+}
+
+.sheet-heading::after {
+  content: '✦';
+  position: absolute;
+  right: 52px;
+  top: 8px;
+  color: rgba(104,83,185,.34);
+  font-family: var(--display-wide);
+  font-size: 15px;
+}
+
+.sheet-heading .eyebrow {
+  font-family: var(--display-wide);
+  color: #7663bd;
+  letter-spacing: .07em;
+}
+
+.sheet-heading h2 {
+  font-family: var(--display-bubble);
+  font-weight: 400;
+  letter-spacing: -.05em;
+  line-height: .96;
+  background: linear-gradient(120deg, #3156ff, #805be8 56%, #e24a9d 110%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.sheet-close-button {
+  border: 1px solid rgba(93,98,135,.10);
+  background: rgba(255,255,255,.66);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.92),
+    0 6px 16px rgba(38,49,105,.04);
+}
+
+.capture-input {
+  min-height: 132px;
+  border: 1px solid rgba(105,86,181,.12);
+  border-radius: 24px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(70,221,255,.08), transparent 8rem),
+    rgba(255,255,255,.74);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.92),
+    0 12px 28px rgba(54,45,103,.045);
+}
+
+.capture-input:focus {
+  border-color: rgba(101,78,208,.26);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.94),
+    0 0 0 4px rgba(142,98,255,.06),
+    0 12px 28px rgba(54,45,103,.05);
+}
+
+.quick-starts button,
+.capture-tool {
+  border-color: rgba(86,95,133,.09);
+  background: rgba(255,255,255,.66);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.86);
+  font-family: var(--display-wide);
+}
+
+.quick-starts button:nth-child(4n+1),
+.capture-tool:nth-child(4n+1) {
+  background: linear-gradient(145deg, #e5f9ff, #fff);
+  color: #2b758a;
+}
+.quick-starts button:nth-child(4n+2),
+.capture-tool:nth-child(4n+2) {
+  background: linear-gradient(145deg, #efe9ff, #fff);
+  color: #684dc8;
+}
+.quick-starts button:nth-child(4n+3),
+.capture-tool:nth-child(4n+3) {
+  background: linear-gradient(145deg, #fff0f8, #fff);
+  color: #ae3478;
+}
+.quick-starts button:nth-child(4n),
+.capture-tool:nth-child(4n) {
+  background: linear-gradient(145deg, #f1fbdc, #fff);
+  color: #5c7b24;
+}
+
+.interpretation,
+.followup-preview,
+.why-it-matters,
+.sensitive-hint,
+.duplicate-hint {
+  border: 1px solid rgba(91,93,128,.08);
+  border-radius: 18px;
+  background: rgba(255,255,255,.58);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.78);
+}
+
+.capture-submit-bar {
+  background:
+    linear-gradient(180deg, rgba(251,247,239,0), rgba(251,247,239,.88) 28%, rgba(251,247,239,.96));
+}
+
+.capture-submit-bar .primary-button {
+  min-height: 52px;
+  border-radius: 18px;
+  font-family: var(--display-wide);
+  letter-spacing: .01em;
+}
+
+.saved-state {
+  border: 1px solid rgba(111,156,34,.13);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(216,255,63,.18), transparent 9rem),
+    linear-gradient(145deg, #f4ffde, #f5fbff);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.87),
+    0 13px 32px rgba(72,98,53,.06);
+}
+
+/* ASK EU — make the assistant feel like a portal into the archive. */
+.ask-eu-page {
+  --page-accent: #7557de;
+}
+
+.ask-eu-hero {
+  position: relative;
+  isolation: isolate;
+}
+
+.ask-eu-hero::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  right: -14px;
+  top: 40px;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 1px solid rgba(142,98,255,.18);
+  box-shadow:
+    inset 0 0 45px rgba(70,221,255,.08),
+    0 0 0 18px rgba(142,98,255,.025),
+    0 0 0 36px rgba(255,79,179,.018);
+}
+
+.ask-eu-hero::after {
+  content: '✦';
+  position: absolute;
+  right: 40px;
+  top: 82px;
+  color: rgba(112,83,197,.46);
+  font-size: 18px;
+}
+
+.ask-eu-hero h1 {
+  background: linear-gradient(120deg, #6450d8 0%, #8b5eea 48%, #e74aa1 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.ask-eu-box {
+  position: relative;
+  overflow: hidden;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(255,79,179,.09), transparent 10rem),
+    linear-gradient(145deg, rgba(255,255,255,.86), rgba(240,235,255,.66));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.92),
+    0 16px 38px rgba(83,62,143,.07);
+}
+
+.ask-eu-search-icon {
+  color: #7d5bd4;
+}
+
+.ask-suggestions button {
+  border: 1px solid rgba(109,87,184,.10);
+  background: rgba(255,255,255,.62);
+  font-family: var(--display-wide);
+}
+
+.ask-suggestions button:nth-child(3n+1) {
+  background: linear-gradient(145deg, #eef8ff, #fff);
+  color: #33708a;
+}
+.ask-suggestions button:nth-child(3n+2) {
+  background: linear-gradient(145deg, #f2edff, #fff);
+  color: #6a50c0;
+}
+.ask-suggestions button:nth-child(3n) {
+  background: linear-gradient(145deg, #fff0f8, #fff);
+  color: #a63775;
+}
+
+.ask-answer {
+  border-color: rgba(103,78,194,.10);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(70,221,255,.08), transparent 11rem),
+    linear-gradient(145deg, #fff, #f7f3ff);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.88),
+    0 13px 30px rgba(70,56,125,.045);
+}
+
+.ask-sources a {
+  border-color: rgba(102,83,164,.08);
+  background: rgba(255,255,255,.62);
+}
+
+/* RECORD DETAIL — private dossier aesthetic. */
+.record-detail-page {
+  --page-accent: #4c66d8;
+}
+
+.record-detail-hero {
+  position: relative;
+  isolation: isolate;
+}
+
+.record-detail-hero::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  right: -18px;
+  top: 16px;
+  width: 118px;
+  height: 118px;
+  border-radius: 50%;
+  border: 1px solid rgba(70,221,255,.18);
+  box-shadow:
+    0 0 0 14px rgba(142,98,255,.025),
+    inset 0 0 30px rgba(70,221,255,.045);
+}
+
+.record-detail-hero h1 {
+  max-width: 650px;
+}
+
+.record-actions-row {
+  position: sticky;
+  z-index: 9;
+  top: calc(76px + env(safe-area-inset-top));
+  padding: 5px;
+  border: 1px solid rgba(78,89,131,.09);
+  border-radius: 18px;
+  background: rgba(251,247,239,.80);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.88),
+    0 10px 24px rgba(36,47,91,.05);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.record-actions-row button {
+  font-family: var(--display-wide);
+}
+
+.record-context-card,
+.record-section,
+.record-advanced-edit {
+  border-color: rgba(72,88,139,.08);
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.78), rgba(247,248,255,.58));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.78),
+    0 10px 26px rgba(41,52,96,.035);
+}
+
+.record-context-card:nth-of-type(4n+1) {
+  background: linear-gradient(145deg, #e8f9ff, #fff);
+}
+.record-context-card:nth-of-type(4n+2) {
+  background: linear-gradient(145deg, #f0ebff, #fff);
+}
+.record-context-card:nth-of-type(4n+3) {
+  background: linear-gradient(145deg, #fff0f8, #fff);
+}
+.record-context-card:nth-of-type(4n) {
+  background: linear-gradient(145deg, #f2fbdc, #fff);
+}
+
+.progress-choice-row button,
+.outcome-choice-row button,
+.belongs-chips button,
+.quick-tag-row button {
+  border-color: rgba(75,86,127,.09);
+  background: rgba(255,255,255,.64);
+  font-family: var(--display-wide);
+}
+
+.record-section-heading > span,
+.record-edit-form label > span,
+.optional-label {
+  font-family: var(--display-wide);
+}
+
+/* NOTIFICATIONS / INBOX / REVIEW — utility screens get branded, calmer surfaces. */
+.notifications-hero,
+.chat-inbox-page > .v2-hero,
+.review-hero {
+  position: relative;
+  isolation: isolate;
+}
+
+.notifications-hero::after,
+.chat-inbox-page > .v2-hero::after,
+.review-hero::after {
+  content: '✦';
+  position: absolute;
+  right: 18px;
+  top: 50px;
+  color: rgba(111,88,188,.34);
+  font-size: 15px;
+}
+
+.notification-toolbar,
+.review-progress {
+  border: 1px solid rgba(79,88,128,.09);
+  background: rgba(255,255,255,.58);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.84);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.notification-card,
+.chat-inbox-batches article,
+.review-card {
+  border-color: rgba(77,85,127,.08);
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.78), rgba(247,245,255,.58));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.78),
+    0 10px 26px rgba(43,49,89,.035);
+}
+
+.notification-group:nth-child(3n+1) .notification-card,
+.chat-inbox-batches article:nth-child(3n+1) {
+  background: linear-gradient(145deg, #e9f9ff, #fff);
+}
+.notification-group:nth-child(3n+2) .notification-card,
+.chat-inbox-batches article:nth-child(3n+2) {
+  background: linear-gradient(145deg, #f0ebff, #fff);
+}
+.notification-group:nth-child(3n) .notification-card,
+.chat-inbox-batches article:nth-child(3n) {
+  background: linear-gradient(145deg, #fff0f8, #fff);
+}
+
+.notification-group-title,
+.chat-batch-top small,
+.review-progress small {
+  font-family: var(--display-wide);
+}
+
+.notification-quick-actions button,
+.notification-decision-actions button,
+.notification-mood-actions button,
+.chat-batch-actions button,
+.chat-batch-actions a,
+.review-actions button {
+  font-family: var(--display-wide);
+}
+
+.review-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.review-card::after {
+  content: '';
+  position: absolute;
+  right: -36px;
+  bottom: -42px;
+  width: 90px;
+  height: 90px;
+  border: 1px solid rgba(142,98,255,.12);
+  border-radius: 50%;
+}
+
+/* Empty states feel intentional instead of unfinished. */
+.soft-empty {
+  position: relative;
+  overflow: hidden;
+  border-style: solid;
+  border-color: rgba(77,85,127,.08);
+  background:
+    radial-gradient(circle at 100% 0%, rgba(70,221,255,.07), transparent 9rem),
+    linear-gradient(145deg, rgba(255,255,255,.68), rgba(247,245,255,.50));
+}
+
+.soft-empty::after {
+  content: '✦';
+  position: absolute;
+  right: 18px;
+  top: 14px;
+  color: rgba(110,91,182,.22);
+  font-size: 13px;
+}
+
+/* Secondary screen back buttons become consistent hardware-like controls. */
+.back-v2,
+.back-button-v2 {
+  min-height: 38px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1px solid rgba(76,84,122,.09);
+  border-radius: 13px;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.74), rgba(239,242,248,.58));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.92),
+    0 6px 15px rgba(36,46,88,.035);
+  font-family: var(--display-wide);
+  font-size: 7.5px;
+  text-decoration: none;
+}
+
+/* Small-screen tuning for sheets and details. */
+@media (max-width: 760px) {
+  .register-sheet {
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+  }
+
+  .sheet-heading h2 {
+    font-size: 34px;
+  }
+
+  .ask-eu-hero::before {
+    right: -58px;
+  }
+
+  .record-actions-row {
+    top: calc(69px + env(safe-area-inset-top));
+    overflow-x: auto;
+    justify-content: flex-start;
+  }
+
+  .record-actions-row button {
+    flex: 0 0 auto;
+    min-width: max-content;
+  }
+}
+
+@media (max-width: 430px) {
+  .sheet-heading::after {
+    right: 44px;
+  }
+
+  .capture-input {
+    min-height: 120px;
+  }
+
+  .ask-eu-box {
+    border-radius: 23px;
+  }
+}
