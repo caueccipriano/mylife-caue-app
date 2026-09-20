@@ -652,11 +652,6 @@ export default function RecordDetailPage() {
             </div>
           )}
 
-          <label>
-            Lugar <span className="optional-label">opcional</span>
-            <input className="record-text-input" value={place} onChange={(event) => setPlace(event.target.value)} placeholder="Ex.: Ouro Preto, MG" />
-          </label>
-
           {(type === 'Projeto' || type === 'Objetivo' || type === 'Pendência') && (
             <label>
               Próximo movimento
@@ -678,38 +673,51 @@ export default function RecordDetailPage() {
             </label>
           )}
 
-          <div className="record-edit-grid">
-            <label>
-              Frescor da memória
-              <select value={freshness} onChange={(event) => setFreshness(event.target.value as RecordFreshness)}>
-                <option value="current">Atual</option>
-                <option value="maybe-stale">Pode ter mudado</option>
-                <option value="historical">Histórico</option>
-              </select>
-            </label>
-            <label>
-              Capítulo
-              <input className="record-text-input" value={chapterId} onChange={(event) => setChapterId(event.target.value)} placeholder="Ex.: Aptar 2026" />
-            </label>
-          </div>
+          <details className="record-advanced-edit">
+            <summary>
+              <span><EuIcon name="settings" />Detalhes avançados</span>
+              <small>lugar, capítulo, tags e frescor</small>
+            </summary>
+            <div className="record-advanced-edit-body">
+              <label>
+                Lugar <span className="optional-label">opcional</span>
+                <input className="record-text-input" value={place} onChange={(event) => setPlace(event.target.value)} placeholder="Ex.: Ouro Preto, MG" />
+              </label>
 
-          <div className="tag-editor">
-            <span>Tags</span>
-            <div className="editable-tags">
-              {tags.map((tag) => (
-                <button type="button" key={tag} onClick={() => setTags((current) => current.filter((item) => item !== tag))}>#{tag}<EuIcon name="x" /></button>
-              ))}
+              <div className="record-edit-grid">
+                <label>
+                  Frescor da memória
+                  <select value={freshness} onChange={(event) => setFreshness(event.target.value as RecordFreshness)}>
+                    <option value="current">Atual</option>
+                    <option value="maybe-stale">Pode ter mudado</option>
+                    <option value="historical">Histórico</option>
+                  </select>
+                </label>
+                <label>
+                  Capítulo
+                  <input className="record-text-input" value={chapterId} onChange={(event) => setChapterId(event.target.value)} placeholder="Ex.: Aptar 2026" />
+                </label>
+              </div>
+
+              <div className="tag-editor">
+                <span>Tags</span>
+                <div className="editable-tags">
+                  {tags.map((tag) => (
+                    <button type="button" key={tag} onClick={() => setTags((current) => current.filter((item) => item !== tag))}>#{tag}<EuIcon name="x" /></button>
+                  ))}
+                </div>
+                <div className="tag-add-row">
+                  <input value={tagDraft} onChange={(event) => setTagDraft(event.target.value)} placeholder="nova tag" onKeyDown={(event) => {
+                    if (event.key === 'Enter') {
+                      event.preventDefault()
+                      addTag()
+                    }
+                  }} />
+                  <button type="button" onClick={addTag}><EuIcon name="plus" />Adicionar</button>
+                </div>
+              </div>
             </div>
-            <div className="tag-add-row">
-              <input value={tagDraft} onChange={(event) => setTagDraft(event.target.value)} placeholder="nova tag" onKeyDown={(event) => {
-                if (event.key === 'Enter') {
-                  event.preventDefault()
-                  addTag()
-                }
-              }} />
-              <button type="button" onClick={addTag}><EuIcon name="plus" />Adicionar</button>
-            </div>
-          </div>
+          </details>
 
           <div className="record-edit-actions">
             <button type="submit" disabled={saving}><EuIcon name="check" />{saving ? 'Salvando…' : 'Salvar alterações'}</button>
