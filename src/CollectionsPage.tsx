@@ -1,7 +1,17 @@
 import { NavLink } from 'react-router-dom'
 import { useRecords } from './appState'
 import { deriveSmartCollections } from './uxFeatures'
-import { BrandTop, EuIcon, Tag, typeTone } from './v2Ui'
+import { BrandTop, EuIcon, Tag, typeTone, type EuIconName } from './v2Ui'
+
+const collectionIcons: Record<string, EuIconName> = {
+  pinned: 'pin',
+  favorites: 'heart',
+  wishes: 'bag',
+  decisions: 'check',
+  links: 'link',
+  chat: 'chat',
+  completed: 'sparkles',
+}
 
 export default function CollectionsPage() {
   const records = useRecords()
@@ -21,6 +31,7 @@ export default function CollectionsPage() {
       <div className="collections-grid-v2">
         {collections.map((collection) => (
           <section key={collection.id} className={'collection-v2 collection-tone-' + collection.tone}>
+            <div className="collection-v2-icon"><EuIcon name={collectionIcons[collection.id] || 'collections'} /></div>
             <div className="collection-v2-head">
               <Tag tone={collection.tone}>{collection.records.length}</Tag>
               <span>{collection.id}</span>
