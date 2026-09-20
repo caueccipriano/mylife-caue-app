@@ -20,7 +20,7 @@ export default function SelfPage() {
       </header>
 
       <section className="identity-now-card">
-        <Tag tone="cobalt">NESTA FASE</Tag>
+        <div className="identity-card-top"><span className="identity-card-icon"><EuIcon name="user" /></span><Tag tone="cobalt">NESTA FASE</Tag></div>
         <h2>{identity.headline}</h2>
         <p>{identity.narrative}</p>
 
@@ -28,13 +28,24 @@ export default function SelfPage() {
           {identity.topAreas.map((area) => <span key={area}>{area}</span>)}
           {identity.topTags.map((tag) => <span key={tag}>#{tag}</span>)}
         </div>
+
+        <div className="identity-mini-stats">
+          <article><strong>{identity.topAreas.length}</strong><span>áreas em destaque</span></article>
+          <article><strong>{identity.active.length}</strong><span>coisas em movimento</span></article>
+          <article><strong>{manifesto.length}</strong><span>princípios percebidos</span></article>
+        </div>
       </section>
 
       {identity.active.length > 0 && (
         <section className="self-section">
           <SectionTitle eyebrow="EM MOVIMENTO" title="Coisas que fazem parte de você agora" />
           <div className="self-active-list">
-            {identity.active.map((item, index) => <article key={index}>{item}</article>)}
+            {identity.active.map((item, index) => (
+              <article key={index}>
+                <span><EuIcon name="bolt" /></span>
+                <div><small>EM MOVIMENTO · {String(index + 1).padStart(2, '0')}</small><p>{item}</p></div>
+              </article>
+            ))}
           </div>
         </section>
       )}
