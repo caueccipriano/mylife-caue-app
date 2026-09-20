@@ -136,7 +136,7 @@ export default function SecurityCenterPage() {
   return (
     <div className="v2-page security-center-page">
       <BrandTop />
-      <NavLink className="back-v2" to="/memorias">← Memórias</NavLink>
+      <NavLink className="back-v2" to="/memorias"><EuIcon name="arrow-left" />Memórias</NavLink>
 
       <header className="v2-hero security-hero">
         <Tag tone="cobalt">CENTRAL DE SEGURANÇA</Tag>
