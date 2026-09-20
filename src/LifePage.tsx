@@ -105,7 +105,7 @@ export default function LifePage() {
                 <p>{beforeNow.previous.count} registros · {beforeNow.previous.completed} concluídos</p>
                 <div>{beforeNow.previous.topTags.map((tag) => <span key={tag}>#{tag}</span>)}</div>
               </article>
-              <b>→</b>
+              <b className="flow-arrow"><EuIcon name="arrow-right" /></b>
               <article>
                 <Tag tone="cobalt">AGORA · 30 DIAS</Tag>
                 <h3>{beforeNow.current.topArea || 'ganhando forma'}</h3>
@@ -128,7 +128,7 @@ export default function LifePage() {
             <SectionTitle
               eyebrow="SINAIS"
               title="O que seus apps estão contando"
-              action={<button className="quiet-link" disabled={refreshing} onClick={() => void forceRefresh()}>{refreshing ? 'atualizando…' : 'atualizar ↻'}</button>}
+              action={<button className="quiet-link" disabled={refreshing} onClick={() => void forceRefresh()}><EuIcon name="refresh" />{refreshing ? 'atualizando…' : 'atualizar'}</button>}
             />
             <div className="signals-life-grid">
               {bridges.map((card) => (
@@ -201,7 +201,7 @@ export default function LifePage() {
           </section>
 
           <details className="life-fold" open>
-            <summary><span><small>DESEJOS</small><strong>Coisas que chamaram sua atenção</strong></span><b>＋</b></summary>
+            <summary><span><small>DESEJOS</small><strong>Coisas que chamaram sua atenção</strong></span><b className="fold-icon"><EuIcon name="plus" /></b></summary>
             <div className="compact-stack">
               {wishes.length ? wishes.map((record) => (
                 <NavLink key={record.id} className="compact-record-link" to={'/registro/' + record.id}>
@@ -212,7 +212,7 @@ export default function LifePage() {
           </details>
 
           <details className="life-fold" open>
-            <summary><span><small>PRÓXIMOS PASSOS</small><strong>Coisas que pedem continuidade</strong></span><b>＋</b></summary>
+            <summary><span><small>PRÓXIMOS PASSOS</small><strong>Coisas que pedem continuidade</strong></span><b className="fold-icon"><EuIcon name="plus" /></b></summary>
             <div className="compact-stack">
               {goals.length ? goals.map((record) => (
                 <NavLink key={record.id} className="compact-record-link" to={'/registro/' + record.id}>
@@ -223,7 +223,7 @@ export default function LifePage() {
           </details>
 
           <details className="life-fold">
-            <summary><span><small>DEPOIS</small><strong>Futuro sem pressão</strong></span><b>＋</b></summary>
+            <summary><span><small>DEPOIS</small><strong>Futuro sem pressão</strong></span><b className="fold-icon"><EuIcon name="plus" /></b></summary>
             <div className="someday-grid">
               {someday.length ? someday.map((record) => (
                 <NavLink key={record.id} to={'/registro/' + record.id} className="someday-card">
@@ -240,26 +240,26 @@ export default function LifePage() {
           <section className="life-block self-tools-block">
             <SectionTitle eyebrow="VOCÊ" title="Olhar a vida de outros ângulos" />
             <div className="self-tools-grid">
-              <NavLink to="/vida/quem-sou" className="self-tool-card self-tool-lilac"><Tag tone="lilac">QUEM EU SOU AGORA</Tag><h3>Uma identidade viva.</h3><p>O que anda definindo esta fase.</p><span>ver agora ↗</span></NavLink>
-              <NavLink to="/vida/capitulos" className="self-tool-card self-tool-sky"><Tag tone="sky">CAPÍTULOS</Tag><h3>Quando um assunto vira história.</h3><p>Fases e temas que atravessaram o tempo.</p><span>abrir capítulos ↗</span></NavLink>
-              <NavLink to="/vida/wrapped" className="self-tool-card self-tool-cobalt"><Tag tone="cobalt">EU WRAPPED</Tag><h3>Seu ano sem KPI corporativo.</h3><p>Decisões, desejos, ciclos e momentos.</p><span>ver retrospectiva ↗</span></NavLink>
-              <NavLink to="/vida/lab" className="self-tool-card self-tool-lab"><Tag tone="wine">EU LAB</Tag><h3>Ver o que está mudando por baixo.</h3><p>Radar, Life Graph, cápsulas e decisões.</p><span>abrir laboratório ↗</span></NavLink>
+              <NavLink to="/vida/quem-sou" className="self-tool-card self-tool-lilac"><Tag tone="lilac">QUEM EU SOU AGORA</Tag><h3>Uma identidade viva.</h3><p>O que anda definindo esta fase.</p><span>ver agora <EuIcon name="arrow-up-right" /></span></NavLink>
+              <NavLink to="/vida/capitulos" className="self-tool-card self-tool-sky"><Tag tone="sky">CAPÍTULOS</Tag><h3>Quando um assunto vira história.</h3><p>Fases e temas que atravessaram o tempo.</p><span>abrir capítulos <EuIcon name="arrow-up-right" /></span></NavLink>
+              <NavLink to="/vida/wrapped" className="self-tool-card self-tool-cobalt"><Tag tone="cobalt">EU WRAPPED</Tag><h3>Seu ano sem KPI corporativo.</h3><p>Decisões, desejos, ciclos e momentos.</p><span>ver retrospectiva <EuIcon name="arrow-up-right" /></span></NavLink>
+              <NavLink to="/vida/lab" className="self-tool-card self-tool-lab"><Tag tone="wine">EU LAB</Tag><h3>Ver o que está mudando por baixo.</h3><p>Radar, Life Graph, cápsulas e decisões.</p><span>abrir laboratório <EuIcon name="arrow-up-right" /></span></NavLink>
             </div>
           </section>
 
           <section className="life-block plans-block">
             <SectionTitle eyebrow="PLANOS" title="Pra onde isso tudo está indo" />
             <div className="plan-grid">
-              <NavLink to="/vida/carreira" className="plan-card career-plan-card"><Tag tone="green">PLANO DE CARREIRA</Tag><h3>Seu caminho profissional.</h3><p>Direção, competências, lacunas e sinais dos seus registros.</p><span>abrir plano ↗</span></NavLink>
+              <NavLink to="/vida/carreira" className="plan-card career-plan-card"><Tag tone="green">PLANO DE CARREIRA</Tag><h3>Seu caminho profissional.</h3><p>Direção, competências, lacunas e sinais dos seus registros.</p><span>abrir plano <EuIcon name="arrow-up-right" /></span></NavLink>
               <article className="plan-card life-plan-card"><Tag tone="lilac">PLANO DE VIDA</Tag><h3>O conjunto importa.</h3><p>Trabalho, dinheiro, estudos, relações, experiências e escolhas vistos juntos.</p><span>fica mais inteligente com o uso</span></article>
-              <NavLink to="/vida/astrologia" className="plan-card astrology-plan-card"><Tag tone="amber">MAPAS + CÉU</Tag><h3>Astrologia dentro do arquivo.</h3><p>Mapa local privado + céu diário calculado no aparelho.</p><span>abrir astrologia ↗</span></NavLink>
+              <NavLink to="/vida/astrologia" className="plan-card astrology-plan-card"><Tag tone="amber">MAPAS + CÉU</Tag><h3>Astrologia dentro do arquivo.</h3><p>Mapa local privado + céu diário calculado no aparelho.</p><span>abrir astrologia <EuIcon name="arrow-up-right" /></span></NavLink>
             </div>
           </section>
 
           <section className="life-block phases-entry-block">
             <NavLink to="/vida/fases" className="phases-entry-card">
               <div><Tag tone="cobalt">SUAS FASES</Tag><h2>Você de antes × você de agora.</h2><p>Retratos mensais para perceber como seus assuntos e movimentos mudam.</p></div>
-              <span>ver fases ↗</span>
+              <span>ver fases <EuIcon name="arrow-up-right" /></span>
             </NavLink>
           </section>
         </>
@@ -288,9 +288,9 @@ export function CareerPlanPage() {
 
       <div className="career-road">
         <article><span>AGORA</span><strong>Custos + Controladoria</strong><p>SAP, Power BI, margem, inventário e visão industrial.</p></article>
-        <b>→</b>
+        <b className="flow-arrow"><EuIcon name="arrow-right" /></b>
         <article><span>PRÓXIMO</span><strong>Pleno + Analytics</strong><p>SQL, portfólio forte, automação e posicionamento.</p></article>
-        <b>→</b>
+        <b className="flow-arrow"><EuIcon name="arrow-right" /></b>
         <article><span>DESTINO</span><strong>Finance Analytics</strong><p>Senior, Specialist ou Lead com escopo mais amplo.</p></article>
       </div>
 
