@@ -27,6 +27,14 @@ function recommendation(records: ReturnType<typeof useRecords>) {
   return ['O que tem chamado sua atenção ultimamente?', 'Padrões escondidos nas suas escolhas', 'Uma ideia boa merece ser reencontrada']
 }
 
+function recommendationContext(records: ReturnType<typeof useRecords>) {
+  const counts = new Map<string, number>()
+  records.slice(0, 30).forEach((record) => counts.set(record.area, (counts.get(record.area) || 0) + 1))
+  const [area, count] = [...counts.entries()].sort((a, b) => b[1] - a[1])[0] ?? []
+  if (!area || !count) return 'porque alguns temas seus estão começando a se repetir'
+  return 'porque ' + area + ' apareceu ' + count + (count === 1 ? ' vez' : ' vezes') + ' nos seus registros recentes'
+}
+
 export default function DiscoveriesPage() {
   const records = useRecords()
   const [view, setView] = useState<'for-you' | 'library' | 'topics'>('for-you')
@@ -39,6 +47,7 @@ export default function DiscoveriesPage() {
       .map((attachment) => ({ record, attachment, href: safeExternalUrl(attachment.url) as string })),
   ).slice(0, 12)
   const suggestions = useMemo(() => recommendation(visibleRecords), [records])
+  const suggestionContext = useMemo(() => recommendationContext(visibleRecords), [records])
   const preferenceShifts = useMemo(() => detectPreferenceShifts(visibleRecords), [records])
   const entities = useMemo(() => deriveEntities(visibleRecords).slice(0, 12), [records])
   const collections = useMemo(() => {
@@ -80,7 +89,7 @@ export default function DiscoveriesPage() {
             <div>
               <small>PARA VOCÊ</small>
               <h2>{suggestions[0]}</h2>
-              <p>Uma direção sugerida a partir dos assuntos que mais apareceram nos seus registros recentes.</p>
+              <p>{suggestionContext}.</p>
             </div>
           </section>
 
@@ -106,7 +115,7 @@ export default function DiscoveriesPage() {
                 <article key={item}>
                   <span>0{index + 1}</span>
                   <h3>{item}</h3>
-                  <p>Sugestão local baseada nos padrões recentes. Sem obrigação de abrir.</p>
+                  <p>{suggestionContext}. Sem obrigação de abrir.</p>
                 </article>
               ))}
             </div>
