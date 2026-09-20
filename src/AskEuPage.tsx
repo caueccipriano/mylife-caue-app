@@ -2,7 +2,7 @@ import { type FormEvent, useMemo, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { answerFromEu, type EuAnswer } from './askEu'
 import { useBridges, useRecords } from './appState'
-import { BrandTop, Tag, typeTone } from './v2Ui'
+import { BrandTop, EuIcon, Tag, typeTone } from './v2Ui'
 
 const suggestions = [
   'O que eu já decidi sobre carreira?',
@@ -40,14 +40,14 @@ export default function AskEuPage() {
       </header>
 
       <form className="ask-eu-box" onSubmit={submit}>
-        <span>⌕</span>
+        <span className="ask-eu-search-icon"><EuIcon name="search" /></span>
         <textarea value={query} onChange={(event) => setQuery(event.target.value)} rows={2} placeholder="Ex.: o que eu já decidi sobre minha carreira?" />
         <button type="submit">Perguntar</button>
       </form>
 
       {!answer && (
         <div className="ask-suggestions">
-          {suggestions.map((item) => <button key={item} onClick={() => ask(item)}>{item}</button>)}
+          {suggestions.map((item) => <button key={item} onClick={() => ask(item)}><EuIcon name="sparkles" /><span>{item}</span></button>)}
         </div>
       )}
 
@@ -67,13 +67,13 @@ export default function AskEuPage() {
                     <span>{record.area}</span>
                   </div>
                   <p>{record.text}</p>
-                  <b>↗</b>
+                  <b><EuIcon name="arrow-up-right" /></b>
                 </NavLink>
               ))}
             </div>
           )}
 
-          <button className="ask-again" onClick={() => { setAsked(''); setQuery('') }}>Perguntar outra coisa</button>
+          <button className="ask-again" onClick={() => { setAsked(''); setQuery('') }}><EuIcon name="refresh" />Perguntar outra coisa</button>
         </section>
       )}
     </div>
