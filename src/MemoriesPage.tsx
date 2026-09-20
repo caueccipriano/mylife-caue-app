@@ -20,7 +20,7 @@ export default function MemoriesPage() {
   const [moodFilter, setMoodFilter] = useState('')
   const allMoods = listMoodCheckins()
   const moods = allMoods.slice(-14).reverse()
-  const moodByDate = useMemo(() => new Map(allMoods.map((item) => [item.date, item.mood])), [allMoods.length])
+  const moodByDate = new Map(allMoods.map((item) => [item.date, item.mood]))
 
   const topTags = useMemo(() => {
     const counts = new Map<string, number>()
