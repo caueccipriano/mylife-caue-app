@@ -9705,3 +9705,113 @@ button:disabled {
     border-radius: 12px;
   }
 }
+
+
+/* EU v10: semantic links, focus controls and editor polish */
+/* Interactive cards converted to real links keep their card appearance. */
+.continue-card,
+.adaptive-callout,
+.feed-card {
+  color: inherit;
+  text-decoration: none;
+}
+
+.continue-card:focus-visible,
+.adaptive-callout:focus-visible,
+.feed-card:focus-visible {
+  outline-offset: 4px;
+}
+
+.continue-card:active,
+.adaptive-callout:active,
+.feed-card:active {
+  transform: scale(.99);
+}
+
+/* Life focus controls now carry the same area icon vocabulary as the rest of the app. */
+.focus-area-chips button {
+  min-height: 42px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.focus-area-chips button .eu-icon {
+  width: 15px;
+  height: 15px;
+  color: var(--cobalt);
+}
+
+.focus-area-chips button.active .eu-icon {
+  color: currentColor;
+}
+
+.focus-panel .v2-section-title .quiet-link {
+  flex: 0 0 auto;
+}
+
+/* Record editor: attachments and actions read as one system. */
+.edit-attachments > div {
+  min-height: 54px;
+  grid-template-columns: 32px minmax(0,1fr) auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.edit-attachments > div > b {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--cobalt-soft);
+  color: var(--cobalt);
+}
+
+.edit-attachments > div > b .eu-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.edit-attachments button,
+.tag-add-row button,
+.record-edit-actions button {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.edit-attachments button .eu-icon,
+.tag-add-row button .eu-icon,
+.record-edit-actions button .eu-icon {
+  width: 13px;
+  height: 13px;
+}
+
+.record-edit-actions button[type="submit"] {
+  box-shadow: 0 9px 22px rgba(53,95,206,.16);
+}
+
+/* Header utilities remain usable even when the screen is narrow. */
+@media (max-width: 390px) {
+  .top-icon-action {
+    width: 34px;
+    height: 34px;
+  }
+
+  .v2-top-actions {
+    gap: 5px;
+  }
+
+  .focus-area-chips {
+    gap: 6px;
+  }
+
+  .focus-area-chips button {
+    min-height: 40px;
+    padding-inline: 10px;
+  }
+}
