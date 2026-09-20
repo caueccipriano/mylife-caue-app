@@ -27,7 +27,7 @@ import AreaPage from './AreaPage'
 import NotificationsPage from './NotificationsPage'
 import NotificationRuleSync from './NotificationRuleSync'
 import { initPrivacyAutoLock } from './privacy'
-import { applyDiscreetMode } from './securitySettings'
+import { applyDiscreetMode, haptic } from './securitySettings'
 import { emptyExpiredTrash } from './storage'
 import { EuIcon } from './v2Ui'
 
@@ -117,7 +117,7 @@ function AppShell({ onRegister }: { onRegister: () => void }) {
       </main>
 
       {showRegister && (
-        <button className="global-register-pill compact" onClick={onRegister} aria-label="Registrar no EU">
+        <button className="global-register-pill compact" onClick={() => { haptic('light'); onRegister() }} aria-label="Registrar no EU">
           <span><EuIcon name="plus" /></span>
           registrar
         </button>
