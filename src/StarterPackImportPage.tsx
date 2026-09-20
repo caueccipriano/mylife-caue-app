@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
-import { getRecord, listRecords, saveRecord } from './storage'
+import { getRecord, listRecords, saveRecord, updateRecord } from './storage'
 import { decodeStarterPack, recordFromStarterItem } from './starterPack'
 import { mergePersonalProfile } from './profile'
 import { BrandTop, Tag } from './v2Ui'
@@ -24,26 +24,43 @@ export default function StarterPackImportPage() {
         const pack = await decodeStarterPack(encoded)
         if (pack.profile) mergePersonalProfile(pack.profile)
         const existingRecords = await listRecords()
-        const normalizedExisting = new Set(existingRecords.map((record) =>
-          [record.text.trim().toLowerCase(), record.type.trim().toLowerCase(), record.area.trim().toLowerCase()].join('::'),
-        ))
+        const semanticKey = (record: { text: string; type: string; area: string }) =>
+          [record.text.trim().toLowerCase(), record.type.trim().toLowerCase(), record.area.trim().toLowerCase()].join('::')
+        const existingBySemantic = new Map(existingRecords.map((record) => [semanticKey(record), record]))
         let imported = 0
+        let enriched = 0
 
         for (const item of pack.items) {
           const record = recordFromStarterItem(pack, item)
           const existingById = await getRecord(record.id)
-          const semanticKey = [record.text.trim().toLowerCase(), record.type.trim().toLowerCase(), record.area.trim().toLowerCase()].join('::')
-          if (existingById || normalizedExisting.has(semanticKey)) continue
+          const existing = existingById || existingBySemantic.get(semanticKey(record))
+
+          if (existing) {
+            if (record.attachments?.length) {
+              const currentAttachments = existing.attachments ?? []
+              const seenUrls = new Set(currentAttachments.map((attachment) => attachment.url).filter(Boolean))
+              const additions = record.attachments.filter((attachment) => !attachment.url || !seenUrls.has(attachment.url))
+              if (additions.length) {
+                await updateRecord(existing.id, { attachments: [...currentAttachments, ...additions] })
+                enriched += 1
+              }
+            }
+            continue
+          }
+
           await saveRecord(record)
-          normalizedExisting.add(semanticKey)
+          existingBySemantic.set(semanticKey(record), record)
           imported += 1
         }
 
         if (!active) return
 
         setCount(imported)
-        setMessage(imported
-          ? imported + (imported === 1 ? ' registro entrou no EU.' : ' registros entraram no EU.')
+        setMessage(imported || enriched
+          ? [
+              imported ? imported + (imported === 1 ? ' registro novo' : ' registros novos') : '',
+              enriched ? enriched + (enriched === 1 ? ' registro ganhou links' : ' registros ganharam links') : '',
+            ].filter(Boolean).join(' · ') + '.'
           : pack.profile
             ? 'Seu perfil local foi atualizado sem duplicar registros.'
             : 'Esse pacote já estava no seu EU.')
