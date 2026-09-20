@@ -64,10 +64,10 @@ export default function LifePage() {
       </header>
 
       <nav className="life-view-tabs" aria-label="Visões da Vida">
-        <button className={view === 'overview' ? 'active' : ''} onClick={() => setView('overview')}>Visão geral</button>
-        <button className={view === 'areas' ? 'active' : ''} onClick={() => setView('areas')}>Áreas</button>
-        <button className={view === 'moving' ? 'active' : ''} onClick={() => setView('moving')}>Em movimento</button>
-        <button className={view === 'you' ? 'active' : ''} onClick={() => setView('you')}>Você</button>
+        <button className={view === 'overview' ? 'active' : ''} onClick={() => setView('overview')}><EuIcon name="sparkles" />Visão geral</button>
+        <button className={view === 'areas' ? 'active' : ''} onClick={() => setView('areas')}><EuIcon name="collections" />Áreas</button>
+        <button className={view === 'moving' ? 'active' : ''} onClick={() => setView('moving')}><EuIcon name="bolt" />Em movimento</button>
+        <button className={view === 'you' ? 'active' : ''} onClick={() => setView('you')}><EuIcon name="user" />Você</button>
       </nav>
 
       {view === 'overview' && (
