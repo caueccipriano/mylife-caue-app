@@ -28,7 +28,7 @@ export default defineConfig({
         background_color: '#F6F2EA',
         display: 'standalone',
         orientation: 'portrait-primary',
-        start_url: base + '?v=eu-v3-prism',
+        start_url: base + '?v=eu-v4-clarity',
         scope: base,
         categories: ['lifestyle', 'utilities'],
         share_target: {
@@ -53,6 +53,12 @@ export default defineConfig({
             short_name: 'EU Lab',
             description: 'Abrir radar, cápsulas, decisões e Life Graph',
             url: base + '#/vida/lab'
+          },
+          {
+            name: 'Humor',
+            short_name: 'Humor',
+            description: 'Abrir heatmap e histórico de humor',
+            url: base + '#/memorias/humor'
           }
         ],
         icons: [
