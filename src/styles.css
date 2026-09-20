@@ -12825,3 +12825,418 @@ body {
     right: 34px;
   }
 }
+
+
+/* EU v18.2: signature polish */
+
+/* Page-level accents make every section feel related but distinct. */
+.today-page {
+  --page-accent: #28bfd8;
+  --page-accent-2: #b9df28;
+  --page-soft: rgba(70,221,255,.12);
+}
+
+.life-page {
+  --page-accent: #3156ff;
+  --page-accent-2: #8ebc2e;
+  --page-soft: rgba(49,86,255,.10);
+}
+
+.discoveries-page {
+  --page-accent: #e649a2;
+  --page-accent-2: #8b5cf0;
+  --page-soft: rgba(255,79,179,.10);
+}
+
+.memories-page {
+  --page-accent: #7a55df;
+  --page-accent-2: #df4b9d;
+  --page-soft: rgba(142,98,255,.10);
+}
+
+/* Brand signature: little chrome capsule instead of plain metadata. */
+.v2-brand span {
+  min-height: 22px;
+  padding: 0 8px;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid rgba(104,116,154,.10);
+  border-radius: 999px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.76), rgba(230,234,244,.58));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.92),
+    0 5px 14px rgba(38,49,105,.035);
+  color: #70758b;
+  font-size: 7px;
+  letter-spacing: .055em;
+}
+
+.v2-brand strong {
+  position: relative;
+}
+
+.v2-brand strong::after {
+  content: '✦';
+  position: absolute;
+  right: -9px;
+  top: -5px;
+  color: rgba(117,130,171,.55);
+  font-family: var(--display-wide);
+  font-size: 6px;
+}
+
+/* Top utilities become tiny Y2K candy controls. */
+.top-icon-action {
+  position: relative;
+  overflow: visible;
+  border-radius: 14px;
+}
+
+.top-icon-action::before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 5px;
+  width: 7px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.72);
+  transform: rotate(-22deg);
+  pointer-events: none;
+}
+
+.v2-top-actions .top-icon-action:nth-of-type(1) {
+  background: linear-gradient(145deg, #eefbff, #e4f7ff);
+  color: #28768b;
+}
+
+.v2-top-actions .top-icon-action:nth-of-type(2) {
+  background: linear-gradient(145deg, #f2efff, #ebe7ff);
+  color: #6b52c8;
+}
+
+.v2-top-actions .top-icon-action:nth-of-type(3) {
+  background: linear-gradient(145deg, #fff0f8, #ffe5f3);
+  color: #ae3478;
+}
+
+/* Eyebrows now carry the EU's tiny signal dot. */
+.v2-section-title > div > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.v2-section-title > div > span::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  flex: 0 0 6px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 11%, transparent);
+  opacity: .75;
+}
+
+/* Make section rhythm easier to scan on long pages. */
+.today-block,
+.life-block,
+.discovery-block,
+.memory-results,
+.memory-timeline,
+.memory-moods {
+  scroll-margin-top: 118px;
+}
+
+.today-block + .today-block,
+.life-block + .life-block,
+.discovery-block + .discovery-block {
+  position: relative;
+}
+
+.today-block + .today-block::before,
+.life-block + .life-block::before,
+.discovery-block + .discovery-block::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: -22px;
+  width: 58px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--page-accent, var(--cobalt)), transparent);
+  opacity: .22;
+}
+
+/* Bottom nav becomes a true liquid-candy dock. */
+.v2-bottom-nav {
+  overflow: visible;
+  padding: 6px;
+  border-radius: 27px;
+}
+
+.v2-bottom-nav a {
+  position: relative;
+  z-index: 1;
+  min-height: 58px;
+  padding: 5px 4px 4px;
+  border-radius: 20px;
+  transition:
+    transform .18s cubic-bezier(.2,.8,.2,1),
+    color .18s ease,
+    background .18s ease;
+}
+
+.v2-bottom-nav a::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 2px;
+  border: 1px solid transparent;
+  border-radius: 18px;
+  background: transparent;
+  box-shadow: none;
+  transition:
+    background .18s ease,
+    border-color .18s ease,
+    box-shadow .18s ease,
+    transform .18s cubic-bezier(.2,.8,.2,1);
+}
+
+.v2-bottom-nav a.active::before {
+  border-color: rgba(255,255,255,.66);
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.72), rgba(241,243,250,.46));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.94),
+    0 7px 19px rgba(38,49,105,.07);
+}
+
+.v2-bottom-nav a.active {
+  transform: translateY(-1px);
+}
+
+.bottom-nav-icon-wrap {
+  position: relative;
+  overflow: hidden;
+  width: 35px;
+  height: 35px;
+  border-radius: 13px;
+  transition:
+    transform .18s cubic-bezier(.2,.8,.2,1),
+    border-radius .18s ease,
+    box-shadow .18s ease;
+}
+
+.bottom-nav-icon-wrap::before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 5px;
+  width: 11px;
+  height: 4px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.68);
+  transform: rotate(-24deg);
+  opacity: .75;
+}
+
+.v2-bottom-nav a.active .bottom-nav-icon-wrap {
+  transform: translateY(-2px) scale(1.04);
+}
+
+.v2-bottom-nav a:nth-child(1).active .bottom-nav-icon-wrap {
+  border-radius: 13px 17px 14px 18px;
+  background: linear-gradient(145deg, #e0fbff, #ccefff);
+  color: #17798e;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.92),
+    0 7px 16px rgba(36,174,204,.13);
+}
+
+.v2-bottom-nav a:nth-child(2).active .bottom-nav-icon-wrap {
+  border-radius: 17px 13px 18px 14px;
+  background: linear-gradient(145deg, #eefbd7, #dff4b9);
+  color: #5a7d22;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.92),
+    0 7px 16px rgba(111,156,34,.12);
+}
+
+.v2-bottom-nav a:nth-child(3).active .bottom-nav-icon-wrap {
+  border-radius: 15px 19px 13px 17px;
+  background: linear-gradient(145deg, #ffe6f4, #f5ddff);
+  color: #ae3478;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.92),
+    0 7px 16px rgba(220,69,160,.13);
+}
+
+.v2-bottom-nav a:nth-child(4).active .bottom-nav-icon-wrap {
+  border-radius: 18px 14px 17px 12px;
+  background: linear-gradient(145deg, #eee8ff, #e3ddff);
+  color: #674bc8;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.92),
+    0 7px 16px rgba(103,75,213,.13);
+}
+
+.v2-bottom-nav a > small {
+  font-family: var(--display-wide);
+  font-size: 7px;
+  letter-spacing: -.015em;
+}
+
+.v2-bottom-nav a.active > small {
+  color: currentColor;
+}
+
+/* Register orb: more icon, less generic FAB. */
+.global-register-pill.compact {
+  width: 55px;
+  min-height: 55px;
+  border-radius: 19px 23px 18px 24px;
+  overflow: hidden;
+}
+
+.global-register-pill.compact::before {
+  content: '';
+  position: absolute;
+  left: 9px;
+  top: 7px;
+  width: 18px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255,255,255,.46);
+  transform: rotate(-24deg);
+  pointer-events: none;
+}
+
+.global-register-pill.compact::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(255,255,255,.18);
+  border-radius: inherit;
+  pointer-events: none;
+}
+
+.global-register-pill.compact > span {
+  position: relative;
+  z-index: 1;
+}
+
+/* Cards get a unified touch language. */
+.tappable-card,
+.continue-card,
+.life-area,
+.discovery-card,
+.collection-card,
+.self-tool-card,
+.plan-card,
+.suggestion-card-link,
+.ask-eu-entry {
+  will-change: transform;
+}
+
+.tappable-card:active,
+.continue-card:active,
+.life-area:active,
+.discovery-card:active,
+.collection-card:active,
+.self-tool-card:active,
+.plan-card:active,
+.suggestion-card-link:active,
+.ask-eu-entry:active {
+  transform: scale(.985) translateY(1px);
+}
+
+/* Inputs feel more like part of the glossy system when focused. */
+.memory-search:focus-within,
+.ask-eu-box:focus-within,
+.link-capture:focus-within {
+  border-color: color-mix(in srgb, var(--page-accent, var(--cobalt)) 32%, transparent);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.94),
+    0 0 0 3px color-mix(in srgb, var(--page-accent, var(--cobalt)) 7%, transparent),
+    0 11px 28px rgba(48,58,105,.05);
+}
+
+/* The tiny metadata is easier to read without becoming visually loud. */
+.feed-meta > span:not(.v2-tag),
+.memory-record-state-row,
+.mood-skip,
+.discovery-feature small,
+.life-area small,
+.collection-card > span {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Desktop hover polish only where hover actually exists. */
+@media (hover: hover) and (pointer: fine) {
+  .tappable-card:hover,
+  .continue-card:hover,
+  .life-area:hover,
+  .discovery-card:hover,
+  .collection-card:hover,
+  .self-tool-card:hover,
+  .plan-card:hover,
+  .suggestion-card-link:hover,
+  .ask-eu-entry:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,.78),
+      0 14px 30px rgba(45,54,100,.07);
+  }
+
+  .v2-bottom-nav a:hover .bottom-nav-icon-wrap {
+    transform: translateY(-1px);
+  }
+}
+
+@media (max-width: 760px) {
+  .v2-brand span {
+    min-height: 20px;
+    padding-inline: 7px;
+    font-size: 6.5px;
+  }
+
+  .v2-bottom-nav {
+    padding: 5px;
+  }
+
+  .v2-bottom-nav a {
+    min-height: 55px;
+  }
+
+  .bottom-nav-icon-wrap {
+    width: 33px;
+    height: 33px;
+  }
+}
+
+@media (max-width: 390px) {
+  .v2-brand span {
+    display: none;
+  }
+
+  .v2-top-note {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v2-bottom-nav a,
+  .bottom-nav-icon-wrap,
+  .tappable-card,
+  .continue-card,
+  .life-area,
+  .discovery-card,
+  .collection-card,
+  .self-tool-card,
+  .plan-card,
+  .suggestion-card-link,
+  .ask-eu-entry {
+    transition: none;
+  }
+}
