@@ -179,78 +179,81 @@ export default function MemoriesPage() {
         </div>
       )}
 
-      <div className="memory-filters">
-        {[
-          ['all', 'Tudo'],
-          ['favorites', 'Favoritos'],
-          ['chatgpt', 'Do Chat'],
-          ['desejo', 'Desejos'],
-          ['curso', 'Cursos'],
-          ['decisão', 'Decisões'],
-          ['insight', 'Insights'],
-        ].map(([value, label]) => (
-          <button key={value} className={filter === value ? 'active' : ''} onClick={() => setFilter(value)}>{label}</button>
-        ))}
-      </div>
-
-      <details className="memory-filter-panel">
+      <details className="memory-filter-panel memory-filter-hub">
         <summary>
-          <span><EuIcon name="settings" />Filtros avançados</span>
-          <b>{activeFilterCount ? activeFilterCount + ' ativos' : 'opcional'}</b>
+          <span><EuIcon name="settings" />Filtrar arquivo</span>
+          <b>{activeFilterCount ? activeFilterCount + ' ativos' : 'tipo, área, data...'}</b>
         </summary>
-        <div className="memory-advanced-filters">
-          <label>
-            <span>Área</span>
-            <select value={areaFilter} onChange={(event) => setAreaFilter(event.target.value)}>
-              <option value="">Todas</option>
-              {['Carreira','Dinheiro','Estudos','Casa','Viagens','Compras','Lazer','Pessoal'].map((area) => <option key={area}>{area}</option>)}
-            </select>
-          </label>
-          <label>
-            <span>Estado</span>
-            <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
-              <option value="">Todos</option>
-              <option value="pinned">Fixados</option>
-              <option value="active">Em movimento</option>
-              <option value="completed">Concluídos</option>
-              <option value="paused">Pausados</option>
-            </select>
-          </label>
-          <label>
-            <span>Período</span>
-            <select value={periodFilter} onChange={(event) => setPeriodFilter(event.target.value as 'all' | '30' | '90' | '365')}>
-              <option value="all">Todo o tempo</option>
-              <option value="30">30 dias</option>
-              <option value="90">90 dias</option>
-              <option value="365">1 ano</option>
-            </select>
-          </label>
-          <label>
-            <span>Humor</span>
-            <select value={moodFilter} onChange={(event) => setMoodFilter(event.target.value)}>
-              <option value="">Todos</option>
-              <option value="animado">Bem</option>
-              <option value="ok">Ok</option>
-              <option value="cansado">Cansado</option>
-              <option value="pilhado">Pilhado</option>
-            </select>
-          </label>
+
+        <div className="memory-filter-hub-body">
+          <div className="memory-filters" aria-label="Filtros rápidos">
+            {[
+              ['all', 'Tudo'],
+              ['favorites', 'Favoritos'],
+              ['chatgpt', 'Do Chat'],
+              ['desejo', 'Desejos'],
+              ['curso', 'Cursos'],
+              ['decisão', 'Decisões'],
+              ['insight', 'Insights'],
+            ].map(([value, label]) => (
+              <button key={value} className={filter === value ? 'active' : ''} onClick={() => setFilter(value)}>{label}</button>
+            ))}
+          </div>
+
+          <div className="memory-advanced-filters">
+            <label>
+              <span>Área</span>
+              <select value={areaFilter} onChange={(event) => setAreaFilter(event.target.value)}>
+                <option value="">Todas</option>
+                {['Carreira','Dinheiro','Estudos','Casa','Viagens','Compras','Lazer','Pessoal'].map((area) => <option key={area}>{area}</option>)}
+              </select>
+            </label>
+            <label>
+              <span>Estado</span>
+              <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
+                <option value="">Todos</option>
+                <option value="pinned">Fixados</option>
+                <option value="active">Em movimento</option>
+                <option value="completed">Concluídos</option>
+                <option value="paused">Pausados</option>
+              </select>
+            </label>
+            <label>
+              <span>Período</span>
+              <select value={periodFilter} onChange={(event) => setPeriodFilter(event.target.value as 'all' | '30' | '90' | '365')}>
+                <option value="all">Todo o tempo</option>
+                <option value="30">30 dias</option>
+                <option value="90">90 dias</option>
+                <option value="365">1 ano</option>
+              </select>
+            </label>
+            <label>
+              <span>Humor</span>
+              <select value={moodFilter} onChange={(event) => setMoodFilter(event.target.value)}>
+                <option value="">Todos</option>
+                <option value="animado">Bem</option>
+                <option value="ok">Ok</option>
+                <option value="cansado">Cansado</option>
+                <option value="pilhado">Pilhado</option>
+              </select>
+            </label>
+          </div>
+
+          {topTags.length > 0 && (
+            <div className="memory-tag-strip">
+              <button className={!tagFilter ? 'active' : ''} onClick={() => setTagFilter('')}>#todas</button>
+              {topTags.map((tag) => (
+                <button key={tag} className={tagFilter === tag ? 'active' : ''} onClick={() => setTagFilter(tag)}>#{tag}</button>
+              ))}
+            </div>
+          )}
         </div>
       </details>
 
       {(activeFilterCount > 0 || query) && (
         <div className="memory-filter-status">
-          <span>{filtered.length} {filtered.length === 1 ? 'resultado' : 'resultados'} com os filtros atuais</span>
-          <button onClick={resetFilters}><EuIcon name="x" />limpar tudo</button>
-        </div>
-      )}
-
-      {topTags.length > 0 && (
-        <div className="memory-tag-strip">
-          <button className={!tagFilter ? 'active' : ''} onClick={() => setTagFilter('')}>#todas</button>
-          {topTags.map((tag) => (
-            <button key={tag} className={tagFilter === tag ? 'active' : ''} onClick={() => setTagFilter(tag)}>#{tag}</button>
-          ))}
+          <span>{filtered.length} {filtered.length === 1 ? 'resultado' : 'resultados'} no recorte atual</span>
+          <button onClick={resetFilters}><EuIcon name="x" />limpar</button>
         </div>
       )}
 
