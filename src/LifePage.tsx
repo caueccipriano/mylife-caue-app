@@ -240,24 +240,25 @@ export default function LifePage() {
           <section className="life-block self-tools-block">
             <SectionTitle eyebrow="VOCÊ" title="Olhar a vida de outros ângulos" />
             <div className="self-tools-grid">
-              <NavLink to="/vida/quem-sou" className="self-tool-card self-tool-lilac"><Tag tone="lilac">QUEM EU SOU AGORA</Tag><h3>Uma identidade viva.</h3><p>O que anda definindo esta fase.</p><span>ver agora <EuIcon name="arrow-up-right" /></span></NavLink>
-              <NavLink to="/vida/capitulos" className="self-tool-card self-tool-sky"><Tag tone="sky">CAPÍTULOS</Tag><h3>Quando um assunto vira história.</h3><p>Fases e temas que atravessaram o tempo.</p><span>abrir capítulos <EuIcon name="arrow-up-right" /></span></NavLink>
-              <NavLink to="/vida/wrapped" className="self-tool-card self-tool-cobalt"><Tag tone="cobalt">EU WRAPPED</Tag><h3>Seu ano sem KPI corporativo.</h3><p>Decisões, desejos, ciclos e momentos.</p><span>ver retrospectiva <EuIcon name="arrow-up-right" /></span></NavLink>
-              <NavLink to="/vida/lab" className="self-tool-card self-tool-lab"><Tag tone="wine">EU LAB</Tag><h3>Ver o que está mudando por baixo.</h3><p>Radar, Life Graph, cápsulas e decisões.</p><span>abrir laboratório <EuIcon name="arrow-up-right" /></span></NavLink>
+              <NavLink to="/vida/quem-sou" className="self-tool-card self-tool-lilac"><i className="self-tool-icon"><EuIcon name="user" /></i><Tag tone="lilac">QUEM EU SOU AGORA</Tag><h3>Uma identidade viva.</h3><p>O que anda definindo esta fase.</p><span>ver agora <EuIcon name="arrow-up-right" /></span></NavLink>
+              <NavLink to="/vida/capitulos" className="self-tool-card self-tool-sky"><i className="self-tool-icon"><EuIcon name="collections" /></i><Tag tone="sky">CAPÍTULOS</Tag><h3>Quando um assunto vira história.</h3><p>Fases e temas que atravessaram o tempo.</p><span>abrir capítulos <EuIcon name="arrow-up-right" /></span></NavLink>
+              <NavLink to="/vida/wrapped" className="self-tool-card self-tool-cobalt"><i className="self-tool-icon"><EuIcon name="sparkles" /></i><Tag tone="cobalt">EU WRAPPED</Tag><h3>Seu ano sem KPI corporativo.</h3><p>Decisões, desejos, ciclos e momentos.</p><span>ver retrospectiva <EuIcon name="arrow-up-right" /></span></NavLink>
+              <NavLink to="/vida/lab" className="self-tool-card self-tool-lab"><i className="self-tool-icon"><EuIcon name="bolt" /></i><Tag tone="wine">EU LAB</Tag><h3>Ver o que está mudando por baixo.</h3><p>Radar, Life Graph, cápsulas e decisões.</p><span>abrir laboratório <EuIcon name="arrow-up-right" /></span></NavLink>
             </div>
           </section>
 
           <section className="life-block plans-block">
             <SectionTitle eyebrow="PLANOS" title="Pra onde isso tudo está indo" />
             <div className="plan-grid">
-              <NavLink to="/vida/carreira" className="plan-card career-plan-card"><Tag tone="green">PLANO DE CARREIRA</Tag><h3>Seu caminho profissional.</h3><p>Direção, competências, lacunas e sinais dos seus registros.</p><span>abrir plano <EuIcon name="arrow-up-right" /></span></NavLink>
-              <article className="plan-card life-plan-card"><Tag tone="lilac">PLANO DE VIDA</Tag><h3>O conjunto importa.</h3><p>Trabalho, dinheiro, estudos, relações, experiências e escolhas vistos juntos.</p><span>fica mais inteligente com o uso</span></article>
-              <NavLink to="/vida/astrologia" className="plan-card astrology-plan-card"><Tag tone="amber">MAPAS + CÉU</Tag><h3>Astrologia dentro do arquivo.</h3><p>Mapa local privado + céu diário calculado no aparelho.</p><span>abrir astrologia <EuIcon name="arrow-up-right" /></span></NavLink>
+              <NavLink to="/vida/carreira" className="plan-card career-plan-card"><i className="plan-card-icon"><EuIcon name="briefcase" /></i><Tag tone="green">PLANO DE CARREIRA</Tag><h3>Seu caminho profissional.</h3><p>Direção, competências, lacunas e sinais dos seus registros.</p><span>abrir plano <EuIcon name="arrow-up-right" /></span></NavLink>
+              <article className="plan-card life-plan-card"><i className="plan-card-icon"><EuIcon name="home" /></i><Tag tone="lilac">PLANO DE VIDA</Tag><h3>O conjunto importa.</h3><p>Trabalho, dinheiro, estudos, relações, experiências e escolhas vistos juntos.</p><span>fica mais inteligente com o uso</span></article>
+              <NavLink to="/vida/astrologia" className="plan-card astrology-plan-card"><i className="plan-card-icon"><EuIcon name="moon" /></i><Tag tone="amber">MAPAS + CÉU</Tag><h3>Astrologia dentro do arquivo.</h3><p>Mapa local privado + céu diário calculado no aparelho.</p><span>abrir astrologia <EuIcon name="arrow-up-right" /></span></NavLink>
             </div>
           </section>
 
           <section className="life-block phases-entry-block">
             <NavLink to="/vida/fases" className="phases-entry-card">
+              <i className="phases-entry-icon"><EuIcon name="clock" /></i>
               <div><Tag tone="cobalt">SUAS FASES</Tag><h2>Você de antes × você de agora.</h2><p>Retratos mensais para perceber como seus assuntos e movimentos mudam.</p></div>
               <span>ver fases <EuIcon name="arrow-up-right" /></span>
             </NavLink>
