@@ -15,7 +15,7 @@ export type EuIconName =
   | 'image' | 'file' | 'mic' | 'x' | 'check'
   | 'clock' | 'undo' | 'help' | 'location' | 'link' | 'refresh'
   | 'lock' | 'pin' | 'edit' | 'plus'
-  | 'arrow-left' | 'arrow-right' | 'inbox' | 'trash' | 'shield' | 'download' | 'chat' | 'bell'
+  | 'arrow-left' | 'arrow-right' | 'trend-up' | 'trend-down' | 'inbox' | 'trash' | 'shield' | 'download' | 'chat' | 'bell'
 
 export function EuIcon({ name, className = 'eu-icon' }: { name: EuIconName; className?: string }) {
   let body: ReactNode = null
@@ -128,6 +128,12 @@ export function EuIcon({ name, className = 'eu-icon' }: { name: EuIconName; clas
       break
     case 'arrow-right':
       body = <><path d="M5 12h14" /><path d="m14 7 5 5-5 5" /></>
+      break
+    case 'trend-up':
+      body = <><path d="M5 16.5 10 11l3.2 3.2L19 8.5" /><path d="M14.8 8.5H19v4.2" /></>
+      break
+    case 'trend-down':
+      body = <><path d="M5 8.5 10 14l3.2-3.2L19 16.5" /><path d="M14.8 16.5H19v-4.2" /></>
       break
     case 'inbox':
       body = <><path d="M4 5.5h16v13H4Z" /><path d="M4 13h4l1.8 2.3h4.4L16 13h4" /></>
