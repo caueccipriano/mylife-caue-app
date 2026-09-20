@@ -5633,7 +5633,7 @@ html[data-eu-discreet="1"] .ecosystem-insight p {
 /* Memories separation + advanced search */
 .memory-advanced-filters {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 7px;
   margin: 12px 0 14px;
 }
