@@ -3,6 +3,7 @@ import { nextFollowUpDate, saveRecord, updateRecord, type StoredAttachment } fro
 import { useRecords } from './appState'
 import { detectSensitiveContent, findSimilarRecords } from './lifeModel'
 import { haptic } from './securitySettings'
+import { EuIcon } from './v2Ui'
 
 type Props = {
   open: boolean
@@ -451,17 +452,25 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
               </div>
             )}
 
-            <div className="capture-tools" aria-label="Tipos de anexo">
-              <label>
-                Foto
+            <div className="capture-tools capture-tools-icons" aria-label="Tipos de anexo">
+              <label className="capture-tool">
+                <EuIcon name="image" />
+                <span>Foto</span>
                 <input type="file" accept="image/*" multiple onChange={(event) => addFiles(event, 'photo')} />
               </label>
-              <button type="button" onClick={() => setShowLink((current) => !current)}>Link</button>
-              <label>
-                Documento
+              <button className="capture-tool" type="button" onClick={() => setShowLink((current) => !current)}>
+                <EuIcon name="link" />
+                <span>Link</span>
+              </button>
+              <label className="capture-tool">
+                <EuIcon name="file" />
+                <span>Arquivo</span>
                 <input type="file" accept=".pdf,.doc,.docx,.txt,.xls,.xlsx,.csv,.ppt,.pptx" multiple onChange={(event) => addFiles(event, 'document')} />
               </label>
-              <button type="button" className={recording ? 'recording' : ''} onClick={toggleRecording}>{recording ? 'Parar áudio' : 'Áudio'}</button>
+              <button className={'capture-tool' + (recording ? ' recording' : '')} type="button" onClick={toggleRecording}>
+                <EuIcon name="mic" />
+                <span>{recording ? 'Parar' : 'Áudio'}</span>
+              </button>
             </div>
 
             {showLink && (
@@ -475,12 +484,14 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
               <div className="attachment-preview">
                 {attachments.map((attachment) => (
                   <div key={attachment.id}>
-                    <span>{attachment.kind === 'photo' ? '◫' : attachment.kind === 'audio' ? '◉' : attachment.kind === 'link' ? '↗' : '□'}</span>
+                    <span className="attachment-kind-icon">
+                      <EuIcon name={attachment.kind === 'photo' ? 'image' : attachment.kind === 'audio' ? 'mic' : attachment.kind === 'link' ? 'link' : 'file'} />
+                    </span>
                     <div>
                       <strong>{attachment.name}</strong>
                       <small>{attachment.url || humanSize(attachment.size)}</small>
                     </div>
-                    <button type="button" onClick={() => removeAttachment(attachment.id)}>×</button>
+                    <button className="attachment-remove" type="button" aria-label={'Remover ' + attachment.name} onClick={() => removeAttachment(attachment.id)}><EuIcon name="x" /></button>
                   </div>
                 ))}
               </div>
@@ -492,7 +503,7 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
                 <strong>{interpretation.area}</strong>
                 <p>{interpretation.detail}</p>
                 {interpretation.track && (
-                  <small className="followup-preview">↻ vou voltar nisso em {interpretation.followUpDays} dias</small>
+                  <small className="followup-preview"><EuIcon name="refresh" />vou voltar nisso em {interpretation.followUpDays} dias</small>
                 )}
               </div>
             )}
@@ -517,7 +528,7 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
                       <strong>{record.type} · {record.area}</strong>
                       <p>{record.text}</p>
                     </div>
-                    <small>{connectId === record.id ? 'conectado ✓' : Math.round(score * 100) + '% parecido · conectar'}</small>
+                    <small>{connectId === record.id ? 'conectado' : Math.round(score * 100) + '% parecido · conectar'}{connectId === record.id && <EuIcon name="check" />}</small>
                   </button>
                 ))}
               </div>
@@ -537,9 +548,11 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
 
             {error && <p className="inline-error">{error}</p>}
 
-            <button className="primary-button full" type="submit" disabled={(!value.trim() && !attachments.length) || saving || recording}>
-              {saving ? 'Guardando…' : 'Guardar no EU'}
-            </button>
+            <div className="capture-submit-bar">
+              <button className="primary-button full" type="submit" disabled={(!value.trim() && !attachments.length) || saving || recording}>
+                {saving ? 'Guardando…' : 'Guardar no EU'}
+              </button>
+            </div>
           </form>
         ) : (
           <div className="saved-state">
@@ -549,10 +562,10 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
             <div className="saved-meta">{saved.area}</div>
             {saved.track && <p className="saved-followup">Eu volto nisso com você. Sem precisar lembrar sozinho.</p>}
             <div className="saved-quick-actions">
-              <button onClick={() => void quickAfterSave({ favorite: true })}>♡ guardar bem</button>
-              <button onClick={() => void quickAfterSave({ pinned: true })}>⌖ fixar agora</button>
+              <button onClick={() => void quickAfterSave({ favorite: true })}><EuIcon name="heart" />guardar bem</button>
+              <button onClick={() => void quickAfterSave({ pinned: true })}><EuIcon name="location" />fixar agora</button>
               {!saved.track && (
-                <button onClick={() => void quickAfterSave({ status: 'active', followUpDays: 7, followUpAt: nextFollowUpDate(7) })}>↻ acompanhar</button>
+                <button onClick={() => void quickAfterSave({ status: 'active', followUpDays: 7, followUpAt: nextFollowUpDate(7) })}><EuIcon name="refresh" />acompanhar</button>
               )}
             </div>
             <button className="primary-button full" onClick={close}>Concluir</button>
