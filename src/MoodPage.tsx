@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { listMoodCheckins, type MoodValue } from './storage'
 import { useRecords } from './appState'
@@ -39,6 +39,11 @@ export default function MoodPage() {
   const byDate = useMemo(() => new Map(checkins.map((item) => [item.date, item])), [checkins])
   const days = useMemo(() => lastDays(365), [])
   const recent = checkins.slice(-30).reverse()
+  const [selectedDate, setSelectedDate] = useState<string | null>(null)
+  const selectedMood = selectedDate ? byDate.get(selectedDate) ?? null : null
+  const selectedRecords = selectedDate
+    ? records.filter((record) => record.createdAt.slice(0, 10) === selectedDate && !record.private && !record.trashedAt)
+    : []
 
   const counts = moods.map((mood) => ({
     ...mood,
@@ -70,15 +75,33 @@ export default function MoodPage() {
             {days.map((date) => {
               const item = byDate.get(key(date))
               return (
-                <div
+                <button
                   key={key(date)}
-                  className={'mood-day' + (item ? ' mood-day-' + item.mood : ' mood-day-empty')}
+                  className={'mood-day' + (item ? ' mood-day-' + item.mood : ' mood-day-empty') + (selectedDate === key(date) ? ' selected' : '')}
                   title={new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }).format(date) + (item ? ' · ' + moodLabel(item.mood) : ' · sem check-in')}
+                  aria-label={new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'long' }).format(date) + (item ? ', ' + moodLabel(item.mood) : ', sem check-in')}
+                  onClick={() => setSelectedDate(key(date))}
                 />
               )
             })}
           </div>
         </div>
+
+        {selectedDate && (
+          <div className="mood-day-detail">
+            <div>
+              <Tag tone={selectedMood?.mood === 'cansado' ? 'lilac' : selectedMood?.mood === 'pilhado' ? 'green' : selectedMood?.mood === 'animado' ? 'amber' : 'sky'}>
+                {selectedMood ? moodLabel(selectedMood.mood) : 'SEM CHECK-IN'}
+              </Tag>
+              <strong>{new Intl.DateTimeFormat('pt-BR', { weekday: 'long', day: '2-digit', month: 'long' }).format(new Date(selectedDate + 'T12:00:00'))}</strong>
+            </div>
+            {selectedRecords.length ? (
+              <div className="mood-day-records">
+                {selectedRecords.slice(0, 5).map((record) => <span key={record.id}>{record.type} · {record.text}</span>)}
+              </div>
+            ) : <small>Nenhum registro público entrou nesse dia.</small>}
+          </div>
+        )}
 
         <div className="mood-legend">
           <span><i className="mood-day mood-day-animado" /> bem</span>
