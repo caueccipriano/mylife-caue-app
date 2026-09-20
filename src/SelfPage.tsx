@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { deriveIdentityNow, deriveManifesto } from './lifeModel'
 import { useRecords } from './appState'
-import { BrandTop, SectionTitle, Tag, typeTone } from './v2Ui'
+import { BrandTop, EuIcon, SectionTitle, Tag, typeTone } from './v2Ui'
 
 export default function SelfPage() {
   const records = useRecords()
@@ -49,7 +49,7 @@ export default function SelfPage() {
             </NavLink>
           )) : (
             <div className="soft-empty wide">
-              <span>✦</span>
+              <span><EuIcon name="sparkles" /></span>
               <p>Conforme você registrar preferências e decisões, o EU começa a reconhecer frases que parecem princípios seus.</p>
             </div>
           )}
