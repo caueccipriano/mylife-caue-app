@@ -7,7 +7,7 @@ import { listChatInbox } from './chatInbox'
 export type Accent = 'coral' | 'green' | 'amber' | 'pink' | 'cobalt' | 'lilac' | 'lime' | 'wine' | 'sky' | 'ink' | 'muted'
 
 export type EuIconName =
-  | 'smile' | 'neutral' | 'moon' | 'bolt'
+  | 'smile' | 'neutral' | 'moon' | 'bolt' | 'sun' | 'compass'
   | 'heart' | 'arrow-up-right' | 'note'
   | 'search' | 'collections' | 'mood' | 'settings'
   | 'briefcase' | 'wallet' | 'book' | 'home'
@@ -32,6 +32,12 @@ export function EuIcon({ name, className = 'eu-icon' }: { name: EuIconName; clas
       break
     case 'bolt':
       body = <path d="M13.2 2.8 6.8 13h4.3l-.3 8.2L17.2 11h-4.3l.3-8.2Z" />
+      break
+    case 'sun':
+      body = <><circle cx="12" cy="12" r="3.6" /><path d="M12 2.5v2.1M12 19.4v2.1M2.5 12h2.1M19.4 12h2.1M5.3 5.3l1.5 1.5M17.2 17.2l1.5 1.5M18.7 5.3l-1.5 1.5M6.8 17.2l-1.5 1.5" /></>
+      break
+    case 'compass':
+      body = <><circle cx="12" cy="12" r="8.4" /><path d="m14.9 9.1-2 4-3.8 1.8 1.9-3.8Z" /></>
       break
     case 'heart':
       body = <path d="M12 20s-7.2-4.5-8.5-9.1C2.5 7.9 4.3 5.3 7.2 5.3c1.9 0 3.2 1 4.8 2.8 1.6-1.8 2.9-2.8 4.8-2.8 2.9 0 4.7 2.6 3.7 5.6C19.2 15.5 12 20 12 20Z" />
