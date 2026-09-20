@@ -211,7 +211,7 @@ export default function LifeLabPage() {
         </div>
       </section>
 
-      <section className="lab-block">
+      <section className="lab-block lab-radar-only">
         <SectionTitle eyebrow="RADAR DA MENTE" title="O que está ocupando espaço agora" />
         <div className="mind-radar" aria-label="Radar visual de assuntos">
           {radar.map((topic, index) => {
@@ -232,7 +232,7 @@ export default function LifeLabPage() {
         </div>
       </section>
 
-      <section className="lab-block">
+      <section className="lab-block lab-connections-only">
         <SectionTitle eyebrow="LIFE GRAPH" title="Como as coisas se conectam" />
         {graph.nodes.length ? (
           <div className="life-graph-wrap">
@@ -333,7 +333,7 @@ export default function LifeLabPage() {
         </div>
       </section>
 
-      <section className="lab-block">
+      <section className="lab-block lab-connections-only">
         <SectionTitle eyebrow="OBJETOS COM HISTÓRIA" title="Do desejo ao uso real" />
         <div className="object-history-grid">
           {objects.slice(0, 8).map(({ record, name, state }) => (
@@ -347,7 +347,7 @@ export default function LifeLabPage() {
         </div>
       </section>
 
-      <section className="lab-block">
+      <section className="lab-block lab-connections-only">
         <SectionTitle eyebrow="LUGARES" title="Onde a sua vida aconteceu" />
         <div className="place-grid">
           {places.map((place) => (
