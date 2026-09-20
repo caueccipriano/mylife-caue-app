@@ -5,6 +5,25 @@ import { decodeStarterPack, recordFromStarterItem } from './starterPack'
 import { mergePersonalProfile } from './profile'
 import { BrandTop, Tag } from './v2Ui'
 
+function similarity(a: string, b: string) {
+  const tokens = (value: string) => new Set(
+    value
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9\s]/g, ' ')
+      .split(/\s+/)
+      .filter((token) => token.length >= 3),
+  )
+
+  const left = tokens(a)
+  const right = tokens(b)
+  if (!left.size || !right.size) return 0
+  const intersection = [...left].filter((token) => right.has(token)).length
+  const union = new Set([...left, ...right]).size
+  return intersection / union
+}
+
 export default function StarterPackImportPage() {
   const location = useLocation()
   const navigate = useNavigate()
@@ -33,7 +52,13 @@ export default function StarterPackImportPage() {
         for (const item of pack.items) {
           const record = recordFromStarterItem(pack, item)
           const existingById = await getRecord(record.id)
-          const existing = existingById || existingBySemantic.get(semanticKey(record))
+          const exact = existingBySemantic.get(semanticKey(record))
+          const close = existingRecords.find((candidate) =>
+            candidate.type === record.type
+            && candidate.area === record.area
+            && similarity(candidate.text, record.text) >= .78,
+          )
+          const existing = existingById || exact || close
 
           if (existing) {
             if (record.attachments?.length) {
