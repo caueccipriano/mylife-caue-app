@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { NavLink, useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { groupTimeline, smartSearch } from './intelligence'
 import { isRecordVisibleForInsights, listMoodCheckins, suggestTags } from './storage'
 import { useRecords } from './appState'
