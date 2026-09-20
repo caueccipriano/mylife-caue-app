@@ -75,6 +75,11 @@ export default function MemoriesPage() {
     Boolean(moodFilter),
   ].filter(Boolean).length
 
+  function selectMode(value: 'search' | 'timeline') {
+    setMode(value)
+    localStorage.setItem('eu-memories-mode', value)
+  }
+
   function resetFilters() {
     setQuery('')
     setFilter('all')
