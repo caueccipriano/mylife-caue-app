@@ -21,17 +21,18 @@ export default function AreaPage() {
     )
   }
 
-  const items = records.filter((record) => isRecordVisibleForInsights(record) && record.area === definition.name)
+  const areaName = definition.name
+  const items = records.filter((record) => isRecordVisibleForInsights(record) && record.area === areaName)
   const active = items.filter((record) => record.status === 'active')
   const decisions = items.filter((record) => record.type === 'Decisão')
   const wants = items.filter((record) => ['Desejo','Pesquisa','Preferência'].includes(record.type))
   const completed = items.filter((record) => record.status === 'completed')
-  const inFocus = focus.includes(definition.name)
+  const inFocus = focus.includes(areaName)
 
   function toggleFocus() {
     const next = inFocus
-      ? focus.filter((area) => area !== definition.name)
-      : [...focus, definition.name].slice(-3)
+      ? focus.filter((area) => area !== areaName)
+      : [...focus, areaName].slice(-3)
     setFocusAreas(next)
     window.location.reload()
   }
