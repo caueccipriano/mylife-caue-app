@@ -10086,3 +10086,481 @@ button:disabled {
   display: grid;
   gap: 14px;
 }
+
+
+/* EU v12: secondary experiences and visual storytelling */
+/* Life snapshots: show change, not just totals. */
+.phase-stats article {
+  display: grid;
+  align-content: center;
+  gap: 3px;
+}
+
+.phase-stats article > small {
+  width: fit-content;
+  margin-top: 6px;
+  padding: 4px 6px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.58);
+  color: var(--muted);
+  font-size: 7px;
+  font-weight: 700;
+}
+
+.phase-stats article > small .eu-icon {
+  width: 11px;
+  height: 11px;
+}
+
+.phase-stats article > small.up { color: #16785f; }
+.phase-stats article > small.down { color: #a25b39; }
+.phase-stats article > small.same { color: var(--muted); }
+
+.phase-grid > article {
+  box-shadow: var(--shadow-soft);
+}
+
+.phase-card-top {
+  display: grid !important;
+  grid-template-columns: 34px auto 1fr;
+  justify-content: initial !important;
+  gap: 8px !important;
+}
+
+.phase-card-top > span:last-child {
+  justify-self: end;
+}
+
+.phase-card-icon {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: rgba(255,255,255,.58);
+  color: var(--cobalt) !important;
+}
+
+.phase-card-icon .eu-icon {
+  width: 15px;
+  height: 15px;
+}
+
+/* Current self: make the identity card feel like a real dashboard, not a text block. */
+.identity-card-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.identity-card-icon {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: rgba(255,255,255,.58);
+  color: var(--lilac);
+}
+
+.identity-card-icon .eu-icon {
+  width: 21px;
+  height: 21px;
+}
+
+.identity-mini-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 22px;
+}
+
+.identity-mini-stats article {
+  min-height: 88px;
+  padding: 12px;
+  display: grid;
+  align-content: end;
+  border: 1px solid rgba(255,255,255,.58);
+  border-radius: 16px;
+  background: rgba(255,255,255,.36);
+}
+
+.identity-mini-stats strong {
+  font-family: var(--serif);
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.identity-mini-stats span {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 8px;
+  line-height: 1.3;
+}
+
+.self-active-list article {
+  min-height: 74px;
+  padding: 13px 14px;
+  display: grid;
+  grid-template-columns: 34px minmax(0,1fr);
+  align-items: center;
+  gap: 11px;
+  box-shadow: 0 5px 16px rgba(24,36,59,.025);
+}
+
+.self-active-list article > span {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--lilac-soft);
+  color: var(--lilac);
+}
+
+.self-active-list article > span .eu-icon {
+  width: 15px;
+  height: 15px;
+}
+
+.self-active-list article div {
+  display: grid;
+  gap: 4px;
+}
+
+.self-active-list article small {
+  color: var(--faint);
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+
+.self-active-list article p {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.42;
+}
+
+/* Chapters get editorial anchors and correct download semantics. */
+.chapter-card {
+  position: relative;
+  box-shadow: var(--shadow-soft);
+}
+
+.chapter-card-top {
+  display: grid;
+  grid-template-columns: 40px auto 1fr;
+  align-items: center;
+  gap: 8px;
+}
+
+.chapter-card-top > small {
+  justify-self: end;
+  color: var(--muted);
+  font-size: 7px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.chapter-card-icon {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  background: rgba(255,255,255,.58);
+}
+
+.chapter-card-icon .eu-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.chapter-range {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.chapter-range .eu-icon {
+  width: 12px;
+  height: 12px;
+}
+
+.chapter-range > span {
+  color: var(--faint);
+}
+
+.chapter-export-button {
+  gap: 6px;
+}
+
+.chapter-export-button .eu-icon {
+  width: 14px;
+  height: 14px;
+}
+
+/* Wrapped: use proportion, hierarchy and visual rhythm instead of three isolated numbers. */
+.wrapped-hero-top button {
+  gap: 6px;
+}
+
+.wrapped-card-icon {
+  width: 34px;
+  height: 34px;
+  margin-bottom: 14px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  background: rgba(255,255,255,.58);
+}
+
+.wrapped-card-icon .eu-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.wrapped-card small {
+  margin-top: 0;
+}
+
+.wrapped-ranking article {
+  min-height: 78px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+  padding: 11px 0;
+}
+
+.wrapped-ranking-line {
+  display: grid;
+  grid-template-columns: 42px 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.wrapped-ranking-line > span {
+  color: var(--cobalt);
+  font-family: var(--serif);
+  font-size: 18px;
+}
+
+.wrapped-ranking-track {
+  height: 6px;
+  margin-left: 52px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(53,95,206,.09);
+}
+
+.wrapped-ranking-track > i {
+  height: 100%;
+  display: block;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--cobalt), var(--lilac));
+}
+
+/* Astrology: tabs and transits now match the rest of the app. */
+.astro-mode-switch button {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.astro-mode-switch button .eu-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.astro-mode-switch button[aria-selected="true"] {
+  color: var(--cobalt);
+}
+
+.astro-transit-strip {
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.astro-transit-strip article {
+  box-shadow: 0 5px 16px rgba(24,36,59,.025);
+}
+
+.astro-transit-symbol {
+  width: 40px;
+  height: 40px;
+  display: grid !important;
+  place-items: center;
+  margin-bottom: 13px !important;
+  border-radius: 13px;
+  background: var(--amber-soft);
+}
+
+/* Security: feedback should be recognizable without relying on punctuation. */
+.private-tags-editor button,
+.vault-security-row button,
+.security-backup-actions button,
+.security-backup-actions label {
+  gap: 6px;
+}
+
+.private-tags-editor button .eu-icon,
+.vault-security-row button .eu-icon,
+.security-backup-actions .eu-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.backup-warning {
+  display: grid;
+  grid-template-columns: 18px minmax(0,1fr);
+  align-items: start;
+  gap: 7px;
+  padding: 10px 11px;
+  border-radius: 13px;
+  background: var(--amber-soft);
+  color: #755313;
+  line-height: 1.4;
+}
+
+.backup-warning .eu-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.backup-security-meta strong {
+  min-height: 39px;
+  padding: 9px 11px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border-radius: 12px;
+  font-weight: 650;
+}
+
+.backup-security-meta strong .eu-icon {
+  width: 15px;
+  height: 15px;
+}
+
+.backup-security-meta strong.success {
+  background: var(--green-soft);
+  color: #16785f;
+}
+
+.backup-security-meta strong.notice {
+  background: var(--amber-soft);
+  color: #755313;
+}
+
+@media (max-width: 760px) {
+  .phase-card-top,
+  .chapter-card-top {
+    grid-template-columns: 36px auto 1fr;
+  }
+
+  .identity-mini-stats {
+    gap: 6px;
+  }
+
+  .wrapped-ranking-track {
+    margin-left: 48px;
+  }
+}
+
+@media (max-width: 430px) {
+  .phase-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .phase-stats article {
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .phase-stats article:last-child {
+    border-bottom: 0;
+  }
+
+  .phase-stats article > span {
+    grid-column: 1;
+  }
+
+  .phase-stats article > small {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    margin-top: 0;
+  }
+
+  .identity-mini-stats {
+    grid-template-columns: 1fr;
+  }
+
+  .identity-mini-stats article {
+    min-height: 68px;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    align-content: center;
+    gap: 10px;
+  }
+
+  .identity-mini-stats span {
+    margin-top: 0;
+  }
+
+  .chapter-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chapter-card {
+    min-height: auto;
+  }
+
+  .wrapped-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .wrapped-card {
+    min-height: 112px;
+    display: grid;
+    grid-template-columns: 36px 1fr auto;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .wrapped-card-icon {
+    margin-bottom: 0;
+  }
+
+  .wrapped-card small {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .wrapped-card strong {
+    grid-column: 3;
+    grid-row: 1 / span 2;
+    margin-top: 0;
+    font-size: 38px;
+  }
+
+  .wrapped-card > span:last-child {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .astro-mode-switch {
+    width: 100%;
+  }
+
+  .astro-mode-switch button {
+    flex: 1;
+    justify-content: center;
+  }
+}
