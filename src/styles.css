@@ -9519,3 +9519,24 @@ button:disabled {
 .continue-card {
   box-shadow: var(--shadow-soft);
 }
+
+
+/* EU v9.3: calm-day control */
+.simple-day-toggle {
+  min-height: 36px;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 11px;
+  background: rgba(255,255,255,.52);
+}
+
+.simple-day-toggle .eu-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.simple-day-toggle[aria-pressed="true"] {
+  background: var(--cobalt-soft);
+}
