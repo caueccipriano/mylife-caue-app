@@ -151,13 +151,13 @@ export default function LifePage() {
               const recent = recentByArea(area.name)
               const count = visibleRecords.filter((record) => record.area === area.name).length
               return (
-                <article className={'life-area area-semantic-' + area.id} key={area.id}>
+                <NavLink className={'life-area area-semantic-' + area.id} key={area.id} to={'/vida/area/' + area.id}>
                   <span>{['↗','●','≡','⌂','✦','□','◌','· · ·'][index]}</span>
                   <strong>{area.name}</strong>
                   <p>{recent[0]?.text || area.now}</p>
                   <small>{count ? count + ' registros' : area.status}</small>
                   {focusAreas.includes(area.name) && <Tag tone="cobalt">FOCO</Tag>}
-                </article>
+                </NavLink>
               )
             })}
           </div>
