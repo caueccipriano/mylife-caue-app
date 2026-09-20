@@ -329,9 +329,10 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
               )}
             </article>
           )) : (
-            <div className="soft-empty">
+            <div className="soft-empty today-empty">
               <span><EuIcon name="note" /></span>
               <p>Ainda está quieto por aqui hoje. Registre qualquer coisa do seu jeito.</p>
+              <button onClick={onRegister}><EuIcon name="plus" />registrar algo</button>
             </div>
           )}
         </div>
