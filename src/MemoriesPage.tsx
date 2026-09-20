@@ -11,8 +11,12 @@ export default function MemoriesPage() {
   const navigate = useNavigate()
   const [mode, setMode] = useState<'search' | 'timeline'>('search')
   const [query, setQuery] = useState('')
-  const [filter, setFilter] = useState(params.get('origem') === 'chatgpt' ? 'chatgpt' : 'all')
+  const initialCollection = params.get('colecao') || ''
+  const [filter, setFilter] = useState(params.get('origem') === 'chatgpt' ? 'chatgpt' : initialCollection === 'favorites' ? 'favorites' : initialCollection === 'chat' ? 'chatgpt' : 'all')
   const [tagFilter, setTagFilter] = useState(params.get('tag') || '')
+  const [areaFilter, setAreaFilter] = useState('')
+  const [statusFilter, setStatusFilter] = useState(initialCollection === 'pinned' ? 'pinned' : initialCollection === 'completed' ? 'completed' : '')
+  const [periodFilter, setPeriodFilter] = useState<'all' | '30' | '90' | '365'>('all')
   const [message, setMessage] = useState('')
   const moods = listMoodCheckins().slice(-14).reverse()
 
@@ -36,9 +40,22 @@ export default function MemoriesPage() {
 
       const tags = record.tags?.length ? record.tags : suggestTags(record.text, record.area, record.type)
       const tagOk = !tagFilter || tags.includes(tagFilter)
-      return sourceOk && tagOk
+      const areaOk = !areaFilter || record.area === areaFilter
+      const statusOk = !statusFilter
+        || (statusFilter === 'pinned' && record.pinned)
+        || (statusFilter === 'active' && record.status === 'active')
+        || (statusFilter === 'completed' && record.status === 'completed')
+        || (statusFilter === 'paused' && record.status === 'paused')
+      const periodOk = periodFilter === 'all'
+        || new Date(record.createdAt).getTime() >= Date.now() - Number(periodFilter) * 86400000
+      const collectionOk = !initialCollection
+        || !['wishes','decisions','links'].includes(initialCollection)
+        || (initialCollection === 'wishes' && ['Desejo','Pesquisa','Preferência'].includes(record.type))
+        || (initialCollection === 'decisions' && record.type === 'Decisão')
+        || (initialCollection === 'links' && (record.attachments ?? []).some((attachment) => attachment.kind === 'link'))
+      return sourceOk && tagOk && areaOk && statusOk && periodOk && collectionOk
     })
-  }, [records, query, filter, tagFilter])
+  }, [records, query, filter, tagFilter, areaFilter, statusFilter, periodFilter, initialCollection])
 
   const timeline = useMemo(() => groupTimeline(filtered), [filtered])
 
@@ -115,6 +132,12 @@ export default function MemoriesPage() {
         <p>Decisões, desejos, cursos, conversas, referências e coisas que você nem lembrava que tinha guardado.</p>
       </header>
 
+      <nav className="memory-section-nav" aria-label="Seções de Memórias">
+        <button className="active">⌕ Buscar</button>
+        <button onClick={() => navigate('/memorias/colecoes')}>▦ Coleções</button>
+        <button onClick={() => navigate('/memorias/humor')}>◉ Humor</button>
+      </nav>
+
       <button className="ask-eu-entry" onClick={() => navigate('/pergunte')}>
         <div>
           <Tag tone="ink">PERGUNTE AO EU</Tag>
@@ -153,6 +176,35 @@ export default function MemoriesPage() {
         ].map(([value, label]) => (
           <button key={value} className={filter === value ? 'active' : ''} onClick={() => setFilter(value)}>{label}</button>
         ))}
+      </div>
+
+      <div className="memory-advanced-filters">
+        <label>
+          <span>Área</span>
+          <select value={areaFilter} onChange={(event) => setAreaFilter(event.target.value)}>
+            <option value="">Todas</option>
+            {['Carreira','Dinheiro','Estudos','Casa','Viagens','Compras','Lazer','Pessoal'].map((area) => <option key={area}>{area}</option>)}
+          </select>
+        </label>
+        <label>
+          <span>Estado</span>
+          <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value)}>
+            <option value="">Todos</option>
+            <option value="pinned">Fixados</option>
+            <option value="active">Em movimento</option>
+            <option value="completed">Concluídos</option>
+            <option value="paused">Pausados</option>
+          </select>
+        </label>
+        <label>
+          <span>Período</span>
+          <select value={periodFilter} onChange={(event) => setPeriodFilter(event.target.value as 'all' | '30' | '90' | '365')}>
+            <option value="all">Todo o tempo</option>
+            <option value="30">30 dias</option>
+            <option value="90">90 dias</option>
+            <option value="365">1 ano</option>
+          </select>
+        </label>
       </div>
 
       {topTags.length > 0 && (
@@ -199,10 +251,10 @@ export default function MemoriesPage() {
 
       {moods.length > 0 && (
         <section className="memory-moods">
-          <SectionTitle eyebrow="COMO VOCÊ CHEGOU" title="Últimos check-ins" />
+          <SectionTitle eyebrow="HUMOR" title="Um preview do seu histórico" action={<button className="quiet-link" onClick={() => navigate('/memorias/humor')}>ver heatmap ↗</button>} />
           <div className="mood-history">
             {moods.map((item) => (
-              <article key={item.date}>
+              <article key={item.date} className={'mood-history-' + item.mood}>
                 <span>{item.mood === 'animado' ? '☺' : item.mood === 'ok' ? '◡' : item.mood === 'cansado' ? '–' : '↟'}</span>
                 <small>{new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short' }).format(new Date(item.date + 'T12:00:00'))}</small>
               </article>
