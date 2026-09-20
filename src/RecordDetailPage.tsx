@@ -607,9 +607,9 @@ export default function RecordDetailPage() {
               <span>Anexos</span>
               {editAttachments.map((attachment) => (
                 <div key={attachment.id}>
-                  <b>{attachmentIcon(attachment)}</b>
+                  <b><EuIcon name={attachmentIcon(attachment)} /></b>
                   <div><strong>{attachment.name}</strong><small>{attachment.kind}</small></div>
-                  <button type="button" onClick={() => setEditAttachments((current) => current.filter((item) => item.id !== attachment.id))}>remover</button>
+                  <button type="button" onClick={() => setEditAttachments((current) => current.filter((item) => item.id !== attachment.id))}><EuIcon name="x" />remover</button>
                 </div>
               ))}
             </div>
@@ -707,13 +707,13 @@ export default function RecordDetailPage() {
                   addTag()
                 }
               }} />
-              <button type="button" onClick={addTag}>Adicionar</button>
+              <button type="button" onClick={addTag}><EuIcon name="plus" />Adicionar</button>
             </div>
           </div>
 
           <div className="record-edit-actions">
-            <button type="submit" disabled={saving}>{saving ? 'Salvando…' : 'Salvar alterações'}</button>
-            <button type="button" onClick={() => setEditing(false)}>Cancelar</button>
+            <button type="submit" disabled={saving}><EuIcon name="check" />{saving ? 'Salvando…' : 'Salvar alterações'}</button>
+            <button type="button" onClick={() => setEditing(false)}><EuIcon name="x" />Cancelar</button>
           </div>
         </form>
       )}
