@@ -13,7 +13,7 @@ export type EuIconName =
   | 'plane' | 'bag' | 'sparkles' | 'user'
 
 export function EuIcon({ name, className = 'eu-icon' }: { name: EuIconName; className?: string }) {
-  let body: ReactNode
+  let body: ReactNode = null
 
   switch (name) {
     case 'smile':
