@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { deriveChapters } from './lifeModel'
 import { useRecords } from './appState'
-import { BrandTop, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
+import { BrandTop, EuIcon, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
 import { downloadEditorialHtml } from './v3Life'
 
 export default function ChaptersPage() {
@@ -34,7 +34,7 @@ export default function ChaptersPage() {
                 'eu-capitulo-' + chapter.id.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.html',
               )}
             >
-              exportar capítulo ↗
+              exportar capítulo <EuIcon name="arrow-up-right" />
             </button>
             <div className="chapter-preview">
               {chapter.records.slice(-3).reverse().map((record) => (
@@ -49,7 +49,7 @@ export default function ChaptersPage() {
 
         {!chapters.length && (
           <div className="soft-empty wide">
-            <span>↗</span>
+            <span><EuIcon name="collections" /></span>
             <p>Capítulos aparecem quando um assunto se repete ao longo do tempo ou quando você liga registros ao mesmo capítulo.</p>
           </div>
         )}
