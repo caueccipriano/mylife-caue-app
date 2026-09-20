@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom'
 import { groupTimeline, smartSearch } from './intelligence'
 import { isRecordVisibleForInsights, listMoodCheckins, suggestTags } from './storage'
 import { useRecords } from './appState'
-import { BrandTop, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
+import { BrandTop, EuIcon, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
 
 export default function MemoriesPage() {
   const records = useRecords()
@@ -66,9 +66,12 @@ export default function MemoriesPage() {
     const tags = record.tags?.length ? record.tags : suggestTags(record.text, record.area, record.type)
     const sealedCapsule = Boolean(record.revealAt && !record.capsuleOpenedAt && new Date(record.revealAt).getTime() > Date.now())
 
+    const iconTone = record.favorite ? 'pink' : record.source === 'chatgpt' ? 'ink' : typeTone(record.type)
+    const iconName = record.favorite ? 'heart' : record.source === 'chatgpt' ? 'arrow-up-right' : 'note'
+
     return (
       <article className="tappable-card" onClick={() => navigate('/registro/' + record.id)}>
-        <div className="memory-icon">{record.favorite ? '♥' : record.source === 'chatgpt' ? '↗' : '•'}</div>
+        <div className={'memory-icon memory-icon-' + iconTone}><EuIcon name={iconName} /></div>
         <div>
           {record.private ? (
             <>
@@ -114,10 +117,10 @@ export default function MemoriesPage() {
       </header>
 
       <nav className="memory-section-nav" aria-label="Seções de Memórias">
-        <button className="active">⌕ Buscar</button>
-        <button onClick={() => navigate('/memorias/colecoes')}>▦ Coleções</button>
-        <button onClick={() => navigate('/memorias/humor')}>◉ Humor</button>
-        <button onClick={() => navigate('/seguranca')}>⚙ Ajustes</button>
+        <button className="active"><EuIcon name="search" />Buscar</button>
+        <button onClick={() => navigate('/memorias/colecoes')}><EuIcon name="collections" />Coleções</button>
+        <button onClick={() => navigate('/memorias/humor')}><EuIcon name="mood" />Humor</button>
+        <button onClick={() => navigate('/seguranca')}><EuIcon name="settings" />Ajustes</button>
       </nav>
 
       <button className="ask-eu-entry" onClick={() => navigate('/pergunte')}>
@@ -130,13 +133,13 @@ export default function MemoriesPage() {
       </button>
 
       <div className="memory-mode-switch">
-        <button className={mode === 'search' ? 'active' : ''} onClick={() => setMode('search')}>⌕ Buscar</button>
-        <button className={mode === 'timeline' ? 'active' : ''} onClick={() => setMode('timeline')}>↕ Linha do tempo</button>
+        <button className={mode === 'search' ? 'active' : ''} onClick={() => setMode('search')}><EuIcon name="search" />Buscar</button>
+        <button className={mode === 'timeline' ? 'active' : ''} onClick={() => setMode('timeline')}><EuIcon name="note" />Linha do tempo</button>
       </div>
 
       {mode === 'search' && (
         <div className="memory-search">
-          <span>⌕</span>
+          <span><EuIcon name="search" /></span>
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
@@ -247,7 +250,7 @@ export default function MemoriesPage() {
           <div className="mood-history">
             {moods.map((item) => (
               <article key={item.date} className={'mood-history-' + item.mood}>
-                <span>{item.mood === 'animado' ? '☺' : item.mood === 'ok' ? '◡' : item.mood === 'cansado' ? '–' : '↟'}</span>
+                <span><EuIcon name={item.mood === 'animado' ? 'smile' : item.mood === 'ok' ? 'neutral' : item.mood === 'cansado' ? 'moon' : 'bolt'} /></span>
                 <small>{new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short' }).format(new Date(item.date + 'T12:00:00'))}</small>
               </article>
             ))}
