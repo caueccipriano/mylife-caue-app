@@ -11306,3 +11306,332 @@ button {
     background: var(--card);
   }
 }
+
+
+/* EU v17: Y2K fashion pop */
+:root {
+  --display-bubble: 'Bowlby One SC', 'Arial Rounded MT Bold', ui-rounded, sans-serif;
+  --display-wide: 'Unbounded', 'Avenir Next', ui-sans-serif, sans-serif;
+
+  --paper: #fbf7ef;
+  --card: #fffdf9;
+  --ink: #1d2340;
+  --muted: #74778b;
+  --faint: #a3a6b4;
+
+  --cobalt: #2f56ff;
+  --cobalt-soft: #e9edff;
+  --lilac: #8f63ff;
+  --lilac-soft: #f0eaff;
+  --sky: #35cce8;
+  --sky-soft: #e1f9ff;
+  --green: #70b94d;
+  --green-soft: #effbdc;
+  --amber: #ffc33d;
+  --amber-soft: #fff3bf;
+  --pink: #ff4fb3;
+  --pink-soft: #ffe5f4;
+  --coral: #ff7f66;
+  --coral-soft: #ffe6df;
+
+  --acid: #d8ff3f;
+  --cyan: #46ddff;
+  --hot-pink: #ff4fb3;
+  --electric-violet: #8e62ff;
+  --chrome: #dbe2f0;
+
+  --shadow-soft: 0 12px 32px rgba(38,49,105,.065);
+  --shadow-float: 0 18px 48px rgba(47,86,255,.15);
+}
+
+/* Hero typography: deliberately chunky, rounded and fashion-Y2K. */
+.v2-hero h1,
+.today-hello h1,
+.record-detail-hero h1,
+.career-hero-v2 h1,
+.ask-eu-hero h1,
+.life-lab-hero h1,
+.self-hero h1,
+.astrology-hero h1,
+.wrapped-hero h1 {
+  font-family: var(--display-bubble);
+  font-weight: 400;
+  letter-spacing: -.055em;
+  line-height: .93;
+}
+
+/* Supporting headings stay futuristic/editorial instead of cartoonish. */
+.v2-section-title h2,
+.daily-brief-card h2,
+.mood-heatmap-head h2,
+.mood-insight-panel h2,
+.collection-v2 h2,
+.collection-card > strong,
+.plan-card h3,
+.pattern-card h3,
+.followup-card h3,
+.memory-list h3,
+.weekly-story-card > p,
+.review-card h2,
+.record-section-heading h2,
+.life-list-card h3,
+.area-hero h1,
+.discovery-feature h2 {
+  font-family: var(--display-wide);
+  letter-spacing: -.035em;
+}
+
+.v2-section-title > div > span,
+.v2-tag,
+.v2-brand span,
+.v2-top-note,
+.memory-filters button,
+.memory-tag-strip button,
+.bottom-nav-icon-wrap + small,
+.today-view-tabs button,
+.life-view-tabs button,
+.discovery-view-tabs button,
+.memory-section-nav a,
+.lab-view-tabs button {
+  font-family: var(--display-wide);
+}
+
+.v2-tag,
+.v2-section-title > div > span,
+.v2-brand span {
+  letter-spacing: .065em;
+}
+
+/* Brand gets a louder 2000s magazine masthead feel. */
+.v2-brand strong {
+  font-family: var(--display-bubble);
+  font-weight: 400;
+  letter-spacing: -.08em;
+  background:
+    linear-gradient(120deg, var(--cobalt) 0 34%, var(--electric-violet) 56%, var(--hot-pink) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 6px 14px rgba(47,86,255,.16));
+}
+
+/* Background: restrained translucent Y2K bubbles. */
+body {
+  background:
+    radial-gradient(circle at 4% 4%, rgba(70,221,255,.15), transparent 20rem),
+    radial-gradient(circle at 96% 18%, rgba(255,79,179,.10), transparent 22rem),
+    radial-gradient(circle at 78% 72%, rgba(216,255,63,.07), transparent 25rem),
+    radial-gradient(circle at 12% 88%, rgba(142,98,255,.09), transparent 27rem),
+    var(--paper);
+}
+
+/* A tiny chrome/candy highlight on the main top chrome. */
+.v2-topbar {
+  background:
+    linear-gradient(180deg, rgba(251,247,239,.96), rgba(251,247,239,.78));
+  box-shadow:
+    0 1px 0 rgba(255,255,255,.72),
+    0 8px 26px rgba(42,49,89,.035);
+}
+
+.top-icon-action:nth-of-type(1) {
+  color: var(--electric-violet);
+  background: linear-gradient(145deg, #f3efff, #ece8ff);
+}
+
+.top-icon-action:nth-of-type(2) {
+  color: #266d87;
+  background: linear-gradient(145deg, #effcff, #e3f8ff);
+}
+
+.top-icon-action:nth-of-type(3) {
+  color: #b72978;
+  background: linear-gradient(145deg, #fff0f8, #ffe7f4);
+}
+
+/* Color system: stronger Y2K candy accents, still readable. */
+.tag-cobalt { color: #2344c8; background: #e7ecff; }
+.tag-lilac { color: #6845cf; background: #eee7ff; }
+.tag-pink { color: #b32975; background: #ffe4f3; }
+.tag-sky { color: #1c6e87; background: #dcf7ff; }
+.tag-green { color: #55771c; background: #effbdc; }
+.tag-amber { color: #8d6500; background: #fff0b7; }
+.tag-coral { color: #a64734; background: #ffe2da; }
+
+.memory-icon-cobalt { color: #2344c8; background: #e7ecff; }
+.memory-icon-lilac { color: #6845cf; background: #eee7ff; }
+.memory-icon-pink { color: #b32975; background: #ffe4f3; }
+.memory-icon-sky { color: #1c6e87; background: #dcf7ff; }
+.memory-icon-green { color: #55771c; background: #effbdc; }
+.memory-icon-amber { color: #8d6500; background: #fff0b7; }
+.memory-icon-coral { color: #a64734; background: #ffe2da; }
+
+/* Main brief feels like a glossy early-2000s magazine card. */
+.daily-brief-card {
+  background:
+    radial-gradient(circle at 92% 0%, rgba(255,79,179,.17), transparent 8.8rem),
+    radial-gradient(circle at 75% 36%, rgba(70,221,255,.12), transparent 11rem),
+    linear-gradient(145deg, rgba(255,255,255,.92), rgba(234,238,255,.72));
+}
+
+.daily-brief-card::after {
+  border-color: rgba(70,221,255,.28);
+  box-shadow:
+    inset 0 0 40px rgba(255,255,255,.26),
+    0 0 30px rgba(142,98,255,.08);
+}
+
+/* Life / discovery / memory accents alternate like a Y2K editorial spread. */
+.area-grid-v4 .life-area:nth-child(4n+1),
+.pattern-card:nth-child(4n+1),
+.collection-card:nth-child(4n+1) {
+  background:
+    linear-gradient(145deg, rgba(232,237,255,.90), rgba(255,255,255,.64));
+}
+
+.area-grid-v4 .life-area:nth-child(4n+2),
+.pattern-card:nth-child(4n+2),
+.collection-card:nth-child(4n+2) {
+  background:
+    linear-gradient(145deg, rgba(255,229,244,.88), rgba(255,255,255,.64));
+}
+
+.area-grid-v4 .life-area:nth-child(4n+3),
+.pattern-card:nth-child(4n+3),
+.collection-card:nth-child(4n+3) {
+  background:
+    linear-gradient(145deg, rgba(225,249,255,.92), rgba(255,255,255,.64));
+}
+
+.area-grid-v4 .life-area:nth-child(4n),
+.pattern-card:nth-child(4n),
+.collection-card:nth-child(4n) {
+  background:
+    linear-gradient(145deg, rgba(239,251,220,.90), rgba(255,255,255,.64));
+}
+
+/* Bottom nav: silver translucent dock with candy active states. */
+.v2-bottom-nav {
+  border-color: rgba(74,83,126,.10);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.80), rgba(241,244,250,.70));
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.96),
+    0 16px 42px rgba(38,49,105,.12);
+}
+
+.v2-bottom-nav a:nth-child(1).active .bottom-nav-icon-wrap {
+  background: linear-gradient(145deg, #e6faff, #d8f5ff);
+  color: #17718b;
+}
+
+.v2-bottom-nav a:nth-child(2).active .bottom-nav-icon-wrap {
+  background: linear-gradient(145deg, #efffd4, #e4f9c3);
+  color: #567d1c;
+}
+
+.v2-bottom-nav a:nth-child(3).active .bottom-nav-icon-wrap {
+  background: linear-gradient(145deg, #fff0f8, #ffe1f2);
+  color: #b02774;
+}
+
+.v2-bottom-nav a:nth-child(4).active .bottom-nav-icon-wrap {
+  background: linear-gradient(145deg, #f1ebff, #e8e1ff);
+  color: #6546c8;
+}
+
+/* Register button becomes the blue-violet candy orb. */
+.global-register-pill.compact {
+  background:
+    radial-gradient(circle at 30% 18%, rgba(255,255,255,.58), transparent 28%),
+    linear-gradient(145deg, #5577ff 0%, #3156ff 45%, #8f63ff 78%, #ff4fb3 125%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.42),
+    0 15px 32px rgba(65,76,221,.30);
+}
+
+/* Mood = full Y2K candy palette */
+.mood-row button.mood-animado {
+  --mood-base: #d8ff3f;
+  --mood-active: #9dc916;
+  --mood-ink: #2b3a08;
+  --mood-active-ink: #233000;
+}
+
+.mood-row button.mood-ok {
+  --mood-base: #46ddff;
+  --mood-active: #16acd0;
+  --mood-ink: #124252;
+  --mood-active-ink: #123c4a;
+}
+
+.mood-row button.mood-cansado {
+  --mood-base: #a98cff;
+  --mood-active: #7659e5;
+  --mood-ink: #332460;
+  --mood-active-ink: #2b1b57;
+}
+
+.mood-row button.mood-pilhado {
+  --mood-base: #ff68bd;
+  --mood-active: #dc328f;
+  --mood-ink: #5c163d;
+  --mood-active-ink: #511033;
+}
+
+.mood-day-animado { background: #cbea35; }
+.mood-day-ok { background: #45cce9; }
+.mood-day-cansado { background: #9c82ef; }
+.mood-day-pilhado { background: #ef59aa; }
+
+.mood-summary-animado { background: #f2ffd0; }
+.mood-summary-ok { background: #ddf8ff; }
+.mood-summary-cansado { background: #eee8ff; }
+.mood-summary-pilhado { background: #ffe2f2; }
+
+.mood-history-animado { background: #f2ffd0 !important; }
+.mood-history-ok { background: #ddf8ff !important; }
+.mood-history-cansado { background: #eee8ff !important; }
+.mood-history-pilhado { background: #ffe2f2 !important; }
+
+/* Inputs and controls get a slightly metallic edge. */
+.capture-input,
+.record-edit-form textarea,
+.record-edit-form select,
+.link-capture input,
+.ask-eu-box,
+.memory-search,
+.memory-filter-panel {
+  border-color: rgba(108,119,161,.13);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.92),
+    0 8px 19px rgba(38,49,105,.04);
+}
+
+/* Keep the extreme display font focused on large headings only on small screens. */
+@media (max-width: 760px) {
+  .v2-hero h1,
+  .today-hello h1,
+  .record-detail-hero h1,
+  .career-hero-v2 h1 {
+    line-height: .95;
+  }
+
+  .v2-hero h1 {
+    font-size: clamp(40px, 11vw, 55px);
+  }
+
+  .today-hello h1 {
+    font-size: clamp(37px, 10vw, 46px);
+  }
+
+  .v2-section-title h2 {
+    font-size: 26px;
+    line-height: 1.08;
+  }
+
+  .daily-brief-card h2 {
+    font-size: 28px;
+    line-height: 1.04;
+  }
+}
