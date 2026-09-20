@@ -10014,3 +10014,20 @@ button:disabled {
 .mood-history {
   -webkit-overflow-scrolling: touch;
 }
+
+
+/* EU v10.6: mood confirmation */
+.mood-skip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.mood-skip.saved {
+  color: #16785f;
+}
+
+.mood-skip .eu-icon {
+  width: 12px;
+  height: 12px;
+}
