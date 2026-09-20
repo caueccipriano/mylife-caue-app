@@ -94,7 +94,7 @@ export default function StarterPackImportPage() {
 
         window.setTimeout(() => {
           if (active) navigate('/', { replace: true })
-        }, 1200)
+        }, 2400)
       } catch {
         if (!active) return
         setState('error')
@@ -118,8 +118,13 @@ export default function StarterPackImportPage() {
         <span className="starter-state-icon"><EuIcon name={state === 'done' ? 'check' : state === 'error' ? 'x' : 'refresh'} /></span>
         <h1>{state === 'done' ? 'Seu EU ganhou contexto.' : state === 'error' ? 'Algo não entrou.' : 'Montando seu EU.'}</h1>
         <p>{message}</p>
-        {state === 'done' && <small>{count ? 'Você vai para Hoje automaticamente.' : 'Nada foi duplicado.'}</small>}
-        {state === 'error' && <button onClick={() => navigate('/', { replace: true })}>Voltar ao EU</button>}
+        {state === 'done' && (
+          <div className="starter-done-actions">
+            <small>{count ? 'Você vai para Hoje automaticamente.' : 'Nada foi duplicado.'}</small>
+            <button onClick={() => navigate('/', { replace: true })}>Ir para Hoje <EuIcon name="arrow-right" /></button>
+          </div>
+        )}
+        {state === 'error' && <button onClick={() => navigate('/', { replace: true })}><EuIcon name="arrow-left" />Voltar ao EU</button>}
       </section>
     </div>
   )
