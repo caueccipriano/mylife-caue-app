@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom'
 import type { RecordSource } from './storage'
 import { unreadEuNotifications } from './notifications'
 import { listChatInbox } from './chatInbox'
+import { haptic } from './securitySettings'
 
 export type Accent = 'coral' | 'green' | 'amber' | 'pink' | 'cobalt' | 'lilac' | 'lime' | 'wine' | 'sky' | 'ink' | 'muted'
 
@@ -189,20 +190,20 @@ export function BrandTop() {
 
   return (
     <header className="v2-topbar">
-      <NavLink to="/" className="v2-brand" aria-label="EU, Hoje">
+      <NavLink to="/" className="v2-brand" aria-label="EU, Hoje" onClick={() => haptic('light')}>
         <strong>EU</strong>
         <span>arquivo vivo</span>
       </NavLink>
       <div className="v2-top-actions">
         <span className="v2-top-note">mais vida, menos ruído</span>
-        <NavLink to="/pergunte" className="top-icon-action top-ask-action" aria-label="Pergunte ao EU">
+        <NavLink to="/pergunte" className="top-icon-action top-ask-action" aria-label="Pergunte ao EU" onClick={() => haptic('light')}>
           <EuIcon name="search" />
         </NavLink>
-        <NavLink to="/inbox" className="top-icon-action" aria-label={inboxCount ? inboxCount + ' entradas aguardando revisão' : 'Caixa do Chat'}>
+        <NavLink to="/inbox" className="top-icon-action" aria-label={inboxCount ? inboxCount + ' entradas aguardando revisão' : 'Caixa do Chat'} onClick={() => haptic('light')}>
           <EuIcon name="inbox" />
           {inboxCount > 0 && <b>{inboxCount > 9 ? '9+' : inboxCount}</b>}
         </NavLink>
-        <NavLink to="/notificacoes" className="top-icon-action" aria-label={unread ? unread + ' notificações não lidas' : 'Notificações'}>
+        <NavLink to="/notificacoes" className="top-icon-action" aria-label={unread ? unread + ' notificações não lidas' : 'Notificações'} onClick={() => haptic('light')}>
           <EuIcon name="bell" />
           {unread > 0 && <b>{unread > 9 ? '9+' : unread}</b>}
         </NavLink>
