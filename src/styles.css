@@ -10651,3 +10651,62 @@ button:disabled {
     font-size: 9px;
   }
 }
+
+
+/* EU v13.1: safer review and import flows */
+.chat-batch-actions a,
+.chat-batch-actions button {
+  gap: 6px;
+}
+
+.chat-batch-actions .eu-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.review-progress > span {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.review-progress > span strong {
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.review-progress > div {
+  overflow: hidden;
+}
+
+.starter-done-actions {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+}
+
+.starter-done-actions button,
+.starter-import-card > button {
+  min-height: 44px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--cobalt);
+  color: #fff;
+  cursor: pointer;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.starter-done-actions button .eu-icon,
+.starter-import-card > button .eu-icon {
+  width: 14px;
+  height: 14px;
+}
