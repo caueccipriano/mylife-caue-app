@@ -105,7 +105,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
       <section className="today-hello">
         <p>{dayLabel()}</p>
         <h1>{greeting()}{profile.displayName ? ', ' + profile.displayName : ''}</h1>
-        <span>como você tá hoje?</span>
+        <span>como tá seu humor hoje?</span>
       </section>
 
       <section className="mood-checkin" aria-label="Check-in do dia">
