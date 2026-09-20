@@ -9981,3 +9981,36 @@ button:disabled {
     top: calc(66px + env(safe-area-inset-top));
   }
 }
+
+
+/* EU v10.5: cleaner horizontal browsing */
+.continue-strip,
+.memory-filters,
+.memory-tag-strip,
+.mood-history,
+.auto-collections {
+  scroll-snap-type: x proximity;
+  overscroll-behavior-x: contain;
+}
+
+.continue-card,
+.memory-filters > button,
+.memory-tag-strip > button,
+.mood-history > article,
+.auto-collections > * {
+  scroll-snap-align: start;
+}
+
+.continue-card h3 {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 4;
+}
+
+.continue-strip,
+.memory-filters,
+.memory-tag-strip,
+.mood-history {
+  -webkit-overflow-scrolling: touch;
+}
