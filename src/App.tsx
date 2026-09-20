@@ -76,10 +76,10 @@ function NavIcon({ name }: { name: typeof nav[number]['icon'] }) {
 function AppShell({ onRegister }: { onRegister: () => void }) {
   const location = useLocation()
   const showRegister = ['/', '/vida', '/descobertas', '/memorias'].includes(location.pathname)
-  const [registerCompact, setRegisterCompact] = useState(false)
+  const [registerCompact, setRegisterCompact] = useState(() => location.pathname !== '/' || window.scrollY > 180)
 
   useEffect(() => {
-    const onScroll = () => setRegisterCompact(window.scrollY > 180)
+    const onScroll = () => setRegisterCompact(location.pathname !== '/' || window.scrollY > 180)
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
