@@ -11,7 +11,7 @@ export default function SelfPage() {
   return (
     <div className="v2-page self-page">
       <BrandTop />
-      <NavLink className="back-v2" to="/vida">← Vida</NavLink>
+      <NavLink className="back-v2" to="/vida"><EuIcon name="arrow-left" />Vida</NavLink>
 
       <header className="v2-hero self-hero">
         <Tag tone="lilac">QUEM EU SOU AGORA</Tag>
