@@ -158,7 +158,7 @@ export default function LifePage() {
         <section className="life-block life-view-section">
           <SectionTitle eyebrow="ÁREAS" title="Cada parte da sua vida, no lugar dela" />
           <div className="area-grid-v4">
-            {areas.map((area, index) => {
+            {areas.map((area) => {
               const recent = recentByArea(area.name)
               const count = visibleRecords.filter((record) => record.area === area.name).length
               return (
