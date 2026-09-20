@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { NavLink, useNavigate, useSearchParams } from 'react-router-dom'
 import { groupTimeline, smartSearch } from './intelligence'
 import { isRecordVisibleForInsights, listMoodCheckins, suggestTags } from './storage'
 import { useRecords } from './appState'
@@ -141,20 +141,20 @@ export default function MemoriesPage() {
       </header>
 
       <nav className="memory-section-nav" aria-label="Seções de Memórias">
-        <button className="active"><EuIcon name="search" />Buscar</button>
-        <button onClick={() => navigate('/memorias/colecoes')}><EuIcon name="collections" />Coleções</button>
-        <button onClick={() => navigate('/memorias/humor')}><EuIcon name="mood" />Humor</button>
-        <button onClick={() => navigate('/seguranca')}><EuIcon name="settings" />Ajustes</button>
+        <NavLink to="/memorias" end><EuIcon name="search" />Buscar</NavLink>
+        <NavLink to="/memorias/colecoes"><EuIcon name="collections" />Coleções</NavLink>
+        <NavLink to="/memorias/humor"><EuIcon name="mood" />Humor</NavLink>
+        <NavLink to="/seguranca"><EuIcon name="settings" />Ajustes</NavLink>
       </nav>
 
-      <button className="ask-eu-entry" onClick={() => navigate('/pergunte')}>
+      <NavLink className="ask-eu-entry" to="/pergunte">
         <div>
           <Tag tone="ink">PERGUNTE AO EU</Tag>
           <strong>“O que eu já falei sobre isso?”</strong>
           <span>Pergunte em linguagem natural e veja as fontes.</span>
         </div>
         <b><EuIcon name="arrow-up-right" /></b>
-      </button>
+      </NavLink>
 
       <div className="memory-mode-switch">
         <button className={mode === 'search' ? 'active' : ''} onClick={() => selectMode('search')}><EuIcon name="search" />Buscar</button>
