@@ -63,6 +63,7 @@ function AppShell({ onRegister }: { onRegister: () => void }) {
     <div className="eu-v2-shell">
       <RouteScrollMemory />
       <main className="eu-v2-main">
+        <div className="route-stage" key={location.pathname}>
         <Routes>
           <Route path="/" element={<TodayPage onRegister={onRegister} />} />
           <Route path="/vida" element={<LifePage />} />
@@ -97,6 +98,7 @@ function AppShell({ onRegister }: { onRegister: () => void }) {
           <Route path="/eu" element={<Navigate to="/vida" replace />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        </div>
       </main>
 
       {showRegister && (
@@ -120,6 +122,15 @@ function AppShell({ onRegister }: { onRegister: () => void }) {
 
 export default function App() {
   const [registerOpen, setRegisterOpen] = useState(false)
+  const [showSplash, setShowSplash] = useState(() => sessionStorage.getItem('eu-splash-v18-4') !== 'seen')
+
+  useEffect(() => {
+    if (!showSplash) return
+    sessionStorage.setItem('eu-splash-v18-4', 'seen')
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const timer = window.setTimeout(() => setShowSplash(false), reduceMotion ? 120 : 820)
+    return () => window.clearTimeout(timer)
+  }, [showSplash])
 
   useEffect(() => {
     applyDiscreetMode()
@@ -130,6 +141,16 @@ export default function App() {
 
   return (
     <>
+      {showSplash && (
+        <div className="eu-splash" aria-hidden="true">
+          <div className="eu-splash-orbit" />
+          <div className="eu-splash-mark">
+            <strong>EU</strong>
+            <i>✦</i>
+          </div>
+          <span>arquivo vivo</span>
+        </div>
+      )}
       <PhaseThemeSync />
       <NotificationRuleSync />
       <AppShell onRegister={() => setRegisterOpen(true)} />
