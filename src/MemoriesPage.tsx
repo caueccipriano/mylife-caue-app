@@ -3,7 +3,7 @@ import { NavLink, useNavigate, useSearchParams } from 'react-router-dom'
 import { groupTimeline, smartSearch } from './intelligence'
 import { isRecordVisibleForInsights, listMoodCheckins, suggestTags } from './storage'
 import { useRecords } from './appState'
-import { BrandTop, EuIcon, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
+import { BrandTop, EuIcon, SectionTitle, Tag, formatShortDate, typeIcon, typeTone } from './v2Ui'
 
 export default function MemoriesPage() {
   const records = useRecords()
@@ -96,7 +96,7 @@ export default function MemoriesPage() {
     const sealedCapsule = Boolean(record.revealAt && !record.capsuleOpenedAt && new Date(record.revealAt).getTime() > Date.now())
 
     const iconTone = record.favorite ? 'pink' : record.source === 'chatgpt' ? 'ink' : typeTone(record.type)
-    const iconName = record.favorite ? 'heart' : record.source === 'chatgpt' ? 'arrow-up-right' : 'note'
+    const iconName = record.favorite ? 'heart' : record.source === 'chatgpt' ? 'chat' : typeIcon(record.type)
 
     return (
       <article className={'tappable-card memory-record-card type-border-' + typeTone(record.type)} onClick={() => navigate('/registro/' + record.id)}>
