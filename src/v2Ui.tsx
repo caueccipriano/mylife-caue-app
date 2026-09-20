@@ -11,6 +11,8 @@ export type EuIconName =
   | 'search' | 'collections' | 'mood' | 'settings'
   | 'briefcase' | 'wallet' | 'book' | 'home'
   | 'plane' | 'bag' | 'sparkles' | 'user'
+  | 'image' | 'file' | 'mic' | 'x' | 'check'
+  | 'clock' | 'undo' | 'help' | 'location' | 'link' | 'refresh'
 
 export function EuIcon({ name, className = 'eu-icon' }: { name: EuIconName; className?: string }) {
   let body: ReactNode = null
@@ -72,6 +74,39 @@ export function EuIcon({ name, className = 'eu-icon' }: { name: EuIconName; clas
       break
     case 'user':
       body = <><circle cx="12" cy="8.2" r="3.4" /><path d="M5.3 20c.7-4 3-6 6.7-6s6 2 6.7 6" /></>
+      break
+    case 'image':
+      body = <><rect x="3.5" y="4.5" width="17" height="15" rx="2.3" /><circle cx="9" cy="9.2" r="1.6" /><path d="m6.2 17 4.1-4.3 2.8 2.7 2.2-2.1 2.5 3.7" /></>
+      break
+    case 'file':
+      body = <><path d="M6.3 3.5h7l4.4 4.4v12.6H6.3Z" /><path d="M13.3 3.5v4.4h4.4M9 12h6M9 15h6" /></>
+      break
+    case 'mic':
+      body = <><rect x="9" y="3.4" width="6" height="11.1" rx="3" /><path d="M6.7 11.3a5.3 5.3 0 0 0 10.6 0M12 16.6v4M8.8 20.6h6.4" /></>
+      break
+    case 'x':
+      body = <path d="M6.2 6.2 17.8 17.8M17.8 6.2 6.2 17.8" />
+      break
+    case 'check':
+      body = <path d="m5.2 12.3 4.2 4.2 9.4-9.4" />
+      break
+    case 'clock':
+      body = <><circle cx="12" cy="12" r="8.5" /><path d="M12 7.5v5l3.4 2" /></>
+      break
+    case 'undo':
+      body = <><path d="M8.2 8.5H3.8V4.1" /><path d="M4.2 8.3a8 8 0 1 1-.3 7.1" /></>
+      break
+    case 'help':
+      body = <><circle cx="12" cy="12" r="8.5" /><path d="M9.7 9a2.5 2.5 0 1 1 3.6 2.3c-1 .5-1.3 1-1.3 2M12 17.2h.01" /></>
+      break
+    case 'location':
+      body = <><path d="M12 21s6-5.7 6-11.2a6 6 0 1 0-12 0C6 15.3 12 21 12 21Z" /><circle cx="12" cy="9.8" r="2.2" /></>
+      break
+    case 'link':
+      body = <><path d="M9.6 14.4 7.9 16a3.2 3.2 0 0 1-4.5-4.5l2.8-2.8a3.2 3.2 0 0 1 4.5 0" /><path d="m14.4 9.6 1.7-1.6a3.2 3.2 0 0 1 4.5 4.5l-2.8 2.8a3.2 3.2 0 0 1-4.5 0M8.8 15.2l6.4-6.4" /></>
+      break
+    case 'refresh':
+      body = <><path d="M18.8 8.2V4.5h-3.7" /><path d="M18.3 7.2a7.7 7.7 0 1 0 1.1 8.7" /></>
       break
   }
 
