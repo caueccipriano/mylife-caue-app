@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { isRecordVisibleForInsights, suggestTags } from './storage'
 import { deriveEntities, detectPreferenceShifts, entitySlug } from './meaning'
@@ -29,6 +29,7 @@ function recommendation(records: ReturnType<typeof useRecords>) {
 
 export default function DiscoveriesPage() {
   const records = useRecords()
+  const [view, setView] = useState<'for-you' | 'library' | 'topics'>('for-you')
 
   const visibleRecords = records.filter(isRecordVisibleForInsights)
   const insights = visibleRecords.filter((record) => ['Insight', 'Ideia', 'Preferência'].includes(record.type)).slice(0, 8)
@@ -36,10 +37,10 @@ export default function DiscoveriesPage() {
     (record.attachments || [])
       .filter((attachment) => attachment.kind === 'link' && safeExternalUrl(attachment.url))
       .map((attachment) => ({ record, attachment, href: safeExternalUrl(attachment.url) as string })),
-  ).slice(0, 8)
+  ).slice(0, 12)
   const suggestions = useMemo(() => recommendation(visibleRecords), [records])
   const preferenceShifts = useMemo(() => detectPreferenceShifts(visibleRecords), [records])
-  const entities = useMemo(() => deriveEntities(visibleRecords).slice(0, 8), [records])
+  const entities = useMemo(() => deriveEntities(visibleRecords).slice(0, 12), [records])
   const collections = useMemo(() => {
     const grouped = new Map<string, typeof records>()
     visibleRecords.forEach((record) => {
@@ -50,11 +51,10 @@ export default function DiscoveriesPage() {
         grouped.set(tag, current)
       })
     })
-
     return [...grouped.entries()]
       .filter(([, items]) => items.length >= 2)
       .sort((a, b) => b[1].length - a[1].length)
-      .slice(0, 6)
+      .slice(0, 8)
   }, [records])
 
   return (
@@ -64,121 +64,118 @@ export default function DiscoveriesPage() {
       <header className="v2-hero discovery-hero">
         <Tag tone="amber">DESCOBERTAS</Tag>
         <h1>Coisas que<br />valem um segundo olhar.</h1>
-        <p>Links, insights, ideias e sugestões conectadas ao que anda aparecendo na sua vida.</p>
+        <p>O que o EU sugere, o que você salvou e os assuntos que continuam reaparecendo — cada coisa no seu lugar.</p>
       </header>
 
-      <section className="discovery-feature">
-        <span>✦</span>
-        <div>
-          <small>PARA VOCÊ</small>
-          <h2>{suggestions[0]}</h2>
-          <p>Uma direção sugerida a partir dos assuntos que mais apareceram nos seus registros recentes.</p>
-        </div>
-      </section>
+      <nav className="discovery-view-tabs" aria-label="Visões de Descobertas">
+        <button className={view === 'for-you' ? 'active' : ''} onClick={() => setView('for-you')}>Pra mim</button>
+        <button className={view === 'library' ? 'active' : ''} onClick={() => setView('library')}>Biblioteca</button>
+        <button className={view === 'topics' ? 'active' : ''} onClick={() => setView('topics')}>Assuntos</button>
+      </nav>
 
-      <section className="discovery-block">
-        <SectionTitle eyebrow="SAQUEI" title="Insights seus" />
-        <div className="discovery-grid">
-          {insights.length ? insights.map((record) => (
-            <NavLink className="discovery-card discovery-record-link tappable-card" key={record.id} to={'/registro/' + record.id}>
-              <Tag tone={typeTone(record.type)}>{record.type}</Tag>
-              <p>{record.text}</p>
-              <small>{record.area}</small>
-            </NavLink>
-          )) : (
-            <div className="soft-empty wide">
-              <span>✦</span>
-              <p>Quando você disser coisas como “saquei que…”, “percebi que…” ou guardar uma ideia, elas aparecem aqui.</p>
+      {view === 'for-you' && (
+        <>
+          <section className="discovery-feature">
+            <span>✦</span>
+            <div>
+              <small>PARA VOCÊ</small>
+              <h2>{suggestions[0]}</h2>
+              <p>Uma direção sugerida a partir dos assuntos que mais apareceram nos seus registros recentes.</p>
             </div>
-          )}
-        </div>
-      </section>
+          </section>
 
-      <section className="discovery-block">
-        <SectionTitle eyebrow="SALVEI" title="Links que você quis guardar" />
-        <div className="saved-link-list">
-          {savedLinks.length ? savedLinks.map(({ record, attachment, href }) => (
-            <a key={attachment.id} href={href} target="_blank" rel="noopener noreferrer">
-              <div>
-                <Tag tone="amber">LINK</Tag>
-                <strong>{attachment.name}</strong>
-                <p>{record.text || 'Referência salva'}</p>
+          <section className="discovery-block">
+            <SectionTitle eyebrow="SAQUEI" title="Insights seus" />
+            <div className="discovery-grid">
+              {insights.length ? insights.map((record) => (
+                <NavLink className="discovery-card discovery-record-link tappable-card" key={record.id} to={'/registro/' + record.id}>
+                  <Tag tone={typeTone(record.type)}>{record.type}</Tag>
+                  <p>{record.text}</p>
+                  <small>{record.area}</small>
+                </NavLink>
+              )) : (
+                <div className="soft-empty wide"><span>✦</span><p>Ideias, percepções e preferências aparecem aqui.</p></div>
+              )}
+            </div>
+          </section>
+
+          <section className="discovery-block">
+            <SectionTitle eyebrow="EXPLORAR" title="Talvez valha olhar isso" />
+            <div className="suggestion-stack">
+              {suggestions.slice(1).map((item, index) => (
+                <article key={item}>
+                  <span>0{index + 1}</span>
+                  <h3>{item}</h3>
+                  <p>Sugestão local baseada nos padrões recentes. Sem obrigação de abrir.</p>
+                </article>
+              ))}
+            </div>
+          </section>
+        </>
+      )}
+
+      {view === 'library' && (
+        <>
+          <section className="discovery-block">
+            <SectionTitle eyebrow="SALVEI" title="Links que você quis guardar" />
+            <div className="saved-link-list">
+              {savedLinks.length ? savedLinks.map(({ record, attachment, href }) => (
+                <a key={attachment.id} href={href} target="_blank" rel="noopener noreferrer">
+                  <div><Tag tone="amber">LINK</Tag><strong>{attachment.name}</strong><p>{record.text || 'Referência salva'}</p></div>
+                  <span>↗</span>
+                </a>
+              )) : <p className="muted-copy">Ainda não há links salvos.</p>}
+            </div>
+          </section>
+
+          {collections.length > 0 && (
+            <section className="discovery-block">
+              <SectionTitle eyebrow="COLEÇÕES" title="O EU juntou pra você" />
+              <div className="auto-collections">
+                {collections.map(([tag, items], index) => (
+                  <NavLink key={tag} to={'/assunto/' + entitySlug(tag)} className={'collection-card collection-' + (index % 4)}>
+                    <span>#{tag}</span><strong>{items.length} coisas conectadas</strong><p>{items[0]?.text}</p><b>ver coleção ↗</b>
+                  </NavLink>
+                ))}
               </div>
-              <span>↗</span>
-            </a>
-          )) : <p className="muted-copy">Ainda não há links salvos. No Registrar, você poderá colar um link e deixar o EU guardar o contexto junto.</p>}
-        </div>
-      </section>
-
-      {preferenceShifts.length > 0 && (
-        <section className="discovery-block">
-          <SectionTitle eyebrow="VOCÊ MUDOU DE IDEIA?" title="Seu gosto também evolui" />
-          <div className="preference-shifts">
-            {preferenceShifts.map((shift) => (
-              <article key={shift.id}>
-                <div className="preference-shift-head">
-                  <Tag tone="pink">#{shift.topic}</Tag>
-                  <span>{shift.explicit ? 'mudança explícita' : 'evolução percebida'}</span>
-                </div>
-                <div className="before-after">
-                  <NavLink to={'/registro/' + shift.previous.id}>
-                    <small>ANTES</small>
-                    <p>{shift.previous.text}</p>
-                  </NavLink>
-                  <b>→</b>
-                  <NavLink to={'/registro/' + shift.current.id}>
-                    <small>AGORA</small>
-                    <p>{shift.current.text}</p>
-                  </NavLink>
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
+            </section>
+          )}
+        </>
       )}
 
-      {entities.length > 0 && (
-        <section className="discovery-block">
-          <SectionTitle eyebrow="ASSUNTOS VIVOS" title="Coisas que ganharam uma página própria" />
-          <div className="entity-cloud">
-            {entities.map((entity, index) => (
-              <NavLink key={entity.slug} to={'/assunto/' + entity.slug} className={'entity-chip entity-chip-' + (index % 4)}>
-                <strong>{entity.label}</strong>
-                <span>{entity.count} conexões</span>
-              </NavLink>
-            ))}
-          </div>
-        </section>
-      )}
+      {view === 'topics' && (
+        <>
+          {preferenceShifts.length > 0 && (
+            <section className="discovery-block">
+              <SectionTitle eyebrow="VOCÊ MUDOU DE IDEIA?" title="Seu gosto também evolui" />
+              <div className="preference-shifts">
+                {preferenceShifts.map((shift) => (
+                  <article key={shift.id}>
+                    <div className="preference-shift-head"><Tag tone="lilac">#{shift.topic}</Tag><span>{shift.explicit ? 'mudança explícita' : 'evolução percebida'}</span></div>
+                    <div className="before-after">
+                      <NavLink to={'/registro/' + shift.previous.id}><small>ANTES</small><p>{shift.previous.text}</p></NavLink>
+                      <b>→</b>
+                      <NavLink to={'/registro/' + shift.current.id}><small>AGORA</small><p>{shift.current.text}</p></NavLink>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </section>
+          )}
 
-      {collections.length > 0 && (
-        <section className="discovery-block">
-          <SectionTitle eyebrow="COLEÇÕES" title="O EU juntou pra você" />
-          <div className="auto-collections">
-            {collections.map(([tag, items], index) => (
-              <NavLink key={tag} to={'/assunto/' + entitySlug(tag)} className={'collection-card collection-' + (index % 4)}>
-                <span>#{tag}</span>
-                <strong>{items.length} coisas conectadas</strong>
-                <p>{items[0]?.text}</p>
-                <b>ver coleção ↗</b>
-              </NavLink>
-            ))}
-          </div>
-        </section>
+          <section className="discovery-block">
+            <SectionTitle eyebrow="ASSUNTOS VIVOS" title="Coisas que ganharam uma página própria" />
+            <div className="entity-cloud entity-cloud-v4">
+              {entities.map((entity, index) => (
+                <NavLink key={entity.slug} to={'/assunto/' + entity.slug} className={'entity-chip entity-chip-' + (index % 4)} style={{ transform: 'scale(' + Math.min(1.22, .92 + entity.count * .03) + ')' }}>
+                  <strong>{entity.label}</strong><span>{entity.count} conexões</span>
+                </NavLink>
+              ))}
+              {!entities.length && <div className="soft-empty wide"><span>◌</span><p>Assuntos vivos aparecem conforme temas se repetem.</p></div>}
+            </div>
+          </section>
+        </>
       )}
-
-      <section className="discovery-block">
-        <SectionTitle eyebrow="EXPLORAR" title="Talvez valha olhar isso" />
-        <div className="suggestion-stack">
-          {suggestions.slice(1).map((item, index) => (
-            <article key={item}>
-              <span>0{index + 1}</span>
-              <h3>{item}</h3>
-              <p>Sugestão local baseada nos padrões recentes. Sem notificação vazia e sem obrigação de abrir.</p>
-            </article>
-          ))}
-        </div>
-      </section>
     </div>
   )
 }
