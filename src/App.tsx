@@ -21,6 +21,8 @@ import WrappedPage from './WrappedPage'
 import LifeLabPage from './LifeLabPage'
 import PhaseThemeSync from './PhaseThemeSync'
 import StarterPackImportPage from './StarterPackImportPage'
+import MoodPage from './MoodPage'
+import CollectionsPage from './CollectionsPage'
 import { initPrivacyAutoLock } from './privacy'
 import { applyDiscreetMode } from './securitySettings'
 import { emptyExpiredTrash } from './storage'
@@ -81,6 +83,8 @@ function AppShell({ onRegister }: { onRegister: () => void }) {
           <Route path="/vida/carreira" element={<CareerPlanPage />} />
           <Route path="/descobertas" element={<DiscoveriesPage />} />
           <Route path="/memorias" element={<MemoriesPage />} />
+          <Route path="/memorias/humor" element={<MoodPage />} />
+          <Route path="/memorias/colecoes" element={<CollectionsPage />} />
           <Route path="/capturar" element={<ChatCapturePage />} />
           <Route path="/registro/:id" element={<RecordDetailPage />} />
           <Route path="/inbox" element={<ChatInboxPage />} />
