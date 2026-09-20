@@ -9929,3 +9929,37 @@ button:disabled {
 .topic-trend-up { color: var(--green); }
 .topic-trend-down { color: var(--coral); }
 .topic-trend-new { color: var(--lilac); }
+
+
+/* EU v10.3: semantic bottom navigation */
+.v2-bottom-nav a:nth-child(1).active {
+  color: var(--cobalt);
+}
+.v2-bottom-nav a:nth-child(1).active .bottom-nav-icon-wrap {
+  background: var(--cobalt-soft);
+}
+
+.v2-bottom-nav a:nth-child(2).active {
+  color: #16836a;
+}
+.v2-bottom-nav a:nth-child(2).active .bottom-nav-icon-wrap {
+  background: var(--green-soft);
+}
+
+.v2-bottom-nav a:nth-child(3).active {
+  color: #8a6415;
+}
+.v2-bottom-nav a:nth-child(3).active .bottom-nav-icon-wrap {
+  background: var(--amber-soft);
+}
+
+.v2-bottom-nav a:nth-child(4).active {
+  color: #60459a;
+}
+.v2-bottom-nav a:nth-child(4).active .bottom-nav-icon-wrap {
+  background: var(--lilac-soft);
+}
+
+.v2-bottom-nav a.active > small {
+  font-weight: 720;
+}
