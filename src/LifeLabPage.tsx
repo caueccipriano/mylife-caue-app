@@ -16,7 +16,7 @@ import {
   futureCapsules,
 } from './v3Life'
 import { localSyncVaultMeta, syncVaultSecurityNote, writeLocalSyncVault } from './syncVault'
-import { BrandTop, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
+import { BrandTop, EuIcon, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
 
 function formatFullDate(value: string) {
   return new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }).format(new Date(value))
@@ -54,6 +54,7 @@ export default function LifeLabPage() {
   const [phaseNote, setPhaseNote] = useState('')
   const [phaseChoice, setPhaseChoice] = useState('')
   const [message, setMessage] = useState('')
+  const [labView, setLabView] = useState<'radar' | 'decisions' | 'capsules' | 'connections'>('radar')
   const [vaultUpdatedAt, setVaultUpdatedAt] = useState(() => localSyncVaultMeta().updatedAt)
 
   async function createCapsule(event: FormEvent) {
@@ -177,7 +178,7 @@ export default function LifeLabPage() {
   const byId = new Map(positions.map((item) => [item.node.id, item]))
 
   return (
-    <div className="v2-page life-lab-page">
+    <div className={'v2-page life-lab-page lab-view-' + labView}>
       <BrandTop />
       <NavLink className="back-v2" to="/vida">← Vida</NavLink>
 
@@ -187,9 +188,16 @@ export default function LifeLabPage() {
         <p>Mudanças, padrões, decisões, objetos, lugares, fases e sinais dos seus outros apps — sem transformar sua vida numa planilha.</p>
       </header>
 
+      <nav className="lab-view-tabs" aria-label="Áreas do EU Lab">
+        <button className={labView === 'radar' ? 'active' : ''} onClick={() => setLabView('radar')}><EuIcon name="sparkles" />Radar</button>
+        <button className={labView === 'decisions' ? 'active' : ''} onClick={() => setLabView('decisions')}><EuIcon name="check" />Decisões</button>
+        <button className={labView === 'capsules' ? 'active' : ''} onClick={() => setLabView('capsules')}><EuIcon name="clock" />Cápsulas</button>
+        <button className={labView === 'connections' ? 'active' : ''} onClick={() => setLabView('connections')}><EuIcon name="collections" />Conexões</button>
+      </nav>
+
       {message && <p className="lab-message">{message}</p>}
 
-      <section className="lab-block">
+      <section className="lab-block lab-radar-only">
         <SectionTitle eyebrow="O QUE MUDOU?" title="Comparando agora com o período anterior" />
         <div className="change-grid">
           {changes.map((change) => (
@@ -253,8 +261,8 @@ export default function LifeLabPage() {
         ) : <div className="soft-empty wide"><span>⌘</span><p>As conexões aparecem quando áreas, tags e registros começam a se cruzar.</p></div>}
       </section>
 
-      <section className="lab-block split-lab">
-        <div className="lab-panel capsule-panel">
+      <section className="lab-block split-lab lab-workbench">
+        <div className="lab-panel capsule-panel lab-capsules-only">
           <Tag tone="lilac">CÁPSULAS</Tag>
           <h2>Falar com você do futuro.</h2>
           <form onSubmit={createCapsule}>
@@ -289,7 +297,7 @@ export default function LifeLabPage() {
           )}
         </div>
 
-        <div className="lab-panel decision-panel">
+        <div className="lab-panel decision-panel lab-decisions-only">
           <Tag tone="wine">DECISION LAB</Tag>
           <h2>Registrar antes de saber o resultado.</h2>
           <form onSubmit={createDecision}>
@@ -353,7 +361,7 @@ export default function LifeLabPage() {
         </div>
       </section>
 
-      <section className="lab-block close-phase-panel">
+      <section className="lab-block close-phase-panel lab-radar-only">
         <Tag tone={phaseTone}>FECHAR UMA FASE</Tag>
         <h2>Transformar um período em capítulo.</h2>
         <p>Escolha uma fase já detectada, escreva o que ficou com você e o EU fecha o ciclo sem apagar nada.</p>
@@ -367,7 +375,7 @@ export default function LifeLabPage() {
         </div>
       </section>
 
-      <section className="lab-block vault-panel">
+      <section className="lab-block vault-panel lab-connections-only">
         <Tag tone="cobalt">SYNC VAULT</Tag>
         <h2>Um cofre local para o ecossistema.</h2>
         <p>Consolida os resumos de Fôlego, Traço e Repertório com um digest do EU em um envelope cifrado no aparelho.</p>
@@ -378,14 +386,14 @@ export default function LifeLabPage() {
         <small>{syncVaultSecurityNote()}</small>
       </section>
 
-      <section className="lab-block export-panel">
+      <section className="lab-block export-panel lab-connections-only">
         <Tag tone="amber">EDIÇÃO EDITORIAL</Tag>
         <h2>Levar uma fase para fora do app.</h2>
         <p>Gera um arquivo HTML bonito e autocontido com os registros públicos mais recentes. Você pode abrir, imprimir em PDF ou guardar.</p>
         <button onClick={exportLifeLab}>Exportar “Esta fase”</button>
       </section>
 
-      <section className="lab-block native-roadmap-card">
+      <section className="lab-block native-roadmap-card lab-connections-only">
         <Tag tone="lime">PRÓXIMA CAMADA</Tag>
         <h2>O EU já está preparado para virar nativo.</h2>
         <p>Face ID real, widgets, Live Activities, atalhos Siri e notificações de sistema dependem de um pacote nativo. A arquitetura atual já separa armazenamento, segurança, bridges e memória para essa migração ser incremental.</p>
