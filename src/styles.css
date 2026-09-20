@@ -6163,3 +6163,56 @@ html[data-eu-discreet="1"] .ecosystem-insight p {
 .today-view-signals .daily-brief-card {
   margin-bottom: 10px;
 }
+
+
+.mood-heatmap-grid button.mood-day {
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+}
+
+.mood-day.selected {
+  outline: 2px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.mood-day-detail {
+  margin-top: 16px;
+  padding: 15px;
+  display: grid;
+  gap: 12px;
+  border-radius: 17px;
+  background: rgba(255,255,255,.58);
+}
+
+.mood-day-detail > div:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.mood-day-detail strong {
+  font-family: var(--serif);
+  font-size: 15px;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.mood-day-detail > small {
+  color: var(--muted);
+  font-size: 8px;
+}
+
+.mood-day-records {
+  display: grid;
+  gap: 5px;
+}
+
+.mood-day-records span {
+  padding-top: 7px;
+  border-top: 1px solid rgba(31,41,64,.08);
+  color: var(--muted);
+  font-size: 8px;
+  line-height: 1.4;
+}
