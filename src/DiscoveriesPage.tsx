@@ -37,7 +37,15 @@ function recommendationContext(records: ReturnType<typeof useRecords>) {
 
 export default function DiscoveriesPage() {
   const records = useRecords()
-  const [view, setView] = useState<'for-you' | 'library' | 'topics'>('for-you')
+  const [view, setView] = useState<'for-you' | 'library' | 'topics'>(() => {
+    const saved = localStorage.getItem('eu-discoveries-view')
+    return saved === 'library' || saved === 'topics' ? saved : 'for-you'
+  })
+
+  function selectView(value: 'for-you' | 'library' | 'topics') {
+    setView(value)
+    localStorage.setItem('eu-discoveries-view', value)
+  }
 
   const visibleRecords = records.filter(isRecordVisibleForInsights)
   const insights = visibleRecords.filter((record) => ['Insight', 'Ideia', 'Preferência'].includes(record.type)).slice(0, 8)
@@ -77,9 +85,9 @@ export default function DiscoveriesPage() {
       </header>
 
       <nav className="discovery-view-tabs" aria-label="Visões de Descobertas">
-        <button className={view === 'for-you' ? 'active' : ''} onClick={() => setView('for-you')}><EuIcon name="sparkles" />Pra mim</button>
-        <button className={view === 'library' ? 'active' : ''} onClick={() => setView('library')}><EuIcon name="collections" />Biblioteca</button>
-        <button className={view === 'topics' ? 'active' : ''} onClick={() => setView('topics')}><EuIcon name="note" />Assuntos</button>
+        <button className={view === 'for-you' ? 'active' : ''} onClick={() => selectView('for-you')}><EuIcon name="sparkles" />Pra mim</button>
+        <button className={view === 'library' ? 'active' : ''} onClick={() => selectView('library')}><EuIcon name="collections" />Biblioteca</button>
+        <button className={view === 'topics' ? 'active' : ''} onClick={() => selectView('topics')}><EuIcon name="note" />Assuntos</button>
       </nav>
 
       {view === 'for-you' && (
