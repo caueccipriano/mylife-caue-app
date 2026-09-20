@@ -84,14 +84,15 @@ export default function DiscoveriesPage() {
 
       {view === 'for-you' && (
         <>
-          <section className="discovery-feature">
+          <NavLink className="discovery-feature" to={'/pergunte?q=' + encodeURIComponent(suggestions[0])}>
             <span className="discovery-feature-icon"><EuIcon name="sparkles" /></span>
             <div>
               <small>PARA VOCÊ</small>
               <h2>{suggestions[0]}</h2>
-              <p>{suggestionContext}.</p>
+              <p>{suggestionContext}. Toque para explorar no seu arquivo.</p>
             </div>
-          </section>
+            <b className="discovery-feature-arrow"><EuIcon name="arrow-up-right" /></b>
+          </NavLink>
 
           <section className="discovery-block">
             <SectionTitle eyebrow="SAQUEI" title="Insights seus" />
