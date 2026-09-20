@@ -70,6 +70,17 @@ export default function MemoriesPage() {
     Boolean(moodFilter),
   ].filter(Boolean).length
 
+  function resetFilters() {
+    setQuery('')
+    setFilter('all')
+    setTagFilter('')
+    setAreaFilter('')
+    setStatusFilter('')
+    setPeriodFilter('all')
+    setMoodFilter('')
+    navigate('/memorias', { replace: true })
+  }
+
   function RecordCard({ record }: { record: (typeof records)[number] }) {
     const tags = record.tags?.length ? record.tags : suggestTags(record.text, record.area, record.type)
     const sealedCapsule = Boolean(record.revealAt && !record.capsuleOpenedAt && new Date(record.revealAt).getTime() > Date.now())
@@ -137,7 +148,7 @@ export default function MemoriesPage() {
           <strong>“O que eu já falei sobre isso?”</strong>
           <span>Pergunte em linguagem natural e veja as fontes.</span>
         </div>
-        <b>↗</b>
+        <b><EuIcon name="arrow-up-right" /></b>
       </button>
 
       <div className="memory-mode-switch">
@@ -154,6 +165,7 @@ export default function MemoriesPage() {
             placeholder="Ex.: qual era aquele relógio que eu gostei?"
             aria-label="Buscar nas memórias"
           />
+          {query && <button className="memory-search-clear" aria-label="Limpar busca" onClick={() => setQuery('')}><EuIcon name="x" /></button>}
         </div>
       )}
 
@@ -216,6 +228,13 @@ export default function MemoriesPage() {
         </div>
       </details>
 
+      {(activeFilterCount > 0 || query) && (
+        <div className="memory-filter-status">
+          <span>{filtered.length} {filtered.length === 1 ? 'resultado' : 'resultados'} com os filtros atuais</span>
+          <button onClick={resetFilters}><EuIcon name="x" />limpar tudo</button>
+        </div>
+      )}
+
       {topTags.length > 0 && (
         <div className="memory-tag-strip">
           <button className={!tagFilter ? 'active' : ''} onClick={() => setTagFilter('')}>#todas</button>
@@ -232,7 +251,7 @@ export default function MemoriesPage() {
             {filtered.map((record) => <RecordCard key={record.id} record={record} />)}
             {!filtered.length && (
               <div className="soft-empty wide">
-                <span>⌕</span>
+                <span><EuIcon name="search" /></span>
                 <p>Nada encontrado. Você pode procurar como falaria comigo: “o que eu já falei sobre SQL?”</p>
               </div>
             )}
@@ -254,13 +273,13 @@ export default function MemoriesPage() {
               </div>
             </div>
           ))}
-          {!timeline.length && <div className="soft-empty wide"><span>↕</span><p>Sua linha do tempo aparece conforme os registros entram.</p></div>}
+          {!timeline.length && <div className="soft-empty wide"><span><EuIcon name="note" /></span><p>Sua linha do tempo aparece conforme os registros entram.</p></div>}
         </section>
       )}
 
       {moods.length > 0 && (
         <section className="memory-moods">
-          <SectionTitle eyebrow="HUMOR" title="Um preview do seu histórico" action={<button className="quiet-link" onClick={() => navigate('/memorias/humor')}>ver heatmap ↗</button>} />
+          <SectionTitle eyebrow="HUMOR" title="Um preview do seu histórico" action={<button className="quiet-link" onClick={() => navigate('/memorias/humor')}>ver heatmap <EuIcon name="arrow-up-right" /></button>} />
           <div className="mood-history">
             {moods.map((item) => (
               <article key={item.date} className={'mood-history-' + item.mood}>
