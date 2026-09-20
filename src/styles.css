@@ -9815,3 +9815,94 @@ button:disabled {
     padding-inline: 10px;
   }
 }
+
+
+/* EU v10.1: actionable discoveries */
+.discovery-feature {
+  color: inherit;
+  text-decoration: none;
+}
+
+.discovery-feature-arrow {
+  align-self: center;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  background: rgba(255,255,255,.62);
+  color: #8a6415;
+}
+
+.discovery-feature-arrow .eu-icon {
+  width: 17px;
+  height: 17px;
+}
+
+.suggestion-stack .suggestion-card-link {
+  min-height: 104px;
+  padding: 18px 2px;
+  display: grid;
+  grid-template-columns: 30px minmax(0,1fr) 34px;
+  gap: 13px;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+  color: inherit;
+  text-decoration: none;
+}
+
+.suggestion-card-link > span {
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: var(--amber-soft);
+  color: var(--amber);
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.suggestion-card-link h3 {
+  margin: 0 0 6px;
+  font-size: 22px;
+  line-height: 1.12;
+}
+
+.suggestion-card-link p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.suggestion-card-link > b {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255,255,255,.58);
+  color: var(--amber);
+}
+
+.suggestion-card-link > b .eu-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.discovery-feature:active,
+.suggestion-card-link:active {
+  transform: scale(.99);
+}
+
+@media (max-width: 430px) {
+  .discovery-feature {
+    grid-template-columns: 40px minmax(0,1fr) 34px;
+  }
+
+  .discovery-feature-arrow {
+    width: 34px;
+    height: 34px;
+  }
+}
