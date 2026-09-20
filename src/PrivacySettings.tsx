@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { hasPrivacyPin, isPrivateUnlocked, lockPrivateRecords, removePrivacyPin, setPrivacyPin, unlockPrivateRecords } from './privacy'
-import { Tag } from './v2Ui'
+import { EuIcon, Tag } from './v2Ui'
 
 export default function PrivacySettings() {
   const [enabled, setEnabled] = useState(() => hasPrivacyPin())
@@ -71,17 +71,17 @@ export default function PrivacySettings() {
         <div className="privacy-pin-form">
           <input type="password" inputMode="numeric" pattern="[0-9]*" maxLength={8} value={pin} onChange={(event) => setPin(event.target.value.replace(/\D/g, ''))} placeholder="crie um PIN" />
           <input type="password" inputMode="numeric" pattern="[0-9]*" maxLength={8} value={confirm} onChange={(event) => setConfirm(event.target.value.replace(/\D/g, ''))} placeholder="repita o PIN" />
-          <button onClick={() => void activate()} disabled={busy || pin.length < 6}>Ativar proteção</button>
+          <button onClick={() => void activate()} disabled={busy || pin.length < 6}><EuIcon name="shield" />Ativar proteção</button>
         </div>
       ) : unlocked ? (
         <div className="privacy-actions">
-          <button onClick={lock}>Bloquear agora</button>
-          <button className="quiet" onClick={remove}>Remover PIN</button>
+          <button onClick={lock}><EuIcon name="lock" />Bloquear agora</button>
+          <button className="quiet" onClick={remove}><EuIcon name="x" />Remover PIN</button>
         </div>
       ) : (
         <div className="privacy-pin-form">
           <input type="password" inputMode="numeric" pattern="[0-9]*" maxLength={8} value={pin} onChange={(event) => setPin(event.target.value.replace(/\D/g, ''))} placeholder="seu PIN" />
-          <button onClick={() => void unlock()} disabled={busy || pin.length < 4}>Desbloquear privados</button>
+          <button onClick={() => void unlock()} disabled={busy || pin.length < 4}><EuIcon name="lock" />Desbloquear privados</button>
         </div>
       )}
 
