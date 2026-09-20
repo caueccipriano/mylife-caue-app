@@ -35,7 +35,7 @@ const nav = [
   { path: '/', label: 'Hoje', icon: 'sun' },
   { path: '/vida', label: 'Vida', icon: 'compass' },
   { path: '/descobertas', label: 'Descobertas', icon: 'sparkles' },
-  { path: '/memorias', label: 'Memórias', icon: 'search' },
+  { path: '/memorias', label: 'Memórias', icon: 'collections' },
 ] as const
 
 function RouteScrollMemory() {
