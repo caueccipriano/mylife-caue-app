@@ -125,7 +125,7 @@ function AppShell({ onRegister }: { onRegister: () => void }) {
 
       <nav className="v2-bottom-nav" aria-label="Navegação principal">
         {nav.map((item) => (
-          <NavLink key={item.path} to={item.path} end={item.path === '/'}>
+          <NavLink key={item.path} to={item.path} end={item.path === '/'} onClick={() => haptic('light')}>
             <span className="bottom-nav-icon-wrap"><NavIcon name={item.icon} /></span>
             <small>{item.label}</small>
           </NavLink>
