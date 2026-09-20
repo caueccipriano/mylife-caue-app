@@ -15904,3 +15904,67 @@ svg {
     font-size: 11px;
   }
 }
+
+
+/* EU v18.7b: contain legacy horizontal rails */
+.mood-row,
+.signal-mini-grid,
+.signals-life-grid,
+.pattern-grid,
+.auto-collections,
+.astro-signal-grid,
+.astro-summary-grid,
+.self-tools-grid,
+.continue-strip {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  max-width: 100%;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.signal-mini-grid,
+.signals-life-grid,
+.pattern-grid,
+.auto-collections,
+.astro-signal-grid,
+.astro-summary-grid,
+.self-tools-grid,
+.continue-strip {
+  padding-right: 2px !important;
+}
+
+/* Internal rails may move; the page itself may not. */
+.pattern-grid,
+.auto-collections,
+.astro-signal-grid,
+.astro-summary-grid,
+.self-tools-grid,
+.continue-strip,
+.signal-mini-grid,
+.signals-life-grid,
+.record-actions-row {
+  touch-action: pan-x pan-y;
+}
+
+/* Keep cards slightly narrower than the viewport so the next item peeks in
+   without creating document overflow. */
+@media (max-width: 760px) {
+  .pattern-card,
+  .collection-card,
+  .self-tool-card {
+    flex-basis: min(76%, 300px);
+    max-width: min(76%, 300px);
+  }
+
+  .astro-signal-grid > article,
+  .astro-summary-grid > article,
+  .signal-mini-grid > article,
+  .signals-life-grid > article {
+    max-width: calc(100dvw - 46px);
+  }
+
+  .continue-card {
+    max-width: calc(100dvw - 46px);
+  }
+}
