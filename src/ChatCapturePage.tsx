@@ -4,7 +4,7 @@ import { enqueueChatBatch, removeChatBatch, type ChatInboxItem } from './chatInb
 import { nextFollowUpDate, saveRecord } from './storage'
 import { detectSensitiveContent } from './lifeModel'
 import { haptic } from './securitySettings'
-import { BrandTop, Tag, typeTone } from './v2Ui'
+import { BrandTop, EuIcon, Tag, typeTone } from './v2Ui'
 
 const areaOptions = ['Carreira', 'Dinheiro', 'Estudos', 'Casa', 'Viagens', 'Compras', 'Lazer', 'Pessoal']
 const typeOptions = ['Memória', 'Preferência', 'Desejo', 'Pesquisa', 'Curso', 'Pendência', 'Objetivo', 'Projeto', 'Decisão', 'Insight', 'Ideia', 'Marco', 'Contexto', 'Conquista']
@@ -214,7 +214,7 @@ export default function ChatCapturePage() {
 
       {state === 'saved' ? (
         <section className="chat-capture-success">
-          <span>✓</span>
+          <span className="chat-success-icon"><EuIcon name="check" /></span>
           <h2>Entrou no EU.</h2>
           <p>{kept.length === 1 ? 'Esse registro agora faz parte da sua história.' : kept.length + ' registros entraram juntos, já organizados.'}</p>
           <div>
@@ -231,7 +231,7 @@ export default function ChatCapturePage() {
           {state === 'error' && <p>Não consegui salvar neste aparelho. Tente novamente.</p>}
         </div>
       ) : (
-        <NavLink className="back-v2" to="/">← Voltar para Hoje</NavLink>
+        <NavLink className="back-v2" to="/"><EuIcon name="arrow-left" />Voltar para Hoje</NavLink>
       )}
     </div>
   )
