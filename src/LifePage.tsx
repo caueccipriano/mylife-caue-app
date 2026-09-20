@@ -71,11 +71,11 @@ export default function LifePage() {
         <p>Áreas, planos, desejos e coisas que você começou — agora separados para você achar tudo mais rápido.</p>
       </header>
 
-      <nav className="life-view-tabs" aria-label="Visões da Vida">
-        <button className={view === 'overview' ? 'active' : ''} onClick={() => selectView('overview')}><EuIcon name="sparkles" />Visão geral</button>
-        <button className={view === 'areas' ? 'active' : ''} onClick={() => selectView('areas')}><EuIcon name="collections" />Áreas</button>
-        <button className={view === 'moving' ? 'active' : ''} onClick={() => selectView('moving')}><EuIcon name="bolt" />Em movimento</button>
-        <button className={view === 'you' ? 'active' : ''} onClick={() => selectView('you')}><EuIcon name="user" />Você</button>
+      <nav className="life-view-tabs" aria-label="Visões da Vida" role="tablist">
+        <button role="tab" aria-selected={view === 'overview'} className={view === 'overview' ? 'active' : ''} onClick={() => selectView('overview')}><EuIcon name="sparkles" />Visão geral</button>
+        <button role="tab" aria-selected={view === 'areas'} className={view === 'areas' ? 'active' : ''} onClick={() => selectView('areas')}><EuIcon name="collections" />Áreas</button>
+        <button role="tab" aria-selected={view === 'moving'} className={view === 'moving' ? 'active' : ''} onClick={() => selectView('moving')}><EuIcon name="bolt" />Em movimento</button>
+        <button role="tab" aria-selected={view === 'you'} className={view === 'you' ? 'active' : ''} onClick={() => selectView('you')}><EuIcon name="user" />Você</button>
       </nav>
 
       {view === 'overview' && (
