@@ -194,6 +194,7 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
   const records = useRecords()
   const [value, setValue] = useState('')
   const [saved, setSaved] = useState<Interpretation | null>(null)
+  const [savedId, setSavedId] = useState<string | null>(null)
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
   const [attachments, setAttachments] = useState<StoredAttachment[]>([])
@@ -384,6 +385,7 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
       }
 
       haptic('success')
+      setSavedId(id)
       setSaved(interpretation)
       onSaved()
     } catch {
@@ -393,11 +395,19 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
     }
   }
 
+  async function quickAfterSave(patch: { favorite?: boolean; pinned?: boolean; status?: 'active'; followUpDays?: number; followUpAt?: string }) {
+    if (!savedId) return
+    await updateRecord(savedId, patch)
+    window.dispatchEvent(new Event('eu-record-saved'))
+    haptic('light')
+  }
+
   function close() {
     if (recording) recorderRef.current?.stop()
     stopStream()
     setValue('')
     setSaved(null)
+    setSavedId(null)
     setError('')
     setSaving(false)
     setAttachments([])
@@ -538,6 +548,13 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
             <p>{saved.title}</p>
             <div className="saved-meta">{saved.area}</div>
             {saved.track && <p className="saved-followup">Eu volto nisso com você. Sem precisar lembrar sozinho.</p>}
+            <div className="saved-quick-actions">
+              <button onClick={() => void quickAfterSave({ favorite: true })}>♡ guardar bem</button>
+              <button onClick={() => void quickAfterSave({ pinned: true })}>⌖ fixar agora</button>
+              {!saved.track && (
+                <button onClick={() => void quickAfterSave({ status: 'active', followUpDays: 7, followUpAt: nextFollowUpDate(7) })}>↻ acompanhar</button>
+              )}
+            </div>
             <button className="primary-button full" onClick={close}>Concluir</button>
           </div>
         )}
