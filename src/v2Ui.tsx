@@ -243,6 +243,20 @@ export function typeTone(type: string): Accent {
   return 'muted'
 }
 
+export function typeIcon(type: string): EuIconName {
+  const value = type.toLowerCase()
+  if (value.includes('decisão') || value.includes('decisao')) return 'check'
+  if (value.includes('curso') || value.includes('estudo')) return 'book'
+  if (value.includes('projeto') || value.includes('objetivo') || value.includes('pend')) return 'bolt'
+  if (value.includes('desejo') || value.includes('pesquisa') || value.includes('prefer')) return 'heart'
+  if (value.includes('insight') || value.includes('ideia') || value.includes('descoberta')) return 'sparkles'
+  if (value.includes('objeto') || value.includes('compra')) return 'bag'
+  if (value.includes('lugar') || value.includes('viagem')) return 'location'
+  if (value.includes('cápsula') || value.includes('capsula') || value.includes('depois') || value.includes('futuro')) return 'clock'
+  if (value.includes('marco') || value.includes('conquista')) return 'compass'
+  return 'note'
+}
+
 export function sourceLabel(source?: RecordSource) {
   if (source === 'chatgpt') return 'Do Chat'
   if (source === 'share') return 'Compartilhado'
