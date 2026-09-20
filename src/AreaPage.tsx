@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { NavLink, useParams } from 'react-router-dom'
 import { areas } from './data'
 import { useRecords } from './appState'
@@ -9,7 +10,7 @@ export default function AreaPage() {
   const { id } = useParams()
   const definition = areas.find((area) => area.id === id)
   const records = useRecords()
-  const focus = getFocusAreas()
+  const [focus, setFocus] = useState(() => getFocusAreas())
 
   if (!definition) {
     return (
@@ -33,8 +34,7 @@ export default function AreaPage() {
     const next = inFocus
       ? focus.filter((area) => area !== areaName)
       : [...focus, areaName].slice(-3)
-    setFocusAreas(next)
-    window.location.reload()
+    setFocus(setFocusAreas(next))
   }
 
   return (
