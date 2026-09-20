@@ -14962,3 +14962,476 @@ select {
     border-radius: 26px;
   }
 }
+
+
+/* EU v18.6: editorial scale + editability */
+
+/* The system is expressive, but content should always win. */
+:root {
+  --eu-display-xl: clamp(42px, 7vw, 66px);
+  --eu-display-lg: clamp(34px, 5.8vw, 52px);
+  --eu-display-md: clamp(28px, 4.8vw, 42px);
+  --eu-editorial-lg: clamp(25px, 4vw, 35px);
+  --eu-editorial-md: clamp(21px, 3.2vw, 29px);
+}
+
+/* Long user-generated text is editorial content, never a poster. */
+.record-detail-hero {
+  padding: 34px 0 24px;
+}
+
+.record-detail-kicker {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.record-detail-kicker .feed-meta {
+  flex: 1;
+}
+
+.record-inline-edit {
+  flex: 0 0 auto;
+  min-height: 35px;
+  padding: 0 11px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(76,88,137,.09);
+  border-radius: 12px;
+  background: rgba(255,255,255,.64);
+  color: #59648f;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.88),
+    0 6px 16px rgba(42,52,94,.035);
+  font-family: var(--display-wide);
+  font-size: 7.5px;
+  cursor: pointer;
+}
+
+.record-inline-edit .eu-icon {
+  width: 13px;
+  height: 13px;
+}
+
+.record-detail-hero .record-title {
+  max-width: 720px;
+  margin: 0;
+  text-wrap: pretty;
+  overflow-wrap: anywhere;
+}
+
+.record-title-short {
+  font-family: var(--display-bubble);
+  font-size: clamp(38px, 6.3vw, 58px);
+  font-weight: 400;
+  letter-spacing: -.055em;
+  line-height: .96;
+}
+
+.record-title-medium {
+  font-family: var(--display-wide);
+  font-size: clamp(30px, 4.8vw, 43px);
+  font-weight: 700;
+  letter-spacing: -.045em;
+  line-height: 1.03;
+}
+
+.record-title-long {
+  font-family: var(--display-wide);
+  font-size: clamp(25px, 3.9vw, 34px);
+  font-weight: 650;
+  letter-spacing: -.038em;
+  line-height: 1.09;
+}
+
+.record-title-xlong {
+  font-family: var(--display-wide);
+  font-size: clamp(21px, 3.2vw, 29px);
+  font-weight: 600;
+  letter-spacing: -.032em;
+  line-height: 1.14;
+}
+
+.record-detail-hero > p {
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 10px;
+}
+
+/* Edit mode feels like a real editor instead of a long settings page. */
+.record-edit-form {
+  max-width: 760px;
+  margin-inline: auto;
+}
+
+.record-edit-form > .v2-tag:first-child {
+  margin-bottom: 12px;
+}
+
+.record-edit-form > h1 {
+  margin: 10px 0 28px;
+  font-family: var(--display-wide);
+  font-size: clamp(30px, 5vw, 42px);
+  font-weight: 700;
+  letter-spacing: -.045em;
+  line-height: 1;
+}
+
+.record-edit-form > label,
+.record-edit-grid > label,
+.record-advanced-edit-body > label {
+  gap: 8px;
+}
+
+.record-edit-form > label,
+.record-edit-grid label,
+.record-advanced-edit-body label {
+  font-family: var(--display-wide);
+  color: #646579;
+  font-size: 8px;
+  letter-spacing: .01em;
+}
+
+.record-edit-form textarea,
+.record-edit-form select,
+.record-edit-form input:not([type="range"]) {
+  border-radius: 16px;
+  background:
+    linear-gradient(145deg, rgba(255,255,255,.82), rgba(248,247,252,.70));
+}
+
+.record-edit-form textarea {
+  line-height: 1.55;
+}
+
+.record-edit-organize {
+  margin: 4px 0 18px;
+  padding: 16px;
+  border: 1px solid rgba(90,82,136,.08);
+  border-radius: 19px;
+  background:
+    radial-gradient(circle at 100% 0%, rgba(142,98,255,.08), transparent 8rem),
+    rgba(255,255,255,.48);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.78);
+}
+
+.record-edit-organize > div:first-child {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.record-edit-organize > div:first-child > span {
+  font-family: var(--display-wide);
+  color: #555875;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.record-edit-organize > div:first-child > small {
+  color: #9392a0;
+  font-size: 8px;
+}
+
+.record-edit-toggle-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: 7px;
+}
+
+.record-edit-toggle-grid button {
+  min-height: 42px;
+  padding: 0 9px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid rgba(82,88,125,.08);
+  border-radius: 13px;
+  background: rgba(255,255,255,.63);
+  color: #6b6d80;
+  font-family: var(--display-wide);
+  font-size: 7.5px;
+}
+
+.record-edit-toggle-grid button.active.favorite {
+  color: #a83275;
+  background: #ffe7f4;
+}
+
+.record-edit-toggle-grid button.active.pinned {
+  color: #5060bd;
+  background: #e9edff;
+}
+
+.record-edit-toggle-grid button.active.private {
+  color: #7051bd;
+  background: #eee8ff;
+}
+
+.record-edit-actions {
+  position: sticky;
+  z-index: 8;
+  bottom: calc(12px + env(safe-area-inset-bottom));
+  padding: 7px;
+  border: 1px solid rgba(76,85,124,.09);
+  border-radius: 19px;
+  background: rgba(251,247,239,.88);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.90),
+    0 12px 30px rgba(40,49,88,.09);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+}
+
+.record-edit-actions button:first-child {
+  background: linear-gradient(145deg, #3156ff, #7756df);
+  color: #fff;
+  border-color: transparent;
+}
+
+/* Global editorial scale. Fixed interface titles can be bold; dynamic copy stays calm. */
+.v2-hero h1,
+.career-hero-v2 h1,
+.ask-eu-hero h1,
+.self-hero h1,
+.snapshots-hero h1,
+.security-hero h1,
+.mood-hero h1,
+.collections-page > .v2-hero h1,
+.lab-hero h1,
+.astro-hero h1 {
+  font-size: var(--eu-display-lg);
+}
+
+.today-glance .today-hello h1 {
+  font-size: var(--eu-display-md);
+}
+
+.discovery-feature h2,
+.identity-now-card h2,
+.phase-now h2 {
+  font-size: var(--eu-editorial-lg);
+  line-height: 1.06;
+}
+
+.plan-card h3,
+.self-tool-card h3,
+.life-list-card h3,
+.discovery-card p,
+.collection-v2 h2,
+.review-card h2,
+.record-section h2 {
+  font-size: var(--eu-editorial-md);
+}
+
+/* Text that comes from records should not inherit display scale. */
+.life-list-card h3,
+.compact-record-link p,
+.continue-card h3,
+.feed-card h3,
+.followup-card h3,
+.memory-record-card h3,
+.discovery-card p,
+.saved-link-list a strong,
+.suggestion-card-link strong {
+  overflow-wrap: anywhere;
+  text-wrap: pretty;
+}
+
+.life-list-card h3,
+.continue-card h3 {
+  font-family: var(--display-wide);
+  font-size: clamp(17px, 2.5vw, 21px);
+  line-height: 1.18;
+}
+
+.memory-record-card h3,
+.feed-card h3,
+.followup-card h3 {
+  font-size: clamp(15px, 2.1vw, 18px);
+  line-height: 1.25;
+}
+
+/* Compact deep screens: more information per viewport, still touch-friendly. */
+.collections-grid-v2,
+.phase-grid,
+.self-tools-grid,
+.plan-grid,
+.discovery-grid {
+  gap: 9px;
+}
+
+.collection-v2,
+.phase-grid > article,
+.self-tool-card,
+.plan-card,
+.discovery-card {
+  min-height: unset;
+}
+
+.collection-v2,
+.phase-grid > article {
+  padding: 18px;
+}
+
+.security-panel,
+.lab-panel,
+.change-card,
+.astro-transit-strip article {
+  border-radius: 20px;
+}
+
+/* Avoid giant empty hero regions on utility/detail screens. */
+.record-detail-page > .back-button-v2 + .record-detail-hero,
+.collections-page > .back-v2 + .v2-hero,
+.mood-page > .back-v2 + .v2-hero,
+.self-page > .back-v2 + .v2-hero,
+.snapshots-page > .back-v2 + .v2-hero,
+.security-center-page > .back-v2 + .v2-hero {
+  padding-top: 28px;
+}
+
+/* Consistent edit affordance: editable content feels editable. */
+.record-actions-row button:first-child {
+  color: #fff;
+  border-color: transparent;
+  background: linear-gradient(145deg, #3156ff, #7557de);
+  box-shadow: 0 7px 18px rgba(49,86,255,.14);
+}
+
+/* Mobile calibration based on the actual iPhone viewport. */
+@media (max-width: 760px) {
+  :root {
+    --eu-display-xl: clamp(38px, 10vw, 48px);
+    --eu-display-lg: clamp(34px, 9vw, 43px);
+    --eu-display-md: clamp(30px, 8vw, 38px);
+    --eu-editorial-lg: clamp(24px, 6.4vw, 30px);
+    --eu-editorial-md: clamp(19px, 5vw, 24px);
+  }
+
+  .record-detail-hero {
+    padding: 24px 0 18px;
+  }
+
+  .record-detail-kicker {
+    margin-bottom: 16px;
+  }
+
+  .record-title-short {
+    font-size: clamp(32px, 8.5vw, 39px);
+    line-height: .98;
+  }
+
+  .record-title-medium {
+    font-size: clamp(27px, 7vw, 33px);
+    line-height: 1.04;
+  }
+
+  .record-title-long {
+    font-size: clamp(23px, 6vw, 28px);
+    line-height: 1.10;
+  }
+
+  .record-title-xlong {
+    font-size: clamp(20px, 5.2vw, 24px);
+    line-height: 1.15;
+  }
+
+  .record-inline-edit {
+    min-height: 33px;
+    padding-inline: 9px;
+  }
+
+  .record-actions-row {
+    margin-top: 8px;
+  }
+
+  .record-edit-form > h1 {
+    font-size: 30px;
+    margin-bottom: 23px;
+  }
+
+  .record-edit-toggle-grid {
+    grid-template-columns: repeat(3, minmax(0,1fr));
+  }
+
+  .life-list-card h3,
+  .continue-card h3 {
+    font-size: 17px;
+  }
+
+  .memory-record-card h3,
+  .feed-card h3,
+  .followup-card h3 {
+    font-size: 15px;
+  }
+
+  .collection-v2,
+  .phase-grid > article,
+  .self-tool-card,
+  .plan-card,
+  .discovery-card {
+    padding: 17px;
+  }
+}
+
+@media (max-width: 430px) {
+  :root {
+    --eu-display-lg: clamp(31px, 8.3vw, 38px);
+    --eu-display-md: clamp(28px, 7.6vw, 34px);
+    --eu-editorial-lg: 25px;
+    --eu-editorial-md: 20px;
+  }
+
+  .record-detail-kicker {
+    align-items: center;
+  }
+
+  .record-detail-kicker .feed-meta {
+    gap: 5px;
+  }
+
+  .record-inline-edit {
+    font-size: 7px;
+  }
+
+  .record-title-short { font-size: 34px; }
+  .record-title-medium { font-size: 28px; }
+  .record-title-long { font-size: 24px; }
+  .record-title-xlong { font-size: 21px; }
+
+  .record-edit-organize > div:first-child {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .record-edit-toggle-grid button {
+    min-height: 40px;
+    padding-inline: 5px;
+    font-size: 7px;
+  }
+
+  .record-actions-row {
+    top: calc(67px + env(safe-area-inset-top));
+  }
+
+  .record-actions-row button {
+    min-height: 35px;
+  }
+
+  .v2-hero {
+    padding-top: 28px;
+    padding-bottom: 23px;
+  }
+
+  .v2-hero > p {
+    max-width: 100%;
+  }
+}
