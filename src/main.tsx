@@ -4,7 +4,7 @@ import { HashRouter } from 'react-router-dom'
 import App from './App'
 import './styles.css'
 
-const APP_VERSION = 'eu-v5-visual-polish'
+const APP_VERSION = 'eu-v6-ux-polish'
 
 async function refreshPwaShell() {
   if (!('serviceWorker' in navigator)) return
