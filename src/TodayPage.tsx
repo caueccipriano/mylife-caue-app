@@ -147,7 +147,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
       <section className="daily-brief-card">
         <div className="daily-brief-top">
           <Tag tone="cobalt">DAILY BRIEF</Tag>
-          <button className="simple-day-toggle" onClick={() => { const next = !simpleDay; setSimpleDayMode(next); setSimpleDay(next) }}>{simpleDay ? 'mostrar tudo' : 'hoje sem administrar'}</button>
+          <button className="simple-day-toggle" aria-pressed={simpleDay} onClick={() => { const next = !simpleDay; setSimpleDayMode(next); setSimpleDay(next) }}><EuIcon name={simpleDay ? 'sparkles' : 'moon'} />{simpleDay ? 'mostrar tudo' : 'hoje sem administrar'}</button>
         </div>
         <h2>{dailyBrief.title}</h2>
         <p>{dailyBrief.text}</p>
