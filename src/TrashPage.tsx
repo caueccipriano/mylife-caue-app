@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { emptyExpiredTrash, listTrash, permanentlyDeleteRecord, restoreRecord, type StoredRecord } from './storage'
-import { BrandTop, Tag, formatShortDate, typeTone } from './v2Ui'
+import { BrandTop, EuIcon, Tag, formatShortDate, typeTone } from './v2Ui'
 
 function daysLeft(record: StoredRecord) {
   if (!record.trashedAt) return 30
@@ -40,7 +40,7 @@ export default function TrashPage() {
   return (
     <div className="v2-page trash-page">
       <BrandTop />
-      <NavLink className="back-v2" to="/seguranca">← Segurança</NavLink>
+      <NavLink className="back-v2" to="/seguranca"><EuIcon name="arrow-left" />Segurança</NavLink>
 
       <header className="v2-hero">
         <Tag tone="wine">LIXEIRA</Tag>
@@ -61,15 +61,15 @@ export default function TrashPage() {
             <h2>{record.private ? 'Registro privado' : record.text || 'Registro com anexo'}</h2>
             <p>criado em {formatShortDate(record.createdAt)}</p>
             <div>
-              <button onClick={() => void restore(record.id)}>Restaurar</button>
-              <button className="danger" onClick={() => void remove(record.id)}>Excluir pra sempre</button>
+              <button onClick={() => void restore(record.id)}><EuIcon name="undo" />Restaurar</button>
+              <button className="danger" onClick={() => void remove(record.id)}><EuIcon name="trash" />Excluir pra sempre</button>
             </div>
           </article>
         ))}
 
         {!items.length && (
           <div className="soft-empty wide">
-            <span>✓</span>
+            <span><EuIcon name="trash" /></span>
             <p>A lixeira está vazia.</p>
           </div>
         )}
