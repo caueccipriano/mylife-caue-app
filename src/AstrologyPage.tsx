@@ -104,7 +104,7 @@ export default function AstrologyPage() {
   return (
     <div className="v2-page astrology-page">
       <BrandTop />
-      <NavLink className="back-v2" to="/vida">← Vida</NavLink>
+      <NavLink className="back-v2" to="/vida"><EuIcon name="arrow-left" />Vida</NavLink>
 
       <header className="astro-hero">
         <Tag tone="amber">ASTROLOGIA</Tag>
