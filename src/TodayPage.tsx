@@ -167,9 +167,9 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
         </div>
       </section>
 
-      <nav className="today-view-tabs" aria-label="Visões de Hoje">
-        <button className={todayView === 'now' ? 'active' : ''} onClick={() => selectTodayView('now')}><EuIcon name="bolt" />Agora</button>
-        <button className={todayView === 'signals' ? 'active' : ''} onClick={() => selectTodayView('signals')}><EuIcon name="sparkles" />Sinais</button>
+      <nav className="today-view-tabs" aria-label="Visões de Hoje" role="tablist">
+        <button role="tab" aria-selected={todayView === 'now'} className={todayView === 'now' ? 'active' : ''} onClick={() => selectTodayView('now')}><EuIcon name="bolt" />Agora</button>
+        <button role="tab" aria-selected={todayView === 'signals'} className={todayView === 'signals' ? 'active' : ''} onClick={() => selectTodayView('signals')}><EuIcon name="sparkles" />Sinais</button>
       </nav>
 
       {readyCapsules.length > 0 && (
