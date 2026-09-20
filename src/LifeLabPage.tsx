@@ -180,7 +180,7 @@ export default function LifeLabPage() {
   return (
     <div className={'v2-page life-lab-page lab-view-' + labView}>
       <BrandTop />
-      <NavLink className="back-v2" to="/vida">← Vida</NavLink>
+      <NavLink className="back-v2" to="/vida"><EuIcon name="arrow-left" />Vida</NavLink>
 
       <header className="v2-hero lab-hero">
         <Tag tone="cobalt">EU LAB · V3</Tag>
