@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { forceRefreshAppBridges, readAppBridges, type BridgeCard } from './integrations'
 import { listChatInbox, type ChatInboxBatch } from './chatInbox'
-import { listRecords, moodForToday, type MoodCheckin, type StoredRecord } from './storage'
+import { listMoodCheckins, listRecords, moodForToday, type MoodCheckin, type StoredRecord } from './storage'
 import { getPersonalProfile, type PersonalProfile } from './profile'
 
 export function useRecords() {
@@ -104,4 +104,17 @@ export function usePersonalProfile() {
   }, [])
 
   return profile
+}
+
+
+export function useMoodHistory() {
+  const [moods, setMoods] = useState<MoodCheckin[]>(() => listMoodCheckins())
+
+  useEffect(() => {
+    const refresh = () => setMoods(listMoodCheckins())
+    window.addEventListener('eu-mood-updated', refresh)
+    return () => window.removeEventListener('eu-mood-updated', refresh)
+  }, [])
+
+  return moods
 }
