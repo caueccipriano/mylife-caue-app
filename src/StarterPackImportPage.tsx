@@ -3,7 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom'
 import { getRecord, listRecords, saveRecord, updateRecord } from './storage'
 import { decodeStarterPack, recordFromStarterItem } from './starterPack'
 import { mergePersonalProfile } from './profile'
-import { BrandTop, Tag } from './v2Ui'
+import { BrandTop, EuIcon, Tag } from './v2Ui'
 
 function similarity(a: string, b: string) {
   const tokens = (value: string) => new Set(
@@ -115,7 +115,7 @@ export default function StarterPackImportPage() {
         <Tag tone={state === 'error' ? 'wine' : state === 'done' ? 'green' : 'cobalt'}>
           {state === 'loading' ? 'IMPORTANDO' : state === 'done' ? 'PRONTO' : 'ERRO'}
         </Tag>
-        <span>{state === 'done' ? '✓' : state === 'error' ? '!' : '↻'}</span>
+        <span className="starter-state-icon"><EuIcon name={state === 'done' ? 'check' : state === 'error' ? 'x' : 'refresh'} /></span>
         <h1>{state === 'done' ? 'Seu EU ganhou contexto.' : state === 'error' ? 'Algo não entrou.' : 'Montando seu EU.'}</h1>
         <p>{message}</p>
         {state === 'done' && <small>{count ? 'Você vai para Hoje automaticamente.' : 'Nada foi duplicado.'}</small>}
