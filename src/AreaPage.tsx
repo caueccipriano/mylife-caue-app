@@ -27,7 +27,7 @@ export default function AreaPage() {
     return (
       <div className="v2-page area-page">
         <BrandTop />
-        <NavLink className="back-v2" to="/vida">← Vida</NavLink>
+        <NavLink className="back-v2" to="/vida"><EuIcon name="arrow-left" />Vida</NavLink>
         <div className="soft-empty wide"><span>?</span><p>Essa área não existe.</p></div>
       </div>
     )
@@ -51,7 +51,7 @@ export default function AreaPage() {
   return (
     <div className={'v2-page area-page area-page-' + definition.id}>
       <BrandTop />
-      <NavLink className="back-v2" to="/vida">← Vida</NavLink>
+      <NavLink className="back-v2" to="/vida"><EuIcon name="arrow-left" />Vida</NavLink>
 
       <header className="v2-hero area-hero">
         <div className="area-hero-top">
