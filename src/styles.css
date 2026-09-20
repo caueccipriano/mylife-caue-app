@@ -6633,3 +6633,118 @@ html[data-eu-discreet="1"] .ecosystem-insight p {
     display: none;
   }
 }
+
+
+.notification-category-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 7px;
+  margin: 18px 0;
+}
+
+.notification-category-grid button {
+  min-height: 48px;
+  padding: 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: var(--card);
+  color: var(--muted);
+  cursor: pointer;
+  text-align: left;
+  font-size: 9px;
+}
+
+.notification-category-grid button i {
+  width: 9px;
+  height: 9px;
+  flex: 0 0 9px;
+  border-radius: 50%;
+  background: rgba(31,41,64,.13);
+}
+
+.notification-category-grid button.active {
+  border-color: rgba(53,95,201,.2);
+  background: var(--cobalt-soft);
+  color: var(--ink);
+}
+
+.notification-category-grid button.active i {
+  background: var(--cobalt);
+}
+
+.notification-settings-grid {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.notification-settings-grid label {
+  display: grid;
+  gap: 6px;
+}
+
+.notification-settings-grid label > span {
+  color: var(--muted);
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.notification-settings-grid select,
+.notification-settings-grid input {
+  width: 100%;
+  min-height: 42px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: var(--card);
+  color: var(--ink);
+  outline: 0;
+  font-size: 9px;
+}
+
+.notification-inline-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 12px;
+}
+
+.notification-inline-options button {
+  min-height: 35px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 8px;
+}
+
+.notification-inline-options button.active {
+  color: var(--cobalt);
+  border-color: rgba(53,95,201,.25);
+  background: var(--cobalt-soft);
+}
+
+.notification-center-link {
+  display: inline-block;
+  margin-top: 18px;
+  color: var(--cobalt);
+  font-size: 9px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+@media (max-width: 620px) {
+  .notification-settings-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .notification-settings-grid label:first-child {
+    grid-column: 1 / -1;
+  }
+}
