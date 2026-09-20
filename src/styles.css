@@ -6122,3 +6122,44 @@ html[data-eu-discreet="1"] .ecosystem-insight p {
     height: 11px;
   }
 }
+
+
+.today-view-tabs {
+  display: flex;
+  gap: 6px;
+  margin: 10px 0 30px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: rgba(252,250,246,.72);
+}
+
+.today-view-tabs button {
+  flex: 1;
+  min-height: 38px;
+  border: 0;
+  border-radius: 11px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.today-view-tabs button.active {
+  color: #fff;
+  background: var(--cobalt);
+}
+
+.today-view-now .signals-only {
+  display: none !important;
+}
+
+.today-view-signals .now-only,
+.today-view-signals .astro-today-preview {
+  display: none !important;
+}
+
+.today-view-signals .daily-brief-card {
+  margin-bottom: 10px;
+}
