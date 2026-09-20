@@ -2,8 +2,9 @@ import { type FormEvent, useMemo, useState } from 'react'
 import { NavLink, useNavigate, useParams } from 'react-router-dom'
 import { defaultJourneyStage, deleteRecord, nextFollowUpDate, suggestTags, updateRecord, type ObjectState, type RecordFreshness, type RecordOutcome, type RecordProgress, type RecordStatus, type StoredAttachment } from './storage'
 import { hasPrivacyPin, isPrivateUnlocked, unlockPrivateRecords } from './privacy'
-import { useRecords } from './appState'
+import { useBridges, useRecords } from './appState'
 import { BrandTop, Tag, formatShortDate, sourceLabel, sourceTone, typeTone } from './v2Ui'
+import { crossAppHint } from './uxFeatures'
 
 const areaOptions = ['Carreira', 'Dinheiro', 'Estudos', 'Casa', 'Viagens', 'Compras', 'Lazer', 'Pessoal']
 const typeOptions = ['Memória', 'Preferência', 'Desejo', 'Pesquisa', 'Curso', 'Pendência', 'Objetivo', 'Projeto', 'Decisão', 'Insight', 'Ideia', 'Marco', 'Contexto', 'Conquista', 'Depois', 'Cápsula', 'Objeto']
@@ -37,6 +38,7 @@ export default function RecordDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
   const records = useRecords()
+  const { bridges } = useBridges()
   const record = records.find((item) => item.id === id)
   const [editing, setEditing] = useState(false)
   const [text, setText] = useState('')
@@ -161,6 +163,17 @@ export default function RecordDetailPage() {
   const actualTags = currentRecord.tags?.length ? currentRecord.tags : suggestTags(currentRecord.text, currentRecord.area, currentRecord.type)
   const stage = currentRecord.journeyStage || defaultJourneyStage(currentRecord.type, currentRecord.status)
   const related = records.filter((item) => (currentRecord.relatedIds ?? []).includes(item.id))
+  const appHint = crossAppHint(currentRecord.area)
+  const linkedApp = appHint ? bridges.find((card) => card.id === appHint.id) : null
+  const quickTags = [
+    currentRecord.area === 'Compras' ? 'comprar' : null,
+    currentRecord.area === 'Estudos' ? 'estudar' : null,
+    currentRecord.area === 'Carreira' ? 'carreira' : null,
+    currentRecord.type === 'Decisão' ? 'decidir' : null,
+    currentRecord.type === 'Pesquisa' ? 'pesquisando' : null,
+    'importante',
+    'lembrar',
+  ].filter((tag): tag is string => Boolean(tag)).filter((tag, index, all) => all.indexOf(tag) === index).slice(0, 5)
 
   function beginEdit() {
     setText(currentRecord.text)
@@ -232,6 +245,15 @@ export default function RecordDetailPage() {
 
   async function toggleFlag(flag: 'favorite' | 'pinned' | 'private') {
     await updateRecord(currentRecord.id, { [flag]: !currentRecord[flag] })
+    window.dispatchEvent(new Event('eu-record-saved'))
+  }
+
+  async function toggleQuickTag(tag: string) {
+    const currentTags = currentRecord.tags?.length ? currentRecord.tags : suggestTags(currentRecord.text, currentRecord.area, currentRecord.type)
+    const next = currentTags.includes(tag)
+      ? currentTags.filter((item) => item !== tag)
+      : [...currentTags, tag].slice(0, 12)
+    await updateRecord(currentRecord.id, { tags: next })
     window.dispatchEvent(new Event('eu-record-saved'))
   }
 
@@ -336,6 +358,29 @@ export default function RecordDetailPage() {
             <button className={currentRecord.pinned ? 'active' : ''} onClick={() => void toggleFlag('pinned')}>{currentRecord.pinned ? '⌖ Fixado' : '⌖ Fixar'}</button>
             <button className={currentRecord.private ? 'active' : ''} onClick={() => void toggleFlag('private')}>{currentRecord.private ? '◉ Privado' : '○ Privado'}</button>
           </div>
+
+          <section className="record-quick-organize">
+            <div>
+              <small>TAGS RÁPIDAS</small>
+              <span>um toque pra organizar</span>
+            </div>
+            <div className="quick-tag-row">
+              {quickTags.map((tag) => (
+                <button key={tag} className={actualTags.includes(tag) ? 'active' : ''} onClick={() => void toggleQuickTag(tag)}>#{tag}</button>
+              ))}
+            </div>
+          </section>
+
+          {linkedApp && linkedApp.bridge && (
+            <a className={'record-cross-app cross-app-' + linkedApp.id} href={linkedApp.href} target="_blank" rel="noopener noreferrer">
+              <div>
+                <Tag tone={linkedApp.id === 'folego' ? 'green' : linkedApp.id === 'traco' ? 'cobalt' : 'amber'}>OUTRO APP</Tag>
+                <strong>Isso também conversa com {linkedApp.title}.</strong>
+                <p>{linkedApp.bridge.summary || linkedApp.description}</p>
+              </div>
+              <span>↗</span>
+            </a>
+          )}
 
           {currentRecord.whyItMatters && (
             <section className="record-context-card why-card">
