@@ -10031,3 +10031,58 @@ button:disabled {
   width: 12px;
   height: 12px;
 }
+
+
+/* EU v10.7: calmer record editing */
+.record-advanced-edit {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: rgba(255,253,249,.62);
+}
+
+.record-advanced-edit > summary {
+  min-height: 56px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  list-style: none;
+  cursor: pointer;
+}
+
+.record-advanced-edit > summary::-webkit-details-marker {
+  display: none;
+}
+
+.record-advanced-edit > summary > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--ink);
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.record-advanced-edit > summary > span .eu-icon {
+  width: 15px;
+  height: 15px;
+  color: var(--cobalt);
+}
+
+.record-advanced-edit > summary > small {
+  color: var(--muted);
+  font-size: 8px;
+  text-align: right;
+}
+
+.record-advanced-edit[open] > summary {
+  border-bottom: 1px solid var(--line);
+}
+
+.record-advanced-edit-body {
+  padding: 14px;
+  display: grid;
+  gap: 14px;
+}
