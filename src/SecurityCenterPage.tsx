@@ -17,7 +17,7 @@ import {
   setDiscreetMode,
   setPrivateTags,
 } from './securitySettings'
-import { BrandTop, SectionTitle, Tag } from './v2Ui'
+import { BrandTop, EuIcon, SectionTitle, Tag } from './v2Ui'
 import { useBridges, useRecords } from './appState'
 import { localSyncVaultMeta, syncVaultSecurityNote, writeLocalSyncVault } from './syncVault'
 import {
@@ -162,7 +162,16 @@ export default function SecurityCenterPage() {
         </article>
       </section>
 
-      <PrivacySettings />
+      <nav className="security-overview-grid" aria-label="Atalhos da central">
+        <a href="#privacy"><EuIcon name="settings" /><span><strong>Privacidade</strong><small>bloqueio e proteção</small></span></a>
+        <a href="#notifications"><EuIcon name="mood" /><span><strong>Notificações</strong><small>quando o EU te chama</small></span></a>
+        <a href="#data"><EuIcon name="file" /><span><strong>Backup & dados</strong><small>recuperação e cofre</small></span></a>
+      </nav>
+
+      <details className="security-group" id="privacy" open>
+        <summary><span><EuIcon name="settings" />Privacidade</span><small>PIN, bloqueio e modo discreto</small></summary>
+        <div className="security-group-body">
+          <PrivacySettings />
 
       <section className="security-panel">
         <SectionTitle eyebrow="BLOQUEIO" title="Trancar automaticamente" />
@@ -199,6 +208,9 @@ export default function SecurityCenterPage() {
         </button>
       </section>
 
+      <details className="security-group" id="notifications">
+        <summary><span><EuIcon name="mood" />Notificações</span><small>frequência, categorias e silêncio</small></summary>
+        <div className="security-group-body">
       <section className="security-panel notification-settings-panel">
         <SectionTitle eyebrow="NOTIFICAÇÕES" title="O EU te chama só quando vale" />
         <p>Controle o que pode voltar até você. Lembretes explícitos continuam sendo tratados como essenciais; o resto respeita seu limite diário e horário silencioso.</p>
@@ -283,6 +295,8 @@ export default function SecurityCenterPage() {
 
         <NavLink className="notification-center-link" to="/notificacoes">abrir Central de notificações ↗</NavLink>
       </section>
+        </div>
+      </details>
 
       <section className="security-panel">
         <SectionTitle eyebrow="PRIVACIDADE AUTOMÁTICA" title="Tags que sempre nascem privadas" />
@@ -292,7 +306,12 @@ export default function SecurityCenterPage() {
           <button onClick={savePrivateTags}>Salvar tags</button>
         </div>
       </section>
+        </div>
+      </details>
 
+      <details className="security-group" id="data">
+        <summary><span><EuIcon name="file" />Backup & dados</span><small>cofre local, exportação e recuperação</small></summary>
+        <div className="security-group-body">
       <section className="security-panel vault-security-panel">
         <SectionTitle eyebrow="SYNC VAULT" title="Os seus apps, num cofre local" />
         <p>Fôlego, Traço e Repertório podem alimentar um envelope local cifrado com os resumos mais recentes e um digest do EU.</p>
@@ -337,6 +356,8 @@ export default function SecurityCenterPage() {
           <span>Ver itens excluídos e restaurar ↗</span>
         </div>
       </NavLink>
+        </div>
+      </details>
     </div>
   )
 }
