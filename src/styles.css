@@ -9540,3 +9540,22 @@ button:disabled {
 .simple-day-toggle[aria-pressed="true"] {
   background: var(--cobalt-soft);
 }
+
+
+/* EU v9.4: global Ask EU shortcut */
+.top-ask-action {
+  background: var(--lilac-soft);
+  color: #60459a;
+}
+
+.top-icon-action.active {
+  border-color: rgba(53,95,206,.14);
+  background: var(--cobalt-soft);
+  color: var(--cobalt);
+}
+
+@media (max-width: 560px) {
+  .v2-top-note {
+    display: none;
+  }
+}
