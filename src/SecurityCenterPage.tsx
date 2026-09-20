@@ -20,6 +20,11 @@ import {
 import { BrandTop, SectionTitle, Tag } from './v2Ui'
 import { useBridges, useRecords } from './appState'
 import { localSyncVaultMeta, syncVaultSecurityNote, writeLocalSyncVault } from './syncVault'
+import {
+  getNotificationPreferences,
+  setNotificationPreferences,
+  type EuNotificationCategory,
+} from './notifications'
 
 function formatDate(value: string | null) {
   if (!value) return 'ainda não criado'
@@ -43,6 +48,7 @@ export default function SecurityCenterPage() {
   const [lastBackup, setLastBackup] = useState(() => getLastBackupAt())
   const [recordCount, setRecordCount] = useState(0)
   const [vaultUpdatedAt, setVaultUpdatedAt] = useState(() => localSyncVaultMeta().updatedAt)
+  const [notificationPrefs, setNotificationPrefs] = useState(() => getNotificationPreferences())
 
   useEffect(() => {
     void listRecords().then((records) => setRecordCount(records.length))
@@ -105,6 +111,19 @@ export default function SecurityCenterPage() {
     } catch {
       setBackupInfo('Não consegui atualizar o Sync Vault agora.')
     }
+  }
+
+  function patchNotificationPrefs(patch: Parameters<typeof setNotificationPreferences>[0]) {
+    setNotificationPrefs(setNotificationPreferences(patch))
+  }
+
+  function toggleNotificationCategory(category: EuNotificationCategory) {
+    patchNotificationPrefs({
+      categories: {
+        ...notificationPrefs.categories,
+        [category]: !notificationPrefs.categories[category],
+      },
+    })
   }
 
   function savePrivateTags() {
@@ -178,6 +197,91 @@ export default function SecurityCenterPage() {
           <i />
           <span>{discreet ? 'Modo discreto ligado' : 'Modo discreto desligado'}</span>
         </button>
+      </section>
+
+      <section className="security-panel notification-settings-panel">
+        <SectionTitle eyebrow="NOTIFICAÇÕES" title="O EU te chama só quando vale" />
+        <p>Controle o que pode voltar até você. Lembretes explícitos continuam sendo tratados como essenciais; o resto respeita seu limite diário e horário silencioso.</p>
+
+        <button
+          className={'security-toggle ' + (notificationPrefs.enabled ? 'active' : '')}
+          onClick={() => patchNotificationPrefs({ enabled: !notificationPrefs.enabled })}
+        >
+          <i />
+          <span>{notificationPrefs.enabled ? 'Notificações do EU ligadas' : 'Notificações do EU desligadas'}</span>
+        </button>
+
+        <div className="notification-category-grid">
+          {([
+            ['humor', 'Humor'],
+            ['followup', 'Voltou pra você'],
+            ['decision', 'Decisões'],
+            ['capsule', 'Cápsulas'],
+            ['weekly', 'Resumo semanal'],
+            ['monthly', 'Resumo mensal'],
+            ['ecosystem', 'Outros apps'],
+            ['insight', 'Insights'],
+          ] as Array<[EuNotificationCategory, string]>).map(([category, label]) => (
+            <button
+              key={category}
+              className={notificationPrefs.categories[category] ? 'active' : ''}
+              onClick={() => toggleNotificationCategory(category)}
+            >
+              <i />
+              <span>{label}</span>
+            </button>
+          ))}
+        </div>
+
+        <div className="notification-settings-grid">
+          <label>
+            <span>Máximo de avisos comuns por dia</span>
+            <select
+              value={notificationPrefs.maxCommonPerDay}
+              onChange={(event) => patchNotificationPrefs({ maxCommonPerDay: Number(event.target.value) })}
+            >
+              <option value={0}>só essenciais</option>
+              <option value={1}>1 por dia</option>
+              <option value={2}>2 por dia</option>
+              <option value={3}>3 por dia</option>
+            </select>
+          </label>
+
+          <label>
+            <span>Início do silêncio</span>
+            <input
+              type="time"
+              value={notificationPrefs.quietHours.start}
+              onChange={(event) => patchNotificationPrefs({ quietHours: { ...notificationPrefs.quietHours, start: event.target.value } })}
+            />
+          </label>
+
+          <label>
+            <span>Fim do silêncio</span>
+            <input
+              type="time"
+              value={notificationPrefs.quietHours.end}
+              onChange={(event) => patchNotificationPrefs({ quietHours: { ...notificationPrefs.quietHours, end: event.target.value } })}
+            />
+          </label>
+        </div>
+
+        <div className="notification-inline-options">
+          <button
+            className={notificationPrefs.quietHours.enabled ? 'active' : ''}
+            onClick={() => patchNotificationPrefs({ quietHours: { ...notificationPrefs.quietHours, enabled: !notificationPrefs.quietHours.enabled } })}
+          >
+            {notificationPrefs.quietHours.enabled ? '✓' : '○'} horário silencioso
+          </button>
+          <button
+            className={notificationPrefs.discreetPreview ? 'active' : ''}
+            onClick={() => patchNotificationPrefs({ discreetPreview: !notificationPrefs.discreetPreview })}
+          >
+            {notificationPrefs.discreetPreview ? '✓' : '○'} prévia discreta
+          </button>
+        </div>
+
+        <NavLink className="notification-center-link" to="/notificacoes">abrir Central de notificações ↗</NavLink>
       </section>
 
       <section className="security-panel">
