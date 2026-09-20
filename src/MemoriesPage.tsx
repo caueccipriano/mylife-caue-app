@@ -1,7 +1,7 @@
-import { type ChangeEvent, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { NavLink, useNavigate, useSearchParams } from 'react-router-dom'
 import { groupTimeline, smartSearch } from './intelligence'
-import { exportBackup, importBackup, isRecordVisibleForInsights, listMoodCheckins, suggestTags } from './storage'
+import { isRecordVisibleForInsights, listMoodCheckins, suggestTags } from './storage'
 import { useRecords } from './appState'
 import { BrandTop, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
 
@@ -17,7 +17,6 @@ export default function MemoriesPage() {
   const [areaFilter, setAreaFilter] = useState('')
   const [statusFilter, setStatusFilter] = useState(initialCollection === 'pinned' ? 'pinned' : initialCollection === 'completed' ? 'completed' : '')
   const [periodFilter, setPeriodFilter] = useState<'all' | '30' | '90' | '365'>('all')
-  const [message, setMessage] = useState('')
   const moods = listMoodCheckins().slice(-14).reverse()
 
   const topTags = useMemo(() => {
@@ -58,28 +57,6 @@ export default function MemoriesPage() {
   }, [records, query, filter, tagFilter, areaFilter, statusFilter, periodFilter, initialCollection])
 
   const timeline = useMemo(() => groupTimeline(filtered), [filtered])
-
-  async function handleExport() {
-    try {
-      await exportBackup()
-      setMessage('Backup criado. Guarde no app Arquivos ou no iCloud Drive.')
-    } catch {
-      setMessage('Não consegui criar o backup agora.')
-    }
-  }
-
-  async function handleImport(event: ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0]
-    if (!file) return
-    try {
-      await importBackup(file)
-      window.dispatchEvent(new Event('eu-records-restored'))
-      setMessage('Backup restaurado neste aparelho.')
-    } catch {
-      setMessage('Esse arquivo não parece ser um backup válido do EU.')
-    }
-    event.target.value = ''
-  }
 
   function RecordCard({ record }: { record: (typeof records)[number] }) {
     const tags = record.tags?.length ? record.tags : suggestTags(record.text, record.area, record.type)
@@ -136,6 +113,7 @@ export default function MemoriesPage() {
         <button className="active">⌕ Buscar</button>
         <button onClick={() => navigate('/memorias/colecoes')}>▦ Coleções</button>
         <button onClick={() => navigate('/memorias/humor')}>◉ Humor</button>
+        <button onClick={() => navigate('/seguranca')}>⚙ Ajustes</button>
       </nav>
 
       <button className="ask-eu-entry" onClick={() => navigate('/pergunte')}>
@@ -263,25 +241,6 @@ export default function MemoriesPage() {
         </section>
       )}
 
-      <NavLink className="security-entry-card" to="/seguranca">
-        <div>
-          <Tag tone="cobalt">SEGURANÇA</Tag>
-          <strong>Privados, backups e recuperação.</strong>
-          <p>PIN local, bloqueio automático, modo discreto, backup criptografado e Lixeira.</p>
-        </div>
-        <b>↗</b>
-      </NavLink>
-
-      <section className="memory-backup">
-        <Tag tone="muted">SEU ARQUIVO</Tag>
-        <h2>Os dados continuam seus.</h2>
-        <p>O EU funciona localmente. Faça um backup de vez em quando para proteger seu histórico.</p>
-        <div>
-          <button onClick={handleExport}>Criar backup</button>
-          <label>Restaurar backup<input type="file" accept="application/json,.json" onChange={handleImport} /></label>
-        </div>
-        {message && <small>{message}</small>}
-      </section>
     </div>
   )
 }
