@@ -11,7 +11,7 @@ export default function WrappedPage() {
   return (
     <div className="v2-page wrapped-page">
       <BrandTop />
-      <NavLink className="back-v2" to="/vida">← Vida</NavLink>
+      <NavLink className="back-v2" to="/vida"><EuIcon name="arrow-left" />Vida</NavLink>
 
       <header className="wrapped-hero">
         <div className="wrapped-hero-top">
