@@ -141,7 +141,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
             </button>
           ))}
         </div>
-        <button className="mood-skip" onClick={() => undefined}>opcional, sempre</button>
+        <span className="mood-skip">opcional, sempre</span>
       </section>
 
       <section className="daily-brief-card">
@@ -195,7 +195,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
       )}
 
       <section className="daily-idea now-only">
-        <span aria-hidden="true">✦</span>
+        <span className="daily-idea-icon" aria-hidden="true"><EuIcon name="sparkles" /></span>
         <div>
           <small>UMA IDEIA PRA HOJE</small>
           <p>{advice(mood?.mood, due, active.length)}</p>
@@ -211,7 +211,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
             <h2>{inbox.length === 1 ? 'Uma conversa esperando por você.' : inbox.length + ' conversas esperando por você.'}</h2>
             <p>Revise o que vale guardar antes de entrar no seu EU.</p>
           </div>
-          <span>↗</span>
+          <span className="callout-arrow"><EuIcon name="arrow-up-right" /></span>
         </section>
       )}
 
@@ -222,7 +222,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
             <h2>{review.length === 1 ? 'Uma coisa pede uma resposta.' : review.length + ' coisas pedem uma resposta.'}</h2>
             <p>Continuar, concluir, pausar ou deixar pra lá. Leva poucos minutos.</p>
           </div>
-          <span>↗</span>
+          <span className="callout-arrow"><EuIcon name="arrow-up-right" /></span>
         </section>
       )}
 
