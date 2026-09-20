@@ -6778,3 +6778,52 @@ html[data-eu-discreet="1"] .ecosystem-insight p {
   opacity: .45;
   cursor: default;
 }
+
+
+.notification-decision-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+  padding: 0 18px 16px;
+}
+
+.notification-decision-actions button {
+  min-height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--card);
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.notification-decision-actions button:nth-child(1) {
+  color: #216a56;
+  border-color: rgba(73,179,156,.28);
+  background: var(--green-soft);
+}
+
+.notification-decision-actions button:nth-child(2) {
+  color: #6d5a18;
+  border-color: rgba(209,166,48,.26);
+  background: var(--amber-soft);
+}
+
+.notification-decision-actions button:nth-child(3) {
+  color: #6a4fb4;
+  border-color: rgba(142,125,242,.24);
+  background: var(--lilac-soft);
+}
+
+.notification-decision-actions button:nth-child(4) {
+  color: var(--cobalt);
+  border-color: rgba(53,95,201,.18);
+  background: var(--cobalt-soft);
+}
+
+.notification-decision-actions button:disabled {
+  opacity: .45;
+  cursor: default;
+}
