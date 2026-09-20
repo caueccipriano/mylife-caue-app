@@ -22,9 +22,13 @@ export default function ChaptersPage() {
       <div className="chapter-grid">
         {chapters.map((chapter, index) => (
           <article key={chapter.id} className={'chapter-card chapter-' + (index % 5)}>
-            <Tag tone={index % 2 ? 'lilac' : 'sky'}>{chapter.records.length} registros</Tag>
+            <div className="chapter-card-top">
+              <span className="chapter-card-icon"><EuIcon name="book" /></span>
+              <Tag tone={index % 2 ? 'lilac' : 'sky'}>{chapter.records.length} registros</Tag>
+              <small>capítulo {String(index + 1).padStart(2, '0')}</small>
+            </div>
             <h2>{chapter.label}</h2>
-            <p>{formatShortDate(chapter.start)} → {formatShortDate(chapter.end)}</p>
+            <p className="chapter-range"><EuIcon name="clock" />{formatShortDate(chapter.start)} <span>—</span> {formatShortDate(chapter.end)}</p>
             <button
               className="chapter-export-button"
               onClick={() => downloadEditorialHtml(
@@ -34,7 +38,7 @@ export default function ChaptersPage() {
                 'eu-capitulo-' + chapter.id.toLowerCase().replace(/[^a-z0-9]+/g, '-') + '.html',
               )}
             >
-              exportar capítulo <EuIcon name="arrow-up-right" />
+              <EuIcon name="download" /> exportar capítulo
             </button>
             <div className="chapter-preview">
               {chapter.records.slice(-3).reverse().map((record) => (
