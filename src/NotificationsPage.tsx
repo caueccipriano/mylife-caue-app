@@ -83,6 +83,21 @@ export default function NotificationsPage() {
     }
   }
 
+  async function setDecisionOutcome(item: EuNotification, outcome: 'good' | 'mixed' | 'regret' | 'unknown') {
+    if (!item.sourceId || busyId) return
+    setBusyId(item.id)
+    try {
+      await updateRecord(item.sourceId, {
+        outcome,
+        outcomeAt: new Date().toISOString(),
+      })
+      deleteEuNotification(item.id)
+      window.dispatchEvent(new Event('eu-record-saved'))
+    } finally {
+      setBusyId(null)
+    }
+  }
+
   return (
     <div className="v2-page notifications-page">
       <BrandTop />
@@ -118,6 +133,14 @@ export default function NotificationsPage() {
               <div className="notification-quick-actions">
                 <button disabled={busyId === item.id} onClick={() => void completeFollowup(item)}>✓ concluir</button>
                 <button disabled={busyId === item.id} onClick={() => void snoozeFollowup(item)}>↻ adiar 7 dias</button>
+              </div>
+            )}
+            {item.category === 'decision' && item.sourceId && (
+              <div className="notification-decision-actions">
+                <button disabled={busyId === item.id} onClick={() => void setDecisionOutcome(item, 'good')}>✓ foi boa</button>
+                <button disabled={busyId === item.id} onClick={() => void setDecisionOutcome(item, 'mixed')}>~ mais ou menos</button>
+                <button disabled={busyId === item.id} onClick={() => void setDecisionOutcome(item, 'regret')}>↶ me arrependi</button>
+                <button disabled={busyId === item.id} onClick={() => void setDecisionOutcome(item, 'unknown')}>? ainda não sei</button>
               </div>
             )}
             <button className="notification-delete" aria-label="Apagar notificação" onClick={() => deleteEuNotification(item.id)}>×</button>
