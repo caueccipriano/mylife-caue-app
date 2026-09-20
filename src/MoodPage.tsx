@@ -53,7 +53,7 @@ export default function MoodPage() {
   return (
     <div className="v2-page mood-page">
       <BrandTop />
-      <NavLink className="back-v2" to="/memorias">← Memórias</NavLink>
+      <NavLink className="back-v2" to="/memorias"><EuIcon name="arrow-left" />Memórias</NavLink>
 
       <header className="v2-hero mood-hero">
         <Tag tone="sky">HUMOR</Tag>
