@@ -10610,3 +10610,44 @@ button:disabled {
     height: 14px;
   }
 }
+
+
+/* EU v12.2: type icons and notification action polish */
+.notification-toolbar button {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.notification-toolbar button .eu-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.memory-icon .eu-icon,
+.entity-record-card .memory-icon .eu-icon {
+  stroke-width: 1.9;
+}
+
+/* Numbers align more calmly across summaries and stats. */
+.phase-stats strong,
+.identity-mini-stats strong,
+.wrapped-number strong,
+.wrapped-card strong,
+.life-stats-grid strong,
+.notification-toolbar strong {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 760px) {
+  .v2-tag {
+    font-size: 9px;
+  }
+
+  .feed-meta > span:not(.v2-tag),
+  .life-area p,
+  .memory-inline-tags span {
+    font-size: 9px;
+  }
+}
