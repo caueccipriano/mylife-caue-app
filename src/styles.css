@@ -9088,3 +9088,321 @@ button:disabled {
     width: 100%;
   }
 }
+
+
+/* EU v9: navigation awareness, search recovery and calmer motion */
+/* Header: two compact utilities, clear badges, persistent orientation. */
+.v2-topbar {
+  position: sticky;
+  z-index: 30;
+  top: 0;
+  margin-inline: -8px;
+  padding-inline: 8px;
+  background: linear-gradient(to bottom, rgba(246,243,235,.97), rgba(246,243,235,.90));
+  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(20px);
+}
+
+.v2-top-actions {
+  gap: 7px;
+}
+
+.top-icon-action {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 13px;
+  background: rgba(255,255,255,.55);
+  color: var(--cobalt);
+  text-decoration: none;
+  box-shadow: 0 5px 16px rgba(24,36,59,.025);
+}
+
+.top-icon-action .eu-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.top-icon-action b {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+  display: grid;
+  place-items: center;
+  border: 2px solid var(--paper);
+  border-radius: 999px;
+  background: var(--cobalt);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 7px;
+  line-height: 1;
+}
+
+.top-icon-action:active {
+  transform: scale(.95);
+}
+
+/* The old notification selector can remain harmless if cached markup survives briefly. */
+.notification-bell {
+  display: none;
+}
+
+/* Page changes feel intentional rather than abrupt. */
+.v2-page {
+  animation: eu-page-in .18s ease-out both;
+}
+
+@keyframes eu-page-in {
+  from { opacity: .72; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Memory search now has a real recovery path. */
+.memory-search {
+  grid-template-columns: 32px minmax(0,1fr) auto;
+}
+
+.memory-search-clear {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 11px;
+  background: #efebe4;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.memory-search-clear .eu-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.memory-filter-status {
+  min-height: 42px;
+  margin: 8px 0 2px;
+  padding: 8px 10px 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  border: 1px solid rgba(53,95,206,.08);
+  border-radius: 14px;
+  background: var(--cobalt-soft);
+}
+
+.memory-filter-status > span {
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.memory-filter-status button {
+  min-height: 32px;
+  padding: 0 9px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 0;
+  border-radius: 10px;
+  background: rgba(255,255,255,.66);
+  color: var(--cobalt);
+  cursor: pointer;
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.memory-filter-status button .eu-icon {
+  width: 12px;
+  height: 12px;
+}
+
+.ask-eu-entry {
+  box-shadow: var(--shadow-soft);
+}
+
+.ask-eu-entry > b {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  background: rgba(255,255,255,.58);
+  font-size: 0;
+}
+
+.ask-eu-entry > b .eu-icon {
+  width: 17px;
+  height: 17px;
+}
+
+.quiet-link {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.quiet-link .eu-icon {
+  width: 13px;
+  height: 13px;
+}
+
+/* Horizontal chip rails are cleaner and easier to swipe. */
+.memory-filters,
+.memory-tag-strip,
+.focus-area-chips,
+.quick-tag-row {
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.memory-filters::-webkit-scrollbar,
+.memory-tag-strip::-webkit-scrollbar,
+.focus-area-chips::-webkit-scrollbar,
+.quick-tag-row::-webkit-scrollbar {
+  display: none;
+}
+
+/* Discovery cards keep their touch boxes stable; importance is shown through type, not scaling. */
+.entity-cloud-v4 {
+  align-items: stretch;
+}
+
+.entity-chip {
+  transform: none !important;
+  transition: transform .14s ease, box-shadow .14s ease;
+  box-shadow: 0 5px 16px rgba(24,36,59,.025);
+}
+
+.entity-chip:active {
+  transform: scale(.985) !important;
+}
+
+.entity-chip-size-sm strong { font-size: 18px; }
+.entity-chip-size-md strong { font-size: 20px; }
+.entity-chip-size-lg strong { font-size: 22px; }
+
+.auto-collections .collection-card > b {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.auto-collections .collection-card > b .eu-icon {
+  width: 13px;
+  height: 13px;
+}
+
+.preference-shift-arrow {
+  width: 32px;
+  height: 32px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255,255,255,.58);
+}
+
+.preference-shift-arrow .eu-icon {
+  width: 15px;
+  height: 15px;
+}
+
+/* Dense cards get a predictable reading rhythm without hiding the full detail page. */
+.memory-record-card h3,
+.discovery-card p,
+.collection-preview-list a > span {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+}
+
+.memory-record-card h3 {
+  -webkit-line-clamp: 3;
+}
+
+.discovery-card p {
+  -webkit-line-clamp: 4;
+}
+
+.collection-preview-list a > span {
+  -webkit-line-clamp: 2;
+}
+
+/* A bit more physical feedback on interactive surfaces. */
+.top-icon-action,
+.memory-search-clear,
+.memory-filter-status button,
+.ask-eu-entry,
+.entity-chip,
+.collection-card,
+.memory-record-card {
+  touch-action: manipulation;
+}
+
+@media (max-width: 760px) {
+  .v2-topbar {
+    margin-inline: -18px;
+    padding-inline: 18px;
+  }
+
+  .v2-top-actions {
+    gap: 6px;
+  }
+
+  .top-icon-action {
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+  }
+
+  .top-icon-action .eu-icon {
+    width: 17px;
+    height: 17px;
+  }
+
+  .memory-filter-status {
+    align-items: flex-start;
+  }
+}
+
+@media (max-width: 430px) {
+  .v2-topbar {
+    margin-inline: -16px;
+    padding-inline: 16px;
+  }
+
+  .v2-brand span {
+    display: none;
+  }
+
+  .memory-filter-status {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .memory-filter-status button {
+    justify-content: center;
+  }
+
+  .before-after {
+    grid-template-columns: 1fr;
+  }
+
+  .preference-shift-arrow {
+    margin: -2px auto;
+    transform: rotate(90deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .v2-page {
+    animation: none !important;
+  }
+}
