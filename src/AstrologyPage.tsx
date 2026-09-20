@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { BrandTop, SectionTitle, Tag } from './v2Ui'
+import { BrandTop, EuIcon, SectionTitle, Tag } from './v2Ui'
 import { dailyAstrology, zodiacPosition, type NatalPoint } from './astrology'
 import { usePersonalProfile } from './appState'
 
@@ -81,7 +81,7 @@ export function AstroTodayPreview() {
         <h2>{reading.headline}</h2>
         <p>{reading.summary}</p>
       </div>
-      <NavLink to="/vida/astrologia">ver céu de hoje ↗</NavLink>
+      <NavLink to="/vida/astrologia">ver céu de hoje <EuIcon name="arrow-up-right" /></NavLink>
     </section>
   )
 }
@@ -173,7 +173,7 @@ export default function AstrologyPage() {
           </div>
         ) : (
           <div className="soft-empty wide">
-            <span>☼</span>
+            <span><EuIcon name="sparkles" /></span>
             <p>Importe seu perfil privado para ver o mapa natal completo sem publicar seus dados no GitHub.</p>
           </div>
         )}
