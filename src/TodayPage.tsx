@@ -7,7 +7,7 @@ import { buildDailyBrief } from './lifeModel'
 import { dueCapsules, getSimpleDayMode, setSimpleDayMode } from './v3Life'
 import { deriveContinue, deriveWeeklyDigest, getFocusAreas } from './uxFeatures'
 import { useBridges, useChatInbox, useMood, useMoodHistory, usePersonalProfile, useRecords } from './appState'
-import { BrandTop, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
+import { BrandTop, EuIcon, SectionTitle, Tag, formatShortDate, typeTone, type EuIconName } from './v2Ui'
 import { AstroTodayPreview } from './AstrologyPage'
 
 function greeting() {
@@ -44,11 +44,11 @@ function advice(mood: MoodValue | undefined, due: StoredRecord[], activeCount: n
   return 'Comece simples: guarde uma coisa que você gostou, decidiu, começou ou quer lembrar.'
 }
 
-const moods: { value: MoodValue; icon: string; label: string }[] = [
-  { value: 'animado', icon: '☺', label: 'bem' },
-  { value: 'ok', icon: '◡', label: 'ok' },
-  { value: 'cansado', icon: '–', label: 'cansado' },
-  { value: 'pilhado', icon: '↟', label: 'pilhado' },
+const moods: { value: MoodValue; icon: EuIconName; label: string }[] = [
+  { value: 'animado', icon: 'smile', label: 'bem' },
+  { value: 'ok', icon: 'neutral', label: 'ok' },
+  { value: 'cansado', icon: 'moon', label: 'cansado' },
+  { value: 'pilhado', icon: 'bolt', label: 'pilhado' },
 ]
 
 export default function TodayPage({ onRegister }: { onRegister: () => void }) {
@@ -136,7 +136,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
               aria-pressed={mood?.mood === item.value}
               title={item.label}
             >
-              <span>{item.icon}</span>
+              <span className="mood-icon"><EuIcon name={item.icon} /></span>
               <small>{item.label}</small>
             </button>
           ))}
