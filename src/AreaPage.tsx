@@ -60,7 +60,7 @@ export default function AreaPage() {
         </div>
         <h1>{definition.name}</h1>
         <p>{definition.direction}</p>
-        <button className={'area-focus-toggle' + (inFocus ? ' active' : '')} onClick={toggleFocus}>{inFocus ? '✓ no foco do momento' : '＋ colocar no foco'}</button>
+        <button className={'area-focus-toggle' + (inFocus ? ' active' : '')} aria-pressed={inFocus} onClick={toggleFocus}><EuIcon name={inFocus ? 'check' : 'plus'} />{inFocus ? 'no foco do momento' : 'colocar no foco'}</button>
       </header>
 
       <section className="area-stats-row">
