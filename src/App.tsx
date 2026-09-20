@@ -24,6 +24,7 @@ import StarterPackImportPage from './StarterPackImportPage'
 import MoodPage from './MoodPage'
 import CollectionsPage from './CollectionsPage'
 import AreaPage from './AreaPage'
+import NotificationsPage from './NotificationsPage'
 import { initPrivacyAutoLock } from './privacy'
 import { applyDiscreetMode } from './securitySettings'
 import { emptyExpiredTrash } from './storage'
@@ -95,6 +96,7 @@ function AppShell({ onRegister }: { onRegister: () => void }) {
           <Route path="/memorias" element={<MemoriesPage />} />
           <Route path="/memorias/humor" element={<MoodPage />} />
           <Route path="/memorias/colecoes" element={<CollectionsPage />} />
+          <Route path="/notificacoes" element={<NotificationsPage />} />
           <Route path="/capturar" element={<ChatCapturePage />} />
           <Route path="/registro/:id" element={<RecordDetailPage />} />
           <Route path="/inbox" element={<ChatInboxPage />} />
