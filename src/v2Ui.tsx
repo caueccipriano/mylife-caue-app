@@ -2,6 +2,7 @@ import { useEffect, useState, type ReactNode } from 'react'
 import { NavLink } from 'react-router-dom'
 import type { RecordSource } from './storage'
 import { unreadEuNotifications } from './notifications'
+import { listChatInbox } from './chatInbox'
 
 export type Accent = 'coral' | 'green' | 'amber' | 'pink' | 'cobalt' | 'lilac' | 'lime' | 'wine' | 'sky' | 'ink' | 'muted'
 
@@ -14,7 +15,7 @@ export type EuIconName =
   | 'image' | 'file' | 'mic' | 'x' | 'check'
   | 'clock' | 'undo' | 'help' | 'location' | 'link' | 'refresh'
   | 'lock' | 'pin' | 'edit' | 'plus'
-  | 'arrow-left' | 'inbox' | 'trash' | 'shield' | 'download' | 'chat'
+  | 'arrow-left' | 'arrow-right' | 'inbox' | 'trash' | 'shield' | 'download' | 'chat' | 'bell'
 
 export function EuIcon({ name, className = 'eu-icon' }: { name: EuIconName; className?: string }) {
   let body: ReactNode = null
@@ -125,6 +126,9 @@ export function EuIcon({ name, className = 'eu-icon' }: { name: EuIconName; clas
     case 'arrow-left':
       body = <><path d="M19 12H5" /><path d="m10 7-5 5 5 5" /></>
       break
+    case 'arrow-right':
+      body = <><path d="M5 12h14" /><path d="m14 7 5 5-5 5" /></>
+      break
     case 'inbox':
       body = <><path d="M4 5.5h16v13H4Z" /><path d="M4 13h4l1.8 2.3h4.4L16 13h4" /></>
       break
@@ -139,6 +143,9 @@ export function EuIcon({ name, className = 'eu-icon' }: { name: EuIconName; clas
       break
     case 'chat':
       body = <><path d="M5 5h14v10.5H9l-4 3Z" /><path d="M8 9h8M8 12h5" /></>
+      break
+    case 'bell':
+      body = <><path d="M6.8 9.7a5.2 5.2 0 0 1 10.4 0c0 5.8 2.2 6.4 2.2 6.4H4.6s2.2-.6 2.2-6.4Z" /><path d="M9.8 19.1a2.4 2.4 0 0 0 4.4 0" /></>
       break
   }
 
@@ -155,11 +162,17 @@ export function Tag({ children, tone = 'ink' }: { children: ReactNode; tone?: Ac
 
 export function BrandTop() {
   const [unread, setUnread] = useState(() => unreadEuNotifications().length)
+  const [inboxCount, setInboxCount] = useState(() => listChatInbox().length)
 
   useEffect(() => {
-    const refresh = () => setUnread(unreadEuNotifications().length)
-    window.addEventListener('eu-notifications-updated', refresh)
-    return () => window.removeEventListener('eu-notifications-updated', refresh)
+    const refreshNotifications = () => setUnread(unreadEuNotifications().length)
+    const refreshInbox = () => setInboxCount(listChatInbox().length)
+    window.addEventListener('eu-notifications-updated', refreshNotifications)
+    window.addEventListener('eu-chat-inbox-updated', refreshInbox)
+    return () => {
+      window.removeEventListener('eu-notifications-updated', refreshNotifications)
+      window.removeEventListener('eu-chat-inbox-updated', refreshInbox)
+    }
   }, [])
 
   return (
@@ -170,11 +183,12 @@ export function BrandTop() {
       </NavLink>
       <div className="v2-top-actions">
         <span className="v2-top-note">mais vida, menos ruído</span>
-        <NavLink to="/notificacoes" className="notification-bell" aria-label={unread ? unread + ' notificações não lidas' : 'Notificações'}>
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M6.8 9.7a5.2 5.2 0 0 1 10.4 0c0 5.8 2.2 6.4 2.2 6.4H4.6s2.2-.6 2.2-6.4Z" />
-            <path d="M9.8 19.1a2.4 2.4 0 0 0 4.4 0" />
-          </svg>
+        <NavLink to="/inbox" className="top-icon-action" aria-label={inboxCount ? inboxCount + ' entradas aguardando revisão' : 'Caixa do Chat'}>
+          <EuIcon name="inbox" />
+          {inboxCount > 0 && <b>{inboxCount > 9 ? '9+' : inboxCount}</b>}
+        </NavLink>
+        <NavLink to="/notificacoes" className="top-icon-action" aria-label={unread ? unread + ' notificações não lidas' : 'Notificações'}>
+          <EuIcon name="bell" />
           {unread > 0 && <b>{unread > 9 ? '9+' : unread}</b>}
         </NavLink>
       </div>
