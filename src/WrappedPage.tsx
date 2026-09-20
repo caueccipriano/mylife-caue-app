@@ -7,6 +7,7 @@ import { BrandTop, EuIcon, Tag } from './v2Ui'
 export default function WrappedPage() {
   const records = useRecords()
   const story = yearlyStory(records)
+  const maxAreaCount = Math.max(1, ...story.topAreas.map(([, count]) => count))
 
   return (
     <div className="v2-page wrapped-page">
@@ -21,7 +22,7 @@ export default function WrappedPage() {
             'O ano que você foi virando: decisões, desejos, ciclos e momentos que ficaram.',
             records.filter((record) => !record.private && new Date(record.createdAt).getFullYear() === story.year),
             'eu-wrapped-' + story.year + '.html',
-          )}>exportar edição <EuIcon name="arrow-up-right" /></button>
+          )}><EuIcon name="download" />exportar edição</button>
         </div>
         <h1>O ano que<br />você foi virando.</h1>
         <p>Não é produtividade. É uma retrospectiva do que ocupou espaço, virou decisão, desejo, marco e memória.</p>
@@ -34,16 +35,19 @@ export default function WrappedPage() {
 
       <div className="wrapped-grid">
         <article className="wrapped-card wrapped-green">
+          <span className="wrapped-card-icon"><EuIcon name="check" /></span>
           <small>FECHOU CICLOS</small>
           <strong>{story.completed}</strong>
           <span>concluídos</span>
         </article>
         <article className="wrapped-card wrapped-wine">
+          <span className="wrapped-card-icon"><EuIcon name="compass" /></span>
           <small>ESCOLHEU</small>
           <strong>{story.decisions}</strong>
           <span>decisões</span>
         </article>
         <article className="wrapped-card wrapped-pink">
+          <span className="wrapped-card-icon"><EuIcon name="heart" /></span>
           <small>QUIS / PESQUISOU</small>
           <strong>{story.desires}</strong>
           <span>desejos e pesquisas</span>
@@ -56,9 +60,12 @@ export default function WrappedPage() {
           <div className="wrapped-ranking">
             {story.topAreas.map(([area, count], index) => (
               <article key={area}>
-                <span>0{index + 1}</span>
-                <strong>{area}</strong>
-                <small>{count} registros</small>
+                <div className="wrapped-ranking-line">
+                  <span>0{index + 1}</span>
+                  <strong>{area}</strong>
+                  <small>{count} registros</small>
+                </div>
+                <div className="wrapped-ranking-track" aria-hidden="true"><i style={{ width: Math.max(12, Math.round((count / maxAreaCount) * 100)) + '%' }} /></div>
               </article>
             ))}
           </div>
