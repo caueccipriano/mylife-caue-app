@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { activeFollowUps, isRecordVisibleForInsights, nextFollowUpDate, saveMoodCheckin, updateRecord, type MoodValue, type StoredRecord } from './storage'
-import { derivePatterns, lifePulse, periodStory, reviewCandidates } from './intelligence'
+import { derivePatterns, lifePulse, reviewCandidates } from './intelligence'
 import { deriveEcosystemInsights } from './ecosystem'
 import { buildDailyBrief } from './lifeModel'
 import { dueCapsules, getSimpleDayMode, setSimpleDayMode } from './v3Life'
-import { useBridges, useChatInbox, useMood, usePersonalProfile, useRecords } from './appState'
+import { deriveContinue, deriveWeeklyDigest, getFocusAreas } from './uxFeatures'
+import { useBridges, useChatInbox, useMood, useMoodHistory, usePersonalProfile, useRecords } from './appState'
 import { BrandTop, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
 import { AstroTodayPreview } from './AstrologyPage'
 
@@ -54,11 +55,13 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   const records = useRecords()
   const profile = usePersonalProfile()
   const mood = useMood()
+  const moodHistory = useMoodHistory()
   const { bridges } = useBridges()
   const inbox = useChatInbox()
   const navigate = useNavigate()
   const [busyId, setBusyId] = useState<string | null>(null)
   const [simpleDay, setSimpleDay] = useState(() => getSimpleDayMode())
+  const [focusAreas, setFocusAreasState] = useState(() => getFocusAreas())
 
   const followups = useMemo(() => activeFollowUps(records), [records])
   const due = followups.filter((item) => item.due && isRecordVisibleForInsights(item.record)).map((item) => item.record)
@@ -67,16 +70,22 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   const chatToday = todayRecords.filter((record) => record.source === 'chatgpt')
   const review = useMemo(() => reviewCandidates(records), [records])
   const patterns = useMemo(() => derivePatterns(records), [records])
-  const story = useMemo(() => periodStory(records, 7), [records])
+  const weekly = useMemo(() => deriveWeeklyDigest(records, moodHistory), [records, moodHistory])
   const pulse = useMemo(() => lifePulse(records), [records])
+  const continueRecords = useMemo(() => deriveContinue(records, focusAreas), [records, focusAreas])
   const ecosystemInsights = useMemo(() => deriveEcosystemInsights(records, bridges), [records, bridges])
   const dailyBrief = useMemo(() => buildDailyBrief(records, bridges), [records, bridges])
   const readyCapsules = useMemo(() => dueCapsules(records), [records])
 
   useEffect(() => {
-    const refresh = () => setSimpleDay(getSimpleDayMode())
-    window.addEventListener('eu-simple-day-updated', refresh)
-    return () => window.removeEventListener('eu-simple-day-updated', refresh)
+    const refreshSimple = () => setSimpleDay(getSimpleDayMode())
+    const refreshFocus = () => setFocusAreasState(getFocusAreas())
+    window.addEventListener('eu-simple-day-updated', refreshSimple)
+    window.addEventListener('eu-focus-updated', refreshFocus)
+    return () => {
+      window.removeEventListener('eu-simple-day-updated', refreshSimple)
+      window.removeEventListener('eu-focus-updated', refreshFocus)
+    }
   }, [])
 
   async function complete(record: StoredRecord) {
@@ -149,6 +158,29 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
         </button>
       )}
 
+      {continueRecords.length > 0 && (
+        <section className="today-block continue-block">
+          <SectionTitle
+            eyebrow="CONTINUAR"
+            title="De onde você parou"
+            action={focusAreas.length ? <span className="focus-inline-label">foco: {focusAreas.join(' + ')}</span> : undefined}
+          />
+          <div className="continue-strip">
+            {continueRecords.slice(0, 4).map((record, index) => (
+              <article key={record.id} className={'continue-card continue-card-' + index} onClick={() => navigate('/registro/' + record.id)}>
+                <div>
+                  <Tag tone={record.pinned ? 'cobalt' : typeTone(record.type)}>{record.pinned ? 'FIXADO' : record.type}</Tag>
+                  <span>{record.area}</span>
+                </div>
+                <h3>{record.text}</h3>
+                <p>{record.nextMove || (record.progressLevel ? 'Retomar o progresso' : record.followUpAt ? 'Tem continuidade marcada' : 'Continuar de onde parou')}</p>
+                <small>abrir ↗</small>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
+
       <section className="daily-idea">
         <span aria-hidden="true">✦</span>
         <div>
@@ -207,14 +239,20 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
       )}
 
       <section className="today-block">
-        <SectionTitle eyebrow="ESSA SEMANA" title="O que sua vida contou" />
-        <article className="weekly-story-card">
-          <div>
-            <span>{story.count}</span>
+        <SectionTitle eyebrow="ESSA SEMANA" title="O que sua vida contou" action={<button className="quiet-link" onClick={() => navigate('/memorias/humor')}>humor ↗</button>} />
+        <article className="weekly-story-card weekly-story-v2">
+          <div className="weekly-story-number">
+            <span>{weekly.records}</span>
             <small>registros</small>
           </div>
-          <p>{story.text}</p>
-          {story.topArea && <Tag tone="green">{story.topArea} apareceu mais</Tag>}
+          <div className="weekly-story-copy">
+            <p>{weekly.text}</p>
+            <div>
+              {weekly.topArea && <Tag tone="green">{weekly.topArea}</Tag>}
+              {weekly.completed > 0 && <Tag tone="cobalt">{weekly.completed} concluído{weekly.completed > 1 ? 's' : ''}</Tag>}
+              {weekly.mood && <Tag tone="lilac">humor: {weekly.mood === 'animado' ? 'bem' : weekly.mood}</Tag>}
+            </div>
+          </div>
         </article>
       </section>
 
