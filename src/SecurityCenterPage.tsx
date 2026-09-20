@@ -16,6 +16,7 @@ import {
   setAutoLockMinutes,
   setDiscreetMode,
   setPrivateTags,
+  haptic,
 } from './securitySettings'
 import { BrandTop, EuIcon, SectionTitle, Tag } from './v2Ui'
 import { useBridges, useRecords } from './appState'
@@ -62,6 +63,8 @@ export default function SecurityCenterPage() {
     return Math.floor((Date.now() - new Date(lastBackup).getTime()) / 86400000)
   }, [lastBackup])
 
+  const backupInfoSuccess = /válido|criado|restaurado|atualizado/i.test(backupInfo)
+
   async function createSecureBackup() {
     try {
       await exportEncryptedBackup(password)
@@ -79,7 +82,7 @@ export default function SecurityCenterPage() {
     if (!file) return
     try {
       const info = await inspectBackup(file)
-      setBackupInfo(`✓ Backup válido · ${info.records} registros · ${info.attachments} anexos · ${info.privateRecords} privados · versão ${info.version}`)
+      setBackupInfo(`Backup válido · ${info.records} registros · ${info.attachments} anexos · ${info.privateRecords} privados · versão ${info.version}`)
     } catch (error) {
       setBackupInfo(error instanceof Error ? error.message : 'Não consegui validar esse backup.')
     }
@@ -184,6 +187,7 @@ export default function SecurityCenterPage() {
               onClick={() => {
                 setAutoLockMinutes(minutes)
                 setAutoLock(minutes)
+                haptic('light')
               }}
             >
               {minutes} min
@@ -201,6 +205,7 @@ export default function SecurityCenterPage() {
             const next = !discreet
             setDiscreetMode(next)
             setDiscreet(next)
+            haptic('light')
           }}
         >
           <i />
@@ -213,7 +218,7 @@ export default function SecurityCenterPage() {
         <p>Ex.: relacionamento, saúde, família. Qualquer novo registro com uma dessas tags será marcado como Privado automaticamente.</p>
         <div className="private-tags-editor">
           <input value={privateTags} onChange={(event) => setPrivateTagsState(event.target.value)} placeholder="relacionamento, saúde, família" />
-          <button onClick={savePrivateTags}>Salvar tags</button>
+          <button onClick={() => { savePrivateTags(); haptic('success') }}><EuIcon name="check" />Salvar tags</button>
         </div>
       </section>
         </div>
@@ -318,7 +323,7 @@ export default function SecurityCenterPage() {
         <p>Fôlego, Traço e Repertório podem alimentar um envelope local cifrado com os resumos mais recentes e um digest do EU.</p>
         <div className="vault-security-row">
           <span>{vaultUpdatedAt ? 'atualizado em ' + formatDate(vaultUpdatedAt) : 'ainda não criado'}</span>
-          <button onClick={() => void refreshVault()}>Atualizar cofre</button>
+          <button onClick={() => void refreshVault()}><EuIcon name="refresh" />Atualizar cofre</button>
         </div>
         <small>{syncVaultSecurityNote()}</small>
       </section>
@@ -337,16 +342,16 @@ export default function SecurityCenterPage() {
         </div>
 
         <div className="security-backup-actions">
-          <button onClick={() => void createSecureBackup()} disabled={password.length < 8}>Criar backup criptografado</button>
-          <button className="secondary" onClick={() => void exportBackup()}>Criar backup comum</button>
-          <label className="secondary">Validar backup<input type="file" accept=".json,application/json" onChange={inspect} /></label>
-          <label className="secondary">Restaurar .eubackup<input type="file" accept=".eubackup,application/octet-stream" onChange={restoreEncrypted} /></label>
+          <button onClick={() => void createSecureBackup()} disabled={password.length < 8}><EuIcon name="shield" />Criar backup criptografado</button>
+          <button className="secondary" onClick={() => void exportBackup()}><EuIcon name="download" />Criar backup comum</button>
+          <label className="secondary"><EuIcon name="check" />Validar backup<input type="file" accept=".json,application/json" onChange={inspect} /></label>
+          <label className="secondary"><EuIcon name="undo" />Restaurar .eubackup<input type="file" accept=".eubackup,application/octet-stream" onChange={restoreEncrypted} /></label>
         </div>
 
         <div className="backup-security-meta">
           <span>Último backup: {formatDate(lastBackup)}</span>
-          <span>⚠ O backup comum não é criptografado e inclui registros privados. Para guardar fora do aparelho, prefira o .eubackup seguro.</span>
-          {backupInfo && <strong>{backupInfo}</strong>}
+          <span className="backup-warning"><EuIcon name="shield" />O backup comum não é criptografado e inclui registros privados. Para guardar fora do aparelho, prefira o .eubackup seguro.</span>
+          {backupInfo && <strong className={backupInfoSuccess ? 'success' : 'notice'}><EuIcon name={backupInfoSuccess ? 'check' : 'help'} />{backupInfo}</strong>}
         </div>
       </section>
 
