@@ -9449,3 +9449,73 @@ button:disabled {
     padding-top: 13px;
   }
 }
+
+
+/* EU v9.2: Today action clarity */
+.capsule-ready-callout > span,
+.continue-card > small,
+.feed-followup,
+.chat-receipt button {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.capsule-ready-callout > span .eu-icon,
+.continue-card > small .eu-icon,
+.feed-followup .eu-icon,
+.chat-receipt button .eu-icon {
+  width: 13px;
+  height: 13px;
+}
+
+.followup-actions button {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.followup-actions button .eu-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.feed-followup {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.today-empty {
+  gap: 9px;
+}
+
+.today-empty button {
+  min-height: 40px;
+  padding: 0 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid rgba(53,95,206,.12);
+  border-radius: 12px;
+  background: var(--cobalt-soft);
+  color: var(--cobalt);
+  cursor: pointer;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.today-empty button .eu-icon {
+  width: 13px;
+  height: 13px;
+}
+
+.chat-receipt button {
+  min-height: 38px;
+}
+
+.continue-card {
+  box-shadow: var(--shadow-soft);
+}
