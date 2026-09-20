@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { activeFollowUps, isRecordVisibleForInsights, nextFollowUpDate, saveMoodCheckin, updateRecord, type MoodValue, type StoredRecord } from './storage'
 import { derivePatterns, lifePulse, reviewCandidates } from './intelligence'
 import { deriveEcosystemInsights } from './ecosystem'
@@ -59,9 +59,11 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   const { bridges } = useBridges()
   const inbox = useChatInbox()
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
+  const requestedView = searchParams.get('view')
   const [busyId, setBusyId] = useState<string | null>(null)
   const [simpleDay, setSimpleDay] = useState(() => getSimpleDayMode())
-  const [todayView, setTodayView] = useState<'now' | 'signals'>('now')
+  const [todayView, setTodayView] = useState<'now' | 'signals'>(() => requestedView === 'signals' ? 'signals' : 'now')
   const [focusAreas, setFocusAreasState] = useState(() => getFocusAreas())
 
   const followups = useMemo(() => activeFollowUps(records), [records])
@@ -77,6 +79,11 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   const ecosystemInsights = useMemo(() => deriveEcosystemInsights(records, bridges), [records, bridges])
   const dailyBrief = useMemo(() => buildDailyBrief(records, bridges), [records, bridges])
   const readyCapsules = useMemo(() => dueCapsules(records), [records])
+
+  useEffect(() => {
+    if (requestedView === 'signals') setTodayView('signals')
+    if (requestedView === 'now') setTodayView('now')
+  }, [requestedView])
 
   useEffect(() => {
     const refreshSimple = () => setSimpleDay(getSimpleDayMode())
