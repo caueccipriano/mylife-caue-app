@@ -167,7 +167,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
         <button className="capsule-ready-callout now-only" onClick={() => navigate('/vida/lab')}>
           <Tag tone="lilac">CÁPSULA DO FUTURO</Tag>
           <strong>{readyCapsules.length === 1 ? 'Uma mensagem sua chegou.' : readyCapsules.length + ' mensagens suas chegaram.'}</strong>
-          <span>abrir no EU Lab ↗</span>
+          <span>abrir no EU Lab <EuIcon name="arrow-up-right" /></span>
         </button>
       )}
 
@@ -187,7 +187,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
                 </div>
                 <h3>{record.text}</h3>
                 <p>{record.nextMove || (record.progressLevel ? 'Retomar o progresso' : record.followUpAt ? 'Tem continuidade marcada' : 'Continuar de onde parou')}</p>
-                <small>abrir ↗</small>
+                <small>abrir <EuIcon name="arrow-up-right" /></small>
               </article>
             ))}
           </div>
@@ -239,11 +239,11 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
                 <h3>{record.text}</h3>
                 <p>Você começou isso há algum tempo. Quer manter em movimento?</p>
                 <div className="followup-actions">
-                  <button onClick={() => complete(record)} disabled={busyId === record.id}>Concluí</button>
-                  <button onClick={() => snooze(record, 3)} disabled={busyId === record.id}>Daqui uns dias</button>
-                  <button onClick={() => snooze(record, 7)} disabled={busyId === record.id}>1 semana</button>
-                  <button onClick={() => snooze(record, 30)} disabled={busyId === record.id}>Mês que vem</button>
-                  <button onClick={() => navigate('/registro/' + record.id)}>Abrir</button>
+                  <button onClick={() => complete(record)} disabled={busyId === record.id}><EuIcon name="check" />Concluí</button>
+                  <button onClick={() => snooze(record, 3)} disabled={busyId === record.id}><EuIcon name="clock" />Daqui uns dias</button>
+                  <button onClick={() => snooze(record, 7)} disabled={busyId === record.id}><EuIcon name="clock" />1 semana</button>
+                  <button onClick={() => snooze(record, 30)} disabled={busyId === record.id}><EuIcon name="clock" />Mês que vem</button>
+                  <button onClick={() => navigate('/registro/' + record.id)}>Abrir <EuIcon name="arrow-up-right" /></button>
                 </div>
               </article>
             ))}
@@ -252,7 +252,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
       )}
 
       <section className="today-block signals-only">
-        <SectionTitle eyebrow="ESSA SEMANA" title="O que sua vida contou" action={<button className="quiet-link" onClick={() => navigate('/memorias/humor')}>humor ↗</button>} />
+        <SectionTitle eyebrow="ESSA SEMANA" title="O que sua vida contou" action={<button className="quiet-link" onClick={() => navigate('/memorias/humor')}>humor <EuIcon name="arrow-up-right" /></button>} />
         <article className="weekly-story-card weekly-story-v2">
           <div className="weekly-story-number">
             <span>{weekly.records}</span>
@@ -300,7 +300,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
         <SectionTitle
           eyebrow="HOJE"
           title="O que entrou na sua vida"
-          action={<button className="quiet-link" onClick={() => navigate('/memorias')}>ver tudo ↗</button>}
+          action={<button className="quiet-link" onClick={() => navigate('/memorias')}>ver tudo <EuIcon name="arrow-up-right" /></button>}
         />
 
         <div className="today-feed">
@@ -324,13 +324,13 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
                     {record.source === 'chatgpt' && <Tag tone="ink">do chat</Tag>}
                   </div>
                   <p>{record.text || 'Registro com anexo'}</p>
-                  {record.status === 'active' && <small>↻ em acompanhamento</small>}
+                  {record.status === 'active' && <small className="feed-followup"><EuIcon name="refresh" />em acompanhamento</small>}
                 </>
               )}
             </article>
           )) : (
             <div className="soft-empty">
-              <span>✎</span>
+              <span><EuIcon name="note" /></span>
               <p>Ainda está quieto por aqui hoje. Registre qualquer coisa do seu jeito.</p>
             </div>
           )}
@@ -341,7 +341,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
         <SectionTitle
           eyebrow="SINAIS"
           title="Seus outros apps"
-          action={<button className="quiet-link" onClick={() => navigate('/vida#sinais')}>ver na Vida ↗</button>}
+          action={<button className="quiet-link" onClick={() => navigate('/vida#sinais')}>ver na Vida <EuIcon name="arrow-up-right" /></button>}
         />
         <div className="signal-mini-grid">
           {bridges.map((card) => (
@@ -373,13 +373,10 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
         <section className="chat-receipt now-only">
           <Tag tone="ink">CHATGPT → EU</Tag>
           <p>{chatToday.length === 1 ? '1 coisa da nossa conversa entrou no EU hoje.' : chatToday.length + ' coisas das nossas conversas entraram no EU hoje.'}</p>
-          <button onClick={() => navigate('/memorias?origem=chatgpt')}>Ver do Chat ↗</button>
+          <button onClick={() => navigate('/memorias?origem=chatgpt')}>Ver do Chat <EuIcon name="arrow-up-right" /></button>
         </section>
       )}
 
-      <button className="register-pill in-page-register" onClick={onRegister}>
-        <span>＋</span> registrar
-      </button>
     </div>
   )
 }
