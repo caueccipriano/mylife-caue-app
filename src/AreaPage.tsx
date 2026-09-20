@@ -4,7 +4,18 @@ import { areas } from './data'
 import { useRecords } from './appState'
 import { isRecordVisibleForInsights } from './storage'
 import { getFocusAreas, setFocusAreas } from './uxFeatures'
-import { BrandTop, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
+import { BrandTop, EuIcon, SectionTitle, Tag, formatShortDate, typeTone, type EuIconName } from './v2Ui'
+
+const areaIcons: Record<string, EuIconName> = {
+  carreira: 'briefcase',
+  dinheiro: 'wallet',
+  estudos: 'book',
+  casa: 'home',
+  viagens: 'plane',
+  compras: 'bag',
+  lazer: 'sparkles',
+  pessoal: 'user',
+}
 
 export default function AreaPage() {
   const { id } = useParams()
@@ -43,7 +54,10 @@ export default function AreaPage() {
       <NavLink className="back-v2" to="/vida">← Vida</NavLink>
 
       <header className="v2-hero area-hero">
-        <Tag tone={definition.id === 'carreira' ? 'green' : definition.id === 'dinheiro' ? 'cobalt' : definition.id === 'estudos' ? 'lilac' : definition.id === 'viagens' ? 'sky' : definition.id === 'compras' ? 'amber' : 'muted'}>{definition.name}</Tag>
+        <div className="area-hero-top">
+          <span className="area-hero-icon"><EuIcon name={areaIcons[definition.id] || 'sparkles'} /></span>
+          <Tag tone={definition.id === 'carreira' ? 'green' : definition.id === 'dinheiro' ? 'cobalt' : definition.id === 'estudos' ? 'lilac' : definition.id === 'viagens' ? 'sky' : definition.id === 'compras' ? 'amber' : 'muted'}>{definition.name}</Tag>
+        </div>
         <h1>{definition.name}</h1>
         <p>{definition.direction}</p>
         <button className={'area-focus-toggle' + (inFocus ? ' active' : '')} onClick={toggleFocus}>{inFocus ? '✓ no foco do momento' : '＋ colocar no foco'}</button>
@@ -65,30 +79,36 @@ export default function AreaPage() {
               <p>{record.nextMove || 'desde ' + formatShortDate(record.startedAt || record.createdAt)}</p>
             </NavLink>
           ))}
-          {!active.length && <div className="soft-empty wide"><span>◌</span><p>Nada ativo nesta área agora.</p></div>}
+          {!active.length && <div className="soft-empty wide"><span><EuIcon name="check" /></span><p>Nada ativo nesta área agora.</p></div>}
         </div>
       </section>
 
       {wants.length > 0 && (
-        <section className="area-section">
-          <SectionTitle eyebrow="QUERO / PESQUISANDO" title="Coisas em consideração" />
+        <details className="area-section area-fold" open>
+          <summary>
+            <div><span>QUERO / PESQUISANDO</span><strong>Coisas em consideração</strong></div>
+            <b>{wants.length}</b>
+          </summary>
           <div className="compact-stack">
             {wants.slice(0, 8).map((record) => (
               <NavLink key={record.id} className="compact-record-link" to={'/registro/' + record.id}><Tag tone="amber">{record.type}</Tag><p>{record.text}</p></NavLink>
             ))}
           </div>
-        </section>
+        </details>
       )}
 
       {decisions.length > 0 && (
-        <section className="area-section">
-          <SectionTitle eyebrow="DECISÕES" title="Escolhas que moldaram esta área" />
+        <details className="area-section area-fold">
+          <summary>
+            <div><span>DECISÕES</span><strong>Escolhas que moldaram esta área</strong></div>
+            <b>{decisions.length}</b>
+          </summary>
           <div className="compact-stack">
             {decisions.slice(0, 8).map((record) => (
               <NavLink key={record.id} className="compact-record-link" to={'/registro/' + record.id}><Tag tone="green">DECISÃO</Tag><p>{record.text}</p></NavLink>
             ))}
           </div>
-        </section>
+        </details>
       )}
 
       <section className="area-section">
