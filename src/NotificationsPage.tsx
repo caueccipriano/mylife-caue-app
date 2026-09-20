@@ -119,7 +119,7 @@ export default function NotificationsPage() {
   return (
     <div className="v2-page notifications-page">
       <BrandTop />
-      <NavLink className="back-v2" to="/">← Hoje</NavLink>
+      <NavLink className="back-v2" to="/"><EuIcon name="arrow-left" />Hoje</NavLink>
 
       <header className="v2-hero notifications-hero">
         <Tag tone="cobalt">CENTRAL</Tag>
