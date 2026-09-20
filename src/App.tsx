@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Navigate, NavLink, Route, Routes, useLocation } from 'react-router-dom'
+import { Navigate, NavLink, Route, Routes, useLocation, useNavigationType } from 'react-router-dom'
 import RegisterSheet from './RegisterSheet'
 import TodayPage from './TodayPage'
 import LifePage, { CareerPlanPage } from './LifePage'
@@ -38,11 +38,30 @@ const nav = [
   { path: '/memorias', label: 'Memórias', icon: 'search' },
 ] as const
 
+function RouteScrollMemory() {
+  const location = useLocation()
+  const navigationType = useNavigationType()
+
+  useEffect(() => {
+    const key = 'eu-scroll-' + location.key
+    const nextTop = navigationType === 'POP' ? Number(sessionStorage.getItem(key) || 0) : 0
+    const frame = window.requestAnimationFrame(() => window.scrollTo({ top: nextTop, left: 0, behavior: 'auto' }))
+
+    return () => {
+      window.cancelAnimationFrame(frame)
+      sessionStorage.setItem(key, String(window.scrollY))
+    }
+  }, [location.key, navigationType])
+
+  return null
+}
+
 function AppShell({ onRegister }: { onRegister: () => void }) {
   const location = useLocation()
   const showRegister = ['/', '/vida', '/descobertas', '/memorias'].includes(location.pathname)
   return (
     <div className="eu-v2-shell">
+      <RouteScrollMemory />
       <main className="eu-v2-main">
         <Routes>
           <Route path="/" element={<TodayPage onRegister={onRegister} />} />
