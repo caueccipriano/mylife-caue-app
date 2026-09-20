@@ -1,4 +1,4 @@
-import { type ChangeEvent, type FormEvent, useMemo, useRef, useState } from 'react'
+import { type ChangeEvent, type FormEvent, useEffect, useMemo, useRef, useState } from 'react'
 import { nextFollowUpDate, saveRecord, updateRecord, type StoredAttachment } from './storage'
 import { useRecords } from './appState'
 import { detectSensitiveContent, findSimilarRecords } from './lifeModel'
@@ -221,6 +221,23 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
     [records, value],
   )
   const sensitive = useMemo(() => detectSensitiveContent(value), [value])
+  const hasDraft = Boolean(value.trim() || attachments.length || linkValue.trim())
+
+  useEffect(() => {
+    if (!open) return
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return
+      if (hasDraft && !saved && !window.confirm('Descartar este registro?')) return
+      close()
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.body.style.overflow = previousOverflow
+      window.removeEventListener('keydown', onKeyDown)
+    }
+  }, [open, hasDraft, saved])
 
   if (!open) return null
 
@@ -403,6 +420,11 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
     haptic('light')
   }
 
+  function requestClose() {
+    if (hasDraft && !saved && !window.confirm('Descartar este registro?')) return
+    close()
+  }
+
   function close() {
     if (recording) recorderRef.current?.stop()
     stopStream()
@@ -422,7 +444,7 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
   }
 
   return (
-    <div className="sheet-backdrop" role="presentation" onMouseDown={close}>
+    <div className="sheet-backdrop" role="presentation" onMouseDown={requestClose}>
       <section className="register-sheet" role="dialog" aria-modal="true" aria-labelledby="register-title" onMouseDown={(event) => event.stopPropagation()}>
         <div className="sheet-handle" />
         <div className="sheet-heading">
@@ -430,7 +452,7 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
             <p className="eyebrow">REGISTRAR</p>
             <h2 id="register-title">Me conta do seu jeito.</h2>
           </div>
-          <button className="text-button" onClick={close}>Fechar</button>
+          <button className="sheet-close-button" type="button" aria-label="Fechar registro" onClick={requestClose}><EuIcon name="x" /></button>
         </div>
 
         {!saved ? (
@@ -546,7 +568,7 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
               </div>
             )}
 
-            {error && <p className="inline-error">{error}</p>}
+            {error && <p className="inline-error" role="alert">{error}</p>}
 
             <div className="capture-submit-bar">
               <button className="primary-button full" type="submit" disabled={(!value.trim() && !attachments.length) || saving || recording}>
@@ -555,7 +577,7 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
             </div>
           </form>
         ) : (
-          <div className="saved-state">
+          <div className="saved-state" aria-live="polite">
             <p className="eyebrow">GUARDADO NO IPHONE</p>
             <h3>{saved.kind}</h3>
             <p>{saved.title}</p>
