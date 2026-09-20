@@ -140,7 +140,7 @@ export default function AstrologyPage() {
             const sidereal = zodiacPosition(transit.siderealLongitude)
             return (
               <article key={transit.name}>
-                <span>{transit.symbol}</span>
+                <span className="astro-transit-symbol">{transit.symbol}</span>
                 <strong>{transit.name}</strong>
                 <p>{tropical.symbol} {tropical.sign} {tropical.degree}°</p>
                 <small>védico: {sidereal.symbol} {sidereal.sign} {sidereal.degree}°</small>
@@ -152,8 +152,8 @@ export default function AstrologyPage() {
 
       <section className="astro-map-section">
         <div className="astro-mode-switch" role="tablist" aria-label="Escolher mapa">
-          <button className={mode === 'western' ? 'active' : ''} onClick={() => setMode('western')}>Ocidental</button>
-          <button className={mode === 'vedic' ? 'active' : ''} onClick={() => setMode('vedic')}>Védico</button>
+          <button role="tab" aria-selected={mode === 'western'} className={mode === 'western' ? 'active' : ''} onClick={() => setMode('western')}><EuIcon name="sun" />Ocidental</button>
+          <button role="tab" aria-selected={mode === 'vedic'} className={mode === 'vedic' ? 'active' : ''} onClick={() => setMode('vedic')}><EuIcon name="moon" />Védico</button>
         </div>
 
         <div className="astro-map-head">
