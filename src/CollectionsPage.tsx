@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import { useRecords } from './appState'
 import { deriveSmartCollections } from './uxFeatures'
-import { BrandTop, Tag, typeTone } from './v2Ui'
+import { BrandTop, EuIcon, Tag, typeTone } from './v2Ui'
 
 export default function CollectionsPage() {
   const records = useRecords()
@@ -10,7 +10,7 @@ export default function CollectionsPage() {
   return (
     <div className="v2-page collections-page">
       <BrandTop />
-      <NavLink className="back-v2" to="/memorias">← Memórias</NavLink>
+      <NavLink className="back-v2" to="/memorias"><EuIcon name="arrow-left" />Memórias</NavLink>
 
       <header className="v2-hero">
         <Tag tone="lilac">COLEÇÕES</Tag>
@@ -35,13 +35,13 @@ export default function CollectionsPage() {
                 </NavLink>
               ))}
             </div>
-            <NavLink className="collection-see-all" to={'/memorias?colecao=' + collection.id}>ver tudo ↗</NavLink>
+            <NavLink className="collection-see-all" to={'/memorias?colecao=' + collection.id}><span>ver tudo</span><EuIcon name="arrow-up-right" /></NavLink>
           </section>
         ))}
 
         {!collections.length && (
           <div className="soft-empty wide">
-            <span>□</span>
+            <span><EuIcon name="collections" /></span>
             <p>As coleções aparecem conforme você favorita, fixa, decide, pesquisa e salva links.</p>
           </div>
         )}
