@@ -132,7 +132,7 @@ export default function NotificationsPage() {
           <strong>{unread}</strong>
           <span>não lida{unread === 1 ? '' : 's'}</span>
         </div>
-        {unread > 0 && <button onClick={() => markAllEuNotificationsRead()}>marcar tudo como lido</button>}
+        {unread > 0 && <button onClick={() => markAllEuNotificationsRead()}><EuIcon name="check" />marcar tudo como lido</button>}
       </div>
 
       <div className="notification-list">
