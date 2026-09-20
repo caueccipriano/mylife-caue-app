@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { listChatInbox, removeChatBatch, type ChatInboxBatch } from './chatInbox'
-import { BrandTop, SectionTitle, Tag, typeTone } from './v2Ui'
+import { BrandTop, EuIcon, SectionTitle, Tag, typeTone } from './v2Ui'
 
 export default function ChatInboxPage() {
   const [batches, setBatches] = useState<ChatInboxBatch[]>(() => listChatInbox())
@@ -60,7 +60,7 @@ export default function ChatInboxPage() {
 
         {!batches.length && (
           <div className="soft-empty wide">
-            <span>✓</span>
+            <span><EuIcon name="inbox" /></span>
             <p>Nada esperando. Conversas, links e textos compartilhados podem aparecer aqui antes de entrar no seu arquivo.</p>
           </div>
         )}
