@@ -61,6 +61,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   const navigate = useNavigate()
   const [busyId, setBusyId] = useState<string | null>(null)
   const [simpleDay, setSimpleDay] = useState(() => getSimpleDayMode())
+  const [todayView, setTodayView] = useState<'now' | 'signals'>('now')
   const [focusAreas, setFocusAreasState] = useState(() => getFocusAreas())
 
   const followups = useMemo(() => activeFollowUps(records), [records])
@@ -108,7 +109,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   }
 
   return (
-    <div className={'v2-page today-page' + (simpleDay ? ' simple-day' : '')}>
+    <div className={'v2-page today-page today-view-' + todayView + (simpleDay ? ' simple-day' : '')}>
       <BrandTop />
 
       <section className="today-hello">
@@ -150,8 +151,13 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
         </div>
       </section>
 
+      <nav className="today-view-tabs" aria-label="Visões de Hoje">
+        <button className={todayView === 'now' ? 'active' : ''} onClick={() => setTodayView('now')}>Agora</button>
+        <button className={todayView === 'signals' ? 'active' : ''} onClick={() => setTodayView('signals')}>Sinais</button>
+      </nav>
+
       {readyCapsules.length > 0 && (
-        <button className="capsule-ready-callout" onClick={() => navigate('/vida/lab')}>
+        <button className="capsule-ready-callout now-only" onClick={() => navigate('/vida/lab')}>
           <Tag tone="lilac">CÁPSULA DO FUTURO</Tag>
           <strong>{readyCapsules.length === 1 ? 'Uma mensagem sua chegou.' : readyCapsules.length + ' mensagens suas chegaram.'}</strong>
           <span>abrir no EU Lab ↗</span>
@@ -159,7 +165,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
       )}
 
       {continueRecords.length > 0 && (
-        <section className="today-block continue-block">
+        <section className="today-block continue-block now-only">
           <SectionTitle
             eyebrow="CONTINUAR"
             title="De onde você parou"
@@ -181,7 +187,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
         </section>
       )}
 
-      <section className="daily-idea">
+      <section className="daily-idea now-only">
         <span aria-hidden="true">✦</span>
         <div>
           <small>UMA IDEIA PRA HOJE</small>
@@ -192,7 +198,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
       <AstroTodayPreview />
 
       {inbox.length > 0 && (
-        <section className="adaptive-callout chat-inbox-callout" onClick={() => navigate('/inbox')}>
+        <section className="adaptive-callout chat-inbox-callout now-only" onClick={() => navigate('/inbox')}>
           <div>
             <Tag tone="ink">CAIXA DO CHAT</Tag>
             <h2>{inbox.length === 1 ? 'Uma conversa esperando por você.' : inbox.length + ' conversas esperando por você.'}</h2>
@@ -203,7 +209,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
       )}
 
       {review.length > 0 && (
-        <section className="adaptive-callout review-callout" onClick={() => navigate('/revisao')}>
+        <section className="adaptive-callout review-callout now-only" onClick={() => navigate('/revisao')}>
           <div>
             <Tag tone="amber">REVISÃO</Tag>
             <h2>{review.length === 1 ? 'Uma coisa pede uma resposta.' : review.length + ' coisas pedem uma resposta.'}</h2>
@@ -214,7 +220,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
       )}
 
       {due.length > 0 && (
-        <section className="today-block">
+        <section className="today-block now-only">
           <SectionTitle eyebrow="VOLTOU PRA VOCÊ" title="Isso ainda está vivo?" />
           <div className="followup-stack">
             {due.slice(0, 3).map((record) => (
@@ -238,7 +244,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
         </section>
       )}
 
-      <section className="today-block">
+      <section className="today-block signals-only">
         <SectionTitle eyebrow="ESSA SEMANA" title="O que sua vida contou" action={<button className="quiet-link" onClick={() => navigate('/memorias/humor')}>humor ↗</button>} />
         <article className="weekly-story-card weekly-story-v2">
           <div className="weekly-story-number">
@@ -257,7 +263,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
       </section>
 
       {patterns.length > 0 && (
-        <section className="today-block">
+        <section className="today-block signals-only">
           <SectionTitle eyebrow="PADRÕES" title="Coisas que o EU percebeu" />
           <div className="pattern-grid">
             {patterns.map((pattern) => (
@@ -271,7 +277,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
         </section>
       )}
 
-      <section className="today-block">
+      <section className="today-block signals-only">
         <SectionTitle eyebrow="NESTA FASE" title="Um olhar rápido" />
         <div className="life-pulse">
           {pulse.map((item) => (
@@ -283,7 +289,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
         </div>
       </section>
 
-      <section className="today-block">
+      <section className="today-block now-only">
         <SectionTitle
           eyebrow="HOJE"
           title="O que entrou na sua vida"
@@ -324,7 +330,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
         </div>
       </section>
 
-      <section className="today-block">
+      <section className="today-block signals-only">
         <SectionTitle
           eyebrow="SINAIS"
           title="Seus outros apps"
@@ -342,7 +348,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
       </section>
 
       {ecosystemInsights.length > 0 && (
-        <section className="today-block">
+        <section className="today-block signals-only">
           <SectionTitle eyebrow="CONEXÕES" title="O que isso significa junto" />
           <div className="ecosystem-insights compact">
             {ecosystemInsights.slice(0, 2).map((insight) => (
@@ -357,7 +363,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
       )}
 
       {chatToday.length > 0 && (
-        <section className="chat-receipt">
+        <section className="chat-receipt now-only">
           <Tag tone="ink">CHATGPT → EU</Tag>
           <p>{chatToday.length === 1 ? '1 coisa da nossa conversa entrou no EU hoje.' : chatToday.length + ' coisas das nossas conversas entraram no EU hoje.'}</p>
           <button onClick={() => navigate('/memorias?origem=chatgpt')}>Ver do Chat ↗</button>
