@@ -6856,3 +6856,258 @@ html[data-eu-discreet="1"] .ecosystem-insight p {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
+
+
+/* EU visual polish v5: icons, typography, color semantics and card stability */
+:root {
+  --sans: "Avenir Next", "SF Pro Text", -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+  --serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", ui-serif, Georgia, "Times New Roman", serif;
+  --paper: #f6f3eb;
+  --card: #fffdf9;
+  --ink: #18243b;
+  --muted: #6b6d6b;
+  --faint: #92928d;
+  --coral: #d98b54;
+  --green: #45b49a;
+  --amber: #cda12c;
+  --pink: #7063d5;
+  --cobalt: #355fce;
+  --lilac: #8d78df;
+  --sky: #78add4;
+  font-family: var(--sans);
+}
+
+.eu-icon {
+  width: 1em;
+  height: 1em;
+  display: block;
+  flex: 0 0 auto;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--serif);
+}
+
+button,
+input,
+textarea,
+select,
+label {
+  font-family: var(--sans);
+}
+
+/* Mood: no clipped outer halo; the selected state stays completely inside the circle. */
+.mood-row {
+  gap: 11px;
+  padding: 4px 2px 8px;
+}
+
+.mood-row button {
+  width: 78px;
+  height: 78px;
+  min-width: 78px;
+  min-height: 78px;
+  flex: 0 0 78px;
+  border: 1px solid rgba(24, 36, 59, .08);
+  box-shadow: none;
+  overflow: hidden;
+}
+
+.mood-row button::before {
+  display: none;
+}
+
+.mood-row button.active,
+.mood-row button[aria-pressed="true"] {
+  color: var(--mood-ink);
+  background: var(--mood-base) !important;
+  box-shadow:
+    inset 0 0 0 3px rgba(255,255,255,.72),
+    inset 0 0 0 5px var(--mood-active);
+  transform: translateY(-1px);
+}
+
+.mood-row button .mood-icon {
+  width: 27px;
+  height: 27px;
+  display: grid;
+  place-items: center;
+  font-family: inherit;
+  font-size: 0;
+}
+
+.mood-row button .mood-icon .eu-icon {
+  width: 24px;
+  height: 24px;
+  stroke-width: 1.8;
+}
+
+.mood-row button small {
+  margin-top: 2px;
+  font-size: 8px;
+  letter-spacing: .09em;
+}
+
+/* Life: anchors must be blocks. This fixes the fragmented rounded shapes over "em acompanhamento". */
+.life-list-card,
+.record-link-card {
+  display: block;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  color: inherit;
+  text-decoration: none;
+  border-left: 4px solid var(--life-accent, var(--green));
+}
+
+.life-list-card.type-border-coral { --life-accent: var(--coral); }
+.life-list-card.type-border-green { --life-accent: var(--green); }
+.life-list-card.type-border-amber { --life-accent: var(--amber); }
+.life-list-card.type-border-pink { --life-accent: var(--pink); }
+.life-list-card.type-border-cobalt { --life-accent: var(--cobalt); }
+.life-list-card.type-border-lilac { --life-accent: var(--lilac); }
+.life-list-card.type-border-lime { --life-accent: var(--lime); }
+.life-list-card.type-border-wine { --life-accent: var(--wine); }
+.life-list-card.type-border-sky { --life-accent: var(--sky); }
+.life-list-card.type-border-ink { --life-accent: var(--ink); }
+.life-list-card.type-border-muted { --life-accent: #b7b2a9; }
+
+.life-list-card h3 {
+  margin: 15px 0 8px;
+  font-family: var(--serif);
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.24;
+  letter-spacing: -.025em;
+}
+
+.life-list-card > p {
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.area-grid-v4 .life-area {
+  color: inherit;
+  text-decoration: none;
+}
+
+.life-area > .life-area-icon {
+  width: 38px;
+  height: 38px;
+  margin-bottom: auto;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(24,36,59,.06);
+  border-radius: 13px;
+  background: rgba(255,255,255,.48);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.life-area-icon .eu-icon {
+  width: 19px;
+  height: 19px;
+}
+
+/* Memories: recognizable icons and color-coded categories improve scanning. */
+.memory-list article {
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: 13px;
+}
+
+.memory-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 14px;
+  font-family: inherit;
+}
+
+.memory-icon .eu-icon {
+  width: 19px;
+  height: 19px;
+}
+
+.memory-icon-coral { color: #8f551d; background: var(--coral-soft); }
+.memory-icon-green { color: #107457; background: var(--green-soft); }
+.memory-icon-amber { color: #805c14; background: var(--amber-soft); }
+.memory-icon-pink { color: #5148b6; background: var(--pink-soft); }
+.memory-icon-cobalt { color: #2445a5; background: var(--cobalt-soft); }
+.memory-icon-lilac { color: #60459a; background: var(--lilac-soft); }
+.memory-icon-lime { color: #667d12; background: var(--lime-soft); }
+.memory-icon-wine { color: #236a73; background: var(--wine-soft); }
+.memory-icon-sky { color: #236e89; background: var(--sky-soft); }
+.memory-icon-muted { color: #6f6a62; background: #ece8e1; }
+.memory-icon-ink { color: #fff; background: var(--ink); }
+
+.memory-section-nav button,
+.memory-mode-switch button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.memory-section-nav .eu-icon {
+  width: 15px;
+  height: 15px;
+}
+
+.memory-mode-switch .eu-icon {
+  width: 13px;
+  height: 13px;
+}
+
+.memory-search > span {
+  display: grid;
+  place-items: center;
+}
+
+.memory-search > span .eu-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.mood-history article > span {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  font-family: inherit;
+  font-size: 0;
+}
+
+.mood-history article > span .eu-icon {
+  width: 22px;
+  height: 22px;
+}
+
+@media (max-width: 760px) {
+  .mood-row button {
+    width: 76px;
+    height: 76px;
+    min-width: 76px;
+    min-height: 76px;
+    flex-basis: 76px;
+  }
+
+  .life-list-card h3 {
+    font-size: 19px;
+  }
+}
+
+@media (max-width: 390px) {
+  .mood-row {
+    gap: 8px;
+  }
+
+  .mood-row button {
+    width: 72px;
+    height: 72px;
+    min-width: 72px;
+    min-height: 72px;
+    flex-basis: 72px;
+  }
+}
