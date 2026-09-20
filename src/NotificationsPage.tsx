@@ -8,7 +8,7 @@ import {
   type EuNotification,
 } from './notifications'
 import { nextFollowUpDate, saveMoodCheckin, updateRecord, type MoodValue } from './storage'
-import { BrandTop, Tag } from './v2Ui'
+import { BrandTop, EuIcon, Tag } from './v2Ui'
 
 function categoryLabel(category: EuNotification['category']) {
   if (category === 'humor') return 'Humor'
@@ -32,6 +32,16 @@ function tone(category: EuNotification['category']) {
   return 'lilac' as const
 }
 
+function notificationPeriod(value: string) {
+  const date = new Date(value)
+  const now = new Date()
+  const startToday = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
+  const time = date.getTime()
+  if (time >= startToday) return 'Hoje'
+  if (time >= startToday - 6 * 86400000) return 'Esta semana'
+  return 'Anteriores'
+}
+
 export default function NotificationsPage() {
   const navigate = useNavigate()
   const [items, setItems] = useState(() => listEuNotifications())
@@ -44,6 +54,9 @@ export default function NotificationsPage() {
   }, [])
 
   const unread = items.filter((item) => !item.readAt).length
+  const groups = ['Hoje', 'Esta semana', 'Anteriores']
+    .map((label) => ({ label, items: items.filter((item) => notificationPeriod(item.createdAt) === label) }))
+    .filter((group) => group.items.length > 0)
 
   function open(item: EuNotification) {
     markEuNotificationRead(item.id)
@@ -123,46 +136,60 @@ export default function NotificationsPage() {
       </div>
 
       <div className="notification-list">
-        {items.map((item) => (
-          <article key={item.id} className={'notification-card' + (!item.readAt ? ' unread' : '')}>
-            <button className="notification-open" onClick={() => open(item)}>
-              <div className="notification-card-head">
-                <Tag tone={tone(item.category)}>{categoryLabel(item.category)}</Tag>
-                {!item.readAt && <i aria-label="não lida" />}
-              </div>
-              <h2>{item.title}</h2>
-              <p>{item.body}</p>
-              <small>{new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }).format(new Date(item.createdAt))}</small>
-            </button>
-            {item.category === 'followup' && item.sourceId && (
-              <div className="notification-quick-actions">
-                <button disabled={busyId === item.id} onClick={() => void completeFollowup(item)}>✓ concluir</button>
-                <button disabled={busyId === item.id} onClick={() => void snoozeFollowup(item)}>↻ adiar 7 dias</button>
-              </div>
-            )}
-            {item.category === 'decision' && item.sourceId && (
-              <div className="notification-decision-actions">
-                <button disabled={busyId === item.id} onClick={() => void setDecisionOutcome(item, 'good')}>✓ foi boa</button>
-                <button disabled={busyId === item.id} onClick={() => void setDecisionOutcome(item, 'mixed')}>~ mais ou menos</button>
-                <button disabled={busyId === item.id} onClick={() => void setDecisionOutcome(item, 'regret')}>↶ me arrependi</button>
-                <button disabled={busyId === item.id} onClick={() => void setDecisionOutcome(item, 'unknown')}>? ainda não sei</button>
-              </div>
-            )}
-            {item.category === 'humor' && (
-              <div className="notification-mood-actions" aria-label="Responder humor">
-                <button onClick={() => answerMood(item, 'animado')}>☺ bem</button>
-                <button onClick={() => answerMood(item, 'ok')}>◡ ok</button>
-                <button onClick={() => answerMood(item, 'cansado')}>– cansado</button>
-                <button onClick={() => answerMood(item, 'pilhado')}>↟ pilhado</button>
-              </div>
-            )}
-            <button className="notification-delete" aria-label="Apagar notificação" onClick={() => deleteEuNotification(item.id)}>×</button>
-          </article>
+        {groups.map((group) => (
+          <section className="notification-group" key={group.label}>
+            <div className="notification-group-title">
+              <span>{group.label}</span>
+              <b>{group.items.length}</b>
+            </div>
+            <div className="notification-group-list">
+              {group.items.map((item) => (
+                <article key={item.id} className={'notification-card' + (!item.readAt ? ' unread' : '')}>
+                  <button className="notification-open" onClick={() => open(item)}>
+                    <div className="notification-card-head">
+                      <Tag tone={tone(item.category)}>{categoryLabel(item.category)}</Tag>
+                      {!item.readAt && <i aria-label="não lida" />}
+                    </div>
+                    <h2>{item.title}</h2>
+                    <p>{item.body}</p>
+                    <small>{new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }).format(new Date(item.createdAt))}</small>
+                  </button>
+
+                  {item.category === 'followup' && item.sourceId && (
+                    <div className="notification-quick-actions">
+                      <button disabled={busyId === item.id} onClick={() => void completeFollowup(item)}><EuIcon name="check" />concluir</button>
+                      <button disabled={busyId === item.id} onClick={() => void snoozeFollowup(item)}><EuIcon name="clock" />adiar 7 dias</button>
+                    </div>
+                  )}
+
+                  {item.category === 'decision' && item.sourceId && (
+                    <div className="notification-decision-actions">
+                      <button disabled={busyId === item.id} onClick={() => void setDecisionOutcome(item, 'good')}><EuIcon name="check" />foi boa</button>
+                      <button disabled={busyId === item.id} onClick={() => void setDecisionOutcome(item, 'mixed')}><EuIcon name="neutral" />mais ou menos</button>
+                      <button disabled={busyId === item.id} onClick={() => void setDecisionOutcome(item, 'regret')}><EuIcon name="undo" />me arrependi</button>
+                      <button disabled={busyId === item.id} onClick={() => void setDecisionOutcome(item, 'unknown')}><EuIcon name="help" />ainda não sei</button>
+                    </div>
+                  )}
+
+                  {item.category === 'humor' && (
+                    <div className="notification-mood-actions" aria-label="Responder humor">
+                      <button onClick={() => answerMood(item, 'animado')}><EuIcon name="smile" />bem</button>
+                      <button onClick={() => answerMood(item, 'ok')}><EuIcon name="neutral" />ok</button>
+                      <button onClick={() => answerMood(item, 'cansado')}><EuIcon name="moon" />cansado</button>
+                      <button onClick={() => answerMood(item, 'pilhado')}><EuIcon name="bolt" />pilhado</button>
+                    </div>
+                  )}
+
+                  <button className="notification-delete" aria-label="Apagar notificação" onClick={() => deleteEuNotification(item.id)}><EuIcon name="x" /></button>
+                </article>
+              ))}
+            </div>
+          </section>
         ))}
 
         {!items.length && (
           <div className="soft-empty wide">
-            <span>◌</span>
+            <span><EuIcon name="check" /></span>
             <p>Nada te chamando agora. Quando algo realmente merecer voltar, aparece aqui.</p>
           </div>
         )}
