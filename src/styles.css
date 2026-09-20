@@ -272,18 +272,51 @@ h3 {
 .mood-row::-webkit-scrollbar { display: none; }
 
 .mood-row button {
-  min-width: 72px;
-  min-height: 72px;
+  --mood-soft: #f3efe8;
+  --mood-active: #d7d1c8;
+  --mood-ink: #5f5a52;
+  width: 76px;
+  height: 76px;
+  min-width: 76px;
+  min-height: 76px;
+  flex: 0 0 76px;
   display: grid;
   place-items: center;
   align-content: center;
   gap: 4px;
+  padding: 0;
   border: 0;
   border-radius: 50%;
-  background: rgba(255,255,255,.58);
+  background: var(--mood-soft);
   cursor: pointer;
-  color: var(--muted);
-  transition: transform .15s ease, background .15s ease, color .15s ease;
+  color: var(--mood-ink);
+  box-shadow: inset 0 0 0 1px rgba(46,43,39,.035);
+  transition: transform .15s ease, background .15s ease, color .15s ease, box-shadow .15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mood-row button.mood-animado {
+  --mood-soft: #fff0c9;
+  --mood-active: #f4bd4f;
+  --mood-ink: #6e4a0d;
+}
+
+.mood-row button.mood-ok {
+  --mood-soft: #e3f1f7;
+  --mood-active: #72b7cf;
+  --mood-ink: #214f60;
+}
+
+.mood-row button.mood-cansado {
+  --mood-soft: #eee7f8;
+  --mood-active: #9d82c9;
+  --mood-ink: #493766;
+}
+
+.mood-row button.mood-pilhado {
+  --mood-soft: #f9e3da;
+  --mood-active: #e26d43;
+  --mood-ink: #6b2d18;
 }
 
 .mood-row button span {
@@ -299,9 +332,14 @@ h3 {
 }
 
 .mood-row button.active {
-  color: #5e4317;
-  background: #f5c36c;
-  transform: translateY(-2px);
+  color: #fff;
+  background: var(--mood-active);
+  box-shadow: 0 8px 18px color-mix(in srgb, var(--mood-active) 28%, transparent);
+  transform: translateY(-2px) scale(1.03);
+}
+
+.mood-row button:active {
+  transform: scale(.96);
 }
 
 .mood-skip {
