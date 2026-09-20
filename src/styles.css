@@ -6827,3 +6827,32 @@ html[data-eu-discreet="1"] .ecosystem-insight p {
   opacity: .45;
   cursor: default;
 }
+
+
+.notification-mood-actions {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  padding: 0 18px 16px;
+}
+
+.notification-mood-actions button {
+  min-height: 38px;
+  padding: 0 7px;
+  border: 0;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.notification-mood-actions button:nth-child(1) { background: #fff1c7; color: #493800; }
+.notification-mood-actions button:nth-child(2) { background: var(--sky-soft); color: #173a55; }
+.notification-mood-actions button:nth-child(3) { background: var(--lilac-soft); color: #352a5a; }
+.notification-mood-actions button:nth-child(4) { background: var(--green-soft); color: #174f43; }
+
+@media (max-width: 460px) {
+  .notification-mood-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
