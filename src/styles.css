@@ -10710,3 +10710,184 @@ button:disabled {
   width: 14px;
   height: 14px;
 }
+
+
+/* EU v15: final UX polish */
+.memory-record-card {
+  align-items: start;
+}
+
+.memory-record-card > div:last-child {
+  min-width: 0;
+}
+
+.memory-record-card h3 {
+  overflow-wrap: anywhere;
+}
+
+.memory-record-state-row {
+  min-height: 25px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px 9px;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 9px;
+}
+
+.memory-followup-badge {
+  min-height: 24px;
+  max-width: 100%;
+  padding: 4px 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 1px solid color-mix(in srgb, var(--cobalt) 12%, transparent);
+  border-radius: 999px;
+  background: var(--cobalt-soft);
+  color: #2445a5;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.memory-followup-badge .eu-icon {
+  width: 12px;
+  height: 12px;
+  flex: 0 0 12px;
+}
+
+.memory-record-card .feed-meta {
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+/* Mood buttons stay fully filled; selection is shown outside the circle. */
+.mood-row button {
+  isolation: isolate;
+  background: var(--mood-base) !important;
+  color: var(--mood-ink);
+}
+
+.mood-row button::before {
+  display: none !important;
+}
+
+.mood-row button.active,
+.mood-row button[aria-pressed="true"] {
+  background: var(--mood-base) !important;
+  color: var(--mood-ink);
+  box-shadow:
+    0 0 0 2px var(--paper),
+    0 0 0 4px var(--mood-active),
+    0 10px 22px color-mix(in srgb, var(--mood-active) 22%, transparent);
+  transform: translateY(-1px);
+}
+
+.mood-row button .mood-icon,
+.mood-row button .mood-icon .eu-icon {
+  display: block;
+}
+
+.mood-row button .mood-icon {
+  display: grid;
+  place-items: center;
+}
+
+/* Heatmap remains compact but is easier to tap and read on touch screens. */
+.mood-heatmap-grid {
+  grid-template-rows: repeat(7, 14px);
+  grid-auto-columns: 14px;
+  gap: 5px;
+}
+
+.mood-heatmap-grid button.mood-day,
+.mood-legend .mood-day {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+}
+
+.mood-day.selected {
+  outline: 2px solid var(--cobalt);
+  outline-offset: 2px;
+}
+
+.mood-heatmap-scroll {
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+}
+
+/* Utility icons and bottom navigation use the same visual weight. */
+.top-icon-action,
+.bottom-nav-icon-wrap {
+  flex: 0 0 auto;
+}
+
+.top-icon-action .eu-icon,
+.bottom-nav-icon {
+  stroke-width: 1.9;
+}
+
+.v2-bottom-nav a {
+  min-width: 0;
+}
+
+.v2-bottom-nav a > small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Keep the floating capture control clear of the iOS home indicator/nav. */
+.global-register-pill.compact {
+  bottom: calc(88px + env(safe-area-inset-bottom));
+}
+
+@media (max-width: 760px) {
+  .mood-row {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .mood-row button {
+    width: min(78px, 100%);
+    height: auto;
+    min-width: 0;
+    min-height: 0;
+    aspect-ratio: 1;
+    justify-self: center;
+    flex-basis: auto;
+  }
+
+  .memory-list article {
+    grid-template-columns: 40px minmax(0, 1fr);
+  }
+
+  .memory-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+  .v2-top-actions {
+    min-width: 0;
+    flex-shrink: 1;
+  }
+}
+
+@media (max-width: 390px) {
+  .mood-row button {
+    width: min(72px, 100%);
+  }
+
+  .memory-record-state-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .memory-followup-badge {
+    width: fit-content;
+  }
+}
