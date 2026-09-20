@@ -1,7 +1,7 @@
 import { NavLink, useParams } from 'react-router-dom'
 import { entityBySlug } from './meaning'
 import { useRecords } from './appState'
-import { BrandTop, EuIcon, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
+import { BrandTop, EuIcon, SectionTitle, Tag, formatShortDate, typeIcon, typeTone } from './v2Ui'
 
 export default function EntityPage() {
   const { slug } = useParams()
@@ -55,7 +55,7 @@ export default function EntityPage() {
         <div className="memory-list">
           {entity.records.map((record) => (
             <article key={record.id} className={'entity-record-card type-border-' + typeTone(record.type)}>
-              <div className={'memory-icon memory-icon-' + typeTone(record.type)}><EuIcon name="note" /></div>
+              <div className={'memory-icon memory-icon-' + typeTone(record.type)}><EuIcon name={typeIcon(record.type)} /></div>
               <div>
                 <div className="feed-meta"><Tag tone={typeTone(record.type)}>{record.type}</Tag><span>{record.area}</span></div>
                 <NavLink to={'/registro/' + record.id}>{record.text}</NavLink>
