@@ -6748,3 +6748,33 @@ html[data-eu-discreet="1"] .ecosystem-insight p {
     grid-column: 1 / -1;
   }
 }
+
+
+.notification-quick-actions {
+  display: flex;
+  gap: 7px;
+  padding: 0 18px 16px;
+}
+
+.notification-quick-actions button {
+  min-height: 36px;
+  padding: 0 11px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--cobalt);
+  cursor: pointer;
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.notification-quick-actions button:first-child {
+  color: #216a56;
+  border-color: rgba(73,179,156,.28);
+  background: var(--green-soft);
+}
+
+.notification-quick-actions button:disabled {
+  opacity: .45;
+  cursor: default;
+}
