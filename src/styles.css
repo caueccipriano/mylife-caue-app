@@ -8529,3 +8529,78 @@ body {
     max-width: 130px;
   }
 }
+
+
+/* EU v7.1: secondary screen icon alignment */
+.record-actions-row button,
+.next-move-card button,
+.chapter-export-button,
+.wrapped-hero-top button,
+.astro-preview a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.record-actions-row .eu-icon,
+.next-move-card .eu-icon,
+.chapter-export-button .eu-icon,
+.wrapped-hero-top button .eu-icon,
+.astro-preview a .eu-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.record-cross-app-arrow {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(255,255,255,.55);
+}
+
+.record-cross-app-arrow .eu-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.record-attachments button > span .eu-icon,
+.record-attachments button > b .eu-icon,
+.connection-list button .eu-icon,
+.connection-suggestions button > span .eu-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.delete-record-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.delete-record-button .eu-icon {
+  width: 13px;
+  height: 13px;
+}
+
+.capsule-lock-screen > span .eu-icon,
+.private-lock-screen > span .eu-icon,
+.soft-empty > span .eu-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.chapter-export-button,
+.wrapped-hero-top button {
+  min-height: 40px;
+}
+
+.astro-preview a {
+  text-decoration: none;
+}
+
+.trash-entry-action .eu-icon {
+  flex: 0 0 auto;
+}
