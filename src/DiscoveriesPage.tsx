@@ -84,10 +84,10 @@ export default function DiscoveriesPage() {
         <p>O que o EU sugere, o que você salvou e os assuntos que continuam reaparecendo — cada coisa no seu lugar.</p>
       </header>
 
-      <nav className="discovery-view-tabs" aria-label="Visões de Descobertas">
-        <button className={view === 'for-you' ? 'active' : ''} onClick={() => selectView('for-you')}><EuIcon name="sparkles" />Pra mim</button>
-        <button className={view === 'library' ? 'active' : ''} onClick={() => selectView('library')}><EuIcon name="collections" />Biblioteca</button>
-        <button className={view === 'topics' ? 'active' : ''} onClick={() => selectView('topics')}><EuIcon name="note" />Assuntos</button>
+      <nav className="discovery-view-tabs" aria-label="Visões de Descobertas" role="tablist">
+        <button role="tab" aria-selected={view === 'for-you'} className={view === 'for-you' ? 'active' : ''} onClick={() => selectView('for-you')}><EuIcon name="sparkles" />Pra mim</button>
+        <button role="tab" aria-selected={view === 'library'} className={view === 'library' ? 'active' : ''} onClick={() => selectView('library')}><EuIcon name="collections" />Biblioteca</button>
+        <button role="tab" aria-selected={view === 'topics'} className={view === 'topics' ? 'active' : ''} onClick={() => selectView('topics')}><EuIcon name="note" />Assuntos</button>
       </nav>
 
       {view === 'for-you' && (
