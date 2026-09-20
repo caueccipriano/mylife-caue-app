@@ -207,7 +207,7 @@ export default function LifeLabPage() {
               <p>{change.detail}</p>
             </article>
           ))}
-          {!changes.length && <div className="soft-empty wide"><span>↔</span><p>A comparação fica mais interessante quando existem registros em pelo menos dois períodos diferentes.</p></div>}
+          {!changes.length && <div className="soft-empty wide"><span><EuIcon name="refresh" /></span><p>A comparação fica mais interessante quando existem registros em pelo menos dois períodos diferentes.</p></div>}
         </div>
       </section>
 
@@ -228,7 +228,7 @@ export default function LifeLabPage() {
               </div>
             )
           })}
-          {!radar.length && <div className="soft-empty wide"><span>◌</span><p>O radar nasce conforme seus temas começam a se repetir.</p></div>}
+          {!radar.length && <div className="soft-empty wide"><span><EuIcon name="sparkles" /></span><p>O radar nasce conforme seus temas começam a se repetir.</p></div>}
         </div>
       </section>
 
@@ -258,7 +258,7 @@ export default function LifeLabPage() {
               )
             })}
           </div>
-        ) : <div className="soft-empty wide"><span>⌘</span><p>As conexões aparecem quando áreas, tags e registros começam a se cruzar.</p></div>}
+        ) : <div className="soft-empty wide"><span><EuIcon name="collections" /></span><p>As conexões aparecem quando áreas, tags e registros começam a se cruzar.</p></div>}
       </section>
 
       <section className="lab-block split-lab lab-workbench">
@@ -343,7 +343,7 @@ export default function LifeLabPage() {
               <p>{record.outcome === 'good' ? 'valeu a pena' : record.outcome === 'regret' ? 'você faria diferente' : record.journeyStage || 'história aberta'}</p>
             </NavLink>
           ))}
-          {!objects.length && <div className="soft-empty wide"><span>□</span><p>Compras e objetos ganham história quando você define o nome e a etapa no registro.</p></div>}
+          {!objects.length && <div className="soft-empty wide"><span><EuIcon name="bag" /></span><p>Compras e objetos ganham história quando você define o nome e a etapa no registro.</p></div>}
         </div>
       </section>
 
@@ -357,7 +357,7 @@ export default function LifeLabPage() {
               <p>{place.latest.text}</p>
             </article>
           ))}
-          {!places.length && <div className="soft-empty wide"><span>⌖</span><p>Abra um registro e adicione um lugar. O EU começa a construir seu mapa pessoal sem precisar rastrear sua localização.</p></div>}
+          {!places.length && <div className="soft-empty wide"><span><EuIcon name="location" /></span><p>Abra um registro e adicione um lugar. O EU começa a construir seu mapa pessoal sem precisar rastrear sua localização.</p></div>}
         </div>
       </section>
 
