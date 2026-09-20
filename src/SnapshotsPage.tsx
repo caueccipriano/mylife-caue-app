@@ -32,6 +32,9 @@ export default function SnapshotsPage() {
 
   const current = snapshots[0]
   const previous = snapshots[1]
+  const recordDelta = current && previous ? current.recordCount - previous.recordCount : 0
+  const activeDelta = current && previous ? current.activeCount - previous.activeCount : 0
+  const completedDelta = current && previous ? current.completedCount - previous.completedCount : 0
 
   return (
     <div className="v2-page snapshots-page">
@@ -51,9 +54,18 @@ export default function SnapshotsPage() {
           <p>{comparison(current, previous)}</p>
 
           <div className="phase-stats">
-            <article><strong>{current.recordCount}</strong><span>registros</span></article>
-            <article><strong>{current.activeCount}</strong><span>em movimento</span></article>
-            <article><strong>{current.completedCount}</strong><span>concluídos</span></article>
+            <article>
+              <strong>{current.recordCount}</strong><span>registros</span>
+              {previous && <small className={recordDelta > 0 ? 'up' : recordDelta < 0 ? 'down' : 'same'}><EuIcon name={recordDelta > 0 ? 'trend-up' : recordDelta < 0 ? 'trend-down' : 'neutral'} />{recordDelta === 0 ? 'estável' : (recordDelta > 0 ? '+' : '') + recordDelta}</small>}
+            </article>
+            <article>
+              <strong>{current.activeCount}</strong><span>em movimento</span>
+              {previous && <small className={activeDelta > 0 ? 'up' : activeDelta < 0 ? 'down' : 'same'}><EuIcon name={activeDelta > 0 ? 'trend-up' : activeDelta < 0 ? 'trend-down' : 'neutral'} />{activeDelta === 0 ? 'estável' : (activeDelta > 0 ? '+' : '') + activeDelta}</small>}
+            </article>
+            <article>
+              <strong>{current.completedCount}</strong><span>concluídos</span>
+              {previous && <small className={completedDelta > 0 ? 'up' : completedDelta < 0 ? 'down' : 'same'}><EuIcon name={completedDelta > 0 ? 'trend-up' : completedDelta < 0 ? 'trend-down' : 'neutral'} />{completedDelta === 0 ? 'estável' : (completedDelta > 0 ? '+' : '') + completedDelta}</small>}
+            </article>
           </div>
 
           {current.topAreas.length > 0 && (
@@ -70,7 +82,7 @@ export default function SnapshotsPage() {
         <div className="phase-grid">
           {snapshots.map((snapshot, index) => (
             <article key={snapshot.month} className={(index === 0 ? 'current ' : '') + 'phase-tone-' + (snapshot.phaseTone || 'cobalt')}>
-              <div><Tag tone={index === 0 ? 'coral' : 'muted'}>{index === 0 ? 'ATUAL' : 'RETRATO'}</Tag><span>{snapshot.month}</span></div>
+              <div className="phase-card-top"><span className="phase-card-icon"><EuIcon name={index === 0 ? 'sparkles' : 'clock'} /></span><Tag tone={index === 0 ? 'coral' : 'muted'}>{index === 0 ? 'ATUAL' : 'RETRATO'}</Tag><span>{snapshot.month}</span></div>
               <h3>{snapshot.label}</h3>
               <p>{snapshot.activeHighlights[0] || snapshot.preferenceHighlights[0] || 'Uma fase mais silenciosa no arquivo.'}</p>
               <div className="phase-mini">
