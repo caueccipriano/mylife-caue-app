@@ -3,7 +3,7 @@ import { NavLink } from 'react-router-dom'
 import { isRecordVisibleForInsights, suggestTags } from './storage'
 import { deriveEntities, detectPreferenceShifts, entitySlug } from './meaning'
 import { useRecords } from './appState'
-import { BrandTop, SectionTitle, Tag, typeTone } from './v2Ui'
+import { BrandTop, EuIcon, SectionTitle, Tag, typeTone } from './v2Ui'
 
 function safeExternalUrl(value?: string) {
   if (!value) return null
@@ -68,15 +68,15 @@ export default function DiscoveriesPage() {
       </header>
 
       <nav className="discovery-view-tabs" aria-label="Visões de Descobertas">
-        <button className={view === 'for-you' ? 'active' : ''} onClick={() => setView('for-you')}>Pra mim</button>
-        <button className={view === 'library' ? 'active' : ''} onClick={() => setView('library')}>Biblioteca</button>
-        <button className={view === 'topics' ? 'active' : ''} onClick={() => setView('topics')}>Assuntos</button>
+        <button className={view === 'for-you' ? 'active' : ''} onClick={() => setView('for-you')}><EuIcon name="sparkles" />Pra mim</button>
+        <button className={view === 'library' ? 'active' : ''} onClick={() => setView('library')}><EuIcon name="collections" />Biblioteca</button>
+        <button className={view === 'topics' ? 'active' : ''} onClick={() => setView('topics')}><EuIcon name="note" />Assuntos</button>
       </nav>
 
       {view === 'for-you' && (
         <>
           <section className="discovery-feature">
-            <span>✦</span>
+            <span className="discovery-feature-icon"><EuIcon name="sparkles" /></span>
             <div>
               <small>PARA VOCÊ</small>
               <h2>{suggestions[0]}</h2>
@@ -94,7 +94,7 @@ export default function DiscoveriesPage() {
                   <small>{record.area}</small>
                 </NavLink>
               )) : (
-                <div className="soft-empty wide"><span>✦</span><p>Ideias, percepções e preferências aparecem aqui.</p></div>
+                <div className="soft-empty wide"><span><EuIcon name="sparkles" /></span><p>Ideias, percepções e preferências aparecem aqui.</p></div>
               )}
             </div>
           </section>
@@ -122,7 +122,7 @@ export default function DiscoveriesPage() {
               {savedLinks.length ? savedLinks.map(({ record, attachment, href }) => (
                 <a key={attachment.id} href={href} target="_blank" rel="noopener noreferrer">
                   <div><Tag tone="amber">LINK</Tag><strong>{attachment.name}</strong><p>{record.text || 'Referência salva'}</p></div>
-                  <span>↗</span>
+                  <span className="saved-link-icon"><EuIcon name="arrow-up-right" /></span>
                 </a>
               )) : <p className="muted-copy">Ainda não há links salvos.</p>}
             </div>
@@ -171,7 +171,7 @@ export default function DiscoveriesPage() {
                   <strong>{entity.label}</strong><span>{entity.count} conexões</span>
                 </NavLink>
               ))}
-              {!entities.length && <div className="soft-empty wide"><span>◌</span><p>Assuntos vivos aparecem conforme temas se repetem.</p></div>}
+              {!entities.length && <div className="soft-empty wide"><span><EuIcon name="note" /></span><p>Assuntos vivos aparecem conforme temas se repetem.</p></div>}
             </div>
           </section>
         </>
