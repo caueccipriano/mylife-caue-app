@@ -28,7 +28,10 @@ export default function LifePage() {
   const records = useRecords()
   const moods = useMoodHistory()
   const { bridges, refreshing, forceRefresh } = useBridges()
-  const [view, setView] = useState<'overview' | 'areas' | 'moving' | 'you'>('overview')
+  const [view, setView] = useState<'overview' | 'areas' | 'moving' | 'you'>(() => {
+    const saved = localStorage.getItem('eu-life-view')
+    return saved === 'areas' || saved === 'moving' || saved === 'you' ? saved : 'overview'
+  })
   const [focusAreas, setFocusAreasState] = useState(() => getFocusAreas())
 
   const visibleRecords = records.filter(isRecordVisibleForInsights)
@@ -45,6 +48,11 @@ export default function LifePage() {
   useEffect(() => {
     captureCurrentLifeSnapshot(visibleRecords, bridges)
   }, [records, bridges])
+
+  function selectView(value: 'overview' | 'areas' | 'moving' | 'you') {
+    setView(value)
+    localStorage.setItem('eu-life-view', value)
+  }
 
   function toggleFocus(area: string) {
     const next = focusAreas.includes(area)
@@ -64,10 +72,10 @@ export default function LifePage() {
       </header>
 
       <nav className="life-view-tabs" aria-label="Visões da Vida">
-        <button className={view === 'overview' ? 'active' : ''} onClick={() => setView('overview')}><EuIcon name="sparkles" />Visão geral</button>
-        <button className={view === 'areas' ? 'active' : ''} onClick={() => setView('areas')}><EuIcon name="collections" />Áreas</button>
-        <button className={view === 'moving' ? 'active' : ''} onClick={() => setView('moving')}><EuIcon name="bolt" />Em movimento</button>
-        <button className={view === 'you' ? 'active' : ''} onClick={() => setView('you')}><EuIcon name="user" />Você</button>
+        <button className={view === 'overview' ? 'active' : ''} onClick={() => selectView('overview')}><EuIcon name="sparkles" />Visão geral</button>
+        <button className={view === 'areas' ? 'active' : ''} onClick={() => selectView('areas')}><EuIcon name="collections" />Áreas</button>
+        <button className={view === 'moving' ? 'active' : ''} onClick={() => selectView('moving')}><EuIcon name="bolt" />Em movimento</button>
+        <button className={view === 'you' ? 'active' : ''} onClick={() => selectView('you')}><EuIcon name="user" />Você</button>
       </nav>
 
       {view === 'overview' && (
