@@ -143,7 +143,7 @@ export default function DiscoveriesPage() {
               <div className="auto-collections">
                 {collections.map(([tag, items], index) => (
                   <NavLink key={tag} to={'/assunto/' + entitySlug(tag)} className={'collection-card collection-' + (index % 4)}>
-                    <span>#{tag}</span><strong>{items.length} coisas conectadas</strong><p>{items[0]?.text}</p><b>ver coleção ↗</b>
+                    <span>#{tag}</span><strong>{items.length} coisas conectadas</strong><p>{items[0]?.text}</p><b>ver coleção <EuIcon name="arrow-up-right" /></b>
                   </NavLink>
                 ))}
               </div>
@@ -163,7 +163,7 @@ export default function DiscoveriesPage() {
                     <div className="preference-shift-head"><Tag tone="lilac">#{shift.topic}</Tag><span>{shift.explicit ? 'mudança explícita' : 'evolução percebida'}</span></div>
                     <div className="before-after">
                       <NavLink to={'/registro/' + shift.previous.id}><small>ANTES</small><p>{shift.previous.text}</p></NavLink>
-                      <b>→</b>
+                      <b className="preference-shift-arrow"><EuIcon name="arrow-right" /></b>
                       <NavLink to={'/registro/' + shift.current.id}><small>AGORA</small><p>{shift.current.text}</p></NavLink>
                     </div>
                   </article>
@@ -176,7 +176,7 @@ export default function DiscoveriesPage() {
             <SectionTitle eyebrow="ASSUNTOS VIVOS" title="Coisas que ganharam uma página própria" />
             <div className="entity-cloud entity-cloud-v4">
               {entities.map((entity, index) => (
-                <NavLink key={entity.slug} to={'/assunto/' + entity.slug} className={'entity-chip entity-chip-' + (index % 4)} style={{ transform: 'scale(' + Math.min(1.22, .92 + entity.count * .03) + ')' }}>
+                <NavLink key={entity.slug} to={'/assunto/' + entity.slug} className={'entity-chip entity-chip-' + (index % 4) + ' entity-chip-size-' + (entity.count >= 8 ? 'lg' : entity.count >= 4 ? 'md' : 'sm')}>
                   <strong>{entity.label}</strong><span>{entity.count} conexões</span>
                 </NavLink>
               ))}
