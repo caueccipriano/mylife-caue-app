@@ -4400,14 +4400,14 @@ html[data-eu-discreet="1"] .ecosystem-insight p {
 
 
 /* EU v3 — living system */
-:root[data-eu-phase="cobalt"] { --phase:#3157c8; --phase-soft:#e6ebfb; }
-:root[data-eu-phase="green"] { --phase:#1d9e75; --phase-soft:#e2f3ed; }
-:root[data-eu-phase="amber"] { --phase:#ba7517; --phase-soft:#faefd9; }
-:root[data-eu-phase="pink"] { --phase:#993556; --phase-soft:#f6e5eb; }
-:root[data-eu-phase="lilac"] { --phase:#7656b5; --phase-soft:#eee8fb; }
-:root[data-eu-phase="wine"] { --phase:#7d2e46; --phase-soft:#f2e3e7; }
-:root[data-eu-phase="sky"] { --phase:#3189a8; --phase-soft:#e1f1f6; }
-:root[data-eu-phase="lime"] { --phase:#7f991d; --phase-soft:#edf3d7; }
+:root[data-eu-phase="cobalt"] { --phase:#355fc9; --phase-soft:#e8edfc; }
+:root[data-eu-phase="green"] { --phase:#169b7a; --phase-soft:#def4ec; }
+:root[data-eu-phase="amber"] { --phase:#c38b22; --phase-soft:#fcf1d6; }
+:root[data-eu-phase="pink"] { --phase:#655fd0; --phase-soft:#eceafd; }
+:root[data-eu-phase="lilac"] { --phase:#8568c8; --phase-soft:#f0ebfa; }
+:root[data-eu-phase="wine"] { --phase:#2e7f88; --phase-soft:#e1f1f2; }
+:root[data-eu-phase="sky"] { --phase:#3a9fc4; --phase-soft:#e3f3fa; }
+:root[data-eu-phase="lime"] { --phase:#6e9a35; --phase-soft:#edf5dd; }
 
 :root[data-eu-phase] .v2-brand strong,
 :root[data-eu-phase] .today-hello h1 {
@@ -5032,14 +5032,14 @@ html[data-eu-discreet="1"] .ecosystem-insight p {
 
 
 /* Preserved monthly phase color */
-.phase-tone-cobalt { --snapshot-tone:#3157c8; --snapshot-soft:#e6ebfb; }
-.phase-tone-green { --snapshot-tone:#1d9e75; --snapshot-soft:#e2f3ed; }
-.phase-tone-amber { --snapshot-tone:#ba7517; --snapshot-soft:#faefd9; }
-.phase-tone-pink { --snapshot-tone:#993556; --snapshot-soft:#f6e5eb; }
-.phase-tone-lilac { --snapshot-tone:#7656b5; --snapshot-soft:#eee8fb; }
-.phase-tone-wine { --snapshot-tone:#7d2e46; --snapshot-soft:#f2e3e7; }
-.phase-tone-sky { --snapshot-tone:#3189a8; --snapshot-soft:#e1f1f6; }
-.phase-tone-lime { --snapshot-tone:#7f991d; --snapshot-soft:#edf3d7; }
+.phase-tone-cobalt { --snapshot-tone:#355fc9; --snapshot-soft:#e8edfc; }
+.phase-tone-green { --snapshot-tone:#169b7a; --snapshot-soft:#def4ec; }
+.phase-tone-amber { --snapshot-tone:#c38b22; --snapshot-soft:#fcf1d6; }
+.phase-tone-pink { --snapshot-tone:#655fd0; --snapshot-soft:#eceafd; }
+.phase-tone-lilac { --snapshot-tone:#8568c8; --snapshot-soft:#f0ebfa; }
+.phase-tone-wine { --snapshot-tone:#2e7f88; --snapshot-soft:#e1f1f2; }
+.phase-tone-sky { --snapshot-tone:#3a9fc4; --snapshot-soft:#e3f3fa; }
+.phase-tone-lime { --snapshot-tone:#6e9a35; --snapshot-soft:#edf5dd; }
 
 .phase-now[class*="phase-tone-"],
 .phase-grid article[class*="phase-tone-"] {
