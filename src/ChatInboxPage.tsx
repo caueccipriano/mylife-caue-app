@@ -13,6 +13,8 @@ export default function ChatInboxPage() {
   }, [])
 
   function discard(id: string) {
+    const batch = batches.find((item) => item.id === id)
+    if (batch && !window.confirm('Descartar esta entrada com ' + batch.items.length + (batch.items.length === 1 ? ' item?' : ' itens?'))) return
     removeChatBatch(id)
   }
 
@@ -51,8 +53,8 @@ export default function ChatInboxPage() {
               </div>
 
               <div className="chat-batch-actions">
-                <NavLink to={'/capturar?itens=' + encoded}>Revisar e guardar</NavLink>
-                <button onClick={() => discard(batch.id)}>Descartar</button>
+                <NavLink to={'/capturar?itens=' + encoded}><EuIcon name="check" />Revisar e guardar</NavLink>
+                <button onClick={() => discard(batch.id)}><EuIcon name="trash" />Descartar</button>
               </div>
             </article>
           )
