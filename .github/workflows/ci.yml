@@ -2,8 +2,13 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - qa/eu-security-guard-20260925
   pull_request:
+
+permissions:
+  contents: read
 
 jobs:
   build:
@@ -15,6 +20,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Verify security scanner
+        run: node scripts/check-public-secrets.mjs --self-test
+      - name: Prevent accidental credential commits
+        run: node scripts/check-public-secrets.mjs
       - name: Install
         run: npm install
       - name: Build
