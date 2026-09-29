@@ -160,7 +160,7 @@ async function init(){
   const metrics={metricCatalog:active.length,metricFocus:activeFocus,metricScanned:scanned,heroCount:active.length,heroFocus:activeFocus};
   for(const key in metrics)$(key).textContent=fmt.format(metrics[key]);
   const time=Date.parse(doc.generated_at),stale=!Number.isFinite(time)||Date.now()-time>36*3600000;
-  const partial=indexed?!!doc.partial:doc.status==="partial";
+  const partial=!!doc.rate_limited||(indexed?!!doc.partial:doc.status==="partial");
   let refreshFailed=false,attemptedAt=null;
   try{
     const statusRes=await fetch("./refresh-status.json?cache="+Date.now(),{cache:"no-store"});
