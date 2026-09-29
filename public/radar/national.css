@@ -120,3 +120,11 @@
 
 /* Unknown coverage is not the same as an uncollected state. */
 .national-state.unknown{border-style:dashed;border-color:#97a2ab;background:#eff1f3;color:#52606a}
+
+/* Manual sharing with accessible clipboard fallback; never auto-share filters. */
+.national-share{border:1px solid #97b5a0;background:#f7fbf6;color:#215037}
+.national-share:hover{background:#eaf4eb}
+.national-share-feedback{margin-top:7px;color:#376548;font-size:11px}
+.national-share-feedback p:empty{display:none}
+#national-share-fallback:not([hidden]){display:block;width:100%;margin:8px 0 12px;min-height:44px;border:1px solid #89a994;border-radius:8px;padding:10px;font-size:12px;background:#fff;color:#244e35}
+@media(max-width:1050px){.national-action-row>div{flex-wrap:wrap}}

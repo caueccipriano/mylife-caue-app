@@ -136,6 +136,48 @@ async function search(){
   $("national-empty-description").textContent="Tente novamente ou consulte a fonte oficial.";
  }finally{if(state.request===ctrl){state.loading=false;$("national-submit").disabled=false;}}
 }
+// A share URL contains search filters only. Copying is always deliberate:
+// do not put customer identity, keys, tokens or saved private searches in URLs.
+function restoreSharedSearch(){
+ const params=new URL(location.href).searchParams;
+ for(const [param,element,limit] of [["q","national-q",120],["city","national-city",90]]){
+  const value=params.get(param);
+  if(value&&value.length<=limit)$(element).value=value;
+ }
+ const uf=params.get("uf");
+ if(uf&&Object.prototype.hasOwnProperty.call(STATES,uf))$("national-uf").value=uf;
+ const focus=params.get("focus");
+ if(["true","false"].includes(focus))$("national-focus").value=focus;
+ const days=params.get("days");
+ if(["7","15","30"].includes(days))$("national-deadline").value=days;
+ const min=params.get("min");
+ if(min&&/^\d+(?:\.\d{1,2})?$/.test(min)&&Number(min)<=100000000)$("national-min").value=min;
+ const sort=params.get("sort");
+ if(["deadline","value","relevance"].includes(sort))$("national-sort").value=sort;
+}
+function sharedSearchUrl(){
+ const link=new URL(location.href);
+ link.search="";link.hash="brasil";
+ const pairs=[["q","national-q"],["uf","national-uf"],["city","national-city"],
+   ["focus","national-focus"],["days","national-deadline"],["min","national-min"],["sort","national-sort"]];
+ for(const [param,element] of pairs){
+  const value=$(element).value.trim();
+  if(value&&(param!=="sort"||value!=="deadline"))link.searchParams.set(param,value);
+ }
+ return link.toString();
+}
+async function copySearchLink(){
+ const url=sharedSearchUrl();
+ const fallback=$("national-share-fallback"),status=$("national-share-status");
+ try{
+  if(!navigator.clipboard?.writeText)throw new Error("clipboard_unavailable");
+  await navigator.clipboard.writeText(url);
+  fallback.hidden=true;status.textContent="Link da busca copiado. Confira os filtros antes de enviar.";
+ }catch{
+  fallback.value=url;fallback.hidden=false;fallback.focus();fallback.select();
+  status.textContent="Seu navegador bloqueou a cópia. Selecione e copie o link abaixo.";
+ }
+}
 let debounce=null;
 function filtersChanged(){state.offset=0;clearTimeout(debounce);debounce=setTimeout(()=>{renderCoverage();search()},300)}
 function csvCell(v){let s=String(v??"").replace(/[\r\n]/g," ").trim();if(/^[\s]*[=+\-@]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"'}
@@ -169,11 +211,13 @@ async function loadCoverage(){
 function init(){
  if(!$("national-form"))return;
  const picker=$("national-uf");for(const [uf,name] of Object.entries(STATES)){const o=node("option",null,name+" ("+uf+")");o.value=uf;picker.append(o)}
+ restoreSharedSearch();
  $("national-form").addEventListener("submit",event=>{event.preventDefault();state.offset=0;clearTimeout(debounce);renderCoverage();search()});
  for(const id of ["national-q","national-city","national-uf","national-focus","national-deadline","national-min","national-sort"]){
   $(id).addEventListener(id==="national-q"||id==="national-city"||id==="national-min"?"input":"change",filtersChanged);
  }
  $("national-reset").addEventListener("click",()=>{$("national-form").reset();state.offset=0;renderCoverage();search()});
+ $("national-share").addEventListener("click",copySearchLink);
  $("national-next").addEventListener("click",()=>{state.offset+=PAGE_SIZE;search();$("national-result-count").scrollIntoView({behavior:"smooth",block:"center"})});
  $("national-prev").addEventListener("click",()=>{state.offset=Math.max(0,state.offset-PAGE_SIZE);search();$("national-result-count").scrollIntoView({behavior:"smooth",block:"center"})});
  $("national-download").addEventListener("click",downloadPage);
