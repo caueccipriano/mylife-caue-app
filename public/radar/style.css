@@ -88,3 +88,32 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 /* Heading optical spacing: retain strong display type without fusing words. */
 .hero h1,.section h2{letter-spacing:-.048em;word-spacing:.025em}
 @media(max-width:420px){.hero h1,.section h2{letter-spacing:-.035em}}
+
+/* WCAG AA readability: retain the green brand but darken supporting copy.
+   Regression tested with axe-core on desktop + mobile, not a substitute for
+   a real screen reader check. */
+.live-label{color:#315e46}
+.preview-subtitle,
+.preview-kpis span,
+.preview-foot,
+.section-aside,
+.source-label,
+.key-hint,
+.freshness-controls small,
+.results-controls label,
+.results-bottom p,
+.official-link,
+.plans-fineprint,
+.preview-item span{color:#455c4e}
+.filter-grid label span,
+.min-value{color:#355344}
+.section-badge{color:#315e46}
+.result-top .tag{color:#355344}
+.result-top .tag.gray{color:#495d51}
+.method-section h2 span{color:#416b55}
+.method-layout>div:first-child p,
+.method-steps p{color:#455c4e}
+.method-steps>div>span{color:#355344}
+.plans-grid .plan-free>.plan-label{color:#315e46}
+.plans-grid .plan-premium>.plan-label{color:#e4f4db}
+@media(max-width:420px){.results-controls select{min-width:0}}
