@@ -193,7 +193,57 @@ $("closePreview").addEventListener("click",()=>{
 });
 $("copyrightYear").textContent=new Date().getFullYear();
 async function init(){
+ ready=false;
+ $("previewAlert").disabled=true;
+ $("resultsCount").textContent="Consultando a base...";
  try{
+  let live=null;
+  try{live=await loadLive($("uf").value);}catch(_){live=null;}
+  if(live!==null){
+   sourceMode="live";lastIndexedAt=null;
+   data=live.filter(r=>r&&officialNotice(r));
+   const stateCount=Math.max(new Set(data.map(r=>r.uf)).size,coverage.filter(x=>x.status!=="not_started" && x.last_success_at).length);
+   const latest=coverage.map(x=>Date.parse(x.last_success_at||"")).filter(Number.isFinite).sort((a,b)=>b-a)[0]||null;
+   const partial=coverage.some(x=>x.status==="partial"||x.status==="rate_limited"||x.status==="failed")||stateCount<27||loadTruncated;
+   $("coverageCount").textContent=fmt.format(stateCount);
+   $("scopeTitle").textContent="BASE NACIONAL CONECTADA · "+stateCount+"/27 UFs COM DADOS";
+   $("scopeDetail").textContent=stateCount<27?
+     "Cobertura em expansão: apenas estados com registros importados. Fonte: PNCP via Supabase.":
+     "Há registros importados das 27 unidades. A cobertura ainda pode ser parcial.";
+   $("observedOnly").checked=false;
+   $("observedOnly").disabled=true;
+   document.querySelector(".latest-toggle span").textContent="Reconfirmação individual indisponível nesta importação";
+   for(const key of ["city","modality"]){
+    const el=$(key),before=el.value;
+    el.replaceChildren(node("option",null,key==="city"?"Todas as cidades":"Todas as modalidades"));
+    el.firstChild.value="";
+    for(const text of [...new Set(data.map(r=>key==="city"?r.city:r.modality).filter(Boolean))].sort((a,b)=>a.localeCompare(b,"pt-BR"))){
+      const option=node("option",null,text);option.value=text;el.append(option);
+    }
+    if([...el.options].some(x=>x.value===before))el.value=before;
+   }
+   const active=data.filter(r=>Date.parse(r.deadline)>Date.now());
+   const focus=active.filter(r=>r.sector_focus).length;
+   const sample=coverage.filter(x=>!$("uf").value||x.uf===$("uf").value).reduce((sum,x)=>sum+Math.max(0,Number(x.records_examined)||0),0);
+   const numbers={metricCatalog:active.length,metricFocus:focus,metricScanned:sample,heroCount:active.length,heroFocus:focus};
+   for(const key in numbers)$(key).textContent=fmt.format(numbers[key]);
+   const latestText=latest?dt.format(new Date(latest)):"Data da última coleta indisponível";
+   const label=partial?"Cobertura nacional em expansão":"Registros nacionais importados";
+   const short=loadTruncated?"Resultados limitados a "+fmt.format(data.length)+" registros carregados. ":
+     stateCount<27?"A coleta ainda não cobre todos os estados. ":"";
+   const h=node("strong","notice-heading",label);
+   const p=node("p","notice-description",short+"Última observação estadual disponível: "+latestText+". Confira o prazo e a situação de cada edital diretamente no PNCP.");
+   const details=document.createElement("details");details.className="notice-details";
+   const summary=node("summary",null,"Como são atualizados estes dados?");
+   details.append(summary,node("p",null,"A cobertura por estado é progressiva e amostral. Os registros importados podem mudar ou ser cancelados no PNCP. Os resultados e totais exibidos aqui não representam todas as licitações do país."));
+   $("notice").className="data-notice"+(partial?" warning":"");
+   $("notice").replaceChildren(h,p,details);
+   ready=true;$("previewAlert").disabled=false;render(true);return;
+  }
+  sourceMode="snapshot";
+  $("coverageCount").textContent="—";
+  $("scopeTitle").textContent="Consulta em modo alternativo";
+  $("scopeDetail").textContent="Supabase indisponível. Exibindo apenas a última amostra pública local de São Paulo.";
   let res=await fetch("./search-index.json?cache="+Date.now(),{cache:"no-store"});
   const indexed=res.ok;
   if(!indexed)res=await fetch("./opportunities.json?cache="+Date.now(),{cache:"no-store"});
@@ -204,6 +254,8 @@ async function init(){
   const base=Array.isArray(doc.catalog)?doc.catalog:doc.opportunities;
   data=base.filter(r=>r&&typeof r.object==="string"&&typeof r.city==="string"&&typeof r.deadline==="string"&&
     typeof r.source_url==="string"&&officialNotice(r));
+  // Never silently display SP as if it answered a query for another state.
+  if($("uf").value && $("uf").value!=="SP")data=[];
   for(const [key,values] of [["city",data.map(r=>r.city)],["modality",data.map(r=>r.modality).filter(Boolean)]]){
    let unique=[...new Set(values)].sort((a,b)=>a.localeCompare(b,"pt-BR"));
    for(const v of unique){let opt=node("option",null,v);opt.value=v;$(key).append(opt);}
@@ -252,13 +304,22 @@ async function init(){
   if(doc.status==="awaiting_first_scan")msg="Primeira coleta ainda não concluída. Nenhum edital está confirmado.";
   const statusTitle=refreshFailed?"Atualização falhou: consulte a origem":stale?"Base desatualizada: confirme os prazos":partial||refreshPartial?"Cobertura parcial nesta coleta":"Amostra atualizada";
   const statusHeader=node("strong","notice-heading",statusTitle);
-  const statusBody=node("p","notice-description",msg);
+  const short=refreshFailed?"A tentativa de atualização falhou. Abaixo estão dados da última coleta disponível.":
+    doc.rate_limited?"O PNCP limitou as consultas. O índice foi atualizado apenas parcialmente.":
+    partial||refreshPartial?"Coleta parcial: nem todos os registros foram reconfirmados.":
+    stale?"A base precisa de atualização. Consulte sempre a fonte oficial.":
+    "Amostra consultável. Confira o edital oficial antes de participar.";
+  const statusBody=node("p","notice-description",short);
+  const details=document.createElement("details");details.className="notice-details";
+  details.append(node("summary",null,"Ver detalhes da coleta"),node("p",null,msg));
   $("notice").className="data-notice"+(stale||partial||refreshPartial||refreshFailed?" warning":"");
-  $("notice").replaceChildren(statusHeader,statusBody);
+  $("notice").replaceChildren(statusHeader,statusBody,details);
   ready=true;$("previewAlert").disabled=false;render(true);
  }catch(err){
   $("notice").className="data-notice error";
   $("notice").textContent="Não foi possível validar a base agora. Consulte diretamente o PNCP; dados antigos não serão apresentados como atuais.";
+  $("scopeTitle").textContent="Dados temporariamente indisponíveis";
+  $("scopeDetail").textContent="As consultas não responderam. Use o PNCP enquanto a conexão é restaurada.";
   $("resultsCount").textContent="Base temporariamente indisponível";$("shown").textContent="A coleta não foi confirmada.";$("empty").hidden=false;
  }
 }
