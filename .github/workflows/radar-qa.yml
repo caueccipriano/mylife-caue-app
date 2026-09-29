@@ -13,6 +13,8 @@ on:
       - 'public/radar/feedback.js'
       - 'public/radar/feedback.css'
       - 'radar/qa-feedback.cjs'
+      - 'radar/test-asaas-webhook.cjs'
+      - 'supabase/functions/editalume-asaas-webhook-sandbox/**'
       - 'supabase/functions/editalume-feedback/**'
       - 'public/radar/sw.js'
       - 'public/radar/pwa.js'
@@ -31,6 +33,8 @@ on:
       - 'public/radar/feedback.js'
       - 'public/radar/feedback.css'
       - 'radar/qa-feedback.cjs'
+      - 'radar/test-asaas-webhook.cjs'
+      - 'supabase/functions/editalume-asaas-webhook-sandbox/**'
       - 'supabase/functions/editalume-feedback/**'
       - 'radar/qa-national.cjs'
       - 'radar/qa-browser.cjs'
@@ -62,6 +66,9 @@ jobs:
           node --check public/radar/pwa.js
           node --check public/radar/feedback.js
           node --check radar/qa-feedback.cjs
+          node --check radar/test-asaas-webhook.cjs
+          cp supabase/functions/editalume-asaas-webhook-sandbox/index.ts /tmp/editalume-asaas-webhook.mjs
+          node --check /tmp/editalume-asaas-webhook.mjs
           cp supabase/functions/editalume-feedback/index.ts /tmp/editalume-feedback-edge.mjs
           node --check /tmp/editalume-feedback-edge.mjs
           node --check radar/qa-national.cjs
@@ -73,6 +80,8 @@ jobs:
         run: node radar/qa-national.cjs
       - name: Pilot feedback desktop, 320px and Safari-engine form QA
         run: node radar/qa-feedback.cjs
+      - name: Verify secure Asaas Sandbox receiver (offline unit tests)
+        run: node radar/test-asaas-webhook.cjs
       - name: Upload screenshot and filtered export for review
         if: always()
         uses: actions/upload-artifact@v4
