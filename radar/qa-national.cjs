@@ -4,6 +4,11 @@ const {chromium,webkit}=require("@playwright/test");
 const assert=require("node:assert/strict");
 const fs=require("fs");
 const BASE="http://127.0.0.1:4173/radar/";
+const manifest=JSON.parse(fs.readFileSync("public/radar/manifest.webmanifest","utf8"));
+assert.equal(manifest.scope,"/mylife-caue-app/radar/");
+assert.equal(manifest.display,"standalone");
+assert.ok(manifest.icons.some(x=>x.src==="./icon.svg"));
+
 const UFS="AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO".split(" ");
 const COVERAGE=UFS.map(uf=>({uf,status:uf==="SP"||uf==="RJ"?"partial":"not_started",
  last_success_at:uf==="SP"||uf==="RJ"?new Date().toISOString():null,records_examined:uf==="SP"?600:uf==="RJ"?100:0}));
@@ -21,17 +26,24 @@ function subset(filters){
    &&(!filters.p_min_value||x.estimated_value_brl>=filters.p_min_value)
    &&(!filters.p_city||x.municipality.toLowerCase().includes(filters.p_city.toLowerCase())));
  arr.sort((a,b)=>filters.p_sort==="value"?b.estimated_value_brl-a.estimated_value_brl:new Date(a.closing_at)-new Date(b.closing_at));
- return arr.slice(filters.p_offset||0,(filters.p_offset||0)+24).map(r=>({...r,total_count:arr.length}));
+ return arr.slice(filters.p_offset||0,(filters.p_offset||0)+(filters.p_limit||12)).map(r=>({...r,total_count:arr.length}));
 }
 async function run(browser,name,width,height){
  const page=await browser.newPage({viewport:{width,height},acceptDownloads:true});
- const errors=[],apiCalls=[];page.on("pageerror",e=>errors.push(e.message));
+ const errors=[],apiCalls=[];let bulk=false;page.on("pageerror",e=>errors.push(e.message));
  await page.route("**/rest/v1/editalume_uf_coverage*",r=>r.fulfill({json:COVERAGE}));
  await page.route("**/rest/v1/rpc/editalume_search*",r=>{
   const filters=JSON.parse(r.request().postData());apiCalls.push(filters);
-  return r.fulfill({json:subset(filters)});
+  const all=Array.from({length:15},(_,i)=>({
+   ...records[0],pncp_id:"00000000000001-1-"+String(i+1)+"/2026",
+   title:"PUBLIC TEST NOTICE "+(i+1)
+  }));
+  const dataset=bulk?all.slice(filters.p_offset||0,(filters.p_offset||0)+(filters.p_limit||12))
+    .map(x=>({...x,total_count:15})):subset(filters);
+  return r.fulfill({json:dataset});
  });
  await page.goto(BASE,{waitUntil:"networkidle"});
+ assert.match(await page.locator('link[rel="manifest"]').getAttribute("href"),/manifest\.webmanifest/);
  await page.waitForFunction(()=>document.getElementById("national-result-count")?.textContent?.includes("3 editais"));
  assert.equal(await page.locator(".national-result-card").count(),3);
  assert.equal(await page.locator("#national-uf-count").innerText(),"2/27");
@@ -64,6 +76,19 @@ async function run(browser,name,width,height){
  assert.match(fs.readFileSync("radar/qa-artifacts/"+name+"-national.csv","utf8"),/Santos/);
  if(width<=390)await page.locator(".national-search-card").screenshot({path:"radar/qa-artifacts/"+name+"-national.png"});
  assert.ok(apiCalls.some(x=>x.p_uf==="RJ")&&apiCalls.some(x=>x.p_uf==="AM"));
+ assert.ok(apiCalls.every(x=>x.p_limit===12),"Small-screen pagination must request at most twelve results");
+ bulk=true;
+ await page.click("#national-reset");
+ await page.waitForFunction(()=>document.getElementById("national-result-count")?.textContent?.includes("15 editais"));
+ assert.equal(await page.locator(".national-result-card").count(),12);
+ assert.equal(await page.locator("#national-prev").isHidden(),true);
+ await page.click("#national-next");
+ await page.waitForFunction(()=>document.getElementById("national-page-indicator")?.textContent?.includes("13–15"));
+ assert.equal(await page.locator(".national-result-card").count(),3);
+ await page.click("#national-prev");
+ await page.waitForFunction(()=>document.getElementById("national-page-indicator")?.textContent?.includes("1–12"));
+ assert.equal(await page.locator(".national-result-card").count(),12);
+ assert.equal(await page.locator("#national-prev").isHidden(),true);
  assert.deepEqual(errors,[]);
  console.log("PASS "+name+" national: data, 27 states, region filters, empty coverage, CSV, viewport");
  await page.close();

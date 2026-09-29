@@ -3,7 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#f5f6f2">
+<meta name="theme-color" content="#163c2c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Editalume">
+<link rel="manifest" href="./manifest.webmanifest?v=br-20260929-3">
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
 <!-- Temporary public GitHub username URL: do not index until custom brand domain exists. -->
 <meta name="robots" content="noindex,nofollow">
 <meta name="description" content="Editalume: inteligência comercial para compras públicas. Pesquise uma base monitorada de licitações abertas do PNCP, filtre por cidade, setor, modalidade e prazo.">
@@ -13,7 +18,7 @@
 <link rel="stylesheet" href="./style.css?v=br-20260929-2">
 <link rel="stylesheet" href="./national.css?v=br-20260929-1">
 <script src="./app.js?v=br-20260929-2" defer></script>
-<script src="./national.js?v=br-20260929-1" defer></script>
+<script src="./national.js?v=br-20260929-3" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#pesquisa">Ir para a pesquisa de oportunidades</a>
@@ -77,7 +82,7 @@
  <div id="national-status" class="national-status" role="status" aria-live="polite">Carregando pesquisa nacional...</div>
  <div class="national-results-header"><div><span class="national-eyebrow">RESULTADOS DO BANCO</span><h3 id="national-result-count">Conectando...</h3></div><div class="national-results-actions"><label for="national-sort">Ordenar</label><select id="national-sort" aria-label="Ordenar resultados nacionais"><option value="deadline">Prazo mais próximo</option><option value="value">Maior valor</option><option value="relevance">Relevância</option></select><button id="national-download" type="button" disabled>Exportar página ↓</button></div></div>
  <div class="national-results" id="national-results" aria-live="polite"></div><div id="national-empty" class="national-empty" hidden><h3 id="national-empty-title">Nenhum registro neste filtro</h3><p id="national-empty-description">Experimente ampliar a pesquisa.</p><a href="https://pncp.gov.br/app/editais" target="_blank" rel="noopener noreferrer">Consultar o PNCP ↗</a></div>
- <div class="national-pagination"><p id="national-page-indicator">Preparando resultados...</p><button type="button" id="national-next" hidden>Carregar mais ↓</button></div>
+ <div class="national-pagination"><p id="national-page-indicator">Preparando resultados...</p><div class="national-page-buttons"><button type="button" id="national-prev" hidden>← Anterior</button><button type="button" id="national-next" hidden>Próxima página →</button></div></div>
  <p class="national-legal">Fonte: Portal Nacional de Contratações Públicas (PNCP). Base independente e amostral, não exaustiva; prazos e situações podem mudar. Sempre confira o edital oficial.</p>
 </div></section>
 <section class="search-section section" id="pesquisa">
