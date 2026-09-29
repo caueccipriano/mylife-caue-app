@@ -11,6 +11,9 @@ on:
       - '.github/workflows/radar-qa.yml'
 permissions:
   contents: read
+concurrency:
+  group: editalume-browser-qa
+  cancel-in-progress: true
 jobs:
   browser-qa:
     runs-on: ubuntu-latest
