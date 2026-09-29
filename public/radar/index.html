@@ -16,9 +16,9 @@
 <meta property="og:description" content="Da informação à oportunidade. Um ambiente para descobrir licitações relevantes com clareza.">
 <title>Editalume | Inteligência em oportunidades públicas</title>
 <link rel="stylesheet" href="./style.css?v=br-20260929-2">
-<link rel="stylesheet" href="./national.css?v=br-20260929-5">
+<link rel="stylesheet" href="./national.css?v=br-20260929-6">
 <script src="./app.js?v=br-20260929-2" defer></script>
-<script src="./national.js?v=br-20260929-5" defer></script>
+<script src="./national.js?v=br-20260929-6" defer></script>
 <script src="./pwa.js?v=br-20260929-4" defer></script>
 </head>
 <body>
@@ -77,7 +77,7 @@
  <form id="national-form" role="search" aria-label="Pesquisar licitações na base nacional">
   <div class="national-primary-filters"><label class="national-query-field"><span>O que sua empresa procura?</span><input id="national-q" type="search" placeholder="Produto, serviço, órgão..." maxlength="120" autocomplete="off"></label><label><span>Estado</span><select id="national-uf"><option value="">Todo o Brasil (dados disponíveis)</option></select></label></div>
   <div class="national-secondary-filters"><label><span>Município</span><input id="national-city" type="search" placeholder="Qualquer cidade" maxlength="90" autocomplete="off"></label><label><span>Setor</span><select id="national-focus"><option value="">Todos os setores</option><option value="true">Serviços monitorados</option><option value="false">Outros setores</option></select></label><label><span>Prazo</span><select id="national-deadline"><option value="">Qualquer prazo futuro</option><option value="7">7 dias</option><option value="15">15 dias</option><option value="30">30 dias</option></select></label><label><span>Valor mínimo (R$)</span><input id="national-min" type="number" min="0" step="100" inputmode="decimal" placeholder="0"></label></div>
-  <div class="national-action-row"><p>Sem login. Consulte a fonte oficial antes de participar.</p><div><button type="button" class="national-reset" id="national-reset">Limpar</button><button type="submit" class="national-submit" id="national-submit">Buscar oportunidades →</button></div></div>
+  <div class="national-action-row"><p>Sem login. Ao compartilhar, os filtros escolhidos ficarão visíveis no endereço.</p><div><button type="button" class="national-reset" id="national-reset">Limpar</button><button type="button" class="national-share" id="national-share">Copiar link da busca</button><button type="submit" class="national-submit" id="national-submit">Buscar oportunidades →</button></div></div><div class="national-share-feedback"><p id="national-share-status" role="status" aria-live="polite"></p><input id="national-share-fallback" aria-label="Link da busca para copiar" readonly hidden></div>
  </form></div>
  <div class="national-coverage-panel"><div class="national-coverage-head"><div><span class="national-eyebrow">TRANSPARÊNCIA POR ESTADO</span><h3>Onde já temos resultados</h3></div><p>Verde: amostra recebida. Cinza: aguardando. Toque na sigla para pesquisar.</p></div><div class="national-state-grid" id="national-state-grid" role="group" aria-label="Selecionar estado"></div></div>
  <div id="national-status" class="national-status" role="status" aria-live="polite">Carregando pesquisa nacional...</div>
