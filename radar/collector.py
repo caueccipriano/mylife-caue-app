@@ -66,6 +66,12 @@ def catalog_record(item, now):
     unit = item.get("unidadeOrgao")
     if not isinstance(unit, dict) or unit.get("ufSigla") != "SP":
         return None
+    # Reject entries explicitly marked as suspended/revoked/cancelled even when
+    # an old deadline remains in the public snapshot.
+    situation = normalize(item.get("situacaoCompraNome"))
+    description = normalize(item.get("objetoCompra"))
+    if any(word in situation for word in ("suspens", "revogad", "cancelad", "anulad")) or "(suspensa)" in description:
+        return None
     close = as_datetime(item.get("dataEncerramentoProposta"))
     if close is None or close <= now:
         return None

@@ -21,6 +21,13 @@ class CollectorTests(unittest.TestCase):
         self.assertGreater(relevance("Contratação de empresa especializada para prestação de serviços de limpeza e conservação predial"),0)
         self.assertEqual(relevance("Aquisição de materiais para pintura e manutenção predial"),0)
 
+    def test_exclude_explicitly_suspended_bids(self):
+        suspended=item()
+        suspended["situacaoCompraNome"]="SUSPENSA"
+        self.assertIsNone(catalog_record(suspended,NOW))
+        title=item(desc="SERVIÇOS DE LIMPEZA PREDIAL (SUSPENSA)")
+        self.assertIsNone(catalog_record(title,NOW))
+
     def test_closed_bids_excluded(self):
         self.assertIsNone(eligible(item(deadline=(NOW-timedelta(days=1)).isoformat()),NOW))
         self.assertIsNone(eligible(item(deadline="not a date"),NOW))
