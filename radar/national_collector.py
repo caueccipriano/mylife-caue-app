@@ -1,7 +1,7 @@
 """Editalume: bounded national PNCP discovery, OIDC-authenticated Supabase sync.
 
 Every run scans three UFs and only one page per modality (6 and 8).
-At this cadence 27 UFs rotate across successive six-hour runs. Data is always
+At this cadence 27 UFs rotate across successive three-hour runs. Data is always
 a partial sample, and states without successful queries stay explicitly pending.
 No static credentials or private customer data are stored in this repository.
 """
@@ -22,9 +22,9 @@ AUDIENCE="editalume-national-sync-v1"
 TARGET="https://jhxhbgprjqppzfrjdfvj.supabase.co/functions/v1/editalume-ingest"
 
 def rotation(now=None):
-    """Exactly three distinct UFs per 6-hour slot; covers 27 in nine slots."""
+    """Exactly three distinct UFs per 3-hour slot; covers 27 in nine slots."""
     now=(now or datetime.now(timezone.utc)).astimezone(timezone.utc)
-    slot=int(now.timestamp()//21600)
+    slot=int(now.timestamp()//10800)
     start=(slot*3)%len(UFS)
     return [UFS[(start+i)%len(UFS)] for i in range(3)]
 
