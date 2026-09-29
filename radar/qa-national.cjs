@@ -10,8 +10,10 @@ assert.equal(manifest.display,"standalone");
 assert.ok(manifest.icons.some(x=>x.src==="./icon.svg"));
 
 const UFS="AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO".split(" ");
-const COVERAGE=UFS.map(uf=>({uf,status:uf==="SP"||uf==="RJ"?"partial":"not_started",
- last_success_at:uf==="SP"||uf==="RJ"?new Date().toISOString():null,records_examined:uf==="SP"?600:uf==="RJ"?100:0}));
+const COVERAGE=UFS.map(uf=>({uf,status:uf==="SP"||uf==="RJ"?"partial":uf==="MG"?"complete_sample":"not_started",
+ last_success_at:["SP","RJ","MG"].includes(uf)?new Date().toISOString():null,
+ active_count:uf==="SP"?2:uf==="RJ"?1:0,
+ records_examined:uf==="SP"?600:uf==="RJ"?100:uf==="MG"?20:0}));
 const future=d=>new Date(Date.now()+d*86400000).toISOString();
 const records=[
  {pncp_id:"00000000000001-1-1/2026",uf:"SP",municipality:"Campinas",agency:"Prefeitura de teste",title:"SERVIÇOS DE LIMPEZA PREDIAL",modality:"Pregão eletrônico",estimated_value_brl:12000,closing_at:future(6),sector_focus:true,relevance:3,first_observed_at:new Date().toISOString(),last_observed_at:new Date().toISOString()},
@@ -31,7 +33,7 @@ function subset(filters){
 async function run(browser,name,width,height){
  const page=await browser.newPage({viewport:{width,height},acceptDownloads:true});
  const errors=[],apiCalls=[];let bulk=false;page.on("pageerror",e=>errors.push(e.message));
- await page.route("**/rest/v1/editalume_uf_coverage*",r=>r.fulfill({json:COVERAGE}));
+ await page.route("**/rest/v1/editalume_coverage_public*",r=>r.fulfill({json:COVERAGE}));
  await page.route("**/rest/v1/rpc/editalume_search*",r=>{
   const filters=JSON.parse(r.request().postData());apiCalls.push(filters);
   const all=Array.from({length:15},(_,i)=>({
@@ -62,6 +64,8 @@ async function run(browser,name,width,height){
  await page.waitForFunction(()=>document.getElementById("national-result-count")?.textContent?.includes("3 editais"));
  assert.equal(await page.locator(".national-result-card").count(),3);
  assert.equal(await page.locator("#national-uf-count").innerText(),"2/27");
+ assert.match(await page.locator('.national-state[aria-label*="Minas Gerais"]').getAttribute("title"),/sem registros futuros/);
+ assert.equal(await page.locator(".national-state.has-data").count(),2,"Only states with future indexed records may appear as covered");
  assert.equal(await page.locator(".national-state").count(),27);
  assert.equal(await page.locator('.national-state[aria-pressed="false"]').count(),27);
  assert.match(await page.locator("#national-status").innerText(),/conectada/);
