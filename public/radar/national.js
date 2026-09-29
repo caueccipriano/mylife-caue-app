@@ -12,7 +12,7 @@ const dt=new Intl.DateTimeFormat("pt-BR",{dateStyle:"short",timeStyle:"short",ti
 const node=(tag,cls,txt)=>{let x=document.createElement(tag);if(cls)x.className=cls;if(txt!==undefined)x.textContent=String(txt);return x};
 const empty=el=>el.replaceChildren();
 const knownStatus={not_started:"Aguardando coleta",complete_sample:"Amostra recebida",partial:"Cobertura parcial",rate_limited:"Consulta limitada",failed:"Falha recente"};
-const state={coverage:[],items:[],total:0,offset:0,loading:false,request:null,firstLoad:true};
+const state={coverage:[],items:[],total:0,offset:0,loading:false,request:null,firstLoad:true,lastCoverageAt:0};
 function official(row){
  const m=/^(\d{14})-\d+-(\d+)\/(\d{4})$/.exec(row?.pncp_id||"");
  if(!m||Number(m[2])<1)return null;
@@ -21,19 +21,19 @@ function official(row){
 function formatDate(iso){const date=new Date(iso);return Number.isFinite(date.getTime())?dt.format(date):"Verificar no PNCP"}
 function formatValue(n){return n!==null&&Number(n)>0?money.format(Number(n)):"Não informado"}
 function renderCoverage(){
- const available=state.coverage.filter(c=>c.last_success_at&&["complete_sample","partial","rate_limited"].includes(c.status));
+ const available=state.coverage.filter(c=>Number(c.active_count)>0);
  const count=available.length;
  $("national-uf-count").textContent=fmt.format(count)+"/27";
  $("national-coverage-description").textContent=
-   count===0?"Aguardando a primeira coleta validada. A pesquisa não inventa editais.":
-   fmt.format(count)+" de 27 UFs com ao menos uma amostra recebida. As demais estão em implantação.";
+   count===0?"Ainda não há estados com editais de prazo futuro indexados.":
+   fmt.format(count)+" de 27 UFs com registros importados ainda com prazo futuro. As demais estão em implantação.";
  const wrap=$("national-state-grid");empty(wrap);
  for(const [uf,name] of Object.entries(STATES)){
   const current=state.coverage.find(x=>x.uf===uf);
-  const available=!!(current?.last_success_at&&["complete_sample","partial","rate_limited"].includes(current.status));
+  const available=Number(current?.active_count)>0;
   const item=node("button","national-state"+(available?" has-data":" pending")+
     ($("national-uf").value===uf?" active":""),uf);
-  item.type="button";item.title=name+" — "+(knownStatus[current?.status]||"Aguardando coleta");
+  item.type="button";item.title=name+" — "+(current?.last_success_at&&!available?"Amostra recebida, sem registros futuros":knownStatus[current?.status]||"Aguardando coleta")+(available?" · "+fmt.format(current.active_count)+" registros":"");
   item.setAttribute("aria-label",item.title);item.setAttribute("aria-pressed",String($("national-uf").value===uf));
   item.addEventListener("click",()=>{$("national-uf").value=uf;state.offset=0;renderCoverage();search();});
   wrap.append(item);
@@ -73,9 +73,14 @@ function renderCards(){
  $("national-download").disabled=!state.items.length;
  const uf=$("national-uf").value;
  $("national-empty").hidden=state.items.length>0;
- $("national-empty-title").textContent=uf&&!(state.coverage.find(x=>x.uf===uf)?.last_success_at)?"Coleta ainda não concluída para "+STATES[uf]:"Nenhum registro neste filtro";
- $("national-empty-description").textContent=uf&&!(state.coverage.find(x=>x.uf===uf)?.last_success_at)?
-  "Este estado já está configurado, mas ainda não há amostra validada. Consulte diretamente o PNCP enquanto expandimos a cobertura.":
+ const selected=uf?state.coverage.find(x=>x.uf===uf):null;
+ const pending=!!uf&&!selected?.last_success_at;
+ const noActive=!!uf&&!!selected?.last_success_at&&Number(selected?.active_count)===0;
+ $("national-empty-title").textContent=pending?"Coleta ainda não concluída para "+STATES[uf]:
+  noActive?"Sem editais abertos indexados para "+STATES[uf]:"Nenhum registro neste filtro";
+ $("national-empty-description").textContent=pending?
+  "Este estado está configurado, mas ainda não há amostra validada. Consulte o PNCP enquanto expandimos a cobertura.":
+  noActive?"Este estado já recebeu uma amostra, mas não há editais futuros no índice. Isso não significa ausência de licitações no PNCP.":
   "Experimente ampliar os filtros. A base é amostral e a situação do edital pode mudar.";
 }
 function args(){
@@ -125,8 +130,9 @@ function downloadPage(){
  const url=URL.createObjectURL(blob),a=node("a");a.href=url;a.download="editalume-brasil-pagina.csv";document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 async function loadCoverage(){
+ state.lastCoverageAt=Date.now();
  try{
-  const response=await fetch(API+"/editalume_uf_coverage?select=uf,status,last_success_at,records_examined&order=uf.asc",
+  const response=await fetch(API+"/editalume_coverage_public?select=uf,status,last_success_at,records_examined,active_count&order=uf.asc",
    {headers:{"apikey":KEY},cache:"no-store"});
   if(!response.ok)throw new Error("HTTP "+response.status);
   const rows=await response.json();
@@ -149,6 +155,9 @@ function init(){
  $("national-prev").addEventListener("click",()=>{state.offset=Math.max(0,state.offset-PAGE_SIZE);search();$("national-result-count").scrollIntoView({behavior:"smooth",block:"center"})});
  $("national-download").addEventListener("click",downloadPage);
  renderCoverage();loadCoverage();search();
+ document.addEventListener("visibilitychange",()=>{
+  if(!document.hidden&&Date.now()-state.lastCoverageAt>120000)loadCoverage();
+ });
 }
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init);else init();
 })();
