@@ -118,7 +118,7 @@ async function check(){
   const fallbackErrors=[];fallbackPage.on("pageerror",e=>fallbackErrors.push(e.message));
   await fallbackPage.route("**/radar/search-index.json*",route=>route.fulfill({status:503,body:"Unavailable"}));
   await fallbackPage.route("**/radar/opportunities.json*",route=>route.fulfill({json:{
-    brand:"Editalume",generated_at:current,status:"sample_ok",catalog:[
+    brand:"Editalume",generated_at:current,status:"sample_ok",rate_limited:true,catalog:[
       {...make("00000000000020-1-000020/2026","FALLBACK PUBLIC SAMPLE","Campinas",false,1200,3),last_seen_at:undefined}
     ],opportunities:[],records_examined:1
   }}));
@@ -128,9 +128,23 @@ async function check(){
   assert.equal(await fallbackPage.locator("#observedOnly").isChecked(),false);
   assert.equal(await fallbackPage.locator("#observedOnly").isDisabled(),true);
   assert.match(await fallbackPage.locator(".latest-toggle span").innerText(),/indisponível/);
+  assert.match(await fallbackPage.locator("#notice .notice-heading").innerText(),/Cobertura parcial/);
+  assert.match(await fallbackPage.locator("#notice").innerText(),/Limite temporário/);
   assert.deepEqual(fallbackErrors,[]);
   success("fallback sample: results accessible without false per-record freshness");
   await fallbackPage.close();
+  // A total source outage must fail closed; never make archived data appear live.
+  const outagePage=await browser.newPage();
+  const outageErrors=[];outagePage.on("pageerror",e=>outageErrors.push(e.message));
+  await outagePage.route("**/radar/search-index.json*",route=>route.fulfill({status:503,body:"Unavailable"}));
+  await outagePage.route("**/radar/opportunities.json*",route=>route.fulfill({status:503,body:"Unavailable"}));
+  await outagePage.goto(base,{waitUntil:"networkidle"});
+  assert.match(await outagePage.locator("#resultsCount").innerText(),/temporariamente indisponível/);
+  assert.equal(await outagePage.locator(".result-card").count(),0);
+  assert.equal(await outagePage.locator("#csv").isDisabled(),true);
+  assert.deepEqual(outageErrors,[]);
+  success("total source outage: fail-closed state and no CSV export");
+  await outagePage.close();
   const livePage=await browser.newPage({viewport:{width:1300,height:850}});
   const jsErrors=[];livePage.on("pageerror",e=>jsErrors.push(e.message));
   await livePage.goto(base,{waitUntil:"networkidle"});
