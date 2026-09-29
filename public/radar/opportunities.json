@@ -1,6 +1,6 @@
 {
   "brand": "Editalume",
-  "generated_at": "2026-09-29T14:52:12.924737-03:00",
+  "generated_at": "2026-09-29T15:04:50.198648-03:00",
   "status": "sample_ok",
   "region": "SP",
   "niche": "manutenção, conservação e serviços prediais",
@@ -12,7 +12,7 @@
   "pages_examined": 24,
   "records_examined": 1200,
   "catalog_count": 1163,
-  "focus_count": 124,
+  "focus_count": 123,
   "coverage_note": "SP; apenas modalidades 6 e 8; até 12 páginas por modalidade; propostas com data final informada nos próximos 45 dias; não inclui todo o PNCP.",
   "exhaustive": false,
   "notice": "Amostra parcial e automatizada. Não representa todas as licitações. Consulte o edital oficial e confirme prazos, elegibilidade e eventuais alterações antes de qualquer proposta.",
@@ -660,20 +660,6 @@
       "source": "PNCP",
       "source_url": "https://pncp.gov.br/app/editais/50290931000140/2026/108",
       "relevance": 2,
-      "sector_focus": true
-    },
-    {
-      "id": "46694139000183-1-000876/2026",
-      "object": "Contratação de empresa especializada para manutenção corretiva do projetor Sony VPL, patrimônio nº 150.254, contemplando a substituição do LCD vermelho do bloco óptico, bem como a realização de ajustes de convergência, alinhamento e testes de funcionamento do equipamento.\r\n\r\nO referido equipamento é utilizado em atividades institucionais, reuniões, apresentações, treinamentos, eventos e demais ações desenvolvidas pela Administração Municipal, constituindo ferramenta relevante para a adequada execução das atividades administrativas e operacionais da unidade.\r\n\r\nO equipamento encontra-se no Complexo Educacional Paulo Freire.\r\n\r\nSolicitante: Thaís Carvalho (SCI: 143) \r\n\r\nFavor enviar a nota fiscal para o e-mail: nf@edujacarei.sp.gov.br\r\n\r\n",
-      "organ": "MUNICIPIO DE JACAREI",
-      "city": "Jacareí",
-      "uf": "SP",
-      "deadline": "2026-09-29T15:00:00-03:00",
-      "modality": "Dispensa",
-      "estimated_value_brl": 6860.0,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/46694139000183/2026/876",
-      "relevance": 1,
       "sector_focus": true
     },
     {
@@ -1757,20 +1743,6 @@
   ],
   "catalog": [
     {
-      "id": "46694139000183-1-000876/2026",
-      "object": "Contratação de empresa especializada para manutenção corretiva do projetor Sony VPL, patrimônio nº 150.254, contemplando a substituição do LCD vermelho do bloco óptico, bem como a realização de ajustes de convergência, alinhamento e testes de funcionamento do equipamento.\r\n\r\nO referido equipamento é utilizado em atividades institucionais, reuniões, apresentações, treinamentos, eventos e demais ações desenvolvidas pela Administração Municipal, constituindo ferramenta relevante para a adequada execução das atividades administrativas e operacionais da unidade.\r\n\r\nO equipamento encontra-se no Complexo Educacional Paulo Freire.\r\n\r\nSolicitante: Thaís Carvalho (SCI: 143) \r\n\r\nFavor enviar a nota fiscal para o e-mail: nf@edujacarei.sp.gov.br\r\n\r\n",
-      "organ": "MUNICIPIO DE JACAREI",
-      "city": "Jacareí",
-      "uf": "SP",
-      "deadline": "2026-09-29T15:00:00-03:00",
-      "modality": "Dispensa",
-      "estimated_value_brl": 6860.0,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/46694139000183/2026/876",
-      "relevance": 1,
-      "sector_focus": true
-    },
-    {
       "id": "64925829000188-1-000022/2026",
       "object": "Contratação de empresa especializada para a elaboração de projetos visando reforma na sede da Câmara Municipal da Estância Turística de Barretos, para a ampliação da sala técnica da TV Câmara, conforme condições e exigências estabelecidas no Termo de Referência.",
       "organ": "CAMARA MUNICIPAL DE BARRETOS",
@@ -2635,20 +2607,6 @@
       "estimated_value_brl": 106304.0,
       "source": "PNCP",
       "source_url": "https://pncp.gov.br/app/editais/46392114000125/2026/904",
-      "relevance": 0,
-      "sector_focus": false
-    },
-    {
-      "id": "44723674000190-1-000789/2026",
-      "object": "SECRETARIA MUNICIPAL DA EDUCAÇÃO\r\n\r\nAbertura de Ata de Registro de Preços para futura e eventual aquisição de cartuchos de toners e cilindros novos e originais do fabricante do equipamento, visando atender as possíveis demandas decorrentes com as novas máquinas copiadoras a serem adquiridas para a pretendida substituição aos serviços de outsourcing, para as Unidades Escolares, Departamento de Almoxarifado, Merenda Escolar e Secretaria Municipal da Educação, pelo período de 12 meses, conforme especificações do Termo de Referência em anexo.\r\n",
-      "organ": "MUNICIPIO DE CAPIVARI",
-      "city": "Capivari",
-      "uf": "SP",
-      "deadline": "2026-09-30T08:00:00-03:00",
-      "modality": "Pregão - Eletrônico",
-      "estimated_value_brl": 112766.0,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/44723674000190/2026/789",
       "relevance": 0,
       "sector_focus": false
     },
@@ -11445,20 +11403,6 @@
       "sector_focus": false
     },
     {
-      "id": "43776491000170-1-000294/2026",
-      "object": "Fornecimento e instalação de linha de gases, incluindo 01 (um) Painel 4 x 6, linhas x colunas, com 23 (vinte e três) Reguladores de Posto de simples estágio com válvulas de bloqueio, 23 (vinte e três) Centrais de gases para uso em bancada de analisadores de emissão veicular, 03 (três) Centrais de gases para uso em Cromatógrafo Gasoso/FID e 08 (oito) Conjuntos de mangueiras flexíveis trançadas quatro camadas, conforme Especificações Técnicas do Termo de Referência ETTL-002/2026, Anexo I do Edital",
-      "organ": "(UO) ESP-CETESB-CIA AMBIENTAL DO EST.DE SP",
-      "city": "São Paulo",
-      "uf": "SP",
-      "deadline": "2026-10-02T09:00:00-03:00",
-      "modality": "Pregão - Eletrônico",
-      "estimated_value_brl": null,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/43776491000170/2026/294",
-      "relevance": 0,
-      "sector_focus": false
-    },
-    {
       "id": "63025530000104-1-003734/2026",
       "object": "Aquisição de Cadeiras para Escritório para sala de Pós Doc e Sala dos Técnicos do Centro de Biologia Marinha.",
       "organ": "UNIVERSIDADE DE SAO PAULO",
@@ -13863,6 +13807,20 @@
       "estimated_value_brl": 1330.0,
       "source": "PNCP",
       "source_url": "https://pncp.gov.br/app/editais/46377800000127/2026/4188",
+      "relevance": 0,
+      "sector_focus": false
+    },
+    {
+      "id": "46523239000147-1-000483/2026",
+      "object": "AQUISIÇÃO DE PANFLETOS COM TEMAS: HPV, HIV, SÍFILIS, HEPATITES VIRAIS, HTLV E PREP E PEP",
+      "organ": "MUNICIPIO DE SAO BERNARDO DO CAMPO",
+      "city": "São Bernardo do Campo",
+      "uf": "SP",
+      "deadline": "2026-10-05T09:00:00-03:00",
+      "modality": "Dispensa",
+      "estimated_value_brl": 33600.0,
+      "source": "PNCP",
+      "source_url": "https://pncp.gov.br/app/editais/46523239000147/2026/483",
       "relevance": 0,
       "sector_focus": false
     },
@@ -17297,6 +17255,20 @@
       "sector_focus": false
     },
     {
+      "id": "46599809000182-1-000316/2026",
+      "object": "REGISTRO DE PREÇOS para aquisição de materiais de construção para atender aos Órgãos e às Secretarias do Município de Votuporanga/SP, durante o período de 12 (doze) meses.",
+      "organ": "MUNICIPIO DE VOTUPORANGA",
+      "city": "Votuporanga",
+      "uf": "SP",
+      "deadline": "2026-10-14T08:00:00-03:00",
+      "modality": "Pregão - Eletrônico",
+      "estimated_value_brl": 2013401.76,
+      "source": "PNCP",
+      "source_url": "https://pncp.gov.br/app/editais/46599809000182/2026/316",
+      "relevance": 0,
+      "sector_focus": false
+    },
+    {
       "id": "72962806000171-1-000082/2026",
       "object": "Contratação de empresa especializada em serviço técnico de engenharia com fornecimento de mão de obra, para execução de projetos de compensação ambiental.",
       "organ": "SUPERINTENDENCIA DE AGUA, ESGOTOS E MEIO AMBIENTE DE VOTUPORANGA",
@@ -18007,6 +17979,20 @@
       "estimated_value_brl": 200895.14,
       "source": "PNCP",
       "source_url": "https://pncp.gov.br/app/editais/45132495000140/2024/942",
+      "relevance": 0,
+      "sector_focus": false
+    },
+    {
+      "id": "46384400000149-1-000473/2026",
+      "object": "Aquisição de Milho a granel",
+      "organ": "SECRETARIA DE AGRICULTURA E ABASTECIMENTO",
+      "city": "Campinas",
+      "uf": "SP",
+      "deadline": "2026-10-21T09:00:00-03:00",
+      "modality": "Pregão - Eletrônico",
+      "estimated_value_brl": 79920.0,
+      "source": "PNCP",
+      "source_url": "https://pncp.gov.br/app/editais/46384400000149/2026/473",
       "relevance": 0,
       "sector_focus": false
     },
