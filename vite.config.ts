@@ -16,7 +16,7 @@ export default defineConfig({
         clientsClaim: true,
         skipWaiting: true,
         navigateFallback: 'index.html',
-        navigateFallbackDenylist: [/^\/mylife-caue-app\/trader(?:\/|$)/],
+        navigateFallbackDenylist: [/^\/mylife-caue-app\/trader(?:\/|$)/, /^\/mylife-caue-app\/radar(?:\/|$)/],
         runtimeCaching: [],
       },
       manifest: {
