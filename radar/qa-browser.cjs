@@ -198,7 +198,7 @@ async function check(){
    }));
    assert.ok(bounds.page<=bounds.viewport+2,"WebKit mobile must not overflow");
    assert.ok(bounds.elements.every(e=>e.left>=-2&&e.right<=bounds.viewport+2),"WebKit controls/cards must not clip");
-   await page.screenshot({path:"radar/qa-artifacts/mobile-webkit-390.png",fullPage:true,animations:"disabled"});
+   await page.screenshot({path:"radar/qa-artifacts/mobile-webkit-390.png",fullPage:false,animations:"disabled"});
    assert.deepEqual(errors,[]);
    success("WebKit mobile-390: search, premium preview and responsive layout");
    await page.close();

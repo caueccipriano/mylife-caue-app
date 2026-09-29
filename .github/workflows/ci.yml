@@ -20,7 +20,9 @@ jobs:
       - name: Build
         run: npm run build
       - name: Validate Editalume JavaScript
-        run: node --check public/radar/app.js
+        run: |
+          node --check public/radar/app.js
+          node --check public/radar/national.js
       - name: Setup Python
         uses: actions/setup-python@v5
         with:

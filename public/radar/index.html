@@ -10,8 +10,10 @@
 <meta property="og:title" content="Editalume | Inteligência em oportunidades públicas">
 <meta property="og:description" content="Da informação à oportunidade. Um ambiente para descobrir licitações relevantes com clareza.">
 <title>Editalume | Inteligência em oportunidades públicas</title>
-<link rel="stylesheet" href="./style.css">
-<script src="./app.js" defer></script>
+<link rel="stylesheet" href="./style.css?v=br-20260929-1">
+<link rel="stylesheet" href="./national.css?v=br-20260929-1">
+<script src="./app.js?v=br-20260929-1" defer></script>
+<script src="./national.js?v=br-20260929-1" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#pesquisa">Ir para a pesquisa de oportunidades</a>
@@ -21,22 +23,22 @@
     <a class="identity" href="./" aria-label="Editalume, início"><span class="symbol" aria-hidden="true"><span></span><span></span><span></span></span><span class="wordmark">editalume<span class="mark-dot">.</span></span></a>
     <nav class="main-nav" aria-label="Navegação principal">
       <a href="#plataforma">A plataforma</a>
-      <a href="#pesquisa">Base de oportunidades</a>
+      <a href="#brasil">Busca nacional</a><a href="#pesquisa">Acervo paulista</a>
       <a href="#metodo">Metodologia</a>
       <a href="#planos">Planos</a>
     </nav>
-    <a class="header-cta" href="#pesquisa">Explorar base <span aria-hidden="true">↗</span></a>
+    <a class="header-cta" href="#brasil">Explorar base <span aria-hidden="true">↗</span></a>
   </div>
 </header>
 <main>
 <section class="hero section" id="plataforma">
   <div class="container hero-layout">
     <div class="hero-copy">
-      <div class="eyebrow"><span class="pulse"></span> INTELIGÊNCIA EM COMPRAS PÚBLICAS · SP</div>
-      <h1>Encontre oportunidades. <span>Ganhe tempo para competir.</span></h1>
-      <p>Transformamos dados públicos em uma experiência clara de pesquisa. Descubra licitações, filtre oportunidades e tome decisões com mais contexto.</p>
+      <div class="eyebrow"><span class="pulse"></span> INTELIGÊNCIA EM COMPRAS PÚBLICAS · BRASIL</div>
+      <h1>O Brasil é o mercado. <span>Encontre sua próxima oportunidade.</span></h1>
+      <p>Pesquisa nacional conectada a um banco próprio, com indicadores transparentes de cobertura por estado. Começamos com uma amostra de SP e expandimos os demais estados gradualmente.</p><div class="national-release-tag" role="note"><span class="national-release-dot"></span> NOVA BUSCA NACIONAL · VERSÃO BR-01</div>
       <div class="hero-actions">
-        <a href="#pesquisa" class="button button-primary">Pesquisar oportunidades <span aria-hidden="true">↗</span></a>
+        <a href="#brasil" class="button button-primary">Pesquisar no Brasil <span aria-hidden="true">↗</span></a>
         <a href="#metodo" class="text-link">Entenda nossa análise <span aria-hidden="true">→</span></a>
       </div>
       <div class="trust-line"><span class="trust-icon" aria-hidden="true">✓</span> Fonte oficial PNCP <span class="tiny-separator">·</span> Sem cadastro para pesquisar <span class="tiny-separator">·</span> Plataforma independente</div>
@@ -44,7 +46,7 @@
     <aside class="hero-preview" aria-label="Visão da plataforma">
       <div class="preview-head"><span><span class="preview-status"></span> MONITORAMENTO PÚBLICO</span><span class="live-label">EDIÇÃO PILOTO</span></div>
       <div class="preview-title">Panorama de oportunidades</div>
-      <div class="preview-subtitle">Licitações monitoradas · Estado de São Paulo</div>
+      <div class="preview-subtitle">Acervo piloto de São Paulo · Busca nacional abaixo</div>
       <div class="preview-kpis">
         <div><strong id="heroCount">—</strong><span>Registros no catálogo</span></div>
         <div><strong id="heroFocus">—</strong><span>Serviços selecionados</span></div>
@@ -60,14 +62,29 @@
     <div class="metric"><strong id="metricCatalog">—</strong><span>Registros com prazo informado</span></div>
     <div class="metric"><strong id="metricFocus">—</strong><span>Registros de serviços</span></div>
     <div class="metric"><strong id="metricScanned">—</strong><span>Registros examinados</span></div>
-    <div class="metric"><strong>Diária</strong><span>Rotina programada de atualização*</span></div>
+    <div class="metric"><strong>Rotativa</strong><span>Coleta nacional em implantação*</span></div>
   </div>
 </section>
+<section class="national-section" id="brasil" aria-labelledby="national-title"><div class="container">
+ <div class="national-heading"><div><div class="national-eyebrow">EDIÇÃO BRASIL · BASE NACIONAL</div><h2 id="national-title">De norte a sul.<br><span>Uma busca mais inteligente.</span></h2><p>Uma pesquisa única para as 27 unidades federativas. Veja exatamente onde já recebemos dados, sem confundir cobertura planejada com editais efetivamente coletados.</p></div><div class="national-progress-card" aria-live="polite"><span>ESTADOS COM DADOS RECEBIDOS</span><strong id="national-uf-count">0/27</strong><p id="national-coverage-description">Conectando ao catálogo...</p><small>O ritmo de expansão depende da disponibilidade da API oficial.</small></div></div>
+ <div class="national-search-card"><div class="national-card-head"><div><span class="national-chip">CONSULTA GRATUITA</span><h3>Pesquisar editais pelo Brasil</h3><p>Filtros em tempo real, conectados ao banco independente Editalume.</p></div><span class="national-connected">● BANCO NACIONAL</span></div>
+ <form id="national-form" role="search" aria-label="Pesquisar licitações na base nacional">
+  <div class="national-primary-filters"><label class="national-query-field"><span>O que sua empresa procura?</span><input id="national-q" type="search" placeholder="Produto, serviço, órgão..." maxlength="120" autocomplete="off"></label><label><span>Estado</span><select id="national-uf"><option value="">Todo o Brasil (dados disponíveis)</option></select></label></div>
+  <div class="national-secondary-filters"><label><span>Município</span><input id="national-city" type="search" placeholder="Qualquer cidade" maxlength="90" autocomplete="off"></label><label><span>Setor</span><select id="national-focus"><option value="">Todos os setores</option><option value="true">Serviços monitorados</option><option value="false">Outros setores</option></select></label><label><span>Prazo</span><select id="national-deadline"><option value="">Qualquer prazo futuro</option><option value="7">7 dias</option><option value="15">15 dias</option><option value="30">30 dias</option></select></label><label><span>Valor mínimo (R$)</span><input id="national-min" type="number" min="0" step="100" inputmode="decimal" placeholder="0"></label></div>
+  <div class="national-action-row"><p>Sem login. Consulte a fonte oficial antes de participar.</p><div><button type="button" class="national-reset" id="national-reset">Limpar</button><button type="submit" class="national-submit" id="national-submit">Buscar oportunidades →</button></div></div>
+ </form></div>
+ <div class="national-coverage-panel"><div class="national-coverage-head"><div><span class="national-eyebrow">TRANSPARÊNCIA POR ESTADO</span><h3>Onde já temos resultados</h3></div><p>Verde: amostra recebida. Cinza: aguardando. Toque na sigla para pesquisar.</p></div><div class="national-state-grid" id="national-state-grid" role="group" aria-label="Selecionar estado"></div></div>
+ <div id="national-status" class="national-status" role="status" aria-live="polite">Carregando pesquisa nacional...</div>
+ <div class="national-results-header"><div><span class="national-eyebrow">RESULTADOS DO BANCO</span><h3 id="national-result-count">Conectando...</h3></div><div class="national-results-actions"><label for="national-sort">Ordenar</label><select id="national-sort" aria-label="Ordenar resultados nacionais"><option value="deadline">Prazo mais próximo</option><option value="value">Maior valor</option><option value="relevance">Relevância</option></select><button id="national-download" type="button" disabled>Exportar página ↓</button></div></div>
+ <div class="national-results" id="national-results" aria-live="polite"></div><div id="national-empty" class="national-empty" hidden><h3 id="national-empty-title">Nenhum registro neste filtro</h3><p id="national-empty-description">Experimente ampliar a pesquisa.</p><a href="https://pncp.gov.br/app/editais" target="_blank" rel="noopener noreferrer">Consultar o PNCP ↗</a></div>
+ <div class="national-pagination"><p id="national-page-indicator">Preparando resultados...</p><button type="button" id="national-next" hidden>Carregar mais ↓</button></div>
+ <p class="national-legal">Fonte: Portal Nacional de Contratações Públicas (PNCP). Base independente e amostral, não exaustiva; prazos e situações podem mudar. Sempre confira o edital oficial.</p>
+</div></section>
 <section class="search-section section" id="pesquisa">
  <div class="container">
   <div class="section-heading">
-    <div><div class="kicker">BASE DE OPORTUNIDADES</div><h2>Pesquisa inteligente.<br><span>Resultados relevantes.</span></h2></div>
-    <div class="section-aside">Pesquise em diferentes setores da amostra pública, incluindo manutenção, serviços e outras oportunidades. Refine por município, modalidade, valor e prazo. Os editais permanecem na plataforma oficial.</div>
+    <div><div class="kicker">ACERVO COMPLEMENTAR · SP</div><h2>Explore o acervo.<br><span>Resultados de São Paulo.</span></h2></div>
+    <div class="section-aside">Este acervo estático é mantido como alternativa caso o banco nacional fique indisponível. A pesquisa nacional está logo acima.</div>
   </div>
   <div class="search-panel">
     <div class="search-top"><div><span class="section-badge">CONSULTA ABERTA</span><h3>Encontre sua próxima oportunidade</h3></div><span class="source-label">Dados públicos · PNCP</span></div>
@@ -105,7 +122,7 @@
 </section>
 <section class="method-section section" id="metodo"><div class="container method-layout">
   <div><div class="kicker">METODOLOGIA</div><h2>Dados públicos.<br><span>Decisões melhores.</span></h2><p>O Editalume organiza dados públicos em um recorte pesquisável e oferece links diretos para consultar a informação original. Você mantém o controle de cada decisão.</p><a class="text-link method-link" href="https://pncp.gov.br/app/editais" target="_blank" rel="noopener noreferrer">Conhecer a fonte oficial ↗</a></div>
-  <div class="method-steps"><div><span>01</span><section><h3>Monitoramos</h3><p>Coletamos uma amostra de propostas com prazo informado em São Paulo nas modalidades monitoradas.</p></section></div><div><span>02</span><section><h3>Organizamos</h3><p>Estruturamos descrição, órgão, município, valores informados e data prevista de encerramento.</p></section></div><div><span>03</span><section><h3>Você valida</h3><p>Direcionamos cada resultado para o PNCP. Confirme prazo, edital, condições de participação e atualizações na origem.</p></section></div></div>
+  <div class="method-steps"><div><span>01</span><section><h3>Monitoramos</h3><p>Expandimos gradualmente as consultas públicas para as 27 unidades federativas. O painel mostra o que já foi coletado e o que ainda está pendente.</p></section></div><div><span>02</span><section><h3>Organizamos</h3><p>Estruturamos descrição, órgão, município, valores informados e data prevista de encerramento.</p></section></div><div><span>03</span><section><h3>Você valida</h3><p>Direcionamos cada resultado para o PNCP. Confirme prazo, edital, condições de participação e atualizações na origem.</p></section></div></div>
 </div></section>
 <section class="plans section" id="planos"><div class="container">
  <div class="plans-intro"><div class="kicker">PLANOS</div><h2>Informação aberta.<br><span>Inteligência sob medida.</span></h2><p>Consulte a amostra sem criar uma conta. O Premium está em desenvolvimento para automatizar o acompanhamento de oportunidades por empresa.</p></div>

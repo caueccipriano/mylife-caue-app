@@ -7,6 +7,9 @@ on:
       - 'public/radar/index.html'
       - 'public/radar/app.js'
       - 'public/radar/style.css'
+      - 'public/radar/national.js'
+      - 'public/radar/national.css'
+      - 'radar/qa-national.cjs'
       - 'radar/qa-browser.cjs'
       - '.github/workflows/radar-qa.yml'
   pull_request:
@@ -14,6 +17,9 @@ on:
       - 'public/radar/index.html'
       - 'public/radar/app.js'
       - 'public/radar/style.css'
+      - 'public/radar/national.js'
+      - 'public/radar/national.css'
+      - 'radar/qa-national.cjs'
       - 'radar/qa-browser.cjs'
       - '.github/workflows/radar-qa.yml'
 permissions:
@@ -38,10 +44,14 @@ jobs:
         run: |
           node --check public/radar/app.js
           node --check radar/qa-browser.cjs
+          node --check public/radar/national.js
+          node --check radar/qa-national.cjs
           python3 -m http.server 4173 --directory public > /tmp/radar-server.log 2>&1 &
           for n in $(seq 1 20); do curl --fail --silent http://127.0.0.1:4173/radar/ > /dev/null && break; sleep 1; done
       - name: Desktop/mobile functional and live-index smoke
         run: node radar/qa-browser.cjs
+      - name: National desktop/mobile/WebKit and Supabase RPC mock smoke
+        run: node radar/qa-national.cjs
       - name: Upload screenshot and filtered export for review
         if: always()
         uses: actions/upload-artifact@v4

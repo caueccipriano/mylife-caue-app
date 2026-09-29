@@ -6,6 +6,8 @@ on:
       - 'public/radar/index.html'
       - 'public/radar/app.js'
       - 'public/radar/style.css'
+      - 'public/radar/national.js'
+      - 'public/radar/national.css'
       - 'radar/qa-a11y.cjs'
       - '.github/workflows/radar-a11y.yml'
   push:
@@ -14,6 +16,8 @@ on:
       - 'public/radar/index.html'
       - 'public/radar/app.js'
       - 'public/radar/style.css'
+      - 'public/radar/national.js'
+      - 'public/radar/national.css'
       - 'radar/qa-a11y.cjs'
       - '.github/workflows/radar-a11y.yml'
 permissions:
