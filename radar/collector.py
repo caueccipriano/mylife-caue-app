@@ -18,6 +18,7 @@ from zoneinfo import ZoneInfo
 
 API = "https://pncp.gov.br/api/consulta/v1/contratacoes/proposta"
 SP = ZoneInfo("America/Sao_Paulo")
+ALL_UFS = set("AC AL AP AM BA CE DF ES GO MA MT MS MG PA PB PR PE PI RJ RN RS RO RR SC SP SE TO".split())
 MODALITIES = (6, 8)  # Pregão eletrônico and dispensa, both checked via public PNCP
 MAX_PAGES_PER_MODALITY = 12
 PAGE_SIZE = 50
@@ -60,12 +61,13 @@ def as_datetime(value):
         return None
     return parsed.replace(tzinfo=SP) if parsed.tzinfo is None else parsed.astimezone(SP)
 
-def catalog_record(item, now):
-    """One verified, currently open record in our bounded SP PNCP sample."""
+def catalog_record(item, now, expected_uf="SP"):
+    """One verified PNCP record, with optional explicit regional restriction."""
     if not isinstance(item, dict):
         return None
     unit = item.get("unidadeOrgao")
-    if not isinstance(unit, dict) or unit.get("ufSigla") != "SP":
+    uf = unit.get("ufSigla") if isinstance(unit, dict) else None
+    if uf not in ALL_UFS or (expected_uf is not None and uf != expected_uf):
         return None
     # Reject entries explicitly marked as suspended/revoked/cancelled even when
     # an old deadline remains in the public snapshot.
@@ -101,8 +103,8 @@ def catalog_record(item, now):
     return {
         "id":ident,"object":desc[:1200],
         "organ":str(organ.get("razaoSocial") or "Órgão não identificado")[:180],
-        "city":str(unit.get("municipioNome") or "São Paulo")[:100],
-        "uf":"SP","deadline":close.isoformat(),
+        "city":str(unit.get("municipioNome") or "Município não informado")[:100],
+        "uf":uf,"deadline":close.isoformat(),
         "modality":str(item.get("modalidadeNome") or "Verificar no PNCP")[:100],
         "estimated_value_brl":item.get("valorTotalEstimado") if isinstance(item.get("valorTotalEstimado"),(int,float)) and not isinstance(item.get("valorTotalEstimado"),bool) and 0 < item.get("valorTotalEstimado") < 1e15 else None,
         "source":"PNCP",
@@ -116,9 +118,11 @@ def eligible(item, now):
     return record if record and record["sector_focus"] else None
 
 
-def request_page(end, modality, page, *, downloader=None):
+def request_page(end, modality, page, *, downloader=None, uf="SP"):
+    if uf not in ALL_UFS:
+        raise ValueError("Explicit, valid UF is required")
     query=urlencode({"dataFinal":end.strftime("%Y%m%d"),
-                     "codigoModalidadeContratacao":modality,"uf":"SP",
+                     "codigoModalidadeContratacao":modality,"uf":uf,
                      "pagina":page,"tamanhoPagina":PAGE_SIZE})
     url=API+"?"+query
     if downloader is not None:
