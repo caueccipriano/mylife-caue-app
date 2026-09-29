@@ -1,57 +1,105 @@
 <!doctype html>
-<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0c2420"><meta name="description" content="Editalume: alertas de licitações públicas para empresas de manutenção e serviços prediais em São Paulo. Pré-lançamento.">
-<title>Editalume · Oportunidades para quem faz acontecer</title>
-<style>
-:root{color-scheme:dark;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:#0b201d;color:#e9f4ee}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 88% -10%,#265447 0%,transparent 35%),#0b201d;line-height:1.55}
-.wrap{max-width:1060px;margin:auto;padding:0 22px}nav{display:flex;align-items:center;justify-content:space-between;padding:23px 0;border-bottom:1px solid #ffffff1d}
-.brand{font-size:19px;font-weight:850;letter-spacing:-.06em}.brand i{font-style:normal;color:#b5eda0}nav a,.links a{color:#cae9d5;text-decoration:none;font-size:14px}
-nav a:hover,.links a:hover{text-decoration:underline}.tag{display:inline-flex;border:1px solid #a9e9965e;border-radius:99px;padding:6px 12px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#c6f4a9}
-.hero{padding:85px 0 55px;max-width:750px}.hero h1{font-size:clamp(45px,7.4vw,88px);letter-spacing:-.075em;line-height:1.04;margin:22px 0}.hero h1 em{font-style:normal;color:#b9eb9e}
-p.lead{color:#c6ded2;font-size:clamp(17px,2vw,22px);max-width:660px}.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:12px 19px;background:#cbf2ac;color:#123127;border-radius:12px;text-decoration:none;font-weight:750}
-.btn:hover{background:#e3ffcb}.ghost{color:#c6efce;margin-left:18px;text-decoration:none;font-size:14px}.metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:0 0 55px}
-.tile,.op{background:#17372f;border:1px solid #ffffff23;border-radius:19px;padding:24px}.tile strong{display:block;font-size:25px;color:#d7f6bb}.tile span{color:#bbd0c4;font-size:13px}.section{padding:45px 0;border-top:1px solid #ffffff26}
-.eyebrow{font-size:12px;color:#b9e5a4;letter-spacing:.12em;text-transform:uppercase;font-weight:750}
-h2{font-size:clamp(28px,4vw,45px);letter-spacing:-.05em;line-height:1.1;margin:12px 0 22px}
-.note,.meta{color:#adcbc0;font-size:13px}.opgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:24px}
-.op h3{line-height:1.35;font-size:18px;letter-spacing:-.02em}.op .city{font-size:12px;color:#d4edc7}
-.op a{color:#d2f9b5}.state{background:#30473e;padding:14px;border-radius:10px;color:#f4f9f3}
-.pricing{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:34px;background:linear-gradient(100deg,#214537,#15342e);border:1px solid #bceba35e;border-radius:22px}
-.price{font-size:46px;font-weight:800;letter-spacing:-.06em}.price small{font-size:15px;font-weight:400;letter-spacing:0}
-footer{font-size:12px;color:#b0c7ba;padding:35px 0;border-top:1px solid #ffffff26}
-@media(max-width:660px){.hero{padding:62px 0 38px}.metrics,.opgrid{grid-template-columns:1fr}.pricing{align-items:flex-start;flex-direction:column}.ghost{display:block;margin:17px 0 0}}
-</style></head>
-<body><div class="wrap"><nav><span class="brand">EDITA<i>LUME</i></span><a href="#amostra">Explorar amostra ↗</a></nav>
-<header class="hero"><span class="tag">Pré-lançamento · São Paulo</span><h1>Oportunidades públicas.<br><em>Menos procura.</em></h1>
-<p class="lead">Alertas selecionados de licitações para empresas de manutenção, conservação e serviços prediais. Nosso robô procura; sua empresa decide.</p>
-<a class="btn" href="#amostra">Conhecer as oportunidades ↓</a><a class="ghost" href="#assinatura">Como funciona</a></header>
-<section class="metrics"><div class="tile"><strong>SP</strong><span>Recorte inicial</span></div><div class="tile"><strong>Diária</strong><span>Tentativa de atualização automatizada</span></div><div class="tile"><strong>PNCP</strong><span>Fonte oficial e pública</span></div></section>
-<section id="amostra" class="section"><div class="eyebrow">Demonstração</div><h2>Veja uma amostra do radar.</h2>
-<p class="note">O sistema examina uma amostra limitada de páginas públicas do PNCP. A seleção é automatizada, pode omitir oportunidades e não substitui a leitura integral do edital ou a verificação do prazo no órgão responsável.</p>
-<div id="state" class="state" role="status" aria-live="polite">Carregando a última coleta...</div><div id="list" class="opgrid"></div>
-<p class="links"><a href="https://pncp.gov.br/app/editais" target="_blank" rel="noopener noreferrer">Pesquisar diretamente no PNCP ↗</a></p></section>
-<section class="section" id="assinatura"><div class="eyebrow">O serviço</div><h2>Informação relevante, sem planilhas intermináveis.</h2>
-<div class="pricing"><div><span class="tag">Assinatura em estudo</span><div class="price">R$ 39,90 <small>/ mês</small></div>
-<p>Alertas filtrados para sua atividade e região. A contratação e a entrega por e-mail serão liberadas após a validação do piloto.</p><p class="note">Pré-lançamento: não estamos aceitando pagamentos ou inscrições neste momento.</p></div>
-<a class="btn" href="#amostra">Ver a demonstração</a></div></section>
-<footer><strong>Editalume</strong> · Projeto independente de inteligência comercial. Não representa nem possui vínculo com o Governo Federal ou o PNCP.<br>
-Informações públicas sujeitas a atualização; só o edital oficial define as condições da contratação. Não são garantidas oportunidades, habilitação ou resultados comerciais.</footer></div>
-<script>
-(async()=>{const state=document.getElementById("state"),list=document.getElementById("list");
-const label=(d)=>new Date(d).toLocaleString("pt-BR",{timeZone:"America/Sao_Paulo",dateStyle:"short",timeStyle:"short"});
-try{const response=await fetch("./opportunities.json?cache="+Date.now(),{cache:"no-store"});
-if(!response.ok)throw Error("Dados indisponíveis");const doc=await response.json();if(!Array.isArray(doc.opportunities))throw Error("Formato inesperado");
-if(doc.status==="awaiting_first_scan"){state.textContent="Primeira coleta ainda não concluída. Nenhum edital está confirmado nesta página.";return;}
-const stale=Date.now()-new Date(doc.generated_at).getTime()>36*3600*1000;
-state.textContent=(stale?"⚠ Dados desatualizados. ":"")+(doc.status==="partial"?"⚠ Coleta parcial. ":"")+"Última análise: "+label(doc.generated_at)+" · "+doc.records_examined+" registros examinados · "+doc.opportunities.length+" correspondências nesta amostra.";
-if(!doc.opportunities.length){const p=document.createElement("p");p.className="note";p.textContent="Nenhuma oportunidade correspondente foi encontrada na amostra consultada. Isso não significa que não existam editais abertos.";list.append(p);}
-for(const op of doc.opportunities.slice(0,12)){if(!op.source_url?.startsWith("https://pncp.gov.br/app/editais/"))continue;const el=document.createElement("article");el.className="op";
-const city=document.createElement("p");city.className="city";city.textContent=(op.city||"São Paulo")+"/SP";
-const title=document.createElement("h3");title.textContent=op.object;
-const organ=document.createElement("p");organ.className="meta";organ.textContent=op.organ;
-const expiry=document.createElement("p");expiry.className="meta";expiry.textContent="Prazo informado: "+label(op.deadline)+" · confirme no edital";
-const link=document.createElement("a");link.href=op.source_url;link.target="_blank";link.rel="noopener noreferrer";link.textContent="Consultar o edital oficial ↗";
-el.append(city,title,organ,expiry,link);list.append(el);}
-}catch(e){state.textContent="Não foi possível verificar os dados agora. Consulte diretamente o PNCP pelo link abaixo.";}})();
-</script></body></html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f5f6f2">
+<meta name="description" content="Editalume: inteligência comercial para compras públicas. Pesquise uma base monitorada de licitações abertas do PNCP, filtre por cidade, setor, modalidade e prazo.">
+<meta property="og:title" content="Editalume | Inteligência em oportunidades públicas">
+<meta property="og:description" content="Da informação à oportunidade. Um ambiente para descobrir licitações relevantes com clareza.">
+<title>Editalume | Inteligência em oportunidades públicas</title>
+<link rel="stylesheet" href="./style.css">
+<script src="./app.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#pesquisa">Ir para a pesquisa de oportunidades</a>
+<div class="site-shell">
+<header class="site-header">
+  <div class="container header-row">
+    <a class="identity" href="./" aria-label="Editalume, início"><span class="symbol" aria-hidden="true"><span></span><span></span><span></span></span><span class="wordmark">editalume<span class="mark-dot">.</span></span></a>
+    <nav class="main-nav" aria-label="Navegação principal">
+      <a href="#plataforma">A plataforma</a>
+      <a href="#pesquisa">Base de oportunidades</a>
+      <a href="#metodo">Metodologia</a>
+    </nav>
+    <a class="header-cta" href="#pesquisa">Explorar base <span aria-hidden="true">↗</span></a>
+  </div>
+</header>
+<main>
+<section class="hero section" id="plataforma">
+  <div class="container hero-layout">
+    <div class="hero-copy">
+      <div class="eyebrow"><span class="pulse"></span> INTELIGÊNCIA EM COMPRAS PÚBLICAS · SP</div>
+      <h1>Encontre o próximo contrato. <span>Antes da concorrência.</span></h1>
+      <p>Transformamos dados públicos em uma experiência clara de pesquisa. Descubra licitações, filtre oportunidades e tome decisões com mais contexto.</p>
+      <div class="hero-actions">
+        <a href="#pesquisa" class="button button-primary">Pesquisar oportunidades <span aria-hidden="true">↗</span></a>
+        <a href="#metodo" class="text-link">Entenda nossa análise <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="trust-line"><span class="trust-icon" aria-hidden="true">✓</span> Fonte oficial PNCP <span class="tiny-separator">·</span> Sem cadastro para pesquisar <span class="tiny-separator">·</span> Plataforma independente</div>
+    </div>
+    <aside class="hero-preview" aria-label="Visão da plataforma">
+      <div class="preview-head"><span><span class="preview-status"></span> MONITORAMENTO PÚBLICO</span><span class="live-label">EDIÇÃO PILOTO</span></div>
+      <div class="preview-title">Panorama de oportunidades</div>
+      <div class="preview-subtitle">Licitações monitoradas · Estado de São Paulo</div>
+      <div class="preview-kpis">
+        <div><strong id="heroCount">—</strong><span>Registros publicados</span></div>
+        <div><strong id="heroFocus">—</strong><span>Serviços selecionados</span></div>
+      </div>
+      <div class="preview-divider"></div>
+      <div class="preview-list"><div><span class="preview-bullet green"></span><span>Pesquisar por palavra-chave e local</span><span>↗</span></div><div><span class="preview-bullet blue"></span><span>Comparar prazos e modalidades</span><span>↗</span></div><div><span class="preview-bullet gold"></span><span>Consultar diretamente a fonte</span><span>↗</span></div></div>
+      <p class="preview-foot">Informação organizada para decisões mais rápidas.</p>
+    </aside>
+  </div>
+</section>
+<section class="metrics-bar" aria-label="Resumo da base">
+  <div class="container metrics-grid">
+    <div class="metric"><strong id="metricCatalog">—</strong><span>Oportunidades na amostra</span></div>
+    <div class="metric"><strong id="metricFocus">—</strong><span>Oportunidades de serviços</span></div>
+    <div class="metric"><strong id="metricScanned">—</strong><span>Registros examinados</span></div>
+    <div class="metric"><strong>Diária</strong><span>Rotina programada de atualização*</span></div>
+  </div>
+</section>
+<section class="search-section section" id="pesquisa">
+ <div class="container">
+  <div class="section-heading">
+    <div><div class="kicker">BASE DE OPORTUNIDADES</div><h2>Pesquisa inteligente.<br><span>Resultados relevantes.</span></h2></div>
+    <div class="section-aside">Uma amostra pesquisável de contratações públicas, organizada para você encontrar o que importa. Os editais permanecem na plataforma oficial.</div>
+  </div>
+  <div class="search-panel">
+    <div class="search-top"><div><span class="section-badge">CONSULTA ABERTA</span><h3>Encontre sua próxima oportunidade</h3></div><span class="source-label">Dados públicos · PNCP</span></div>
+    <form id="filters" role="search">
+      <label class="search-field" for="q"><span class="search-icon" aria-hidden="true">⌕</span><input id="q" name="q" type="search" placeholder="Palavra-chave, órgão, objeto ou cidade..." autocomplete="off" aria-label="Buscar oportunidades"><span class="key-hint">BUSCAR</span></label>
+      <div class="filter-grid">
+        <label><span>Segmento</span><select id="segment"><option value="focus">Manutenção e serviços</option><option value="all">Todos os setores da amostra</option><option value="cleaning">Limpeza e conservação</option><option value="maintenance">Manutenção predial</option><option value="hvac">Climatização</option><option value="electrical">Elétrica e hidráulica</option><option value="landscaping">Jardinagem</option></select></label>
+        <label><span>Município</span><select id="city"><option value="">Todas as cidades</option></select></label>
+        <label><span>Modalidade</span><select id="modality"><option value="">Todas as modalidades</option></select></label>
+        <label><span>Prazo para encerramento</span><select id="deadline"><option value="all">Qualquer prazo aberto</option><option value="7">Próximos 7 dias</option><option value="15">Próximos 15 dias</option><option value="30">Próximos 30 dias</option></select></label>
+      </div>
+      <div class="filter-footer">
+        <label class="min-value">Valor estimado mínimo <span class="input-money">R$ <input id="minValue" type="number" min="0" step="1000" inputmode="decimal" placeholder="0" aria-label="Valor estimado mínimo em reais"></span></label>
+        <div class="filter-actions"><button type="reset" id="resetFilters" class="button button-quiet">Limpar filtros</button><button type="submit" class="button button-primary">Pesquisar <span aria-hidden="true">→</span></button></div>
+      </div>
+    </form>
+  </div>
+  <div id="notice" class="data-notice" role="status" aria-live="polite">Carregando a última amostra do PNCP...</div>
+  <div class="results-bar"><div><div class="kicker">RESULTADOS</div><h3 id="resultsCount">Buscando oportunidades...</h3></div><div class="results-controls"><label for="sort">Ordenar por</label><select id="sort"><option value="deadline">Prazo mais próximo</option><option value="relevance">Maior relevância</option><option value="value">Maior valor estimado</option></select><button id="csv" type="button" class="export-button" disabled title="Exporta somente os resultados visíveis nos filtros">Exportar CSV ↓</button></div></div>
+  <div id="results" class="results-list" aria-live="polite"></div>
+  <div id="empty" class="empty-state" hidden><span class="empty-symbol" aria-hidden="true">⌕</span><h3>Nenhum resultado nos filtros atuais</h3><p>Experimente ampliar o prazo ou selecionar todos os setores. Uma amostra limitada não representa todas as licitações.</p></div>
+  <div class="results-bottom"><p id="shown">Pesquisando...</p><button id="more" class="button button-outline" type="button" hidden>Exibir mais oportunidades ↓</button></div>
+  <div class="official-link">Procurando fora deste recorte? <a href="https://pncp.gov.br/app/editais" target="_blank" rel="noopener noreferrer">Acesse a base oficial completa do PNCP ↗</a></div>
+ </div>
+</section>
+<section class="method-section section" id="metodo"><div class="container method-layout">
+  <div><div class="kicker">METODOLOGIA</div><h2>Dados públicos.<br><span>Decisões melhores.</span></h2><p>O Editalume organiza dados públicos em um recorte pesquisável e oferece links diretos para consultar a informação original. Você mantém o controle de cada decisão.</p><a class="text-link method-link" href="https://pncp.gov.br/app/editais" target="_blank" rel="noopener noreferrer">Conhecer a fonte oficial ↗</a></div>
+  <div class="method-steps"><div><span>01</span><section><h3>Monitoramos</h3><p>Coletamos uma amostra de propostas com prazo informado em São Paulo nas modalidades monitoradas.</p></section></div><div><span>02</span><section><h3>Organizamos</h3><p>Estruturamos descrição, órgão, município, valores informados e data prevista de encerramento.</p></section></div><div><span>03</span><section><h3>Você valida</h3><p>Direcionamos cada resultado para o PNCP. Confirme prazo, edital, condições de participação e atualizações na origem.</p></section></div></div>
+</div></section>
+<section class="plans section" id="planos"><div class="container plans-layout">
+ <div><div class="kicker">PRÓXIMA ETAPA</div><h2>Seu radar.<br><span>Seu mercado.</span></h2><p>Estamos validando alertas setoriais personalizados, entrega programada e acompanhamento de oportunidades relevantes para empresas.</p><div class="plan-disclaimer">A pesquisa nesta demonstração é gratuita. O serviço de assinaturas ainda não está disponível.</div></div>
+ <aside class="plan-card"><span>PLANO EM ESTUDO</span><h3>Editalume Pro</h3><div class="plan-price">R$ 39,90 <small>/ mês</small></div><ul><li>Alertas de oportunidades selecionadas</li><li>Preferências por atividade e região</li><li>Resumo com links para a fonte oficial</li></ul><span class="plan-status">Em validação · Sem cobrança ativa</span></aside>
+</div></section>
+</main>
+<footer class="site-footer"><div class="container footer-top"><div><div class="footer-brand">editalume<span>.</span></div><p>Inteligência em oportunidades públicas.<br>Uma experiência independente de pesquisa.</p></div><div><strong>Plataforma</strong><a href="#pesquisa">Explorar oportunidades</a><a href="#metodo">Metodologia</a><a href="#planos">Plano em estudo</a></div><div><strong>Fonte oficial</strong><a href="https://pncp.gov.br/app/editais" target="_blank" rel="noopener noreferrer">Portal PNCP ↗</a></div></div><div class="container footer-bottom"><span>© <span id="copyrightYear">2026</span> Editalume · Projeto em pré-lançamento.</span><span>Não temos vínculo com o Governo Federal nem com o PNCP. *Atualizações podem atrasar ou falhar. A base é parcial, não exaustiva; o edital oficial prevalece.</span></div></footer>
+</div>
+</body>
+</html>

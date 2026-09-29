@@ -18,7 +18,7 @@ from zoneinfo import ZoneInfo
 API = "https://pncp.gov.br/api/consulta/v1/contratacoes/proposta"
 SP = ZoneInfo("America/Sao_Paulo")
 MODALITIES = (6, 8)  # Pregão eletrônico and dispensa, both checked via public PNCP
-MAX_PAGES_PER_MODALITY = 4
+MAX_PAGES_PER_MODALITY = 12
 PAGE_SIZE = 50
 INCLUDE = ("manutenc", "ar condicionado", "climatiz", "refriger", "limpeza", "higieniz",
            "eletric", "hidraulic", "facilities", "predial", "jardinag", "conservac",
@@ -59,7 +59,8 @@ def as_datetime(value):
         return None
     return parsed.replace(tzinfo=SP) if parsed.tzinfo is None else parsed.astimezone(SP)
 
-def eligible(item, now):
+def catalog_record(item, now):
+    """One verified, currently open record in our bounded SP PNCP sample."""
     if not isinstance(item, dict):
         return None
     unit = item.get("unidadeOrgao")
@@ -69,11 +70,10 @@ def eligible(item, now):
     if close is None or close <= now:
         return None
     desc = item.get("objetoCompra")
-    score = relevance(desc)
-    if not score:
+    if not isinstance(desc, str) or len(desc.strip()) < 8:
         return None
     ident = item.get("numeroControlePNCP")
-    if not isinstance(ident, str) or not re.fullmatch(r"\d{14}-\d+-\d+/\d{4}",ident):
+    if not isinstance(ident, str) or not re.fullmatch(r"\d{14}-\d+-\d+/\d{4}", ident):
         return None
     cnpj = ident.split("-", 1)[0]
     year = item.get("anoCompra")
@@ -81,16 +81,26 @@ def eligible(item, now):
     if not isinstance(year, int) or not isinstance(serial, int) or serial < 1:
         return None
     organ = item.get("orgaoEntidade") or {}
+    if not isinstance(organ,dict):
+        organ={}
+    score=relevance(desc)
     return {
-        "id": ident, "object":str(desc)[:650],
+        "id":ident,"object":desc[:1200],
         "organ":str(organ.get("razaoSocial") or "Órgão não identificado")[:180],
         "city":str(unit.get("municipioNome") or "São Paulo")[:100],
         "uf":"SP","deadline":close.isoformat(),
-        "modality":str(item.get("modalidadeNome") or "Consultar no PNCP")[:100],
-        "estimated_value_brl":item.get("valorTotalEstimado") if isinstance(item.get("valorTotalEstimado"),(int,float)) and item.get("valorTotalEstimado") > 0 else None,
-        "source":"PNCP","source_url":f"https://pncp.gov.br/app/editais/{cnpj}/{year}/{serial}",
-        "relevance":score
+        "modality":str(item.get("modalidadeNome") or "Verificar no PNCP")[:100],
+        "estimated_value_brl":item.get("valorTotalEstimado") if isinstance(item.get("valorTotalEstimado"),(int,float)) and not isinstance(item.get("valorTotalEstimado"),bool) and 0 < item.get("valorTotalEstimado") < 1e15 else None,
+        "source":"PNCP",
+        "source_url":f"https://pncp.gov.br/app/editais/{cnpj}/{year}/{serial}",
+        "relevance":score,"sector_focus":bool(score)
     }
+
+def eligible(item, now):
+    """Maintain backwards-compatible niche-only helper, fail closed."""
+    record=catalog_record(item,now)
+    return record if record and record["sector_focus"] else None
+
 
 def request_page(end, modality, page, *, downloader=None):
     query=urlencode({"dataFinal":end.strftime("%Y%m%d"),
@@ -129,7 +139,7 @@ def collect(*, now=None, downloader=None, modalities=MODALITIES, max_pages=MAX_P
             pages+=1
             scanned+=len(rows)
             for item in rows:
-                row=eligible(item,now)
+                row=catalog_record(item,now)
                 if row is not None:
                     found[row["id"]]=row
             if not rows or len(rows)<PAGE_SIZE:
@@ -138,7 +148,8 @@ def collect(*, now=None, downloader=None, modalities=MODALITIES, max_pages=MAX_P
             if downloader is None: time.sleep(0.6)
     if pages==0:
         raise RuntimeError("No validated PNCP page received; retaining last valid public report")
-    sorted_rows=sorted(found.values(),key=lambda row:(-row["relevance"],row["deadline"]))
+    sorted_rows=sorted(found.values(),key=lambda row:(row["deadline"],-row["relevance"]))
+    focus_rows=sorted((r for r in found.values() if r["sector_focus"]), key=lambda row:(-row["relevance"],row["deadline"]))
     return {
         "brand":"Editalume","generated_at":now.isoformat(),
         "status":"partial" if errors else "sample_ok","region":"SP",
@@ -146,9 +157,12 @@ def collect(*, now=None, downloader=None, modalities=MODALITIES, max_pages=MAX_P
         "covered_modalities":list(modalities),
         "sample_limit_pages_per_modality":max_pages,
         "pages_examined":pages,"records_examined":scanned,
+        "catalog_count":len(sorted_rows),"focus_count":len(focus_rows),
+        "coverage_note":"SP; apenas modalidades 6 e 8; até 12 páginas por modalidade; propostas com data final informada nos próximos 45 dias; não inclui todo o PNCP.",
         "exhaustive":False,
         "notice":"Amostra parcial e automatizada. Não representa todas as licitações. Consulte o edital oficial e confirme prazos, elegibilidade e eventuais alterações antes de qualquer proposta.",
-        "errors":errors,"opportunities":sorted_rows[:60]
+        "errors":errors,"opportunities":focus_rows,
+        "catalog":sorted_rows
     }
 
 def main():

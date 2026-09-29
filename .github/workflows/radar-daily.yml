@@ -1,4 +1,4 @@
-name: Editalume · PNCP sample refresh
+name: Editalume · PNCP searchable catalog
 on:
   workflow_dispatch:
   push:
@@ -11,17 +11,19 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: caue-radar-refresh
+  group: editalume-catalog-refresh
   cancel-in-progress: false
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    timeout-minutes: 16
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Validate dashboard JavaScript syntax
+        run: node --check public/radar/app.js
       - name: Offline validation
         run: PYTHONPATH=radar python -m unittest discover -s radar -p 'test_*.py' -v
       - name: Refresh public PNCP sample without credentials

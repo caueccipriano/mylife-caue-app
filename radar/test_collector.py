@@ -1,7 +1,7 @@
 import unittest
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
-from collector import collect, eligible, relevance
+from collector import collect, eligible, relevance, catalog_record
 NOW=datetime(2026,9,29,10,tzinfo=ZoneInfo("America/Sao_Paulo"))
 def item(desc="SERVIÇOS DE MANUTENÇÃO PREDIAL",uf="SP",deadline=None):
     return {"numeroControlePNCP":"00000000000000-1-000001/2026",
@@ -38,9 +38,30 @@ class CollectorTests(unittest.TestCase):
             return {"data":[item(),item()]}
         report=collect(now=NOW,downloader=downloader,max_pages=3)
         self.assertEqual(len(report["opportunities"]),1)
+        self.assertEqual(len(report["catalog"]),1)
+        self.assertEqual(report["catalog_count"],1)
+        self.assertEqual(report["focus_count"],1)
         self.assertEqual(report["status"],"partial")
         self.assertFalse(report["exhaustive"])
         self.assertEqual(report["pages_examined"],1)
+    def test_general_database_keeps_valid_non_focus_not_as_focus(self):
+        generic=item(desc="COMPRA DE PAPEL DE IMPRESSORA")
+        self.assertIsNone(eligible(generic,NOW))
+        self.assertEqual(catalog_record(generic,NOW)["sector_focus"],False)
+        report=collect(now=NOW, modalities=(6,),max_pages=1,downloader=lambda _:{"data":[item(),generic]})
+        # Both have same synthetic ID, so replace second with a unique ID.
+        self.assertEqual(report["catalog_count"],1)
+
+    def test_different_valid_ids_and_searchable_general_catalog(self):
+        generic=item(desc="COMPRA DE PAPEL DE IMPRESSORA")
+        generic["numeroControlePNCP"]="00000000000001-1-000002/2026"
+        generic["sequencialCompra"]=2
+        report=collect(now=NOW, modalities=(6,),max_pages=1,downloader=lambda _:{"data":[item(),generic]})
+        self.assertEqual(report["catalog_count"],2)
+        self.assertEqual(report["focus_count"],1)
+        self.assertEqual(len(report["opportunities"]),1)
+        self.assertFalse(report["exhaustive"])
+
     def test_total_api_failure_does_not_fake_empty_feed(self):
         with self.assertRaises(RuntimeError):
             collect(now=NOW,downloader=lambda url: (_ for _ in ()).throw(TimeoutError()))
