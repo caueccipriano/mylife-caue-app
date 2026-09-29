@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+ <title>Editalume</title>
+ <rect width="512" height="512" rx="118" fill="#163c2c"/>
+ <path d="M140 124C140 105 155 90 174 90h164c19 0 34 15 34 34v16H140z" fill="#c8e4bb"/>
+ <rect x="115" y="143" width="282" height="226" rx="32" fill="#f7faf1"/>
+ <rect x="157" y="188" width="196" height="22" rx="11" fill="#2c6148"/>
+ <rect x="157" y="230" width="149" height="18" rx="9" fill="#a7c4a8"/>
+ <rect x="157" y="270" width="179" height="18" rx="9" fill="#a7c4a8"/>
+ <circle cx="347" cy="343" r="78" fill="#93c998"/>
+ <path d="m310 344 25 25 52-57" fill="none" stroke="#153c2b" stroke-width="19" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
