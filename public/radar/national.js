@@ -12,7 +12,7 @@ const dt=new Intl.DateTimeFormat("pt-BR",{dateStyle:"short",timeStyle:"short",ti
 const node=(tag,cls,txt)=>{let x=document.createElement(tag);if(cls)x.className=cls;if(txt!==undefined)x.textContent=String(txt);return x};
 const empty=el=>el.replaceChildren();
 const knownStatus={not_started:"Aguardando coleta",complete_sample:"Amostra recebida",partial:"Cobertura parcial",rate_limited:"Consulta limitada",failed:"Falha recente"};
-const state={coverage:[],items:[],total:0,offset:0,loading:false,request:null,firstLoad:true};
+const state={coverage:[],coverageState:"pending",items:[],total:0,offset:0,loading:false,request:null,firstLoad:true};
 function official(row){
  const m=/^(\d{14})-\d+-(\d+)\/(\d{4})$/.exec(row?.pncp_id||"");
  if(!m||Number(m[2])<1)return null;
@@ -21,20 +21,36 @@ function official(row){
 function formatDate(iso){const date=new Date(iso);return Number.isFinite(date.getTime())?dt.format(date):"Verificar no PNCP"}
 function formatValue(n){return n!==null&&Number(n)>0?money.format(Number(n)):"Não informado"}
 function renderCoverage(){
- const available=state.coverage.filter(c=>c.last_success_at&&["complete_sample","partial","rate_limited"].includes(c.status));
+ // A failed status request is UNKNOWN, not proof that zero states have data.
+ const verified=state.coverageState==="loaded";
+ const available=verified?state.coverage.filter(c=>
+   c.last_success_at&&Number.isFinite(Date.parse(c.last_success_at))&&
+   Date.parse(c.last_success_at)<=Date.now()&&
+   ["complete_sample","partial","rate_limited"].includes(c.status)): [];
  const count=available.length;
- $("national-uf-count").textContent=fmt.format(count)+"/27";
- $("national-coverage-description").textContent=
-   count===0?"Aguardando a primeira coleta validada. A pesquisa não inventa editais.":
-   fmt.format(count)+" de 27 UFs com ao menos uma amostra recebida. As demais estão em implantação.";
+ $("national-uf-count").textContent=verified?fmt.format(count)+"/27":"—/27";
+ $("national-coverage-description").textContent=!verified
+   ?(state.coverageState==="error"
+     ?"Cobertura temporariamente indisponível. Não é possível confirmar quantos estados têm amostras agora."
+     :"Verificando amostras recebidas por estado...")
+   :count===0
+     ?"Consulta concluída: ainda não há amostras validadas nas 27 UFs."
+     :fmt.format(count)+" de 27 UFs com ao menos uma amostra recebida. Isso não significa cobertura completa.";
  const wrap=$("national-state-grid");empty(wrap);
  for(const [uf,name] of Object.entries(STATES)){
-  const current=state.coverage.find(x=>x.uf===uf);
-  const available=!!(current?.last_success_at&&["complete_sample","partial","rate_limited"].includes(current.status));
-  const item=node("button","national-state"+(available?" has-data":" pending")+
+  const current=verified?state.coverage.find(x=>x.uf===uf):null;
+  const hasData=!!current&&available.some(x=>x.uf===uf);
+  const unknown=!verified;
+  const item=node("button","national-state"+(hasData?" has-data":unknown?" unknown":" pending")+
     ($("national-uf").value===uf?" active":""),uf);
-  item.type="button";item.title=name+" — "+(knownStatus[current?.status]||"Aguardando coleta");
-  item.setAttribute("aria-label",item.title);item.setAttribute("aria-pressed",String($("national-uf").value===uf));
+  item.type="button";
+  const detail=unknown
+    ?state.coverageState==="error"?"Cobertura não verificada: conexão indisponível":"Verificando cobertura"
+    :knownStatus[current?.status]||"Aguardando coleta";
+  const lastSample=hasData?formatDate(current.last_success_at):"";
+  item.title=name+" — "+detail+(lastSample?" · Última amostra: "+lastSample:"");
+  item.setAttribute("aria-label",item.title);
+  item.setAttribute("aria-pressed",String($("national-uf").value===uf));
   item.addEventListener("click",()=>{$("national-uf").value=uf;state.offset=0;renderCoverage();search();});
   wrap.append(item);
  }
@@ -72,10 +88,17 @@ function renderCards(){
  $("national-next").hidden=state.items.length<PAGE_SIZE||state.offset+state.items.length>=state.total;
  $("national-download").disabled=!state.items.length;
  const uf=$("national-uf").value;
+ const coverageUnknown=state.coverageState!=="loaded";
+ const knownMissing=state.coverageState==="loaded"&&uf&&
+   !state.coverage.some(x=>x.uf===uf&&x.last_success_at&&
+     Number.isFinite(Date.parse(x.last_success_at))&&Date.parse(x.last_success_at)<=Date.now());
  $("national-empty").hidden=state.items.length>0;
- $("national-empty-title").textContent=uf&&!(state.coverage.find(x=>x.uf===uf)?.last_success_at)?"Coleta ainda não concluída para "+STATES[uf]:"Nenhum registro neste filtro";
- $("national-empty-description").textContent=uf&&!(state.coverage.find(x=>x.uf===uf)?.last_success_at)?
-  "Este estado já está configurado, mas ainda não há amostra validada. Consulte diretamente o PNCP enquanto expandimos a cobertura.":
+ $("national-empty-title").textContent=uf&&coverageUnknown?"Cobertura do estado não verificada":
+   knownMissing?"Coleta ainda não concluída para "+STATES[uf]:"Nenhum registro neste filtro";
+ $("national-empty-description").textContent=uf&&coverageUnknown?
+  "Não conseguimos consultar o status de coleta agora. Isso não significa que não existam editais no estado. Use também o PNCP.":
+  knownMissing?
+  "Este estado está configurado, mas ainda não há amostra validada. Consulte diretamente o PNCP enquanto expandimos a cobertura.":
   "Experimente ampliar os filtros. A base é amostral e a situação do edital pode mudar.";
 }
 function args(){
@@ -130,12 +153,18 @@ async function loadCoverage(){
    {headers:{"apikey":KEY},cache:"no-store"});
   if(!response.ok)throw new Error("HTTP "+response.status);
   const rows=await response.json();
-  if(!Array.isArray(rows)||rows.length!==27)throw new Error("Coverage missing");
-  state.coverage=rows;renderCoverage();
+  const expected=Object.keys(STATES);
+  // Duplicated, missing or unknown rows are not a trustworthy coverage report.
+  if(!Array.isArray(rows)||rows.length!==expected.length||
+     new Set(rows.map(r=>r?.uf)).size!==expected.length||
+     rows.some(r=>!expected.includes(r?.uf)))throw new Error("Coverage incomplete");
+  state.coverage=rows;
+  state.coverageState="loaded";
  }catch(_err){
-  $("national-coverage-description").textContent="Não foi possível verificar a cobertura agora. Não confunda estados configurados com estados já coletados.";
-  renderCoverage();
+  state.coverage=[];
+  state.coverageState="error";
  }
+ renderCoverage();
 }
 function init(){
  if(!$("national-form"))return;
