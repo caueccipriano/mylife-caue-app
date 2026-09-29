@@ -66,6 +66,7 @@ async function run(browser,name,width,height){
  assert.equal(await page.locator(".national-result-card").count(),3);
  assert.equal(await page.locator("#national-uf-count").innerText(),"2/27");
  assert.equal(await page.locator(".national-state").count(),27);
+ assert.match(await page.locator(".national-state.has-data").first().getAttribute("aria-label"),/Última amostra:/);
  assert.equal(await page.locator('.national-state[aria-pressed="false"]').count(),27);
  assert.match(await page.locator("#national-status").innerText(),/conectada/);
  assert.ok(await page.locator(".national-result-card").first().locator('a[href^="https://pncp.gov.br/app/editais/"]').count());
@@ -117,6 +118,12 @@ async function run(browser,name,width,height){
  assert.match(await page.locator('.national-state').first().getAttribute("aria-label"),/não verificada/);
  // Search continues independently even when the coverage count is unknown.
  await page.waitForFunction(()=>document.getElementById("national-result-count")?.textContent?.includes("15 editais"));
+ bulk=false;
+ await page.selectOption("#national-uf","AM");
+ await page.waitForFunction(()=>document.getElementById("national-empty-title")?.textContent?.includes("Cobertura do estado não verificada"));
+ assert.match(await page.locator("#national-empty-description").innerText(),/não significa que não existam editais/);
+ await page.click("#national-reset");
+ await page.waitForFunction(()=>document.getElementById("national-result-count")?.textContent?.includes("3 editais"));
  assert.deepEqual(errors,[]);
  console.log("PASS "+name+" national: data, 27 states, region filters, empty coverage, CSV, viewport");
  await context.close();
