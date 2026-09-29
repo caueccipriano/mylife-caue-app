@@ -4,7 +4,10 @@ on:
   push:
     branches: [main]
     paths:
-      - 'radar/**'
+      - 'radar/collector.py'
+      - 'radar/search_index.py'
+      - 'radar/test_collector.py'
+      - 'radar/test_search_index.py'
       - '.github/workflows/radar-daily.yml'
   schedule:
     - cron: '17 10 * * *'
@@ -14,7 +17,7 @@ permissions:
   id-token: write
 concurrency:
   group: editalume-catalog-refresh
-  cancel-in-progress: false
+  cancel-in-progress: true
 jobs:
   refresh:
     runs-on: ubuntu-latest

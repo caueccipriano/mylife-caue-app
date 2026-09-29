@@ -70,6 +70,25 @@ class IndexTests(unittest.TestCase):
                 "generated_at":(NOW-timedelta(minutes=2)).isoformat(),"opportunities":[item]}))
             self.assertEqual(len(verified_recent_sample(p,NOW)),1)
 
+    def test_recent_catalog_seed_includes_other_public_sectors(self):
+        import json,tempfile
+        from pathlib import Path
+        from search_index import verified_recent_sample
+        focused={"id":"00000000000000-1-000001/2026",
+                 "source_url":"https://pncp.gov.br/app/editais/00000000000000/2026/1",
+                 "deadline":(NOW+timedelta(days=8)).isoformat(),"uf":"SP","sector_focus":True}
+        general={**focused,"id":"00000000000001-1-000002/2026",
+                 "source_url":"https://pncp.gov.br/app/editais/00000000000001/2026/2",
+                 "sector_focus":False}
+        with tempfile.TemporaryDirectory() as tmp:
+            p=Path(tmp)/"sample.json"
+            p.write_text(json.dumps({"brand":"Editalume","status":"sample_ok",
+              "generated_at":(NOW-timedelta(minutes=2)).isoformat(),
+              "opportunities":[focused],"catalog":[focused,general]}))
+            validated=verified_recent_sample(p,NOW)
+            self.assertEqual(len(validated),2)
+            self.assertFalse(validated[general["id"]]["sector_focus"])
+
     def test_total_failure_preserves_existing_index(self):
         with self.assertRaises(RuntimeError):
             build(now=NOW,requester=lambda e,m,p:(_ for _ in ()).throw(TimeoutError()),

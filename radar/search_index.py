@@ -41,7 +41,8 @@ def prior_index(path,now):
     try:doc=json.loads(path.read_text(encoding="utf-8"))
     except (OSError,ValueError):return {}
     if not isinstance(doc,dict) or not isinstance(doc.get("opportunities"),list):return {}
-    return {x["id"]:x for x in doc["opportunities"] if valid_prior(x,now)}
+    items=doc.get("catalog") if isinstance(doc.get("catalog"),list) else doc["opportunities"]
+    return {x["id"]:x for x in items if valid_prior(x,now)}
 
 def load_page(end,modality,page,requester=None):
     if requester:return requester(end,modality,page)
@@ -70,7 +71,9 @@ def verified_recent_sample(path, now):
         return {}
     if not isinstance(doc,dict) or doc.get("brand")!="Editalume" or doc.get("status") not in ("sample_ok","partial") or stamp.tzinfo is None or not timedelta(0)<=now-stamp.astimezone(SP)<=timedelta(minutes=30):
         return {}
-    items=doc.get("opportunities")
+    # A single verified PNCP collection already contains records across sectors.
+    # Feed every valid catalog row into the searchable index, not just niche picks.
+    items=doc.get("catalog") if isinstance(doc.get("catalog"),list) else doc.get("opportunities")
     if not isinstance(items,list):
         return {}
     return {item["id"]:dict(item) for item in items if valid_prior(item,now)}
