@@ -19,6 +19,8 @@ jobs:
         run: npm install
       - name: Build
         run: npm run build
+      - name: Test safe link capture
+        run: node --experimental-strip-types --test tests/link-capture.test.mjs
       - name: Validate Editalume JavaScript
         run: |
           node --check public/radar/app.js

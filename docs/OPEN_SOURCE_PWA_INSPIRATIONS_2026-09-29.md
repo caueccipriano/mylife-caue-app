@@ -76,3 +76,19 @@ Uma página carregada pelo crawler não comprova que o fluxo ou instalabilidade 
 3. Preferir microtarefas verificáveis: inventário do código existente → lacuna real → especificação → branch isolada → testes sintéticos → QA em dispositivo físico → aprovação comercial quando aplicável.
 4. Não confundir sites públicos e demos de dados fictícios com produtos comerciais validados.
 5. PairDrop, VERT e Super Productivity podem ser usados diretamente sem integração aos produtos neste momento.
+
+## 4. Execução incremental — checkpoint 29/09/2026
+
+**As alterações seguintes estão em PRs de revisão, NÃO necessariamente publicadas.**
+Nenhum código AGPL ou do PNCP sem licença foi incorporado.
+
+| Produto | Código implementado | Revisão | Gate restante |
+|---|---|---|---|
+| Repertório | Fila estável/finita para flashcards, nota consolidada por assunto e aquecimento sem remarcação indevida. 2 testes unitários. | https://github.com/caueccipriano/repertorio-app/pull/16 | CI Flutter passou; testar navegação mobile real e compatibilidade com PR editorial #14. FSRS completo segue em issue #15. |
+| Traço | Sem duplicar fase/deload já existentes: histórico semanal legível por fase, sem volume inventado para sessões parciais, com suporte correto a exercícios sem carga e backups duplicados. 6 testes. | https://github.com/caueccipriano/v60-workout-app/pull/2 | CI da fase passou; conferir visual real mobile e cache offline antes de merge. |
+| ALINHA | Manter tela ativa no estúdio de meditação em navegadores compatíveis, somente após toque em Play, com desligamento seguro ao pausar/sair. 3 testes. | https://github.com/caueccipriano/alinha-app/pull/6 | O primeiro CI aprovou testes, build, PWA e Playwright; falhou apenas no upload de capturas por falta de cota do GitHub. Upload agora é opcional e a nova execução está em andamento. Ainda depende de Safari real e da branch de experiências do PR #5. |
+| EU | Colar link com toque explícito no Registrar, normalização segura e alerta de duplicidade. 3 testes. | https://github.com/caueccipriano/mylife-caue-app/pull/20 | CI aprovada; ainda depende de testes Safari. Não modifica o PWA independente do Editalume. |
+
+**P0 intacto:** Fôlego deve concluir autenticação, IA, RLS/isolamento, qualidade do release e migração de PRs existentes antes de adotar motor financeiro externo. O Editalume deve validar cobertura multiestado real e segurança do backend antes de copiar ideias adicionais de busca. Não acrescentar escopo para mascarar bloqueadores.
+
+**Próximos incrementos aprováveis por microtarefas:** protótipo FSRS migrável sem reprogramar históricos silenciosamente; presets/sinos originais no ALINHA somente após validar sua versão de estúdio; captura de links e retorno por contexto no EU; estudo de orçamento e patrimônio no Fôlego após gates de lançamento. Cada um necessita branch, testes sintéticos e revisão de licença.

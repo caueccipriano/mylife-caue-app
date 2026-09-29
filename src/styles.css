@@ -1781,7 +1781,7 @@ h3 {
 
 .link-capture {
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template-columns: minmax(0, 1fr) auto auto;
   gap: 7px;
   margin: 10px 0 4px;
 }
@@ -16390,4 +16390,13 @@ a.top-icon-action,
 .today-view-tabs button,
 .memory-mode-switch button {
   min-height: 44px;
+}
+
+.link-capture .link-paste-button {
+  background: var(--card);
+  border: 1px solid var(--line-strong);
+  color: var(--ink);
+}
+@media (max-width: 360px) {
+  .link-capture input { grid-column: 1 / -1; }
 }
