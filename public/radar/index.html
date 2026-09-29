@@ -10,8 +10,9 @@
 <meta property="og:title" content="Editalume | Inteligência em oportunidades públicas">
 <meta property="og:description" content="Da informação à oportunidade. Um ambiente para descobrir licitações relevantes com clareza.">
 <title>Editalume | Inteligência em oportunidades públicas</title>
-<link rel="stylesheet" href="./style.css">
-<script src="./app.js" defer></script>
+<link rel="stylesheet" href="./style.css?v=20260929-nacional">
+<script src="./config.js?v=20260929-nacional" defer></script>
+<script src="./app.js?v=20260929-nacional" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#pesquisa">Ir para a pesquisa de oportunidades</a>
@@ -32,7 +33,7 @@
 <section class="hero section" id="plataforma">
   <div class="container hero-layout">
     <div class="hero-copy">
-      <div class="eyebrow"><span class="pulse"></span> INTELIGÊNCIA EM COMPRAS PÚBLICAS · SP</div>
+      <div class="eyebrow"><span class="pulse"></span> INTELIGÊNCIA EM COMPRAS PÚBLICAS · COBERTURA NACIONAL EM EXPANSÃO</div>
       <h1>Encontre oportunidades. <span>Ganhe tempo para competir.</span></h1>
       <p>Transformamos dados públicos em uma experiência clara de pesquisa. Descubra licitações, filtre oportunidades e tome decisões com mais contexto.</p>
       <div class="hero-actions">
@@ -42,9 +43,9 @@
       <div class="trust-line"><span class="trust-icon" aria-hidden="true">✓</span> Fonte oficial PNCP <span class="tiny-separator">·</span> Sem cadastro para pesquisar <span class="tiny-separator">·</span> Plataforma independente</div>
     </div>
     <aside class="hero-preview" aria-label="Visão da plataforma">
-      <div class="preview-head"><span><span class="preview-status"></span> MONITORAMENTO PÚBLICO</span><span class="live-label">EDIÇÃO PILOTO</span></div>
+      <div class="preview-head"><span><span class="preview-status"></span> MONITORAMENTO PÚBLICO</span><span class="live-label">BASE CONECTADA · v2.1</span></div>
       <div class="preview-title">Panorama de oportunidades</div>
-      <div class="preview-subtitle">Licitações monitoradas · Estado de São Paulo</div>
+      <div class="preview-subtitle">Licitações cadastradas · expansão para 27 unidades federativas</div>
       <div class="preview-kpis">
         <div><strong id="heroCount">—</strong><span>Registros no catálogo</span></div>
         <div><strong id="heroFocus">—</strong><span>Serviços selecionados</span></div>
@@ -60,21 +61,22 @@
     <div class="metric"><strong id="metricCatalog">—</strong><span>Registros com prazo informado</span></div>
     <div class="metric"><strong id="metricFocus">—</strong><span>Registros de serviços</span></div>
     <div class="metric"><strong id="metricScanned">—</strong><span>Registros examinados</span></div>
-    <div class="metric"><strong>Diária</strong><span>Rotina programada de atualização*</span></div>
+    <div class="metric"><strong id="coverageCount">—</strong><span>Estados com registros no banco</span></div>
   </div>
 </section>
 <section class="search-section section" id="pesquisa">
  <div class="container">
   <div class="section-heading">
     <div><div class="kicker">BASE DE OPORTUNIDADES</div><h2>Pesquisa inteligente.<br><span>Resultados relevantes.</span></h2></div>
-    <div class="section-aside">Pesquise em diferentes setores da amostra pública, incluindo manutenção, serviços e outras oportunidades. Refine por município, modalidade, valor e prazo. Os editais permanecem na plataforma oficial.</div>
+    <div class="section-aside">Explore a base de licitações conectada ao Supabase. Filtre por estado, município, setor, modalidade, valor e prazo. A cobertura por estado aumenta conforme as coletas são confirmadas. Os editais permanecem na plataforma oficial.</div>
   </div>
   <div class="search-panel">
     <div class="search-top"><div><span class="section-badge">CONSULTA ABERTA</span><h3>Encontre sua próxima oportunidade</h3></div><span class="source-label">Dados públicos · PNCP</span></div>
     <form id="filters" role="search">
       <label class="search-field" for="q"><span class="search-icon" aria-hidden="true">⌕</span><input id="q" name="q" type="search" placeholder="Buscar editais..." autocomplete="off" aria-label="Buscar oportunidades"><span class="key-hint">BUSCAR</span></label>
       <div class="filter-grid">
-        <label><span>Segmento</span><select id="segment"><option value="all">Todos os setores da amostra</option><option value="focus">Manutenção e serviços</option><option value="cleaning">Limpeza e conservação</option><option value="maintenance">Manutenção predial</option><option value="hvac">Climatização</option><option value="electrical">Elétrica e hidráulica</option><option value="landscaping">Jardinagem</option></select></label>
+        <label><span>Estado (UF)</span><select id="uf" aria-label="Estado"><option value="">Todos os estados com dados</option></select></label>
+        <label><span>Segmento</span><select id="segment"><option value="all">Todos os setores disponíveis</option><option value="focus">Manutenção e serviços</option><option value="cleaning">Limpeza e conservação</option><option value="maintenance">Manutenção predial</option><option value="hvac">Climatização</option><option value="electrical">Elétrica e hidráulica</option><option value="landscaping">Jardinagem</option></select></label>
         <label><span>Município</span><select id="city"><option value="">Todas as cidades</option></select></label>
         <label><span>Modalidade</span><select id="modality"><option value="">Todas as modalidades</option></select></label>
         <label><span>Prazo para encerramento</span><select id="deadline"><option value="all">Qualquer prazo aberto</option><option value="7">Próximos 7 dias</option><option value="15">Próximos 15 dias</option><option value="30">Próximos 30 dias</option></select></label>
@@ -89,7 +91,8 @@
       </div>
     </form>
   </div>
-  <div id="notice" class="data-notice" role="status" aria-live="polite">Carregando a última amostra do PNCP...</div>
+  <div class="catalog-scope" aria-live="polite"><span class="scope-indicator" aria-hidden="true"></span><strong id="scopeTitle">Conectando à base</strong><span id="scopeDetail">Verificando os estados disponíveis...</span></div>
+  <div id="notice" class="data-notice" role="status" aria-live="polite">Verificando a última coleta...</div>
   <div class="results-bar"><div><div class="kicker">RESULTADOS</div><h3 id="resultsCount">Buscando oportunidades...</h3></div><div class="results-controls"><label for="sort">Ordenar por</label><select id="sort" aria-label="Ordenar oportunidades por"><option value="deadline">Prazo mais próximo</option><option value="relevance">Maior relevância</option><option value="value">Maior valor estimado</option></select><button id="csv" type="button" class="export-button" disabled title="Exporta somente os resultados visíveis nos filtros">Exportar CSV ↓</button><button id="previewAlert" type="button" class="preview-button" disabled aria-expanded="false" aria-controls="alertPreview">Simular alerta Pro ↗</button></div></div>
   <div id="results" class="results-list" aria-live="polite"></div>
   <div id="empty" class="empty-state" hidden><span class="empty-symbol" aria-hidden="true">⌕</span><h3>Nenhum resultado nos filtros atuais</h3><p>Experimente ampliar o prazo ou selecionar todos os setores. Uma amostra limitada não representa todas as licitações.</p></div>
@@ -105,7 +108,7 @@
 </section>
 <section class="method-section section" id="metodo"><div class="container method-layout">
   <div><div class="kicker">METODOLOGIA</div><h2>Dados públicos.<br><span>Decisões melhores.</span></h2><p>O Editalume organiza dados públicos em um recorte pesquisável e oferece links diretos para consultar a informação original. Você mantém o controle de cada decisão.</p><a class="text-link method-link" href="https://pncp.gov.br/app/editais" target="_blank" rel="noopener noreferrer">Conhecer a fonte oficial ↗</a></div>
-  <div class="method-steps"><div><span>01</span><section><h3>Monitoramos</h3><p>Coletamos uma amostra de propostas com prazo informado em São Paulo nas modalidades monitoradas.</p></section></div><div><span>02</span><section><h3>Organizamos</h3><p>Estruturamos descrição, órgão, município, valores informados e data prevista de encerramento.</p></section></div><div><span>03</span><section><h3>Você valida</h3><p>Direcionamos cada resultado para o PNCP. Confirme prazo, edital, condições de participação e atualizações na origem.</p></section></div></div>
+  <div class="method-steps"><div><span>01</span><section><h3>Monitoramos</h3><p>Importamos registros públicos com prazos informados. A coleta nacional é progressiva, com cobertura e data observada indicadas por estado.</p></section></div><div><span>02</span><section><h3>Organizamos</h3><p>Estruturamos descrição, órgão, município, valores informados e data prevista de encerramento.</p></section></div><div><span>03</span><section><h3>Você valida</h3><p>Direcionamos cada resultado para o PNCP. Confirme prazo, edital, condições de participação e atualizações na origem.</p></section></div></div>
 </div></section>
 <section class="plans section" id="planos"><div class="container">
  <div class="plans-intro"><div class="kicker">PLANOS</div><h2>Informação aberta.<br><span>Inteligência sob medida.</span></h2><p>Consulte a amostra sem criar uma conta. O Premium está em desenvolvimento para automatizar o acompanhamento de oportunidades por empresa.</p></div>
