@@ -189,9 +189,24 @@ async function init(){
   if(doc.status==="awaiting_first_scan")msg="Primeira coleta ainda não concluída. Nenhum edital está confirmado.";
   const statusTitle=refreshFailed?"Atualização falhou: consulte a origem":stale?"Base desatualizada: confirme os prazos":partial||refreshPartial?"Cobertura parcial nesta coleta":"Amostra atualizada";
   const statusHeader=node("strong","notice-heading",statusTitle);
-  const statusBody=node("p","notice-description",msg);
+  const summary=doc.status==="awaiting_first_scan"
+    ?"A primeira coleta ainda não foi concluída. Use a fonte oficial."
+    :refreshFailed
+      ?"Falha recente na atualização. Dados anteriores não representam uma confirmação atual."
+      :stale
+        ?"Base anterior. Os prazos precisam ser conferidos na fonte oficial."
+        :partial||refreshPartial
+          ?"Coleta parcial: alguns registros ainda não foram reconfirmados."
+          :"Amostra recebida. Confirme os detalhes no PNCP antes de apresentar proposta.";
+  const summaryLine=summary+
+    (doc.rate_limited?" Limite temporário de consultas ao PNCP.":"")+
+    " "+fmt.format(active.length)+" registros com prazo futuro informado."+
+    (carried?" "+fmt.format(carried)+" sem nova confirmação.":"");
+  const details=node("details","notice-details");
+  details.append(node("summary",null,"Entenda a cobertura e veja o relatório completo"),
+    node("p","notice-description",msg));
   $("notice").className="data-notice"+(stale||partial||refreshPartial||refreshFailed?" warning":"");
-  $("notice").replaceChildren(statusHeader,statusBody);
+  $("notice").replaceChildren(statusHeader,node("p","notice-summary",summaryLine),details);
   ready=true;$("previewAlert").disabled=false;render(true);
  }catch(err){
   $("notice").className="data-notice error";
