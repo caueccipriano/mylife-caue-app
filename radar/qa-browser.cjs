@@ -22,7 +22,8 @@ const fixture={brand:"Editalume",generated_at:current,format_version:2,partial:f
  make("00000000000001-1-000001/2026","SERVIÇOS DE LIMPEZA E CONSERVAÇÃO PREDIAL","Campinas",true,2500,3),
  make("00000000000002-1-000002/2026","MANUTENÇÃO ELÉTRICA PREDIAL","Jundiaí",true,9000,11),
  make("00000000000003-1-000003/2026","COMPRA DE PAPEL SULFITE","São Paulo",false,1200,15),
- make("00000000000004-1-000004/2026","SERVIÇOS DE CLIMATIZAÇÃO","Sorocaba",true,5000,6,old)
+ make("00000000000004-1-000004/2026","SERVIÇOS DE CLIMATIZAÇÃO","Sorocaba",true,5000,6,old),
+ {...make("00000000000005-1-000005/2026","HARMFUL OFFICIAL-LIKE LINK","Campinas",true,99999,2),source_url:"https://pncp.gov.br/app/editais/00000000000005/2026/5?redirect=evil"}
  ]};
 function success(name){console.log("PASS "+name)}
 async function check(){
@@ -78,6 +79,7 @@ async function check(){
    const csv=fs.readFileSync(saved,"utf8");
    assert.match(csv,/Jundiaí/);assert.match(csv,/Campinas/);
    assert.ok(!csv.includes("PAPEL SULFITE"),"CSV must contain only filtered data");
+   assert.ok(!csv.includes("HARMFUL OFFICIAL-LIKE LINK"),"Reject malformed official-looking PNCP links before rendering or exporting");
    const url=await page.locator(".result-card").first().locator("a").getAttribute("href");
    assert.ok(url.startsWith("https://pncp.gov.br/app/editais/"),"Cards must link only to PNCP");
    success(shape.name+": filters, stale badge, sort, export and official links");

@@ -8,6 +8,14 @@ const money=new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL",maxim
 const dt=new Intl.DateTimeFormat("pt-BR",{dateStyle:"short",timeStyle:"short",timeZone:"America/Sao_Paulo"});
 const norm=v=>String(v||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
 const node=(tag,cls,txt)=>{let el=document.createElement(tag);if(cls)el.className=cls;if(txt!==undefined)el.textContent=String(txt);return el;};
+function officialNotice(source){
+ try{
+  const u=new URL(source);
+  if(u.origin!=="https://pncp.gov.br"||u.username||u.password||u.search||u.hash)return null;
+  if(!/^\\/app\\/editais\\/\\d{14}\\/\\d{4}\\/\\d+\\/?$/.test(u.pathname))return null;
+  return u.href;
+ }catch(_){return null;}
+}
 let data=[],found=[],visible=12,ready=false,lastIndexedAt=null;
 function group(record,selected){
  const t=norm(record.object);
@@ -22,8 +30,8 @@ function group(record,selected){
 }
 function resetChildren(el){el.replaceChildren();}
 function card(record){
- const link=new URL(record.source_url);
- if(link.protocol!=="https:"||link.hostname!=="pncp.gov.br"||!link.pathname.startsWith("/app/editais/"))return null;
+ const link=officialNotice(record.source_url);
+ if(!link)return null;
  const el=node("article","result-card"),left=node("div","card-main"),aside=node("aside","card-aside");
  const tags=node("div","result-top");
  const unreconfirmed=Boolean(lastIndexedAt && record.last_seen_at && record.last_seen_at!==lastIndexedAt);
@@ -40,7 +48,7 @@ function card(record){
  details.append(node("div","label","PRAZO INFORMADO"),node("div","value",dt.format(new Date(record.deadline))),
                 node("div","label","VALOR ESTIMADO"),
                 node("div","amount",record.estimated_value_brl>0?money.format(record.estimated_value_brl):"Não informado"));
- const a=node("a",null,"Conferir edital ↗");a.href=link.href;a.target="_blank";a.rel="noopener noreferrer";
+ const a=node("a",null,"Conferir edital ↗");a.href=link;a.target="_blank";a.rel="noopener noreferrer";
  aside.append(details,a);el.append(left,aside);return el;
 }
 function search(){
@@ -75,12 +83,10 @@ function updatePreview(){
  list.replaceChildren();
  summary.textContent="Pesquisa atual: "+fmt.format(found.length)+(found.length===1?" oportunidade compatível nesta amostra.":" oportunidades compatíveis nesta amostra.")+" Exibindo até três exemplos.";
  for(const record of found.slice(0,3)){
-  let link;
-  try{link=new URL(record.source_url);}catch(_){continue;}
-  if(link.protocol!=="https:"||link.hostname!=="pncp.gov.br"||!link.pathname.startsWith("/app/editais/"))continue;
+  const link=officialNotice(record.source_url);if(!link)continue;
   const wrapper=node("div","preview-item"),content=node("div");
   content.append(node("strong",null,record.object),node("span",null,record.city+"/SP · Encerramento informado: "+dt.format(new Date(record.deadline))));
-  const a=node("a",null,"Abrir fonte ↗");a.href=link.href;a.target="_blank";a.rel="noopener noreferrer";
+  const a=node("a",null,"Abrir fonte ↗");a.href=link;a.target="_blank";a.rel="noopener noreferrer";
   wrapper.append(content,a);list.append(wrapper);
  }
  if(!found.length)list.append(node("p","preview-disclaimer","Nenhum resultado com os filtros atuais. O futuro serviço não garante a existência de novas oportunidades."));
@@ -122,7 +128,7 @@ async function init(){
   lastIndexedAt=doc.generated_at||null;
   const base=Array.isArray(doc.catalog)?doc.catalog:doc.opportunities;
   data=base.filter(r=>r&&typeof r.object==="string"&&typeof r.city==="string"&&typeof r.deadline==="string"&&
-    typeof r.source_url==="string"&&/^https:\/\/pncp\.gov\.br\/app\/editais\//.test(r.source_url));
+    typeof r.source_url==="string"&&officialNotice(r.source_url));
   for(const [key,values] of [["city",data.map(r=>r.city)],["modality",data.map(r=>r.modality).filter(Boolean)]]){
    let unique=[...new Set(values)].sort((a,b)=>a.localeCompare(b,"pt-BR"));
    for(const v of unique){let opt=node("option",null,v);opt.value=v;$(key).append(opt);}
