@@ -33,8 +33,8 @@ async function run(browser,name,width,height){
  // from service-worker routing in WebKit where interception differs.
  const context=await browser.newContext({viewport:{width,height},acceptDownloads:true,serviceWorkers:name==="desktop-1400"?"allow":"block"});
  const page=await context.newPage();
- const errors=[],apiCalls=[];let bulk=false;page.on("pageerror",e=>errors.push(e.message));
- await page.route("**/rest/v1/editalume_uf_coverage*",r=>r.fulfill({json:COVERAGE}));
+ const errors=[],apiCalls=[];let bulk=false,coverageDown=false;page.on("pageerror",e=>errors.push(e.message));
+ await page.route("**/rest/v1/editalume_uf_coverage*",r=>coverageDown?r.fulfill({status:503,json:{error:"synthetic outage"}}):r.fulfill({json:COVERAGE}));
  await page.route("**/rest/v1/rpc/editalume_search*",r=>{
   const filters=JSON.parse(r.request().postData());apiCalls.push(filters);
   const all=Array.from({length:15},(_,i)=>({
@@ -107,6 +107,16 @@ async function run(browser,name,width,height){
  await page.waitForFunction(()=>document.getElementById("national-page-indicator")?.textContent?.includes("1–12"));
  assert.equal(await page.locator(".national-result-card").count(),12);
  assert.equal(await page.locator("#national-prev").isHidden(),true);
+ // A coverage API outage must never be described as "zero UFs collected".
+ coverageDown=true;
+ await page.reload({waitUntil:"networkidle"});
+ await page.waitForFunction(()=>document.getElementById("national-coverage-description")?.textContent?.includes("temporariamente indisponível"));
+ assert.equal(await page.locator("#national-uf-count").innerText(),"—/27");
+ assert.equal(await page.locator(".national-state.unknown").count(),27);
+ assert.equal(await page.locator(".national-state.has-data").count(),0);
+ assert.match(await page.locator('.national-state').first().getAttribute("aria-label"),/não verificada/);
+ // Search continues independently even when the coverage count is unknown.
+ await page.waitForFunction(()=>document.getElementById("national-result-count")?.textContent?.includes("15 editais"));
  assert.deepEqual(errors,[]);
  console.log("PASS "+name+" national: data, 27 states, region filters, empty coverage, CSV, viewport");
  await context.close();
