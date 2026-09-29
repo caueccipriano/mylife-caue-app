@@ -4,7 +4,7 @@
   "short_name": "Editalume",
   "description": "Encontre licitações no Brasil com filtros por estado, setor e prazo. Consulte sempre o edital no PNCP.",
   "lang": "pt-BR",
-  "start_url": "/mylife-caue-app/radar/?v=br-20260929-3#brasil",
+  "start_url": "/mylife-caue-app/radar/?v=br-20260929-4#brasil",
   "scope": "/mylife-caue-app/radar/",
   "display": "standalone",
   "theme_color": "#163c2c",

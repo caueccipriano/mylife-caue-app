@@ -29,7 +29,10 @@ function subset(filters){
  return arr.slice(filters.p_offset||0,(filters.p_offset||0)+(filters.p_limit||12)).map(r=>({...r,total_count:arr.length}));
 }
 async function run(browser,name,width,height){
- const page=await browser.newPage({viewport:{width,height},acceptDownloads:true});
+ // Keep the offline-install check in Chromium, and isolate functional API mocks
+ // from service-worker routing in WebKit where interception differs.
+ const context=await browser.newContext({viewport:{width,height},acceptDownloads:true,serviceWorkers:name==="desktop-1400"?"allow":"block"});
+ const page=await context.newPage();
  const errors=[],apiCalls=[];let bulk=false;page.on("pageerror",e=>errors.push(e.message));
  await page.route("**/rest/v1/editalume_uf_coverage*",r=>r.fulfill({json:COVERAGE}));
  await page.route("**/rest/v1/rpc/editalume_search*",r=>{
@@ -43,6 +46,21 @@ async function run(browser,name,width,height){
   return r.fulfill({json:dataset});
  });
  await page.goto(BASE,{waitUntil:"networkidle"});
+ if(name==="desktop-1400"){
+  const manifest=await page.evaluate(async()=>{
+    const href=document.querySelector('link[rel="manifest"]')?.href;
+    return href?await (await fetch(href)).json():null;
+  });
+  assert.ok(manifest&&manifest.id==="/mylife-caue-app/radar/","Editalume must have a distinct manifest identity");
+  assert.equal(manifest.scope,"/mylife-caue-app/radar/");
+  await page.waitForFunction(async()=>{
+    if(!("serviceWorker" in navigator))return false;
+    const registrations=await navigator.serviceWorker.getRegistrations();
+    return registrations.some(r=>new URL(r.scope).pathname===new URL("./",location.href).pathname);
+  },undefined,{timeout:20000});
+  console.log("PASS Editalume PWA: separate manifest, service-worker scope and installation shell");
+ }
+
  assert.match(await page.locator('link[rel="manifest"]').getAttribute("href"),/manifest\.webmanifest/);
  await page.waitForFunction(()=>document.getElementById("national-result-count")?.textContent?.includes("3 editais"));
  assert.equal(await page.locator(".national-result-card").count(),3);
@@ -91,7 +109,7 @@ async function run(browser,name,width,height){
  assert.equal(await page.locator("#national-prev").isHidden(),true);
  assert.deepEqual(errors,[]);
  console.log("PASS "+name+" national: data, 27 states, region filters, empty coverage, CSV, viewport");
- await page.close();
+ await context.close();
 }
 (async()=>{
  const chrome=await chromium.launch({headless:true});
