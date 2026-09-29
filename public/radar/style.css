@@ -29,3 +29,23 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 .plans-fineprint{margin-top:23px;color:#758378;font-size:11px;line-height:1.8}
 @media(max-width:760px){.plans-grid{grid-template-columns:1fr}.plans-grid .plan-card{padding:25px}.freshness-controls small{margin-left:0}}
 @media(max-width:420px){.freshness-controls .latest-toggle{align-items:start}.latest-toggle input{margin-top:3px}}
+
+/* Product-polish: visible provenance, prices, and non-enrolling Pro demonstration. */
+.observed-tag{background:#e6f3e8!important;color:#276b42!important}
+.card-aside .amount{font-size:17px;font-weight:800;letter-spacing:-.045em;color:#204b38;margin:1px 0 8px;overflow-wrap:anywhere}
+.preview-button{border:1px solid #296247;background:#ecf4ea;color:#21543d;font-weight:750;padding:9px 11px;border-radius:7px;font-size:11px;min-height:43px}
+.preview-button:not(:disabled):hover{background:#dfefdc}
+.alert-preview[hidden]{display:none!important}
+.alert-preview{border:1px solid #bdd1bf;border-radius:16px;background:linear-gradient(145deg,#f5f9f3,#fff);padding:27px;margin-top:29px;box-shadow:0 16px 42px #143c2510;scroll-margin-top:15px}
+.alert-preview-top{display:flex;align-items:start;justify-content:space-between;gap:24px}
+.alert-preview-top h3{font-family:Manrope,sans-serif;letter-spacing:-.045em;font-size:25px;margin:14px 0 5px}
+.alert-preview-top p{font-size:13px;color:#577063;max-width:660px;line-height:1.7}
+.preview-close{background:white;border:1px solid #d6e5d8;color:#40594c;border-radius:8px;min-width:42px;min-height:42px}
+.preview-summary{border-top:1px solid #dde7dd;padding-top:17px;font-size:13px;font-weight:700;color:#31533d}
+.preview-items{display:grid;gap:9px}
+.preview-item{display:flex;align-items:center;justify-content:space-between;gap:18px;background:white;border:1px solid #e0e9e0;border-radius:10px;padding:15px}
+.preview-item strong{display:block;color:#294734;font-size:13px;line-height:1.45}
+.preview-item span{display:block;color:#718676;font-size:11px;margin-top:5px}
+.preview-item a{flex:0 0 auto;color:#235940;font-weight:700;font-size:11px}
+.preview-disclaimer{font-size:11px;color:#6a7b70;line-height:1.6;margin:16px 0 0}
+@media(max-width:760px){.preview-item{align-items:start;flex-direction:column;gap:9px}.alert-preview{padding:19px}.preview-button{width:100%;justify-content:center}.results-controls{gap:9px}}
