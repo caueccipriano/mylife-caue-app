@@ -33,6 +33,20 @@ def relevance(description):
     text = normalize(description)
     if any(term in text for term in EXCLUDE):
         return 0
+    # Prefer precision over recall: don't market purchases of cleaning supplies,
+    # refrigerators, medical cold storage, etc. as maintenance SERVICE contracts.
+    if any(w in text for w in ("imunobiologic", "vacina", "medicamento", "equipamento hospitalar")):
+        return 0
+    service_context = any(w in text for w in
+                          ("prestacao de servic", "servico de", "servicos de",
+                           "empresa especializada", "manutenc", "instalac",
+                           "execuc", "reforma", "zeladoria"))
+    if not service_context:
+        return 0
+    if any(w in text for w in ("aquisicao", "fornecimento")) and not any(
+            w in text for w in ("prestacao de servic", "servicos de",
+                               "servico de", "manutenc", "instalac", "execuc")):
+        return 0
     return sum(1 for term in INCLUDE if term in text)
 
 def as_datetime(value):

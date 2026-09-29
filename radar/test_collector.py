@@ -15,6 +15,11 @@ class CollectorTests(unittest.TestCase):
         self.assertGreater(relevance("Manutenção elétrica predial"),0)
         self.assertEqual(relevance("Medicamentos hospitalares"),0)
         self.assertIsNone(eligible(item(uf="RJ"),NOW))
+    def test_no_sales_on_medical_refrigerators_or_appliance_supply(self):
+        self.assertEqual(relevance("Câmara para conservação de imunobiológicos"),0)
+        self.assertEqual(relevance("Contratação de empresa para fornecimento de aparelhos de ar condicionado e refrigerador"),0)
+        self.assertGreater(relevance("Contratação de empresa especializada para prestação de serviços de limpeza e conservação predial"),0)
+
     def test_closed_bids_excluded(self):
         self.assertIsNone(eligible(item(deadline=(NOW-timedelta(days=1)).isoformat()),NOW))
         self.assertIsNone(eligible(item(deadline="not a date"),NOW))
