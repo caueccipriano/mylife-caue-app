@@ -9,6 +9,13 @@ on:
       - 'public/radar/style.css'
       - 'radar/qa-browser.cjs'
       - '.github/workflows/radar-qa.yml'
+  pull_request:
+    paths:
+      - 'public/radar/index.html'
+      - 'public/radar/app.js'
+      - 'public/radar/style.css'
+      - 'radar/qa-browser.cjs'
+      - '.github/workflows/radar-qa.yml'
 permissions:
   contents: read
 concurrency:

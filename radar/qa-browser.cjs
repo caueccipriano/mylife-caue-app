@@ -25,18 +25,30 @@ const fixture={brand:"Editalume",generated_at:current,format_version:2,partial:f
  make("00000000000004-1-000004/2026","SERVIÇOS DE CLIMATIZAÇÃO","Sorocaba",true,5000,6,old),
  {...make("00000000000005-1-000005/2026","HARMFUL OFFICIAL-LIKE LINK","Campinas",true,99999,2),source_url:"https://pncp.gov.br/app/editais/00000000000005/2026/5?redirect=evil"}
  ]};
+// Exact official-looking URLs with an ID mismatch must never pass the UI or CSV.
+fixture.opportunities.push({
+ ...make("00000000000010-1-000010/2026","MISMATCHED PNCP NOTICE ID","Santos",false,1234,19),
+ source_url:"https://pncp.gov.br/app/editais/00000000000011/2026/10"
+});
+// Missing observation timestamp must NOT be treated as just reconfirmed.
+fixture.opportunities.push({
+ ...make("00000000000012-1-000012/2026","UNCONFIRMED SAMPLE ENTRY","Ribeirão Preto",false,3210,19),
+ last_seen_at:null
+});
 function success(name){console.log("PASS "+name)}
 async function check(){
  const browser=await chromium.launch({headless:true});
  fs.mkdirSync("radar/qa-artifacts",{recursive:true});
  try{
-  for(const shape of [{name:"desktop",width:1440,height:900},{name:"mobile-390",width:390,height:844}]){
+  for(const shape of [{name:"desktop",width:1440,height:900},{name:"tablet-768",width:768,height:1024},{name:"mobile-390",width:390,height:844},{name:"mobile-320",width:320,height:740}]){
    const page=await browser.newPage({viewport:{width:shape.width,height:shape.height},acceptDownloads:true});
    const errors=[];page.on("pageerror",e=>errors.push(e.message));
    await page.route("**/radar/search-index.json*",route=>route.fulfill({json:fixture}));
    await page.route("**/radar/refresh-status.json*",route=>route.fulfill({json:{degraded:false,attempted_at:current}}));
    await page.goto(base,{waitUntil:"networkidle"});
    await page.waitForSelector(".result-card");
+   assert.match(await page.locator("#notice .notice-heading").innerText(),/Amostra atualizada/);
+   assert.equal(await page.locator(".deadline-alert").count(),1,"Urgent deadlines should be clearly highlighted");
    assert.equal(await page.locator(".result-card").count(),3,"All sectors should be searched by default");
    assert.equal(await page.locator("#segment").inputValue(),"all");
    assert.match(await page.locator("#resultsCount").innerText(),/3 oportunidades/);
@@ -47,8 +59,8 @@ async function check(){
    await page.selectOption("#segment","all");
    assert.equal(await page.locator(".result-card").count(),3);
    await page.uncheck("#observedOnly");
-   assert.equal(await page.locator(".result-card").count(),4);
-   assert.equal(await page.locator(".stale-tag").count(),1,"Prior records should be visibly unconfirmed");
+   assert.equal(await page.locator(".result-card").count(),5);
+   assert.equal(await page.locator(".stale-tag").count(),2,"Old and undated records should be visibly unconfirmed");
    await page.fill("#q","limpeza");
    assert.equal(await page.locator(".result-card").count(),1);
    await page.fill("#q","");
@@ -81,10 +93,11 @@ async function check(){
    assert.match(csv,/Jundiaí/);assert.match(csv,/Campinas/);
    assert.ok(!csv.includes("PAPEL SULFITE"),"CSV must contain only filtered data");
    assert.ok(!csv.includes("HARMFUL OFFICIAL-LIKE LINK"),"Reject malformed official-looking PNCP links before rendering or exporting");
+   assert.ok(!csv.includes("MISMATCHED PNCP NOTICE ID"),"Reject valid-host links for another procurement ID");
    const url=await page.locator(".result-card").first().locator("a").getAttribute("href");
    assert.ok(url.startsWith("https://pncp.gov.br/app/editais/"),"Cards must link only to PNCP");
    success(shape.name+": filters, stale badge, sort, export and official links");
-   if(shape.width===390){
+   if(shape.width<=390){
      const measurements=await page.evaluate(()=>({
        doc:document.documentElement.scrollWidth,width:innerWidth,
        controls:[...document.querySelectorAll(".search-field,.search-panel,.result-card,.filter-grid,.plans-grid")]
@@ -94,11 +107,30 @@ async function check(){
      assert.ok(measurements.controls.every(x=>x.left>=-2&&x.right<=measurements.width+2),
       "mobile search controls/cards must fit the screen: "+JSON.stringify(measurements.controls.filter(x=>x.left<-2||x.right>measurements.width+2)));
      await page.screenshot({path:"radar/qa-artifacts/mobile-390-search.png",fullPage:true});
-     success("mobile-390: no clipped controls / document overflow");
+     success(shape.name+": no clipped controls / document overflow");
    }
    assert.deepEqual(errors,[],"No JS page errors");
    await page.close();
   }
+  // The older auxiliary sample has no last_seen_at per record. The checkbox
+  // must automatically switch off and must not imply individual reconfirmation.
+  const fallbackPage=await browser.newPage();
+  const fallbackErrors=[];fallbackPage.on("pageerror",e=>fallbackErrors.push(e.message));
+  await fallbackPage.route("**/radar/search-index.json*",route=>route.fulfill({status:503,body:"Unavailable"}));
+  await fallbackPage.route("**/radar/opportunities.json*",route=>route.fulfill({json:{
+    brand:"Editalume",generated_at:current,status:"sample_ok",catalog:[
+      {...make("00000000000020-1-000020/2026","FALLBACK PUBLIC SAMPLE","Campinas",false,1200,3),last_seen_at:undefined}
+    ],opportunities:[],records_examined:1
+  }}));
+  await fallbackPage.goto(base,{waitUntil:"networkidle"});
+  await fallbackPage.waitForSelector(".result-card");
+  assert.equal(await fallbackPage.locator(".result-card").count(),1);
+  assert.equal(await fallbackPage.locator("#observedOnly").isChecked(),false);
+  assert.equal(await fallbackPage.locator("#observedOnly").isDisabled(),true);
+  assert.match(await fallbackPage.locator(".latest-toggle span").innerText(),/indisponível/);
+  assert.deepEqual(fallbackErrors,[]);
+  success("fallback sample: results accessible without false per-record freshness");
+  await fallbackPage.close();
   const livePage=await browser.newPage({viewport:{width:1300,height:850}});
   const jsErrors=[];livePage.on("pageerror",e=>jsErrors.push(e.message));
   await livePage.goto(base,{waitUntil:"networkidle"});
