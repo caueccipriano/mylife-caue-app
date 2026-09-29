@@ -47,7 +47,8 @@ function renderCoverage(){
   const detail=unknown
     ?state.coverageState==="error"?"Cobertura não verificada: conexão indisponível":"Verificando cobertura"
     :knownStatus[current?.status]||"Aguardando coleta";
-  item.title=name+" — "+detail;
+  const lastSample=hasData?formatDate(current.last_success_at):"";
+  item.title=name+" — "+detail+(lastSample?" · Última amostra: "+lastSample:"");
   item.setAttribute("aria-label",item.title);
   item.setAttribute("aria-pressed",String($("national-uf").value===uf));
   item.addEventListener("click",()=>{$("national-uf").value=uf;state.offset=0;renderCoverage();search();});
@@ -87,10 +88,17 @@ function renderCards(){
  $("national-next").hidden=state.items.length<PAGE_SIZE||state.offset+state.items.length>=state.total;
  $("national-download").disabled=!state.items.length;
  const uf=$("national-uf").value;
+ const coverageUnknown=state.coverageState!=="loaded";
+ const knownMissing=state.coverageState==="loaded"&&uf&&
+   !state.coverage.some(x=>x.uf===uf&&x.last_success_at&&
+     Number.isFinite(Date.parse(x.last_success_at))&&Date.parse(x.last_success_at)<=Date.now());
  $("national-empty").hidden=state.items.length>0;
- $("national-empty-title").textContent=uf&&!(state.coverage.find(x=>x.uf===uf)?.last_success_at)?"Coleta ainda não concluída para "+STATES[uf]:"Nenhum registro neste filtro";
- $("national-empty-description").textContent=uf&&!(state.coverage.find(x=>x.uf===uf)?.last_success_at)?
-  "Este estado já está configurado, mas ainda não há amostra validada. Consulte diretamente o PNCP enquanto expandimos a cobertura.":
+ $("national-empty-title").textContent=uf&&coverageUnknown?"Cobertura do estado não verificada":
+   knownMissing?"Coleta ainda não concluída para "+STATES[uf]:"Nenhum registro neste filtro";
+ $("national-empty-description").textContent=uf&&coverageUnknown?
+  "Não conseguimos consultar o status de coleta agora. Isso não significa que não existam editais no estado. Use também o PNCP.":
+  knownMissing?
+  "Este estado está configurado, mas ainda não há amostra validada. Consulte diretamente o PNCP enquanto expandimos a cobertura.":
   "Experimente ampliar os filtros. A base é amostral e a situação do edital pode mudar.";
 }
 function args(){
