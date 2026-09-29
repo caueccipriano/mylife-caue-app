@@ -29,7 +29,8 @@ async function run(browser,label,width,height,withContact){
  assert.equal(postCalls.length,0,"Incomplete form must never send");
  await radio("business_area","limpeza_facilities");
  await radio("procurement_stage","already_bid");
- await radio("rating","4");
+ await page.locator('label:has(input[name="rating"][value="4"])').click();
+ assert.equal(await page.locator('input[name="rating"][value="4"]').isChecked(),true);
  await page.locator('input[name="useful_features"][value="filtro_uf"]').check();
  await page.locator('input[name="useful_features"][value="alertas_email"]').check();
  await radio("price_band","20_39");
