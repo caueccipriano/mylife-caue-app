@@ -1,0 +1,50 @@
+name: Editalume · accessibility audit
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'public/radar/index.html'
+      - 'public/radar/app.js'
+      - 'public/radar/style.css'
+      - 'radar/qa-a11y.cjs'
+      - '.github/workflows/radar-a11y.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'public/radar/index.html'
+      - 'public/radar/app.js'
+      - 'public/radar/style.css'
+      - 'radar/qa-a11y.cjs'
+      - '.github/workflows/radar-a11y.yml'
+permissions:
+  contents: read
+concurrency:
+  group: editalume-accessibility-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  a11y:
+    runs-on: ubuntu-latest
+    timeout-minutes: 13
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install isolated test dependencies
+        run: npm install --no-save --no-package-lock @playwright/test @axe-core/playwright
+      - name: Install headless Chromium
+        run: npx playwright install --with-deps chromium
+      - name: Validate test syntax and serve local frontend
+        run: |
+          node --check radar/qa-a11y.cjs
+          python3 -m http.server 4173 --directory public > /tmp/a11y-server.log 2>&1 &
+          for n in $(seq 1 20); do curl --fail --silent http://127.0.0.1:4173/radar/ > /dev/null && break; sleep 1; done
+      - name: Audit WCAG across desktop/mobile states
+        run: node radar/qa-a11y.cjs
+      - name: Keep detailed audit reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: editalume-a11y
+          path: radar/qa-artifacts/a11y-*.json
+          if-no-files-found: warn
