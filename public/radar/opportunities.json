@@ -1,7 +1,7 @@
 {
   "brand": "Cauê Radar",
-  "generated_at": "2026-09-29T14:20:25.693637-03:00",
-  "status": "partial",
+  "generated_at": "2026-09-29T14:21:33.934911-03:00",
+  "status": "sample_ok",
   "region": "SP",
   "niche": "manutenção, conservação e serviços prediais",
   "covered_modalities": [
@@ -9,13 +9,11 @@
     8
   ],
   "sample_limit_pages_per_modality": 4,
-  "pages_examined": 7,
-  "records_examined": 350,
+  "pages_examined": 8,
+  "records_examined": 400,
   "exhaustive": false,
   "notice": "Amostra parcial e automatizada. Não representa todas as licitações. Consulte o edital oficial e confirme prazos, elegibilidade e eventuais alterações antes de qualquer proposta.",
-  "errors": [
-    "modality=8,page=4: HTTPError"
-  ],
+  "errors": [],
   "opportunities": [
     {
       "id": "46377800000127-1-003600/2026",
@@ -41,19 +39,6 @@
       "estimated_value_brl": 75055.5,
       "source": "PNCP",
       "source_url": "https://pncp.gov.br/app/editais/43052497000102/2026/446",
-      "relevance": 3
-    },
-    {
-      "id": "49576416000141-1-000280/2026",
-      "object": "Aquisição de materiais para pintura e manutenção predial destinados ao Centro Dia Idoso, visando atender às necessidades de conservação, manutenção e recuperação das instalações físicas do referido equipamento público",
-      "organ": "MUNICIPIO DE PENAPOLIS",
-      "city": "Penápolis",
-      "uf": "SP",
-      "deadline": "2026-09-30T09:00:00-03:00",
-      "modality": "Dispensa",
-      "estimated_value_brl": 22755.76,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/49576416000141/2026/280",
       "relevance": 3
     },
     {
@@ -161,19 +146,6 @@
       "relevance": 3
     },
     {
-      "id": "45743580000145-1-000105/2026",
-      "object": "DISPENSABILIDADE 91/2026 - AQUISIÇÃO DE MATERIAIS PARA MANUTENÇÃO PREDIAL DAS SEDES E ESTAÇÕES DA SAAE ATIBAIA",
-      "organ": "SAAE - SANEAMENTO AMBIENTAL DE ATIBAIA",
-      "city": "Atibaia",
-      "uf": "SP",
-      "deadline": "2026-09-29T18:00:00-03:00",
-      "modality": "Dispensa",
-      "estimated_value_brl": 4540.62,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/45743580000145/2026/105",
-      "relevance": 2
-    },
-    {
       "id": "51863884000149-1-000017/2026",
       "object": "Serviços de limpeza e higienização dos bebedouros e purificador de água deste Legislativo para o período de 12 (doze) meses",
       "organ": "CAMARA MUNICIPAL DE VARZEA PAULISTA",
@@ -184,6 +156,19 @@
       "estimated_value_brl": 2250.0,
       "source": "PNCP",
       "source_url": "https://pncp.gov.br/app/editais/51863884000149/2026/17",
+      "relevance": 2
+    },
+    {
+      "id": "07420613000127-1-000185/2026",
+      "object": "Manutenção de Fogão de Piso com 6 bocas, Forno Elétrico Grand Cook Premium e Máquinas de Lavar e Seca, conforme asdescrições constante no edital/aviso de contratação.",
+      "organ": "SECRETARIA MUNICIPAL DE DIREITOS HUMANOS E CIDADANIA",
+      "city": "São Paulo",
+      "uf": "SP",
+      "deadline": "2026-09-30T08:00:00-03:00",
+      "modality": "Dispensa",
+      "estimated_value_brl": 4084.14,
+      "source": "PNCP",
+      "source_url": "https://pncp.gov.br/app/editais/07420613000127/2026/185",
       "relevance": 2
     },
     {
@@ -210,19 +195,6 @@
       "estimated_value_brl": 4200.0,
       "source": "PNCP",
       "source_url": "https://pncp.gov.br/app/editais/46179941000135/2026/437",
-      "relevance": 2
-    },
-    {
-      "id": "46377800000127-1-004097/2026",
-      "object": "Aquisição de material de consumo (manutenção predial), nos termos da tabela abaixo, conforme condições e exigências estabelecidas neste Aviso de Contratação, de acordo com as subdivisões na forma de itens que compõem este instrumento.\n",
-      "organ": "SAO PAULO SECRETARIA DA SEGURANCA PUBLICA",
-      "city": "São Paulo",
-      "uf": "SP",
-      "deadline": "2026-10-01T08:59:00-03:00",
-      "modality": "Dispensa",
-      "estimated_value_brl": 10833.94,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/46377800000127/2026/4097",
       "relevance": 2
     },
     {
@@ -421,19 +393,6 @@
       "relevance": 1
     },
     {
-      "id": "60269453000140-1-000073/2026",
-      "object": "Contratação por dispensa de licitação para aquisição de periféricos, componentes e materiais de informática, destinados à manutenção, substituição e continuidade do funcionamento dos equipamentos de tecnologia da informação utilizados pela Secretaria Municipal de Assistência e Desenvolvimento Social – SMADS, por intermédio da CAF/CTIC.",
-      "organ": "SECRETARIA MUNICIPAL DE ASSISTENCIA E DESENVOLVIMENTO SOCIAL",
-      "city": "São Paulo",
-      "uf": "SP",
-      "deadline": "2026-10-01T08:00:00-03:00",
-      "modality": "Dispensa",
-      "estimated_value_brl": 47041.29,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/60269453000140/2026/73",
-      "relevance": 1
-    },
-    {
       "id": "63025530000104-1-003751/2026",
       "object": "Manutenção preventiva e corretiva em 90 unidades de bebedouro",
       "organ": "UNIVERSIDADE DE SAO PAULO",
@@ -444,19 +403,6 @@
       "estimated_value_brl": null,
       "source": "PNCP",
       "source_url": "https://pncp.gov.br/app/editais/63025530000104/2026/3751",
-      "relevance": 1
-    },
-    {
-      "id": "46634333000173-1-000832/2026",
-      "object": "AQUISIÇÃO DE LÂMINAS, PARAFUSOS E PORCAS, PARA UTILIZAÇÃO NA SUBSTITUIÇÃO DE COMPONENTES DE MÁQUINAS PERTENCENTES À SECRETARIA MUNICIPAL DE SERVIÇOS PÚBLICOS, UTILIZADAS NA MANUTENÇÃO E APOIO ÀS ATIVIDADES OPERACIONAIS DA SECRETARIA, CONFORME ESPECIFICAÇÕES, DESCRIÇÕES E EXIGÊNCIAS CONSTANTES NO ANEXO I - TERMO DE REFERÊNCIA.",
-      "organ": "MUNICIPIO DE SAO MIGUEL ARCANJO",
-      "city": "São Miguel Arcanjo",
-      "uf": "SP",
-      "deadline": "2026-10-01T08:00:00-03:00",
-      "modality": "Dispensa",
-      "estimated_value_brl": 40050.0,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/46634333000173/2026/832",
       "relevance": 1
     },
     {
@@ -483,32 +429,6 @@
       "estimated_value_brl": 18915.0,
       "source": "PNCP",
       "source_url": "https://pncp.gov.br/app/editais/46377800000127/2026/4107",
-      "relevance": 1
-    },
-    {
-      "id": "48664304000180-1-000209/2026",
-      "object": "AQUISICAO DE TABUAS PARA MANUTENCAO E REPAROS DE MOBILIARIOS.",
-      "organ": "MUNICIPIO DE GUARIBA",
-      "city": "Guariba",
-      "uf": "SP",
-      "deadline": "2026-10-02T07:30:00-03:00",
-      "modality": "Pregão - Eletrônico",
-      "estimated_value_brl": null,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/48664304000180/2026/209",
-      "relevance": 1
-    },
-    {
-      "id": "46341038000129-1-000560/2026",
-      "object": "Locação de veículos, máquinas e equipamentos, com fornecimento de motoristas/operadores, combustíveis, lubrificantes e toda a manutenção preventiva e corretiva.",
-      "organ": "MUNICIPIO DE PIRACICABA",
-      "city": "Piracicaba",
-      "uf": "SP",
-      "deadline": "2026-10-02T08:00:00-03:00",
-      "modality": "Pregão - Eletrônico",
-      "estimated_value_brl": 31421026.8,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/46341038000129/2026/560",
       "relevance": 1
     },
     {
@@ -551,19 +471,6 @@
       "relevance": 1
     },
     {
-      "id": "46634259000195-1-000193/2026",
-      "object": "Contratação de empresa especializada para prestação de manutenção preventiva da rede de computadores e instalação da rede administrativa, legislativa e visitante, incluindo o fornecimento de todo o material necessário da Câmara Municipal de Capão Bonito.",
-      "organ": "MUNICIPIO DE CAPAO BONITO",
-      "city": "Capão Bonito",
-      "uf": "SP",
-      "deadline": "2026-10-02T10:00:00-03:00",
-      "modality": "Pregão - Eletrônico",
-      "estimated_value_brl": null,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/46634259000195/2026/193",
-      "relevance": 1
-    },
-    {
       "id": "55021455000185-1-000154/2025",
       "object": "Registro de preços para contratação de empresa especializada em prestação de serviços de conservação de pavimentos viários – “tapa buracos”, em conformidade com as necessidades pontuadas pela Secretaria Municipal de Serviços Urbanos.",
       "organ": "MUNICIPIO DE POA",
@@ -577,16 +484,16 @@
       "relevance": 1
     },
     {
-      "id": "60257169000153-1-000024/2026",
-      "object": "Aquisição e instalação de aparelhos de ar condicionado destinados ao Prédio Principal da Câmara Municipal de Batatais e Anexo II – Espaço Cultural Legislativo.",
-      "organ": "CAMARA MUNICIPAL DE BATATAIS",
-      "city": "Batatais",
+      "id": "50985266000109-1-000138/2026",
+      "object": "CONTRATAÇÃO DE EMPRESA ESPECIALIZADA PARA PRESTACÃO DE SERVIÇOS DE MANUTENÇÃO PERIODICA ANUAL DE SEGURANÇA PERIMETRAL (REDE LAMINADA JA EXISTENTE) NAS UNIDADES DA FACULDADE DE MEDICINA DE JUNDIAÍ, CONFORME TERMO DE REFERENCIA.",
+      "organ": "FACULDADE DE MEDICINA DE JUNDIAI",
+      "city": "Jundiaí",
       "uf": "SP",
-      "deadline": "2026-10-02T23:59:00-03:00",
+      "deadline": "2026-10-05T07:59:00-03:00",
       "modality": "Dispensa",
-      "estimated_value_brl": 8172.12,
+      "estimated_value_brl": 15854.67,
       "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/60257169000153/2026/24",
+      "source_url": "https://pncp.gov.br/app/editais/50985266000109/2026/138",
       "relevance": 1
     },
     {
@@ -613,6 +520,19 @@
       "estimated_value_brl": 317160.0,
       "source": "PNCP",
       "source_url": "https://pncp.gov.br/app/editais/45176005000108/2026/497",
+      "relevance": 1
+    },
+    {
+      "id": "46384111000140-1-001070/2026",
+      "object": "Manutenção preventiva e corretiva de equipamentos de ar-condicionado instalados no prédio sede da\nUnidade Regional de Ensino – Região de Jundiaí",
+      "organ": "SAO PAULO SECRETARIA DA EDUCACAO",
+      "city": "Jundiaí",
+      "uf": "SP",
+      "deadline": "2026-10-05T09:00:00-03:00",
+      "modality": "Dispensa",
+      "estimated_value_brl": 14020.39,
+      "source": "PNCP",
+      "source_url": "https://pncp.gov.br/app/editais/46384111000140/2026/1070",
       "relevance": 1
     },
     {
@@ -769,19 +689,6 @@
       "estimated_value_brl": 131295.7,
       "source": "PNCP",
       "source_url": "https://pncp.gov.br/app/editais/52356268000245/2026/1",
-      "relevance": 1
-    },
-    {
-      "id": "44723674000190-1-000779/2026",
-      "object": "Aquisição de materiais elétricos para utilização nas instalações e decorações do imóvel sede da Secretaria Municipal de Cultura e do Museu Histórico e Pedagógico \"Dr. Cesário Motta Junior\".",
-      "organ": "MUNICIPIO DE CAPIVARI",
-      "city": "Capivari",
-      "uf": "SP",
-      "deadline": "2026-11-04T10:55:00-03:00",
-      "modality": "Dispensa",
-      "estimated_value_brl": 16904.41,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/44723674000190/2026/779",
       "relevance": 1
     }
   ]
