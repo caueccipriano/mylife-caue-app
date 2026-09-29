@@ -189,9 +189,19 @@ async function init(){
   if(doc.status==="awaiting_first_scan")msg="Primeira coleta ainda não concluída. Nenhum edital está confirmado.";
   const statusTitle=refreshFailed?"Atualização falhou: consulte a origem":stale?"Base desatualizada: confirme os prazos":partial||refreshPartial?"Cobertura parcial nesta coleta":"Amostra atualizada";
   const statusHeader=node("strong","notice-heading",statusTitle);
-  const statusBody=node("p","notice-description",msg);
+  const stamp=Number.isFinite(time)?dt.format(new Date(time)):"indisponível";
+  const summaryText=refreshFailed?
+    "A última atualização falhou. Os registros exibidos vêm da coleta anterior ("+stamp+").":
+    doc.rate_limited?"Limite temporário de consultas ao PNCP. Dados parciais; última amostra: "+stamp+".":
+    partial||refreshPartial?"Coleta parcial. Última amostra: "+stamp+". Verifique cada edital na fonte.":
+    stale?"Dados antigos. Última amostra: "+stamp+". Verifique no PNCP.":
+    "Amostra disponível em "+stamp+". Consulte o PNCP antes de participar.";
+  const statusBody=node("p","notice-description",summaryText);
+  const details=document.createElement("details");
+  details.className="notice-details";
+  details.append(node("summary",null,"Ver detalhes técnicos e limitações da coleta"),node("p",null,msg));
   $("notice").className="data-notice"+(stale||partial||refreshPartial||refreshFailed?" warning":"");
-  $("notice").replaceChildren(statusHeader,statusBody);
+  $("notice").replaceChildren(statusHeader,statusBody,details);
   ready=true;$("previewAlert").disabled=false;render(true);
  }catch(err){
   $("notice").className="data-notice error";

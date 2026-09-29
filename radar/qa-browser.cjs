@@ -47,6 +47,15 @@ async function check(){
    await page.route("**/radar/refresh-status.json*",route=>route.fulfill({json:{degraded:false,attempted_at:current}}));
    await page.goto(base,{waitUntil:"networkidle"});
    await page.waitForSelector(".result-card");
+   const noticeDetails=page.locator(".notice-details");
+   assert.equal(await noticeDetails.count(),1,"Technical warnings must be expandable, not a massive default block");
+   assert.equal(await noticeDetails.getAttribute("open"),null);
+   const noticeHeight=await page.locator("#notice").evaluate(el=>el.getBoundingClientRect().height);
+   assert.ok(noticeHeight<180,"Default PNCP status must fit a compact card: "+noticeHeight);
+   await noticeDetails.locator("summary").click();
+   assert.match(await noticeDetails.innerText(),/Amostra parcial/);
+   await noticeDetails.locator("summary").click();
+
    assert.match(await page.locator("#notice .notice-heading").innerText(),/Amostra atualizada/);
    assert.equal(await page.locator(".deadline-alert").count(),1,"Urgent deadlines should be clearly highlighted");
    assert.equal(await page.locator(".result-card").count(),3,"All sectors should be searched by default");
