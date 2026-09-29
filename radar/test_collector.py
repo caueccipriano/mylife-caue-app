@@ -19,6 +19,7 @@ class CollectorTests(unittest.TestCase):
         self.assertEqual(relevance("Câmara para conservação de imunobiológicos"),0)
         self.assertEqual(relevance("Contratação de empresa para fornecimento de aparelhos de ar condicionado e refrigerador"),0)
         self.assertGreater(relevance("Contratação de empresa especializada para prestação de serviços de limpeza e conservação predial"),0)
+        self.assertEqual(relevance("Aquisição de materiais para pintura e manutenção predial"),0)
 
     def test_closed_bids_excluded(self):
         self.assertIsNone(eligible(item(deadline=(NOW-timedelta(days=1)).isoformat()),NOW))
