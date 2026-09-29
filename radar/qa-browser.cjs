@@ -60,7 +60,7 @@ async function check(){
    assert.equal(await page.locator(".result-card").count(),3);
    await page.uncheck("#observedOnly");
    assert.equal(await page.locator(".result-card").count(),5);
-   assert.equal(await page.locator(".stale-tag").count(),2,"Old and undated records should be visibly unconfirmed");
+   assert.equal(await page.locator(".stale-tag").count(),1,"The visible old record should be marked unconfirmed; records without observation timestamps are excluded by the data-quality gate");
    await page.fill("#q","limpeza");
    assert.equal(await page.locator(".result-card").count(),1);
    await page.fill("#q","");
