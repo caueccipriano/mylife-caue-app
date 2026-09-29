@@ -66,7 +66,7 @@ async function check(){
    assert.match(await page.locator("#previewSummary").innerText(),/2 oportunidades/);
    assert.equal(await page.locator(".preview-item").count(),2);
    assert.match(await page.locator(".preview-disclaimer").innerText(),/Nenhum e-mail é enviado/);
-   await page.screenshot({path:"radar/qa-artifacts/"+shape.name+"-alert-preview.png",fullPage:false});
+   await page.locator("#alertPreview").screenshot({path:"radar/qa-artifacts/"+shape.name+"-alert-preview.png",animations:"disabled"});
    await page.click("#closePreview");
    assert.equal(await page.locator("#alertPreview").isVisible(),false);
    success(shape.name+": honest Pro preview, no registration");
