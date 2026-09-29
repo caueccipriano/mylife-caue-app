@@ -55,7 +55,8 @@ def load_page(end,modality,page,requester=None):
     for attempt in range(3):
         try:return request_page(end,modality,page)
         except HTTPError as exc:
-            if exc.code not in TEMPORARY_FAILURES or attempt==2:raise
+            # A 429 means we should not hammer the same official API again.
+            if exc.code==429 or exc.code not in TEMPORARY_FAILURES or attempt==2:raise
             time.sleep(1.3*(attempt+1))
         except (TimeoutError,URLError):
             if attempt==2:raise
@@ -98,6 +99,7 @@ def build(*,now=None,prior=None,requester=None,modalities=MODALITIES,max_pages=M
     errs=[]
     seen=set()
     capped=[]
+    rate_limited=False
     for mod in modalities:
         reached_cap=True
         for page in range(1,max_pages+1):
@@ -106,7 +108,10 @@ def build(*,now=None,prior=None,requester=None,modalities=MODALITIES,max_pages=M
                 if not isinstance(payload,dict) or not isinstance(payload.get("data"),list):
                     raise ValueError("Unrecognized PNCP response")
             except Exception as exc:
-                errs.append(f"modalidade {mod}, página {page}: {type(exc).__name__}")
+                status=exc.code if isinstance(exc,HTTPError) else None
+                reason=type(exc).__name__+(f" HTTP {status}" if status is not None else "")
+                errs.append(f"modalidade {mod}, página {page}: {reason}")
+                rate_limited=rate_limited or status==429
                 reached_cap=False
                 break
             rows=payload["data"]
@@ -124,6 +129,7 @@ def build(*,now=None,prior=None,requester=None,modalities=MODALITIES,max_pages=M
                 break
             if requester is None:time.sleep(.8)
         if reached_cap:capped.append(mod)
+        if rate_limited:break
     if pages==0 and not sample:
         raise RuntimeError("All PNCP requests failed and no verified recent sample; retaining old index")
     sample_fallback=bool(pages==0 and sample)
@@ -142,6 +148,7 @@ def build(*,now=None,prior=None,requester=None,modalities=MODALITIES,max_pages=M
             "carried_forward_unreconfirmed":sum(1 for r in data if r.get("last_seen_at")!=now.isoformat()),
             "focus_count":sum(1 for r in data if r.get("sector_focus")),
             "partial":bool(errs or capped or sample_fallback),"errors":errs,
+            "rate_limited":rate_limited,
             "sample_fallback":sample_fallback,"verified_sample_items":len(sample),
             "verified_sample_records_examined":sample_records_examined if sample else 0,
             "notice":"Índice amostral. Registros guardados entre coletas podem mudar ou ser cancelados sem atualização. A data acima não representa verificação individual de todos os editais; verifique condições, validade e prazo nas fontes oficiais.",
