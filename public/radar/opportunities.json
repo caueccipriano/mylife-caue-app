@@ -1,7 +1,7 @@
 {
   "brand": "Cauê Radar",
-  "generated_at": "2026-09-29T14:18:14.788920-03:00",
-  "status": "sample_ok",
+  "generated_at": "2026-09-29T14:19:18.925267-03:00",
+  "status": "partial",
   "region": "SP",
   "niche": "manutenção, conservação e serviços prediais",
   "covered_modalities": [
@@ -9,11 +9,13 @@
     8
   ],
   "sample_limit_pages_per_modality": 4,
-  "pages_examined": 8,
-  "records_examined": 400,
+  "pages_examined": 6,
+  "records_examined": 300,
   "exhaustive": false,
   "notice": "Amostra parcial e automatizada. Não representa todas as licitações. Consulte o edital oficial e confirme prazos, elegibilidade e eventuais alterações antes de qualquer proposta.",
-  "errors": [],
+  "errors": [
+    "modality=8,page=3: HTTPError"
+  ],
   "opportunities": [
     {
       "id": "13864377000130-1-001490/2026",
@@ -211,45 +213,6 @@
       "relevance": 2
     },
     {
-      "id": "63025530000104-1-003758/2026",
-      "object": "Higienização e limpeza das unidades internas com desmontagem dos rotores /\nventiladores das unidades internas e sua higienização.\nLimpeza e higienização das unidades externas, desmontagem das grades,\nlimpeza dos ventiladores, limpeza das serpentinas",
-      "organ": "UNIVERSIDADE DE SAO PAULO",
-      "city": "São Paulo",
-      "uf": "SP",
-      "deadline": "2026-09-30T08:00:00-03:00",
-      "modality": "Dispensa",
-      "estimated_value_brl": 6241.5,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/63025530000104/2026/3758",
-      "relevance": 2
-    },
-    {
-      "id": "07420613000127-1-000185/2026",
-      "object": "Manutenção de Fogão de Piso com 6 bocas, Forno Elétrico Grand Cook Premium e Máquinas de Lavar e Seca, conforme asdescrições constante no edital/aviso de contratação.",
-      "organ": "SECRETARIA MUNICIPAL DE DIREITOS HUMANOS E CIDADANIA",
-      "city": "São Paulo",
-      "uf": "SP",
-      "deadline": "2026-09-30T08:00:00-03:00",
-      "modality": "Dispensa",
-      "estimated_value_brl": 4084.14,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/07420613000127/2026/185",
-      "relevance": 2
-    },
-    {
-      "id": "51447472000128-1-000046/2026",
-      "object": "AQUISIÇÃO DE BEBEDOUROS, APARELHOS DE AR CONDICIONADO E MATERIAIS E INSUMOS DESTINADOS À INSTALAÇÃO DOS EQUIPAMENTOS DE CLIMATIZAÇÃO.",
-      "organ": "CAJAMAR CAMARA MUNICIPAL",
-      "city": "Cajamar",
-      "uf": "SP",
-      "deadline": "2026-09-30T09:00:00-03:00",
-      "modality": "Dispensa",
-      "estimated_value_brl": 39091.61,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/51447472000128/2026/46",
-      "relevance": 2
-    },
-    {
       "id": "47170329000164-1-000036/2026",
       "object": "Contratação de empresa especializada para manutenção preventiva e corretiva do elevador",
       "organ": "CAMARA MUNICIPAL DE RIBEIRAO PIRES",
@@ -260,19 +223,6 @@
       "estimated_value_brl": null,
       "source": "PNCP",
       "source_url": "https://pncp.gov.br/app/editais/47170329000164/2026/36",
-      "relevance": 2
-    },
-    {
-      "id": "46179941000135-1-000437/2026",
-      "object": "SERVIÇO DE MANUTENÇÃO DE AR  CONDICIONADO EM VEÍCULOS",
-      "organ": "MUNICIPIO DE ASSIS",
-      "city": "Assis",
-      "uf": "SP",
-      "deadline": "2026-10-01T08:05:00-03:00",
-      "modality": "Dispensa",
-      "estimated_value_brl": 4200.0,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/46179941000135/2026/437",
       "relevance": 2
     },
     {
@@ -406,19 +356,6 @@
       "relevance": 2
     },
     {
-      "id": "46634598000171-1-000420/2026",
-      "object": "Contratacao de empresa de internet para fornecimento de 02 (dois) links de internet para atender a base do Corpo de Bombeiros e para monitoramento dos quiosques da Avenida Francisco Costa.",
-      "organ": "MUNICIPIO DE TIETE",
-      "city": "Tietê",
-      "uf": "SP",
-      "deadline": "2026-09-29T23:59:00-03:00",
-      "modality": "Dispensa",
-      "estimated_value_brl": 3117.6,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/46634598000171/2026/420",
-      "relevance": 1
-    },
-    {
       "id": "45781176000166-1-001353/2025",
       "object": "CONTRATAÇÃO DE EMPRESA ESPECIALIZADA PARA PRESTAÇÃO DE SERVIÇO DE LOCAÇÃO DE SISTEMA WEB, COM FORNECIMENTO DE LICENÇA DE USO EM FORMATO “SOFTWARE AS A SERVICE” (SAAS), PARA GESTÃO ELETRÔNICA DE DOCUMENTOS E PROCESSOS DIGITAIS, COM OS RESPECTIVOS SERVIÇOS DE IMPLANTAÇÃO (CONTEMPLANDO: MIGRAÇÃO DE DADOS, PARAMETRIZAÇÃO, TREINAMENTO E CAPACITAÇÃO DE USUÁRIOS), HOSPEDAGEM EM NUVEM (CLOUD), MANUTENÇÃO (PREVENTIVA, CORRETIVA E DE ORDEM LEGAL) E SUPORTE TÉCNICO PRESENCIAL E REMOTO OBS: EM VIRTUDE DE ARREDONDAMENTO DE CASAS DECIMAIS, OS VALORES DAS COTAÇÕES PODEM, EVENTUALMENTE, APRESENTAR PEQUENAS DIFERENÇAS EM RELAÇÃO AO VALOR TOTAL PUBLICADO NO ED",
       "organ": "MUNICIPIO DE AMERICANA",
@@ -471,58 +408,6 @@
       "relevance": 1
     },
     {
-      "id": "96291141000180-1-006257/2026",
-      "object": "Contratação de empresa especializada na prestação de serviços de recarga e manutenção de extintores de incêndio desta Penitenciária de Lucélia.",
-      "organ": "SAO PAULO SECRETARIA DA ADMINISTRACAO PENITENCIARIA",
-      "city": "Lucélia",
-      "uf": "SP",
-      "deadline": "2026-09-30T08:00:00-03:00",
-      "modality": "Dispensa",
-      "estimated_value_brl": 1881.96,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/96291141000180/2026/6257",
-      "relevance": 1
-    },
-    {
-      "id": "00394502000144-1-012356/2026",
-      "object": "Bomba de vácuo e bomba recolhedoura de fluído e regulador de alta pressão para sistemas de refrigeração.",
-      "organ": "COMANDO DA MARINHA",
-      "city": "São Paulo",
-      "uf": "SP",
-      "deadline": "2026-09-30T08:00:00-03:00",
-      "modality": "Dispensa",
-      "estimated_value_brl": 7031.03,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/00394502000144/2026/12356",
-      "relevance": 1
-    },
-    {
-      "id": "46223699000150-1-003649/2026",
-      "object": "AQUISICAO DE MATERIAIS PARA PINTURA E MANUTENCAO DO VELORIO MUNICIPAL  LUIZ MONTAGNER SOBRINHO .",
-      "organ": "MUNICIPIO DE PIRAJU",
-      "city": "Piraju",
-      "uf": "SP",
-      "deadline": "2026-09-30T08:00:00-03:00",
-      "modality": "Dispensa",
-      "estimated_value_brl": 9201.26,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/46223699000150/2026/3649",
-      "relevance": 1
-    },
-    {
-      "id": "46179941000135-1-000434/2026",
-      "object": "MANUTENÇÃO VEICULAR - PATR. 1045",
-      "organ": "MUNICIPIO DE ASSIS",
-      "city": "Assis",
-      "uf": "SP",
-      "deadline": "2026-09-30T08:05:00-03:00",
-      "modality": "Dispensa",
-      "estimated_value_brl": 1590.0,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/46179941000135/2026/434",
-      "relevance": 1
-    },
-    {
       "id": "46377800000127-1-002756/2026",
       "object": "PREGÃO ELET. LIMPEZA 1ª CIA PM 10º BPMI",
       "organ": "SAO PAULO SECRETARIA DA SEGURANCA PUBLICA",
@@ -533,32 +418,6 @@
       "estimated_value_brl": 44359.2,
       "source": "PNCP",
       "source_url": "https://pncp.gov.br/app/editais/46377800000127/2026/2756",
-      "relevance": 1
-    },
-    {
-      "id": "64037815000128-1-000290/2026",
-      "object": "SERVIÇOS EMERGENCIAIS DE ALINHAMENTO, BALANCEAMENTO E CAMBAGEM PARA ATENDER O CAMINHÃO DO CORPO DE BOMBEIROS QUE ATENDE O MUNICÍPIO DE CAJATI-SP. ",
-      "organ": "MUNICIPIO DE CAJATI",
-      "city": "Cajati",
-      "uf": "SP",
-      "deadline": "2026-09-30T08:59:00-03:00",
-      "modality": "Dispensa",
-      "estimated_value_brl": 600.0,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/64037815000128/2026/290",
-      "relevance": 1
-    },
-    {
-      "id": "64037815000128-1-000291/2026",
-      "object": "Serviços emergenciais de alinhamento, balanceamento e cambagem para atender o caminhão do corpo de bombeiros que atende o município de Cajati-SP",
-      "organ": "MUNICIPIO DE CAJATI",
-      "city": "Cajati",
-      "uf": "SP",
-      "deadline": "2026-09-30T08:59:00-03:00",
-      "modality": "Dispensa",
-      "estimated_value_brl": 750.0,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/64037815000128/2026/291",
       "relevance": 1
     },
     {
@@ -575,19 +434,6 @@
       "relevance": 1
     },
     {
-      "id": "44937365000112-1-000155/2026",
-      "object": "CONTRATAÇÃO DE EMPRESA ESPECIALIZADA PARA O FORNECIMENTO DE LICENÇA DE USO DE CONJUNTO INTEGRADO DE APLICAÇÕES ONLINE, EM MODELO SAAS, DESTINADO AO SÍTIO ELETRÔNICO INSTITUCIONAL DO MUNICÍPIO DE MIRANTE DO PARANAPANEMA-SP, CONTEMPLANDO IMPLANTAÇÃO, CRIAÇÃO DE LAYOUT EXCLUSIVO, CONVERSÃO E MIGRAÇÃO DE DADOS E CONTAS DE E-MAIL, HOSPEDAGEM, GERENCIAMENTO DE CONTAS DE E-MAIL CORPORATIVO, DIÁRIO OFICIAL ELETRÔNICO, SUPORTE TÉCNICO, MANUTENÇÃO, ATUALIZAÇÕES, TREINAMENTO E DEMAIS FUNCIONALIDADES PREVISTAS NO TERMO DE REFERÊNCIA SA Nº 018/2026, PELO PERÍODO DE 12 (DOZE) MESES",
-      "organ": "MUNICIPIO DE MIRANTE DO PARANAPANEMA",
-      "city": "Mirante do Paranapanema",
-      "uf": "SP",
-      "deadline": "2026-09-30T09:00:00-03:00",
-      "modality": "Dispensa",
-      "estimated_value_brl": 31253.33,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/44937365000112/2026/155",
-      "relevance": 1
-    },
-    {
       "id": "13864377000130-1-001178/2026",
       "object": " Mesa cirúrgica eletrohidráulica destinada à realização de procedimentos cirúrgicos de média e alta complexidade, devendo possuir estrutura robusta, estabilidade operacional e compatibilidade com procedimentos que utilizem intensificador de imagem (Arco em C).",
       "organ": "FUNDO MUNICIPAL DE SAUDE - FMS",
@@ -598,19 +444,6 @@
       "estimated_value_brl": null,
       "source": "PNCP",
       "source_url": "https://pncp.gov.br/app/editais/13864377000130/2026/1178",
-      "relevance": 1
-    },
-    {
-      "id": "64925092000101-1-000062/2026",
-      "object": "CONTRATAÇÃO DE EMPRESA ESPECIALIZADA EM Instalação, montagem, manutenção e retirada dos enfeites natalinos a serem utilizados no período festivo deste ano.",
-      "organ": "CAMARA MUNICIPAL DE MATAO",
-      "city": "Matão",
-      "uf": "SP",
-      "deadline": "2026-09-30T23:59:59-03:00",
-      "modality": "Dispensa",
-      "estimated_value_brl": null,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/64925092000101/2026/62",
       "relevance": 1
     },
     {
@@ -666,32 +499,6 @@
       "relevance": 1
     },
     {
-      "id": "46634333000173-1-000832/2026",
-      "object": "AQUISIÇÃO DE LÂMINAS, PARAFUSOS E PORCAS, PARA UTILIZAÇÃO NA SUBSTITUIÇÃO DE COMPONENTES DE MÁQUINAS PERTENCENTES À SECRETARIA MUNICIPAL DE SERVIÇOS PÚBLICOS, UTILIZADAS NA MANUTENÇÃO E APOIO ÀS ATIVIDADES OPERACIONAIS DA SECRETARIA, CONFORME ESPECIFICAÇÕES, DESCRIÇÕES E EXIGÊNCIAS CONSTANTES NO ANEXO I - TERMO DE REFERÊNCIA.",
-      "organ": "MUNICIPIO DE SAO MIGUEL ARCANJO",
-      "city": "São Miguel Arcanjo",
-      "uf": "SP",
-      "deadline": "2026-10-01T08:00:00-03:00",
-      "modality": "Dispensa",
-      "estimated_value_brl": 40050.0,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/46634333000173/2026/832",
-      "relevance": 1
-    },
-    {
-      "id": "45226214000119-1-000410/2026",
-      "object": "Aquisição de 14 (quatorze) aparelhos de Ar Condicionado de 12.000 BTUS, destinados ao Departamento de Urgência e Emergência (DUE) .via Invest\nSUS, contemplados por Emenda Federal. · Pronto Socorro Municipal: Plano nº 12399130000126005 (Emenda nº 25320003 – Dep. Paulo\nPereira da Silva)",
-      "organ": "MUNICIPIO DE PINDAMONHANGABA",
-      "city": "Pindamonhangaba",
-      "uf": "SP",
-      "deadline": "2026-10-01T08:00:00-03:00",
-      "modality": "Dispensa",
-      "estimated_value_brl": 46059.86,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/45226214000119/2026/410",
-      "relevance": 1
-    },
-    {
       "id": "46316600000164-1-000146/2026",
       "object": "Registro de Preços para Contratação de Empresa Especializada para prestação de serviços de locação, instalação e manutenção corretiva e preventiva de Equipamentos Médico Hospitalar para a Secretaria Municipal de Saúde",
       "organ": "MUNICIPIO DE ITAQUAQUECETUBA",
@@ -715,19 +522,6 @@
       "estimated_value_brl": 1433202.83,
       "source": "PNCP",
       "source_url": "https://pncp.gov.br/app/editais/46634101000115/2026/363",
-      "relevance": 1
-    },
-    {
-      "id": "46377800000127-1-004107/2026",
-      "object": "Serviços de manutenção em veículo terrestre:Chevrolet/Cobalt 1.4 ls   Ano/Modelo 2013",
-      "organ": "SAO PAULO SECRETARIA DA SEGURANCA PUBLICA",
-      "city": "São Paulo",
-      "uf": "SP",
-      "deadline": "2026-10-01T10:00:00-03:00",
-      "modality": "Dispensa",
-      "estimated_value_brl": 18915.0,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/46377800000127/2026/4107",
       "relevance": 1
     },
     {
@@ -793,6 +587,214 @@
       "estimated_value_brl": 301507.25,
       "source": "PNCP",
       "source_url": "https://pncp.gov.br/app/editais/46316600000164/2026/162",
+      "relevance": 1
+    },
+    {
+      "id": "60747318000162-1-001207/2026",
+      "object": "CIRCUITO RESPIRATÓRIO e CÂNULAS NASAIS COM COMODATO DE EQUIPAMENTOS E MANUTENÇÃO CORRETIVA",
+      "organ": "INSTITUTO DE ASSISTENCIA MEDICA AO SERVIDOR PUBLICO ESTADUAL",
+      "city": "São Paulo",
+      "uf": "SP",
+      "deadline": "2026-10-02T09:00:00-03:00",
+      "modality": "Pregão - Eletrônico",
+      "estimated_value_brl": null,
+      "source": "PNCP",
+      "source_url": "https://pncp.gov.br/app/editais/60747318000162/2026/1207",
+      "relevance": 1
+    },
+    {
+      "id": "46612032000149-1-000195/2026",
+      "object": "CONTRATACAO DE EMPRESA ESPECIALIZADA QUE ATUE NA AREA DE TECNOLOGIA DE INFORMACAO PARA ELABORACAO  IMPLANTACAO  LICENCIAMENTO  HOSPEDAGEM E MANUTENCAO DO PORTAL SITE DE INTERNET PARA O MUNICIPIO DE MIRASSOL E HOSPEDAGEM DOS E MAILS CORPORATIVOS COM O REGISTRO DO DOMINIO WWW.MIRASSOL.SP.GOV.BR",
+      "organ": "MUNICIPIO DE MIRASSOL",
+      "city": "Mirassol",
+      "uf": "SP",
+      "deadline": "2026-10-02T09:00:00-03:00",
+      "modality": "Dispensa",
+      "estimated_value_brl": 10160.0,
+      "source": "PNCP",
+      "source_url": "https://pncp.gov.br/app/editais/46612032000149/2026/195",
+      "relevance": 1
+    },
+    {
+      "id": "46634069000178-1-000195/2026",
+      "object": "Aquisição de equipamentos e materiais permanentes, destinados ao fortalecimento da estrutura física e operacional dos serviços públicos de saúde do Município de Araçoiaba da Serra/SP, com recursos provenientes de saldos financeiros de propostas de investimento do Ministério da Saúde, oriundos das Propostas nº 137.941.830001.24005 (Portaria GM/MS nº 3.887/2024), nº 137.941.830001.25005 (Portaria GM/MS nº 7.977/2025) e nº 137.941.830001.25007 (Portaria GM/MS nº 9.101/2025), conforme condições, quantidades e exigências estabelecidas no Termo de Referência Anexo III.",
+      "organ": "MUNICIPIO DE ARACOIABA DA SERRA",
+      "city": "Araçoiaba da Serra",
+      "uf": "SP",
+      "deadline": "2026-10-02T09:15:00-03:00",
+      "modality": "Pregão - Eletrônico",
+      "estimated_value_brl": null,
+      "source": "PNCP",
+      "source_url": "https://pncp.gov.br/app/editais/46634069000178/2026/195",
+      "relevance": 1
+    },
+    {
+      "id": "46634259000195-1-000193/2026",
+      "object": "Contratação de empresa especializada para prestação de manutenção preventiva da rede de computadores e instalação da rede administrativa, legislativa e visitante, incluindo o fornecimento de todo o material necessário da Câmara Municipal de Capão Bonito.",
+      "organ": "MUNICIPIO DE CAPAO BONITO",
+      "city": "Capão Bonito",
+      "uf": "SP",
+      "deadline": "2026-10-02T10:00:00-03:00",
+      "modality": "Pregão - Eletrônico",
+      "estimated_value_brl": null,
+      "source": "PNCP",
+      "source_url": "https://pncp.gov.br/app/editais/46634259000195/2026/193",
+      "relevance": 1
+    },
+    {
+      "id": "55021455000185-1-000154/2025",
+      "object": "Registro de preços para contratação de empresa especializada em prestação de serviços de conservação de pavimentos viários – “tapa buracos”, em conformidade com as necessidades pontuadas pela Secretaria Municipal de Serviços Urbanos.",
+      "organ": "MUNICIPIO DE POA",
+      "city": "Poá",
+      "uf": "SP",
+      "deadline": "2026-10-02T11:00:00-03:00",
+      "modality": "Pregão - Eletrônico",
+      "estimated_value_brl": 20782530.0,
+      "source": "PNCP",
+      "source_url": "https://pncp.gov.br/app/editais/55021455000185/2025/154",
+      "relevance": 1
+    },
+    {
+      "id": "60257169000153-1-000024/2026",
+      "object": "Aquisição e instalação de aparelhos de ar condicionado destinados ao Prédio Principal da Câmara Municipal de Batatais e Anexo II – Espaço Cultural Legislativo.",
+      "organ": "CAMARA MUNICIPAL DE BATATAIS",
+      "city": "Batatais",
+      "uf": "SP",
+      "deadline": "2026-10-02T23:59:00-03:00",
+      "modality": "Dispensa",
+      "estimated_value_brl": 8172.12,
+      "source": "PNCP",
+      "source_url": "https://pncp.gov.br/app/editais/60257169000153/2026/24",
+      "relevance": 1
+    },
+    {
+      "id": "45353315000150-1-000083/2026",
+      "object": "[LICITANET] - CONTRATAÇÃO DE EMPRESA ESPECIALIZADA PARA PRESTAÇÃO DE SERVIÇOS DE IMPLANTAÇÃO, MIGRAÇÃO, HOSPEDAGEM, MANUTENÇÃO, SUPORTE TÉCNICO, TREINAMENTO, ESTRUTURAÇÃO DA TRANSPARÊNCIA E ASSISTÊNCIA EDITORIAL DO SITE INSTITUCIONAL DO MUNICÍPIO DE JERIQUARA/SP.",
+      "organ": "MUNICIPIO DE JERIQUARA",
+      "city": "Jeriquara",
+      "uf": "SP",
+      "deadline": "2026-10-05T08:00:00-03:00",
+      "modality": "Dispensa",
+      "estimated_value_brl": 13000.0,
+      "source": "PNCP",
+      "source_url": "https://pncp.gov.br/app/editais/45353315000150/2026/83",
+      "relevance": 1
+    },
+    {
+      "id": "45176005000108-1-000497/2026",
+      "object": "Registro de Preços para eventual prestação de serviços de consertos e manutenção preventiva, preditiva e corretiva das máquinas agrícolas de diversas linhas, modelos e tipos, pertencentes à Frota Patrimonial da Prefeitura Municipal de Taubaté, incluindo em sua composição todos os materiais e componentes necessários para a realização dos serviços, incluindo todos os componentes necessários para execução dos serviços, de acordo com especificações técnicas, por um período de 12 (doze) meses, podendo ser prorrogável até o limite da lei.",
+      "organ": "MUNICIPIO DE TAUBATE",
+      "city": "Taubaté",
+      "uf": "SP",
+      "deadline": "2026-10-05T08:29:00-03:00",
+      "modality": "Pregão - Eletrônico",
+      "estimated_value_brl": 317160.0,
+      "source": "PNCP",
+      "source_url": "https://pncp.gov.br/app/editais/45176005000108/2026/497",
+      "relevance": 1
+    },
+    {
+      "id": "43052497000102-1-000448/2026",
+      "object": "Contratação de serviços comuns de engenharia para a obtenção do Certificado de Licença do Corpo de Bombeiros (CLCB) para a Residência de Pirassununga – RC13.3.",
+      "organ": "DEPARTAMENTO DE ESTRADAS DE RODAGEM",
+      "city": "Rio Claro",
+      "uf": "SP",
+      "deadline": "2026-10-07T08:00:00-03:00",
+      "modality": "Pregão - Eletrônico",
+      "estimated_value_brl": 60373.8,
+      "source": "PNCP",
+      "source_url": "https://pncp.gov.br/app/editais/43052497000102/2026/448",
+      "relevance": 1
+    },
+    {
+      "id": "46384111000140-1-001059/2026",
+      "object": "Aquisição de Permanente para cozinha das Unidades Escolares: Freezer horizontal, Fogao Industrial, Refrigerador Industrial 02 portas, Refrigerador Industrial 04 portas, Liquidificador Industrial e Forno Industrial; ",
+      "organ": "SAO PAULO SECRETARIA DA EDUCACAO",
+      "city": "Capivari",
+      "uf": "SP",
+      "deadline": "2026-10-07T08:00:00-03:00",
+      "modality": "Dispensa",
+      "estimated_value_brl": 43669.83,
+      "source": "PNCP",
+      "source_url": "https://pncp.gov.br/app/editais/46384111000140/2026/1059",
+      "relevance": 1
+    },
+    {
+      "id": "45298569000113-1-000097/2026",
+      "object": "[LICITANET] - Contratação de empresa especializada para transbordo, transporte, recepção, triagem, processamento e destinação final de resíduos da construção civil, resíduos volumosos, inservíveis e rejeitos oriundos das atividades de limpeza urbana executadas pela Prefeitura Municipal de Altinópolis/SP e armazenados temporariamente na área de transbordo e triagem – ATT.",
+      "organ": "MUNICIPIO DE ALTINOPOLIS",
+      "city": "Altinópolis",
+      "uf": "SP",
+      "deadline": "2026-10-07T09:00:00-03:00",
+      "modality": "Pregão - Eletrônico",
+      "estimated_value_brl": null,
+      "source": "PNCP",
+      "source_url": "https://pncp.gov.br/app/editais/45298569000113/2026/97",
+      "relevance": 1
+    },
+    {
+      "id": "46179941000135-1-000380/2026",
+      "object": "Contratação de serviços para gestão documental para armazenamento externo de documentos físicos, transferência ordenada, organização, conservação, transporte e digitalização de documentos com fornecimento de software",
+      "organ": "MUNICIPIO DE ASSIS",
+      "city": "Assis",
+      "uf": "SP",
+      "deadline": "2026-10-07T09:00:00-03:00",
+      "modality": "Pregão - Eletrônico",
+      "estimated_value_brl": 322670.1,
+      "source": "PNCP",
+      "source_url": "https://pncp.gov.br/app/editais/46179941000135/2026/380",
+      "relevance": 1
+    },
+    {
+      "id": "46634168000150-1-000216/2026",
+      "object": "Registro de preços para eventual aquisição de equipamentos de ar condicionado.",
+      "organ": "MUNICIPIO DE AVARE",
+      "city": "Avaré",
+      "uf": "SP",
+      "deadline": "2026-10-08T08:00:00-03:00",
+      "modality": "Pregão - Eletrônico",
+      "estimated_value_brl": 150333.0,
+      "source": "PNCP",
+      "source_url": "https://pncp.gov.br/app/editais/46634168000150/2026/216",
+      "relevance": 1
+    },
+    {
+      "id": "46599809000182-1-000309/2026",
+      "object": "REGISTRO DE PREÇOS para a contratação de empresa especializada em limpeza de caixas d’água, desratização e desinsetização para diversas unidades e Secretarias do Município de Votuporanga/SP.",
+      "organ": "MUNICIPIO DE VOTUPORANGA",
+      "city": "Votuporanga",
+      "uf": "SP",
+      "deadline": "2026-10-08T08:00:00-03:00",
+      "modality": "Pregão - Eletrônico",
+      "estimated_value_brl": 614733.11,
+      "source": "PNCP",
+      "source_url": "https://pncp.gov.br/app/editais/46599809000182/2026/309",
+      "relevance": 1
+    },
+    {
+      "id": "43052497000102-1-000451/2026",
+      "object": "contratação de serviços comuns de engenharia visando à obtenção do Certificado de Licença do Corpo de Bombeiros (CLCB) para a Residência de Piracicaba",
+      "organ": "DEPARTAMENTO DE ESTRADAS DE RODAGEM",
+      "city": "Rio Claro",
+      "uf": "SP",
+      "deadline": "2026-10-08T08:00:00-03:00",
+      "modality": "Pregão - Eletrônico",
+      "estimated_value_brl": 57997.54,
+      "source": "PNCP",
+      "source_url": "https://pncp.gov.br/app/editais/43052497000102/2026/451",
+      "relevance": 1
+    },
+    {
+      "id": "05774894000190-1-000007/2026",
+      "object": "Contratação de serviços técnicos para realização de perícias médicas de revisão periódica das aposentadorias concedidas por invalidez/incapacidade permanente, a serem realizadas presencialmente no Município de São João da Boa Vista – SP, e emissão de pareceres técnicos em conformidade com o disposto na Portaria MPS nº 1.400, de 27 de maio de 2024, especificamente quanto às demandas relacionadas à análise médica para requerimentos de Compensação Previdenciária (COMPREV) pendentes.",
+      "organ": "INSTITUTO DE PREVIDENCIA DOS SERVIDORES PUBLICOS DO MUNICIPIO DE SAO JOAO DA BOA VISTA",
+      "city": "São João da Boa Vista",
+      "uf": "SP",
+      "deadline": "2026-10-08T08:00:00-03:00",
+      "modality": "Dispensa",
+      "estimated_value_brl": 61400.0,
+      "source": "PNCP",
+      "source_url": "https://pncp.gov.br/app/editais/05774894000190/2026/7",
       "relevance": 1
     }
   ]
