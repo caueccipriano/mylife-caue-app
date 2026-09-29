@@ -43,6 +43,7 @@ async function check(){
   for(const shape of [{name:"desktop",width:1440,height:900},{name:"tablet-768",width:768,height:1024},{name:"mobile-390",width:390,height:844},{name:"mobile-320",width:320,height:740}]){
    const page=await browser.newPage({viewport:{width:shape.width,height:shape.height},acceptDownloads:true});
    const errors=[];page.on("pageerror",e=>errors.push(e.message));
+   await page.route("**/rest/v1/**",route=>route.fulfill({status:503,body:"Offline Supabase fixture"}));
    await page.route("**/radar/search-index.json*",route=>route.fulfill({json:fixture}));
    await page.route("**/radar/refresh-status.json*",route=>route.fulfill({json:{degraded:false,attempted_at:current}}));
    await page.goto(base,{waitUntil:"networkidle"});
@@ -117,6 +118,7 @@ async function check(){
   // must automatically switch off and must not imply individual reconfirmation.
   const fallbackPage=await browser.newPage();
   const fallbackErrors=[];fallbackPage.on("pageerror",e=>fallbackErrors.push(e.message));
+  await fallbackPage.route("**/rest/v1/**",route=>route.fulfill({status:503,body:"Offline Supabase fixture"}));
   await fallbackPage.route("**/radar/search-index.json*",route=>route.fulfill({status:503,body:"Unavailable"}));
   await fallbackPage.route("**/radar/opportunities.json*",route=>route.fulfill({json:{
     brand:"Editalume",generated_at:current,status:"sample_ok",rate_limited:true,catalog:[
@@ -130,13 +132,14 @@ async function check(){
   assert.equal(await fallbackPage.locator("#observedOnly").isDisabled(),true);
   assert.match(await fallbackPage.locator(".latest-toggle span").innerText(),/indisponível/);
   assert.match(await fallbackPage.locator("#notice .notice-heading").innerText(),/Cobertura parcial/);
-  assert.match(await fallbackPage.locator("#notice").innerText(),/Limite temporário/);
+  assert.match(await fallbackPage.locator("#notice").innerText(),/limitou as consultas/);
   assert.deepEqual(fallbackErrors,[]);
   success("fallback sample: results accessible without false per-record freshness");
   await fallbackPage.close();
   // A total source outage must fail closed; never make archived data appear live.
   const outagePage=await browser.newPage();
   const outageErrors=[];outagePage.on("pageerror",e=>outageErrors.push(e.message));
+  await outagePage.route("**/rest/v1/**",route=>route.fulfill({status:503,body:"Offline Supabase fixture"}));
   await outagePage.route("**/radar/search-index.json*",route=>route.fulfill({status:503,body:"Unavailable"}));
   await outagePage.route("**/radar/opportunities.json*",route=>route.fulfill({status:503,body:"Unavailable"}));
   await outagePage.goto(base,{waitUntil:"networkidle"});
@@ -153,7 +156,8 @@ async function check(){
   ]){
     const statusPage=await browser.newPage({viewport:{width:390,height:844}});
     const errors=[];statusPage.on("pageerror",error=>errors.push(error.message));
-    await statusPage.route("**/radar/search-index.json*",route=>route.fulfill({json:fixture}));
+    await statusPage.route("**/rest/v1/**",route=>route.fulfill({status:503,body:"Offline Supabase fixture"}));
+  await statusPage.route("**/radar/search-index.json*",route=>route.fulfill({json:fixture}));
     await statusPage.route("**/radar/refresh-status.json*",route=>route.fulfill({json:{
       degraded:true,attempted_at:current,sample_refresh:"success",index_refresh:state.index_refresh
     }}));
@@ -167,8 +171,45 @@ async function check(){
     success("refresh status "+state.index_refresh+": factual wording without hiding results");
     await statusPage.close();
   }
+
+  // National catalog API response: state-aware live query with readable mobile UI.
+  const nationalPage=await browser.newPage({viewport:{width:390,height:844}});
+  const nationalErrors=[];nationalPage.on("pageerror",e=>nationalErrors.push(e.message));
+  const liveRows=[
+   {pncp_id:"00000000000017-1-000017/2026",uf:"SP",municipality:"Campinas",agency:"Prefeitura de teste",title:"SERVIÇOS PREDIAIS EM SP",modality:"Pregão eletrônico",estimated_value_brl:28000,closing_at:when(8),sector_focus:true,relevance:3,first_observed_at:current,last_observed_at:current},
+   {pncp_id:"00000000000018-1-000018/2026",uf:"RJ",municipality:"Niterói",agency:"Órgão fictício",title:"SERVIÇOS EM RJ",modality:"Pregão eletrônico",estimated_value_brl:15000,closing_at:when(12),sector_focus:true,relevance:2,first_observed_at:current,last_observed_at:current}
+  ];
+  await nationalPage.route("**/rest/v1/**",route=>{
+   const url=new URL(route.request().url());
+   if(url.pathname.endsWith("/editalume_uf_coverage"))return route.fulfill({json:[
+    {uf:"SP",status:"partial",last_success_at:current,records_examined:600},
+    {uf:"RJ",status:"complete_sample",last_success_at:current,records_examined:40}
+   ]});
+   if(url.pathname.endsWith("/editalume_opportunities")){
+    const uf=url.searchParams.get("uf");
+    const rows=uf?liveRows.filter(r=>r.uf===uf.slice(3)):liveRows;
+    return route.fulfill({json:rows,headers:{"content-range":"0-"+Math.max(0,rows.length-1)+"/"+rows.length}});
+   }
+   return route.abort();
+  });
+  await nationalPage.goto(base,{waitUntil:"networkidle"});
+  await nationalPage.waitForFunction(()=>document.getElementById("scopeTitle")?.textContent.includes("2/27"));
+  assert.equal(await nationalPage.locator("#coverageCount").innerText(),"2");
+  assert.equal(await nationalPage.locator(".result-card").count(),2);
+  assert.match(await nationalPage.locator("#notice .notice-heading").innerText(),/Cobertura nacional em expansão/);
+  assert.ok(await nationalPage.locator(".notice-details").isVisible());
+  assert.equal(await nationalPage.locator(".notice-details").getAttribute("open"),null,"Diagnostics hidden until requested");
+  await nationalPage.selectOption("#uf","RJ");
+  await nationalPage.waitForFunction(()=>document.getElementById("resultsCount")?.textContent.includes("1 oportunidade"));
+  assert.equal(await nationalPage.locator(".result-card").count(),1);
+  assert.match(await nationalPage.locator(".result-card").innerText(),/Niterói\/RJ/);
+  await nationalPage.screenshot({path:"radar/qa-artifacts/national-live-rj-390.png",fullPage:true});
+  assert.deepEqual(nationalErrors,[]);
+  success("live nationwide read: 2 UF coverage, live filter RJ and compact diagnostics");
+  await nationalPage.close();
   const livePage=await browser.newPage({viewport:{width:1300,height:850}});
   const jsErrors=[];livePage.on("pageerror",e=>jsErrors.push(e.message));
+  await livePage.route("**/rest/v1/**",route=>route.fulfill({status:503,body:"Offline Supabase fixture"}));
   await livePage.goto(base,{waitUntil:"networkidle"});
   const count=await livePage.locator(".result-card").count();
   assert.ok(count>=1,"Shipped public sample must render records");
@@ -182,6 +223,7 @@ async function check(){
   try{
    const page=await safari.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:3});
    const errors=[];page.on("pageerror",err=>errors.push(err.message));
+   await page.route("**/rest/v1/**",route=>route.fulfill({status:503,body:"Offline Supabase fixture"}));
    await page.route("**/radar/search-index.json*",route=>route.fulfill({json:fixture}));
    await page.route("**/radar/refresh-status.json*",route=>route.fulfill({json:{degraded:false,attempted_at:current}}));
    await page.goto(base,{waitUntil:"networkidle"});
