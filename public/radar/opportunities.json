@@ -1,6 +1,6 @@
 {
   "brand": "Editalume",
-  "generated_at": "2026-09-29T14:46:58.805170-03:00",
+  "generated_at": "2026-09-29T14:52:12.924737-03:00",
   "status": "sample_ok",
   "region": "SP",
   "niche": "manutenção, conservação e serviços prediais",
@@ -3895,20 +3895,6 @@
       "estimated_value_brl": 765000.0,
       "source": "PNCP",
       "source_url": "https://pncp.gov.br/app/editais/04691691000178/2026/250",
-      "relevance": 0,
-      "sector_focus": false
-    },
-    {
-      "id": "52879780000195-1-000020/2026",
-      "object": "Registro de preços para futura e eventual aquisição de equipamentos e materiais de Tecnologia da Informação, infraestrutura de rede e videomonitoramento (CFTV), conforme Termo de Referência.",
-      "organ": "MUNICIPIO DE SEBASTIANOPOLIS DO SUL",
-      "city": "Sebastianópolis do Sul",
-      "uf": "SP",
-      "deadline": "2026-09-30T08:30:00-03:00",
-      "modality": "Pregão - Eletrônico",
-      "estimated_value_brl": 197524.38,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/52879780000195/2026/20",
       "relevance": 0,
       "sector_focus": false
     },
@@ -17409,6 +17395,20 @@
       "sector_focus": false
     },
     {
+      "id": "46643466000106-1-000781/2026",
+      "object": "AQUISICAO DE EQUIPAMENTOS, COMPONENTES E ACESSORIOS DE TECNOLOGIA DA INFORMACAO",
+      "organ": "MUNICIPIO DE SAO JOSE DOS CAMPOS",
+      "city": "São José dos Campos",
+      "uf": "SP",
+      "deadline": "2026-10-14T08:30:00-03:00",
+      "modality": "Pregão - Eletrônico",
+      "estimated_value_brl": 1128443.77,
+      "source": "PNCP",
+      "source_url": "https://pncp.gov.br/app/editais/46643466000106/2026/781",
+      "relevance": 0,
+      "sector_focus": false
+    },
+    {
       "id": "44881449000181-1-000143/2026",
       "object": "AQUISIÇÃO DE VEÍCULO \"ZERO KM\" TIPO \"B\" FURGÃO TRANSFORMADO EM AMBULÂNCIA SIMPLES REMOÇÃO PARA SER UTILIZADO PELO SETOR DA SAÚDE NO TRANSPORTE DE PACIENTES DO MUNICÍPIO/ TRANSFERÊNCIA ESPECIAL- EMENDA Nº 202544150001- F.M.",
       "organ": "MUNICIPIO DE JUNQUEIROPOLIS",
@@ -17829,20 +17829,6 @@
       "sector_focus": false
     },
     {
-      "id": "52879780000195-1-000021/2026",
-      "object": "Contratação de serviços especializados para elaboração de projeto, fornecimento de matéria-prima, fabricação, transporte, montagem e instalação de mobiliário planejado sob medida, para atender às necessidades da Secretaria Municipal de Saúde do Município de Sebastianópolis do Sul/SP, conforme especificações estabelecidas no Termo de Referência.",
-      "organ": "MUNICIPIO DE SEBASTIANOPOLIS DO SUL",
-      "city": "Sebastianópolis do Sul",
-      "uf": "SP",
-      "deadline": "2026-10-16T08:30:00-03:00",
-      "modality": "Pregão - Eletrônico",
-      "estimated_value_brl": 105116.21,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/52879780000195/2026/21",
-      "relevance": 0,
-      "sector_focus": false
-    },
-    {
       "id": "46523247000193-1-000115/2026",
       "object": "CONTRATAÇÃO DE EMPRESA ESPECIALIZADA PARA EXECUÇÃO DE MANUTENÇÃO CORRETIVA COM DIAGNÓSTICO, SUBSTITUIÇÃO DE PEÇAS DEFEITUOSAS E TESTES FINAIS E PREVENTIVA COM FORNECIMENTO INTEGRAL DE PEÇAS... ",
       "organ": "MUNICIPIO DE DIADEMA",
@@ -17953,6 +17939,20 @@
       "source_url": "https://pncp.gov.br/app/editais/52356268000245/2026/1",
       "relevance": 1,
       "sector_focus": true
+    },
+    {
+      "id": "46384400000149-1-000461/2026",
+      "object": "Aquisição de Óleo Diesel",
+      "organ": "SECRETARIA DE AGRICULTURA E ABASTECIMENTO",
+      "city": "Campinas",
+      "uf": "SP",
+      "deadline": "2026-10-19T09:00:00-03:00",
+      "modality": "Pregão - Eletrônico",
+      "estimated_value_brl": 103800.0,
+      "source": "PNCP",
+      "source_url": "https://pncp.gov.br/app/editais/46384400000149/2026/461",
+      "relevance": 0,
+      "sector_focus": false
     },
     {
       "id": "13864377000130-1-001384/2026",
