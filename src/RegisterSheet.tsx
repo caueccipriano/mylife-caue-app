@@ -4,6 +4,7 @@ import { useRecords } from './appState'
 import { detectSensitiveContent, findSimilarRecords } from './lifeModel'
 import { haptic } from './securitySettings'
 import { EuIcon } from './v2Ui'
+import { normalizeCaptureLink, isDuplicateCaptureLink } from './linkCapture'
 
 type Props = {
   open: boolean
@@ -268,33 +269,55 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
   }
 
   function addLink() {
-    const raw = linkValue.trim()
-    if (!raw) return
-
+    const normalized = normalizeCaptureLink(linkValue)
+    if (!normalized) {
+      setError('Cole um endereço http ou https válido, sem usuário ou senha.')
+      return
+    }
     if (attachments.length >= MAX_ATTACHMENTS) {
       setError('Você já atingiu o limite de 6 anexos.')
       return
     }
+    if (isDuplicateCaptureLink(attachments, normalized)) {
+      setError('Esse link já está anexado ao registro.')
+      return
+    }
+    const url = new URL(normalized)
+    setAttachments((current) => [
+      ...current,
+      {
+        id: crypto.randomUUID(),
+        kind: 'link',
+        name: url.hostname.replace(/^www\./, ''),
+        url: normalized,
+      },
+    ])
+    setLinkValue('')
+    setShowLink(false)
+    setError('')
+  }
 
+  // Explicit user gesture only: never read clipboard on mount or save on paste.
+  async function pasteLink() {
     try {
-      const url = new URL(raw.includes('://') ? raw : 'https://' + raw)
-      if (!['http:', 'https:'].includes(url.protocol)) {
-        throw new Error('unsupported protocol')
+      if (!navigator.clipboard?.readText) {
+        setError('Seu navegador não permite colar automaticamente. Cole no campo acima.')
+        return
       }
-      setAttachments((current) => [
-        ...current,
-        {
-          id: crypto.randomUUID(),
-          kind: 'link',
-          name: url.hostname.replace(/^www\./, ''),
-          url: url.toString(),
-        },
-      ])
-      setLinkValue('')
-      setShowLink(false)
+      const clipboardText = await navigator.clipboard.readText()
+      const normalized = normalizeCaptureLink(clipboardText)
+      if (!normalized) {
+        setError('A área de transferência não contém um link http ou https válido.')
+        return
+      }
+      if (isDuplicateCaptureLink(attachments, normalized)) {
+        setError('Esse link já está anexado ao registro.')
+        return
+      }
+      setLinkValue(normalized)
       setError('')
     } catch {
-      setError('Esse link não parece válido.')
+      setError('O navegador não autorizou a leitura. Cole o link manualmente.')
     }
   }
 
@@ -497,7 +520,8 @@ export default function RegisterSheet({ open, onClose, onSaved }: Props) {
 
             {showLink && (
               <div className="link-capture">
-                <input value={linkValue} onChange={(event) => setLinkValue(event.target.value)} placeholder="cole o link aqui" inputMode="url" />
+                <input value={linkValue} onChange={(event) => setLinkValue(event.target.value)} placeholder="cole o link aqui" inputMode="url" aria-label="Endereço do link" />
+                <button className="link-paste-button" type="button" onClick={() => void pasteLink()} aria-label="Colar link da área de transferência">Colar</button>
                 <button type="button" onClick={addLink}>Adicionar</button>
               </div>
             )}
