@@ -67,7 +67,8 @@ function renderCards(){
   card.append(main,side);root.append(card);
  }
  $("national-result-count").textContent=fmt.format(state.total)+(state.total===1?" edital encontrado":" editais encontrados");
- $("national-page-indicator").textContent="Mostrando "+fmt.format(Math.min(state.total,state.offset+state.items.length))+" de "+fmt.format(state.total)+" registros indexados. Confirme tudo no PNCP.";
+ $("national-page-indicator").textContent="Exibindo "+fmt.format(state.items.length?state.offset+1:0)+"–"+fmt.format(Math.min(state.total,state.offset+state.items.length))+" de "+fmt.format(state.total)+" registros. Confirme os prazos no PNCP.";
+ $("national-prev").hidden=state.offset===0;
  $("national-next").hidden=state.items.length<PAGE_SIZE||state.offset+state.items.length>=state.total;
  $("national-download").disabled=!state.items.length;
  const uf=$("national-uf").value;
@@ -107,7 +108,7 @@ async function search(){
   $("national-result-count").textContent="Conexão indisponível";
   $("national-status").textContent="Não foi possível consultar o Supabase agora. O acervo paulista abaixo permanece disponível; para dados completos use o PNCP.";
   $("national-page-indicator").textContent="";
-  $("national-next").hidden=true;$("national-download").disabled=true;
+  $("national-next").hidden=true;$("national-prev").hidden=true;$("national-download").disabled=true;
   $("national-empty").hidden=false;$("national-empty-title").textContent="Falha temporária de conexão";
   $("national-empty-description").textContent="Tente novamente ou consulte a fonte oficial.";
  }finally{if(state.request===ctrl){state.loading=false;$("national-submit").disabled=false;}}
@@ -144,7 +145,8 @@ function init(){
   $(id).addEventListener(id==="national-q"||id==="national-city"||id==="national-min"?"input":"change",filtersChanged);
  }
  $("national-reset").addEventListener("click",()=>{$("national-form").reset();state.offset=0;renderCoverage();search()});
- $("national-next").addEventListener("click",()=>{state.offset+=PAGE_SIZE;search();$("brasil").scrollIntoView({behavior:"smooth",block:"start"})});
+ $("national-next").addEventListener("click",()=>{state.offset+=PAGE_SIZE;search();$("national-result-count").scrollIntoView({behavior:"smooth",block:"center"})});
+ $("national-prev").addEventListener("click",()=>{state.offset=Math.max(0,state.offset-PAGE_SIZE);search();$("national-result-count").scrollIntoView({behavior:"smooth",block:"center"})});
  $("national-download").addEventListener("click",downloadPage);
  renderCoverage();loadCoverage();search();
 }
