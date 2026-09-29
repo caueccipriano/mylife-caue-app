@@ -151,7 +151,7 @@ function restoreSharedSearch(){
  const days=params.get("days");
  if(["7","15","30"].includes(days))$("national-deadline").value=days;
  const min=params.get("min");
- if(min&&/^\\d+(?:\\.\\d{1,2})?$/.test(min)&&Number(min)<=100000000)$("national-min").value=min;
+ if(min&&/^\d+(?:\.\d{1,2})?$/.test(min)&&Number(min)<=100000000)$("national-min").value=min;
  const sort=params.get("sort");
  if(["deadline","value","relevance"].includes(sort))$("national-sort").value=sort;
 }
