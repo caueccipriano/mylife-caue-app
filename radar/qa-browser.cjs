@@ -77,7 +77,9 @@ async function check(){
    await page.click("#previewAlert");
    assert.equal(await page.locator("#alertPreview").isVisible(),true);
    assert.match(await page.locator("#previewSummary").innerText(),/2 oportunidades/);
-   assert.equal(await page.locator(".preview-item").count(),2);
+   const previewMarkup=await page.locator("#previewItems").innerHTML();
+   const previewCount=await page.locator(".preview-item").count();
+   assert.equal(previewCount,2,"Expected two valid previews; markup="+previewMarkup.slice(0,1800)+"; results="+(await page.locator(".result-card").count()));
    assert.match(await page.locator(".preview-disclaimer").innerText(),/Nenhum e-mail é enviado/);
    await page.locator("#alertPreview").screenshot({path:"radar/qa-artifacts/"+shape.name+"-alert-preview.png",animations:"disabled"});
    await page.click("#closePreview");
