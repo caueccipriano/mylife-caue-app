@@ -1,0 +1,41 @@
+name: Editalume · mobile and functional QA
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'public/radar/index.html'
+      - 'public/radar/app.js'
+      - 'public/radar/style.css'
+      - 'radar/qa-browser.cjs'
+      - '.github/workflows/radar-qa.yml'
+permissions:
+  contents: read
+jobs:
+  browser-qa:
+    runs-on: ubuntu-latest
+    timeout-minutes: 17
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install QA browser without changing project lockfile
+        run: npm install --no-save --no-package-lock @playwright/test
+      - name: Install Chromium for desktop + iPhone-width checks
+        run: npx playwright install --with-deps chromium
+      - name: Node syntax and static server
+        run: |
+          node --check public/radar/app.js
+          node --check radar/qa-browser.cjs
+          python3 -m http.server 4173 --directory public > /tmp/radar-server.log 2>&1 &
+          for n in $(seq 1 20); do curl --fail --silent http://127.0.0.1:4173/radar/ > /dev/null && break; sleep 1; done
+      - name: Desktop/mobile functional and live-index smoke
+        run: node radar/qa-browser.cjs
+      - name: Upload screenshot and filtered export for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: editalume-qa-screens
+          path: radar/qa-artifacts/
+          if-no-files-found: warn
