@@ -40,13 +40,15 @@ async function check(){
  const browser=await chromium.launch({headless:true});
  fs.mkdirSync("radar/qa-artifacts",{recursive:true});
  try{
-  for(const shape of [{name:"desktop",width:1440,height:900},{name:"mobile-390",width:390,height:844}]){
+  for(const shape of [{name:"desktop",width:1440,height:900},{name:"tablet-768",width:768,height:1024},{name:"mobile-390",width:390,height:844},{name:"mobile-320",width:320,height:740}]){
    const page=await browser.newPage({viewport:{width:shape.width,height:shape.height},acceptDownloads:true});
    const errors=[];page.on("pageerror",e=>errors.push(e.message));
    await page.route("**/radar/search-index.json*",route=>route.fulfill({json:fixture}));
    await page.route("**/radar/refresh-status.json*",route=>route.fulfill({json:{degraded:false,attempted_at:current}}));
    await page.goto(base,{waitUntil:"networkidle"});
    await page.waitForSelector(".result-card");
+   assert.match(await page.locator("#notice .notice-heading").innerText(),/Amostra atualizada/);
+   assert.equal(await page.locator(".deadline-alert").count(),1,"Urgent deadlines should be clearly highlighted");
    assert.equal(await page.locator(".result-card").count(),3,"All sectors should be searched by default");
    assert.equal(await page.locator("#segment").inputValue(),"all");
    assert.match(await page.locator("#resultsCount").innerText(),/3 oportunidades/);
@@ -95,7 +97,7 @@ async function check(){
    const url=await page.locator(".result-card").first().locator("a").getAttribute("href");
    assert.ok(url.startsWith("https://pncp.gov.br/app/editais/"),"Cards must link only to PNCP");
    success(shape.name+": filters, stale badge, sort, export and official links");
-   if(shape.width===390){
+   if(shape.width<=390){
      const measurements=await page.evaluate(()=>({
        doc:document.documentElement.scrollWidth,width:innerWidth,
        controls:[...document.querySelectorAll(".search-field,.search-panel,.result-card,.filter-grid,.plans-grid")]
@@ -105,7 +107,7 @@ async function check(){
      assert.ok(measurements.controls.every(x=>x.left>=-2&&x.right<=measurements.width+2),
       "mobile search controls/cards must fit the screen: "+JSON.stringify(measurements.controls.filter(x=>x.left<-2||x.right>measurements.width+2)));
      await page.screenshot({path:"radar/qa-artifacts/mobile-390-search.png",fullPage:true});
-     success("mobile-390: no clipped controls / document overflow");
+     success(shape.name+": no clipped controls / document overflow");
    }
    assert.deepEqual(errors,[],"No JS page errors");
    await page.close();
