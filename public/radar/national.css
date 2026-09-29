@@ -111,3 +111,9 @@
 .national-result-side .national-label{color:#3e5a46}
 .national-pagination p{color:#385640}
 .national-legal{color:#405f4d}
+
+/* Compact paginated national results, including previous-page recovery. */
+.national-page-buttons{display:flex;align-items:center;justify-content:end;gap:9px;flex-wrap:wrap}
+.national-pagination .national-page-buttons button{background:#fff;border:1px solid #8fb49b;color:#1e5237;white-space:nowrap}
+.national-pagination .national-page-buttons button:hover{background:#e5f2e7}
+@media(max-width:420px){.national-pagination{align-items:stretch;flex-direction:column}.national-page-buttons{justify-content:stretch}.national-page-buttons button{flex:1}}
