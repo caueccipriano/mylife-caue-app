@@ -23,6 +23,7 @@
       <a href="#plataforma">A plataforma</a>
       <a href="#pesquisa">Base de oportunidades</a>
       <a href="#metodo">Metodologia</a>
+      <a href="#planos">Planos</a>
     </nav>
     <a class="header-cta" href="#pesquisa">Explorar base <span aria-hidden="true">↗</span></a>
   </div>
@@ -78,6 +79,10 @@
         <label><span>Modalidade</span><select id="modality"><option value="">Todas as modalidades</option></select></label>
         <label><span>Prazo para encerramento</span><select id="deadline"><option value="all">Qualquer prazo aberto</option><option value="7">Próximos 7 dias</option><option value="15">Próximos 15 dias</option><option value="30">Próximos 30 dias</option></select></label>
       </div>
+      <div class="freshness-controls">
+        <label class="latest-toggle" for="observedOnly"><input type="checkbox" id="observedOnly" checked><span>Somente oportunidades vistas na última coleta indexada</span></label>
+        <small>Desmarque para incluir registros anteriores ainda com prazo informado no futuro. Verifique sempre a situação no edital oficial.</small>
+      </div>
       <div class="filter-footer">
         <label class="min-value">Valor estimado mínimo <span class="input-money">R$ <input id="minValue" type="number" min="0" step="1000" inputmode="decimal" placeholder="0" aria-label="Valor estimado mínimo em reais"></span></label>
         <div class="filter-actions"><button type="reset" id="resetFilters" class="button button-quiet">Limpar filtros</button><button type="submit" class="button button-primary">Pesquisar <span aria-hidden="true">→</span></button></div>
@@ -96,12 +101,28 @@
   <div><div class="kicker">METODOLOGIA</div><h2>Dados públicos.<br><span>Decisões melhores.</span></h2><p>O Editalume organiza dados públicos em um recorte pesquisável e oferece links diretos para consultar a informação original. Você mantém o controle de cada decisão.</p><a class="text-link method-link" href="https://pncp.gov.br/app/editais" target="_blank" rel="noopener noreferrer">Conhecer a fonte oficial ↗</a></div>
   <div class="method-steps"><div><span>01</span><section><h3>Monitoramos</h3><p>Coletamos uma amostra de propostas com prazo informado em São Paulo nas modalidades monitoradas.</p></section></div><div><span>02</span><section><h3>Organizamos</h3><p>Estruturamos descrição, órgão, município, valores informados e data prevista de encerramento.</p></section></div><div><span>03</span><section><h3>Você valida</h3><p>Direcionamos cada resultado para o PNCP. Confirme prazo, edital, condições de participação e atualizações na origem.</p></section></div></div>
 </div></section>
-<section class="plans section" id="planos"><div class="container plans-layout">
- <div><div class="kicker">PRÓXIMA ETAPA</div><h2>Seu radar.<br><span>Seu mercado.</span></h2><p>Estamos validando alertas setoriais personalizados, entrega programada e acompanhamento de oportunidades relevantes para empresas.</p><div class="plan-disclaimer">A pesquisa nesta demonstração é gratuita. O serviço de assinaturas ainda não está disponível.</div></div>
- <aside class="plan-card"><span>PLANO EM ESTUDO</span><h3>Editalume Pro</h3><div class="plan-price">R$ 39,90 <small>/ mês</small></div><ul><li>Alertas de oportunidades selecionadas</li><li>Preferências por atividade e região</li><li>Resumo com links para a fonte oficial</li></ul><span class="plan-status">Em validação · Sem cobrança ativa</span></aside>
+<section class="plans section" id="planos"><div class="container">
+ <div class="plans-intro"><div class="kicker">PLANOS</div><h2>Informação aberta.<br><span>Inteligência sob medida.</span></h2><p>Consulte a amostra sem criar uma conta. O Premium está em desenvolvimento para automatizar o acompanhamento de oportunidades por empresa.</p></div>
+ <div class="plans-grid">
+  <article class="plan-card plan-free" aria-label="Plano gratuito já disponível">
+    <span class="plan-label">DISPONÍVEL AGORA</span>
+    <h3>Explorar</h3><div class="plan-price">Grátis</div>
+    <p class="plan-description">Pesquisa pública para descobrir oportunidades e validar se o Editalume é útil para sua empresa.</p>
+    <ul><li>Pesquisa por palavra-chave e município</li><li>Filtros por setor, modalidade, valor e prazo</li><li>Consulta aos links oficiais do PNCP</li><li>Exportação CSV dos resultados filtrados da amostra</li></ul>
+    <a class="button button-outline plan-action" href="#pesquisa">Pesquisar gratuitamente ↗</a>
+  </article>
+  <article class="plan-card plan-premium" aria-label="Plano Premium proposto ainda indisponível">
+    <span class="plan-label">PROPOSTA · EM DESENVOLVIMENTO</span>
+    <h3>Inteligência Pro</h3><div class="plan-price">R$ 39,90 <small>/ mês · preço piloto proposto</small></div>
+    <p class="plan-description">Para empresas que querem receber automaticamente oportunidades compatíveis com seu perfil, sem repetir a pesquisa todos os dias.</p>
+    <ul><li>Alertas por e-mail conforme atividades e municípios selecionados</li><li>Múltiplas pesquisas salvas e acompanhamento de prazos</li><li>Resumos periódicos com links para o edital oficial</li><li>Organização de oportunidades para acompanhamento</li></ul>
+    <div class="plan-pending" role="note">Cadastro, cobrança e entrega dos alertas ainda não foram liberados. Não há assinaturas ativas.</div>
+  </article>
+ </div>
+ <p class="plans-fineprint">Não vendemos acesso exclusivo a editais públicos. O valor Premium proposto remunera os filtros personalizados, o monitoramento e a entrega automatizada, sujeitos à validação do piloto.</p>
 </div></section>
 </main>
-<footer class="site-footer"><div class="container footer-top"><div><div class="footer-brand">editalume<span>.</span></div><p>Inteligência em oportunidades públicas.<br>Uma experiência independente de pesquisa.</p></div><div><strong>Plataforma</strong><a href="#pesquisa">Explorar oportunidades</a><a href="#metodo">Metodologia</a><a href="#planos">Plano em estudo</a></div><div><strong>Fonte oficial</strong><a href="https://pncp.gov.br/app/editais" target="_blank" rel="noopener noreferrer">Portal PNCP ↗</a></div></div><div class="container footer-bottom"><span>© <span id="copyrightYear">2026</span> Editalume · Projeto em pré-lançamento.</span><span>Não temos vínculo com o Governo Federal nem com o PNCP. *Atualizações podem atrasar ou falhar. A base é parcial, não exaustiva; o edital oficial prevalece.</span></div></footer>
+<footer class="site-footer"><div class="container footer-top"><div><div class="footer-brand">editalume<span>.</span></div><p>Inteligência em oportunidades públicas.<br>Uma experiência independente de pesquisa.</p></div><div><strong>Plataforma</strong><a href="#pesquisa">Explorar oportunidades</a><a href="#metodo">Metodologia</a><a href="#planos">Planos e diferenças</a></div><div><strong>Fonte oficial</strong><a href="https://pncp.gov.br/app/editais" target="_blank" rel="noopener noreferrer">Portal PNCP ↗</a></div></div><div class="container footer-bottom"><span>© <span id="copyrightYear">2026</span> Editalume · Projeto em pré-lançamento.</span><span>Não temos vínculo com o Governo Federal nem com o PNCP. *Atualizações podem atrasar ou falhar. A base é parcial, não exaustiva; o edital oficial prevalece.</span></div></footer>
 </div>
 </body>
 </html>

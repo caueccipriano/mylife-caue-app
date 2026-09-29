@@ -8,7 +8,7 @@ const money=new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL",maxim
 const dt=new Intl.DateTimeFormat("pt-BR",{dateStyle:"short",timeStyle:"short",timeZone:"America/Sao_Paulo"});
 const norm=v=>String(v||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
 const node=(tag,cls,txt)=>{let el=document.createElement(tag);if(cls)el.className=cls;if(txt!==undefined)el.textContent=String(txt);return el;};
-let data=[],found=[],visible=12,ready=false;
+let data=[],found=[],visible=12,ready=false,lastIndexedAt=null;
 function group(record,selected){
  const t=norm(record.object);
  if(selected==="all")return true;
@@ -26,8 +26,10 @@ function card(record){
  if(link.protocol!=="https:"||link.hostname!=="pncp.gov.br"||!link.pathname.startsWith("/app/editais/"))return null;
  const el=node("article","result-card"),left=node("div","card-main"),aside=node("aside","card-aside");
  const tags=node("div","result-top");
+ const unreconfirmed=Boolean(lastIndexedAt && record.last_seen_at && record.last_seen_at!==lastIndexedAt);
  tags.append(node("span","tag",record.sector_focus?"SERVIÇOS · SELECIONADO":"SETOR GERAL"),
              node("span","tag gray",record.city+"/SP"));
+ if(unreconfirmed)tags.append(node("span","tag stale-tag","NÃO RECONFIRMADO"));
  left.append(tags,node("h4",null,record.object),node("div","card-organ",record.organ||"Órgão não informado"));
  const metadata=node("div","card-metadata");
  function attr(label,value){const d=node("div");d.append(node("strong",null,label),node("span",null,value));metadata.append(d);}
@@ -45,7 +47,9 @@ function search(){
  const now=Date.now(),until=days==="all"?Infinity:now+Number(days)*86400000;
  let arr=data.filter(r=>{
   let end=Date.parse(r.deadline);
-  return Number.isFinite(end)&&end>now&&end<=until&&group(r,seg)&&(!city||r.city===city)&&(!mod||r.modality===mod)&&
+  return Number.isFinite(end)&&end>now&&end<=until&&
+    (!($("observedOnly").checked && r.last_seen_at && lastIndexedAt && r.last_seen_at!==lastIndexedAt))&&
+    group(r,seg)&&(!city||r.city===city)&&(!mod||r.modality===mod)&&
     (!min||(Number(r.estimated_value_brl)||0)>=min)&&
     (!q||norm([r.object,r.organ,r.city,r.modality,r.id].join(" ")).includes(q));
  });
@@ -77,7 +81,7 @@ $("csv").onclick=()=>{
 };
 $("filters").addEventListener("submit",e=>{e.preventDefault();render(true);$("resultsCount").scrollIntoView({behavior:"smooth",block:"center"});});
 $("filters").addEventListener("reset",()=>setTimeout(()=>render(true),0));
-for(const key of ["q","segment","city","modality","deadline","minValue"])$(key).addEventListener("input",()=>render(true));
+for(const key of ["q","segment","city","modality","deadline","minValue","observedOnly"])$(key).addEventListener("input",()=>render(true));
 $("sort").addEventListener("change",()=>render(false));
 $("more").addEventListener("click",()=>{visible+=12;render(false);});
 $("copyrightYear").textContent=new Date().getFullYear();
@@ -89,6 +93,7 @@ async function init(){
   if(!res.ok)throw Error("HTTP "+res.status);
   const doc=await res.json();
   if(!doc||!Array.isArray(doc.opportunities))throw Error("Formato inválido");
+  lastIndexedAt=doc.generated_at||null;
   const base=Array.isArray(doc.catalog)?doc.catalog:doc.opportunities;
   data=base.filter(r=>r&&typeof r.object==="string"&&typeof r.city==="string"&&typeof r.deadline==="string"&&
     typeof r.source_url==="string"&&/^https:\/\/pncp\.gov\.br\/app\/editais\//.test(r.source_url));
@@ -101,12 +106,26 @@ async function init(){
   for(const key in metrics)$(key).textContent=fmt.format(metrics[key]);
   const time=Date.parse(doc.generated_at),stale=!Number.isFinite(time)||Date.now()-time>36*3600000;
   const partial=indexed?!!doc.partial:doc.status==="partial";
+  let refreshFailed=false,attemptedAt=null;
+  try{
+    const statusRes=await fetch("./refresh-status.json?cache="+Date.now(),{cache:"no-store"});
+    if(statusRes.ok){const latest=await statusRes.json();
+      const attemptMs=Date.parse(latest.attempted_at||"");
+      const dataMs=Date.parse(doc.generated_at||"");
+      if(latest.degraded && Number.isFinite(attemptMs) && (!Number.isFinite(dataMs)||attemptMs>=dataMs)){
+         refreshFailed=true;attemptedAt=latest.attempted_at;
+      }
+    }
+  }catch(_err){/* A missing status endpoint never disguises the data timestamp. */}
+  const carried=Number(doc.carried_forward_unreconfirmed)||0;
   let msg=(stale?"⚠ Dados desatualizados. ":"")+(partial?"⚠ Coleta parcial ou versão reduzida. ":"")+
   (Number.isFinite(time)?"Última atualização: "+dt.format(new Date(time))+". ":"Data da coleta não verificada. ")+
   fmt.format(Number(doc.records_examined_this_run??doc.records_examined)||0)+" registros examinados nesta coleta · "+fmt.format(data.length)+" oportunidades nesta amostra. "+
   "Amostra parcial. Registros de coletas anteriores podem ter sido alterados ou cancelados; para a fonte integral consulte o PNCP.";
+  if(carried)msg+=fmt.format(carried)+" registros vieram de coletas anteriores sem nova confirmação. ";
+  if(refreshFailed)msg="⚠ A última tentativa de atualização falhou"+(attemptedAt?" em "+dt.format(new Date(attemptedAt)):"")+". Abaixo estão os dados da última coleta disponível, não uma confirmação atual. "+msg;
   if(doc.status==="awaiting_first_scan")msg="Primeira coleta ainda não concluída. Nenhum edital está confirmado.";
-  $("notice").className="data-notice"+(stale||partial?" warning":"");$("notice").textContent=msg;
+  $("notice").className="data-notice"+(stale||partial||refreshFailed?" warning":"");$("notice").textContent=msg;
   ready=true;render(true);
  }catch(err){
   $("notice").className="data-notice error";
