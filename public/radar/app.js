@@ -52,7 +52,11 @@ function card(record){
  function attr(label,value){const d=node("div");d.append(node("strong",null,label),node("span",null,value));metadata.append(d);}
  attr("Modalidade",record.modality||"Consultar na fonte");
  attr("Controle",record.id||"Não informado");left.append(metadata);
- const details=node("div");
+ const details=node("div","deadline-details");
+ const hoursLeft=(Date.parse(record.deadline)-Date.now())/3600000;
+ if(hoursLeft<=72){
+  details.append(node("div","deadline-alert","PRAZO PRÓXIMO · CONFIRME NO PNCP"));
+ }
  details.append(node("div","label","PRAZO INFORMADO"),node("div","value",dt.format(new Date(record.deadline))),
                 node("div","label","VALOR ESTIMADO"),
                 node("div","amount",record.estimated_value_brl>0?money.format(record.estimated_value_brl):"Não informado"));
@@ -177,7 +181,11 @@ async function init(){
   if(carried)msg+=fmt.format(carried)+" registros vieram de coletas anteriores sem nova confirmação. ";
   if(refreshFailed)msg="⚠ A última tentativa de atualização falhou"+(attemptedAt?" em "+dt.format(new Date(attemptedAt)):"")+". Abaixo estão os dados da última coleta disponível, não uma confirmação atual. "+msg;
   if(doc.status==="awaiting_first_scan")msg="Primeira coleta ainda não concluída. Nenhum edital está confirmado.";
-  $("notice").className="data-notice"+(stale||partial||refreshFailed?" warning":"");$("notice").textContent=msg;
+  const statusTitle=refreshFailed?"Atualização falhou: consulte a origem":stale?"Base desatualizada: confirme os prazos":partial?"Cobertura parcial nesta coleta":"Amostra atualizada";
+  const statusHeader=node("strong","notice-heading",statusTitle);
+  const statusBody=node("p","notice-description",msg);
+  $("notice").className="data-notice"+(stale||partial||refreshFailed?" warning":"");
+  $("notice").replaceChildren(statusHeader,statusBody);
   ready=true;$("previewAlert").disabled=false;render(true);
  }catch(err){
   $("notice").className="data-notice error";
