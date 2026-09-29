@@ -53,7 +53,7 @@ async function run(browser,name,width,height){
   await page.waitForFunction(async()=>{
     if(!("serviceWorker" in navigator))return false;
     const registrations=await navigator.serviceWorker.getRegistrations();
-    return registrations.some(r=>new URL(r.scope).pathname==="/mylife-caue-app/radar/");
+    return registrations.some(r=>new URL(r.scope).pathname===new URL("./",location.href).pathname);
   },undefined,{timeout:20000});
   console.log("PASS Editalume PWA: separate manifest, service-worker scope and installation shell");
  }
