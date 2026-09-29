@@ -146,6 +146,27 @@ async function check(){
   assert.deepEqual(outageErrors,[]);
   success("total source outage: fail-closed state and no CSV export");
   await outagePage.close();
+  // A partial index is not a total outage; distinguish it from true failures.
+  for(const state of [
+    {index_refresh:"partial",expected:/Cobertura parcial/,forbidden:/Atualização falhou/},
+    {index_refresh:"failed",expected:/Atualização falhou/,forbidden:/Cobertura parcial/}
+  ]){
+    const statusPage=await browser.newPage({viewport:{width:390,height:844}});
+    const errors=[];statusPage.on("pageerror",error=>errors.push(error.message));
+    await statusPage.route("**/radar/search-index.json*",route=>route.fulfill({json:fixture}));
+    await statusPage.route("**/radar/refresh-status.json*",route=>route.fulfill({json:{
+      degraded:true,attempted_at:current,sample_refresh:"success",index_refresh:state.index_refresh
+    }}));
+    await statusPage.goto(base,{waitUntil:"networkidle"});
+    await statusPage.waitForSelector(".result-card");
+    const title=await statusPage.locator("#notice .notice-heading").innerText();
+    assert.match(title,state.expected);
+    assert.doesNotMatch(title,state.forbidden);
+    assert.equal(await statusPage.locator(".result-card").count(),3);
+    assert.deepEqual(errors,[]);
+    success("refresh status "+state.index_refresh+": factual wording without hiding results");
+    await statusPage.close();
+  }
   const livePage=await browser.newPage({viewport:{width:1300,height:850}});
   const jsErrors=[];livePage.on("pageerror",e=>jsErrors.push(e.message));
   await livePage.goto(base,{waitUntil:"networkidle"});
