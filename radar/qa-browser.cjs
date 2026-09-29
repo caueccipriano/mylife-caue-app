@@ -37,7 +37,8 @@ async function check(){
    await page.route("**/radar/refresh-status.json*",route=>route.fulfill({json:{degraded:false,attempted_at:current}}));
    await page.goto(base,{waitUntil:"networkidle"});
    await page.waitForSelector(".result-card");
-   assert.equal(await page.locator(".result-card").count(),2,"Two recently observed focus results expected");
+   assert.equal(await page.locator(".result-card").count(),3,"All sectors should be searched by default");
+   assert.equal(await page.locator("#segment").inputValue(),"all");
    assert.match(await page.locator("#resultsCount").innerText(),/2 oportunidades/);
    assert.equal(await page.locator(".plan-free").count(),1);
    assert.equal(await page.locator(".plan-premium .plan-pending").count(),1,"Premium must not claim live checkout");
