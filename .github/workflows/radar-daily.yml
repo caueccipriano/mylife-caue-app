@@ -30,11 +30,13 @@ jobs:
         run: PYTHONPATH=radar python -m unittest discover -s radar -p 'test_*.py' -v
       - name: Refresh public PNCP sample without credentials
         run: python radar/collector.py --output public/radar/opportunities.json
-      - name: Commit sampled official listings to public site
+      - name: Extend deduplicated searchable PNCP index
+        run: python radar/search_index.py --output public/radar/search-index.json
+      - name: Commit searchable official listings to public site
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add public/radar/opportunities.json
+          git add public/radar/opportunities.json public/radar/search-index.json
           if ! git diff --cached --quiet; then
             git commit -m 'data: refresh public PNCP sample'
             git pull --rebase origin main
