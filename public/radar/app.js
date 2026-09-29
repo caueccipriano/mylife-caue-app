@@ -161,14 +161,18 @@ async function init(){
   for(const key in metrics)$(key).textContent=fmt.format(metrics[key]);
   const time=Date.parse(doc.generated_at),stale=!Number.isFinite(time)||Date.now()-time>36*3600000;
   const partial=!!doc.rate_limited||(indexed?!!doc.partial:doc.status==="partial");
-  let refreshFailed=false,attemptedAt=null;
+  let refreshFailed=false,refreshPartial=false,attemptedAt=null;
   try{
     const statusRes=await fetch("./refresh-status.json?cache="+Date.now(),{cache:"no-store"});
     if(statusRes.ok){const latest=await statusRes.json();
       const attemptMs=Date.parse(latest.attempted_at||"");
       const dataMs=Date.parse(doc.generated_at||"");
       if(latest.degraded && Number.isFinite(attemptMs) && (!Number.isFinite(dataMs)||attemptMs>=dataMs)){
-         refreshFailed=true;attemptedAt=latest.attempted_at;
+         // "degraded" also covers a partial scan. Only failed runs deserve
+         // the stronger failure label; partially updated data remains usable.
+         refreshFailed=latest.sample_refresh==="failed"||latest.index_refresh==="failed";
+         refreshPartial=latest.sample_refresh==="partial"||latest.index_refresh==="partial";
+         attemptedAt=latest.attempted_at;
       }
     }
   }catch(_err){/* A missing status endpoint never disguises the data timestamp. */}
@@ -180,12 +184,13 @@ async function init(){
   if(doc.sample_fallback)msg+="⚠ A consulta ampliada não respondeu; o índice foi parcialmente atualizado com a coleta auxiliar recente. ";
   if(doc.rate_limited)msg+="⚠ Limite temporário de consultas ao PNCP: esta coleta está incompleta e não reconfirma todo o catálogo. ";
   if(carried)msg+=fmt.format(carried)+" registros vieram de coletas anteriores sem nova confirmação. ";
+  if(refreshPartial&&!partial)msg="⚠ A última coleta do PNCP foi parcial; nem todos os registros foram reconfirmados. "+msg;
   if(refreshFailed)msg="⚠ A última tentativa de atualização falhou"+(attemptedAt?" em "+dt.format(new Date(attemptedAt)):"")+". Abaixo estão os dados da última coleta disponível, não uma confirmação atual. "+msg;
   if(doc.status==="awaiting_first_scan")msg="Primeira coleta ainda não concluída. Nenhum edital está confirmado.";
-  const statusTitle=refreshFailed?"Atualização falhou: consulte a origem":stale?"Base desatualizada: confirme os prazos":partial?"Cobertura parcial nesta coleta":"Amostra atualizada";
+  const statusTitle=refreshFailed?"Atualização falhou: consulte a origem":stale?"Base desatualizada: confirme os prazos":partial||refreshPartial?"Cobertura parcial nesta coleta":"Amostra atualizada";
   const statusHeader=node("strong","notice-heading",statusTitle);
   const statusBody=node("p","notice-description",msg);
-  $("notice").className="data-notice"+(stale||partial||refreshFailed?" warning":"");
+  $("notice").className="data-notice"+(stale||partial||refreshPartial||refreshFailed?" warning":"");
   $("notice").replaceChildren(statusHeader,statusBody);
   ready=true;$("previewAlert").disabled=false;render(true);
  }catch(err){
