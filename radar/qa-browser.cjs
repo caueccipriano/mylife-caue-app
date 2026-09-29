@@ -60,6 +60,15 @@ async function check(){
    await page.check("#observedOnly");
    await page.selectOption("#sort","value");
    assert.match(await page.locator(".result-card").first().innerText(),/MANUTENÇÃO ELÉTRICA/);
+   await page.click("#previewAlert");
+   assert.equal(await page.locator("#alertPreview").isVisible(),true);
+   assert.match(await page.locator("#previewSummary").innerText(),/2 oportunidades/);
+   assert.equal(await page.locator(".preview-item").count(),2);
+   assert.match(await page.locator(".preview-disclaimer").innerText(),/Nenhum e-mail é enviado/);
+   await page.screenshot({path:"radar/qa-artifacts/"+shape.name+"-alert-preview.png",fullPage:false});
+   await page.click("#closePreview");
+   assert.equal(await page.locator("#alertPreview").isVisible(),false);
+   success(shape.name+": honest Pro preview, no registration");
    const download=page.waitForEvent("download");
    await page.click("#csv");
    const file=await download;
