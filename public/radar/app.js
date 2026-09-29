@@ -12,7 +12,7 @@ function officialNotice(source){
  try{
   const u=new URL(source);
   if(u.origin!=="https://pncp.gov.br"||u.username||u.password||u.search||u.hash)return null;
-  if(!/^\\/app\\/editais\\/\\d{14}\\/\\d{4}\\/\\d+\\/?$/.test(u.pathname))return null;
+  if(!new RegExp("^/app/editais/[0-9]{14}/[0-9]{4}/[0-9]+/?$").test(u.pathname))return null;
   return u.href;
  }catch(_){return null;}
 }
