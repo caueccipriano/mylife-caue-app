@@ -44,8 +44,9 @@ def relevance(description):
     if not service_context:
         return 0
     if any(w in text for w in ("aquisicao", "fornecimento")) and not any(
-            w in text for w in ("prestacao de servic", "servicos de",
-                               "servico de", "manutenc", "instalac", "execuc")):
+            w in text for w in ("prestacao de servic", "prestacao dos servic",
+                               "servicos de", "servico de", "execucao de",
+                               "execucao dos")):
         return 0
     return sum(1 for term in INCLUDE if term in text)
 
