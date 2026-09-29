@@ -43,12 +43,13 @@ class IndexTests(unittest.TestCase):
               "deadline":(NOW+timedelta(days=9)).isoformat(),
               "uf":"SP","city":"Campinas","object":"Serviços prediais"}
         result=build(now=NOW,requester=lambda e,m,p:(_ for _ in ()).throw(TimeoutError()),
-                     modalities=(6,8),max_pages=1,verified_sample={item["id"]:item})
+                     modalities=(6,8),max_pages=1,verified_sample={item["id"]:item},sample_records_examined=400)
         self.assertTrue(result["sample_fallback"])
         self.assertTrue(result["partial"])
         self.assertEqual(result["pages_fetched_this_run"],0)
         self.assertEqual(result["records_examined_this_run"],0)
         self.assertEqual(result["verified_sample_items"],1)
+        self.assertEqual(result["verified_sample_records_examined"],400)
         self.assertEqual(result["observed_this_run"],1)
         self.assertFalse(result["exhaustive"])
 
