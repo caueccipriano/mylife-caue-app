@@ -98,6 +98,7 @@ async function check(){
    assert.ok(url.startsWith("https://pncp.gov.br/app/editais/"),"Cards must link only to PNCP");
    success(shape.name+": filters, stale badge, sort, export and official links");
    if(shape.width<=390){
+     assert.equal(await page.locator(".key-hint").isVisible(),false,"Search hint must not crowd small screens");
      const measurements=await page.evaluate(()=>({
        doc:document.documentElement.scrollWidth,width:innerWidth,
        controls:[...document.querySelectorAll(".search-field,.search-panel,.result-card,.filter-grid,.plans-grid")]
