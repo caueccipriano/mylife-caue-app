@@ -80,3 +80,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
  .deadline-alert{max-width:100%}
  .card-metadata{gap:9px;flex-direction:column}
 }
+
+/* Screenshot-led phone polish: preserve a usable search placeholder at 320px. */
+@media(max-width:760px){.key-hint{display:none}}
+@media(max-width:420px){.hero h1,.section h2{letter-spacing:-.04em}}
+
+/* Heading optical spacing: retain strong display type without fusing words. */
+.hero h1,.section h2{letter-spacing:-.048em;word-spacing:.025em}
+@media(max-width:420px){.hero h1,.section h2{letter-spacing:-.035em}}

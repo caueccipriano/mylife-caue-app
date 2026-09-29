@@ -2,7 +2,7 @@
  * No network to PNCP, no email, no account access, no external writes.
  * Real shipped index has a separate unmocked offline smoke.
  */
-const { chromium }=require("@playwright/test");
+const { chromium,webkit }=require("@playwright/test");
 const fs=require("fs");
 const assert=require("node:assert/strict");
 const base="http://127.0.0.1:4173/radar/";
@@ -98,6 +98,7 @@ async function check(){
    assert.ok(url.startsWith("https://pncp.gov.br/app/editais/"),"Cards must link only to PNCP");
    success(shape.name+": filters, stale badge, sort, export and official links");
    if(shape.width<=390){
+     assert.equal(await page.locator(".key-hint").isVisible(),false,"Search hint must not crowd small screens");
      const measurements=await page.evaluate(()=>({
        doc:document.documentElement.scrollWidth,width:innerWidth,
        controls:[...document.querySelectorAll(".search-field,.search-panel,.result-card,.filter-grid,.plans-grid")]
@@ -154,6 +155,34 @@ async function check(){
   assert.deepEqual(jsErrors,[]);
   success("actual shipped index: "+count+" initial cards render; timestamp warning visible");
   await livePage.close();
+  // WebKit approximates Safari layout and input behavior; real iOS device
+  // acceptance remains a separate manual release requirement.
+  const safari=await webkit.launch({headless:true});
+  try{
+   const page=await safari.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true,deviceScaleFactor:3});
+   const errors=[];page.on("pageerror",err=>errors.push(err.message));
+   await page.route("**/radar/search-index.json*",route=>route.fulfill({json:fixture}));
+   await page.route("**/radar/refresh-status.json*",route=>route.fulfill({json:{degraded:false,attempted_at:current}}));
+   await page.goto(base,{waitUntil:"networkidle"});
+   await page.waitForSelector(".result-card");
+   assert.equal(await page.locator(".result-card").count(),3);
+   await page.selectOption("#city","Jundiaí");
+   assert.equal(await page.locator(".result-card").count(),1);
+   await page.click("#previewAlert");
+   assert.equal(await page.locator(".preview-item").count(),1);
+   const bounds=await page.evaluate(()=>({
+     page:document.documentElement.scrollWidth,viewport:innerWidth,
+     elements:[...document.querySelectorAll(".search-field,.search-panel,.result-card,.filter-grid,.plans-grid")]
+       .map(el=>({left:el.getBoundingClientRect().left,right:el.getBoundingClientRect().right}))
+   }));
+   assert.ok(bounds.page<=bounds.viewport+2,"WebKit mobile must not overflow");
+   assert.ok(bounds.elements.every(e=>e.left>=-2&&e.right<=bounds.viewport+2),"WebKit controls/cards must not clip");
+   await page.screenshot({path:"radar/qa-artifacts/mobile-webkit-390.png",fullPage:true,animations:"disabled"});
+   assert.deepEqual(errors,[]);
+   success("WebKit mobile-390: search, premium preview and responsive layout");
+   await page.close();
+  }finally{await safari.close();}
+
  }finally{await browser.close();}
 }
 check().catch(err=>{console.error("QA FAILED:",err.stack||String(err));process.exitCode=1;});
