@@ -42,7 +42,7 @@ function card(record){
  if(!link)return null;
  const el=node("article","result-card"),left=node("div","card-main"),aside=node("aside","card-aside");
  const tags=node("div","result-top");
- const unreconfirmed=Boolean(lastIndexedAt && record.last_seen_at && record.last_seen_at!==lastIndexedAt);
+ const unreconfirmed=Boolean(lastIndexedAt && record.last_seen_at!==lastIndexedAt);
  tags.append(node("span","tag",record.sector_focus?"SERVIÇOS · SELECIONADO":"SETOR GERAL"),
              node("span","tag gray",record.city+"/SP"));
  if(lastIndexedAt && record.last_seen_at===lastIndexedAt)tags.append(node("span","tag observed-tag","VISTO NA COLETA"));
