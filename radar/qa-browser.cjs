@@ -39,7 +39,7 @@ async function check(){
    await page.waitForSelector(".result-card");
    assert.equal(await page.locator(".result-card").count(),3,"All sectors should be searched by default");
    assert.equal(await page.locator("#segment").inputValue(),"all");
-   assert.match(await page.locator("#resultsCount").innerText(),/2 oportunidades/);
+   assert.match(await page.locator("#resultsCount").innerText(),/3 oportunidades/);
    assert.equal(await page.locator(".plan-free").count(),1);
    assert.equal(await page.locator(".plan-premium .plan-pending").count(),1,"Premium must not claim live checkout");
    await page.screenshot({path:"radar/qa-artifacts/"+shape.name+"-home.png",fullPage:true});
