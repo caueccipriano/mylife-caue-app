@@ -1,0 +1,684 @@
+{
+  "mode": "HISTORICAL_PAPER_RESEARCH",
+  "version": 1,
+  "generated_at_utc": "2026-09-29T14:40:29.271409+00:00",
+  "timeframe": "1h",
+  "symbols": [
+    "BTCUSDT",
+    "ETHUSDT",
+    "SOLUSDT"
+  ],
+  "virtual_initial_usdt_per_asset_per_strategy": "100",
+  "fixed_hypotheses": {
+    "strategies": [
+      "sma20_50_cross",
+      "ema20_50_with_4h_confirm"
+    ],
+    "allocation_cap_pct": "25",
+    "fee_each_side_pct": "0.1",
+    "slippage_each_side_pct": "0.05",
+    "trailing_stop_atr_multiple": "2.5",
+    "minimum_stop_pct": "0.800",
+    "warmup_hours": 240
+  },
+  "status": "NOT_APPROVED_FOR_LIVE",
+  "results": {
+    "jan_feb_2026": {
+      "start_ms": 1768867200000,
+      "end_ms": 1771545599999,
+      "symbols": {
+        "BTCUSDT": {
+          "sma20_50_cross": {
+            "strategy": "sma20_50_cross",
+            "return_pct": "-2.434548388157876956889267470",
+            "ending_virtual_usdt": "97.56545161184212304311073253",
+            "benchmark_25pct_buy_hold_pct": "-6.977631890426919667535377350",
+            "benchmark_cash_pct": "0",
+            "max_observed_drawdown_pct": "2.769873021493261035993972230",
+            "trades_completed": 6,
+            "winning_trades": 1,
+            "win_rate_pct": "16.66666666666666666666666667",
+            "estimated_fees_usdt": "0.2948394888343288782260314464",
+            "gross_gain_usdt": "0.13690759011961453272120124",
+            "gross_loss_usdt": "2.57145597827749148961046871",
+            "profit_factor": "0.05324127314492199816591959973",
+            "exit_reasons": {
+              "ATR_STOP": {
+                "count": 6,
+                "realized_pnl_usdt": "-2.43454838815787695688926747"
+              }
+            },
+            "has_open_position": false,
+            "halted": false,
+            "evaluation_start_ms": 1768867200000,
+            "evaluation_end_ms": 1771545599999
+          },
+          "ema20_50_with_4h_confirm": {
+            "strategy": "ema20_50_with_4h_confirm",
+            "return_pct": "0E-15",
+            "ending_virtual_usdt": "100.000000000000000",
+            "benchmark_25pct_buy_hold_pct": "-6.977631890426919667535377350",
+            "benchmark_cash_pct": "0",
+            "max_observed_drawdown_pct": "0",
+            "trades_completed": 0,
+            "winning_trades": 0,
+            "win_rate_pct": null,
+            "estimated_fees_usdt": "0",
+            "gross_gain_usdt": "0",
+            "gross_loss_usdt": "0",
+            "profit_factor": null,
+            "exit_reasons": {},
+            "has_open_position": false,
+            "halted": false,
+            "evaluation_start_ms": 1768867200000,
+            "evaluation_end_ms": 1771545599999
+          }
+        },
+        "ETHUSDT": {
+          "sma20_50_cross": {
+            "strategy": "sma20_50_cross",
+            "return_pct": "-1.778496281638410754302837580",
+            "ending_virtual_usdt": "98.22150371836158924569716242",
+            "benchmark_25pct_buy_hold_pct": "-9.778502347040653415125166690",
+            "benchmark_cash_pct": "0",
+            "max_observed_drawdown_pct": "2.221103514290699613921750160",
+            "trades_completed": 7,
+            "winning_trades": 2,
+            "win_rate_pct": "28.57142857142857142857142857",
+            "estimated_fees_usdt": "0.3452576832722367272069151680",
+            "gross_gain_usdt": "0.11457253657369534550009508",
+            "gross_loss_usdt": "1.89306881821210609980293266",
+            "profit_factor": "0.06052211914931992443579747675",
+            "exit_reasons": {
+              "ATR_STOP": {
+                "count": 7,
+                "realized_pnl_usdt": "-1.77849628163841075430283758"
+              }
+            },
+            "has_open_position": false,
+            "halted": false,
+            "evaluation_start_ms": 1768867200000,
+            "evaluation_end_ms": 1771545599999
+          },
+          "ema20_50_with_4h_confirm": {
+            "strategy": "ema20_50_with_4h_confirm",
+            "return_pct": "0E-15",
+            "ending_virtual_usdt": "100.000000000000000",
+            "benchmark_25pct_buy_hold_pct": "-9.778502347040653415125166690",
+            "benchmark_cash_pct": "0",
+            "max_observed_drawdown_pct": "0",
+            "trades_completed": 0,
+            "winning_trades": 0,
+            "win_rate_pct": null,
+            "estimated_fees_usdt": "0",
+            "gross_gain_usdt": "0",
+            "gross_loss_usdt": "0",
+            "profit_factor": null,
+            "exit_reasons": {},
+            "has_open_position": false,
+            "halted": false,
+            "evaluation_start_ms": 1768867200000,
+            "evaluation_end_ms": 1771545599999
+          }
+        },
+        "SOLUSDT": {
+          "sma20_50_cross": {
+            "strategy": "sma20_50_cross",
+            "return_pct": "-1.455877784971387582688671050",
+            "ending_virtual_usdt": "98.54412221502861241731132895",
+            "benchmark_25pct_buy_hold_pct": "-9.599504704706999018476373320",
+            "benchmark_cash_pct": "0",
+            "max_observed_drawdown_pct": "2.827807980466116821459456790",
+            "trades_completed": 7,
+            "winning_trades": 1,
+            "win_rate_pct": "14.28571428571428571428571429",
+            "estimated_fees_usdt": "0.3450419669539934232364305466",
+            "gross_gain_usdt": "1.02911392347584371854500601",
+            "gross_loss_usdt": "2.48499170844723130123367706",
+            "profit_factor": "0.4141317333082348637661554772",
+            "exit_reasons": {
+              "ATR_STOP": {
+                "count": 6,
+                "realized_pnl_usdt": "-1.38195121166678997397350876"
+              },
+              "TREND_REVERSAL_NEXT_OPEN": {
+                "count": 1,
+                "realized_pnl_usdt": "-0.07392657330459760871516229"
+              }
+            },
+            "has_open_position": false,
+            "halted": false,
+            "evaluation_start_ms": 1768867200000,
+            "evaluation_end_ms": 1771545599999
+          },
+          "ema20_50_with_4h_confirm": {
+            "strategy": "ema20_50_with_4h_confirm",
+            "return_pct": "-0.3990265565350225270062405900",
+            "ending_virtual_usdt": "99.60097344346497747299375941",
+            "benchmark_25pct_buy_hold_pct": "-9.599504704706999018476373320",
+            "benchmark_cash_pct": "0",
+            "max_observed_drawdown_pct": "0.4195339342557929531503349600",
+            "trades_completed": 1,
+            "winning_trades": 0,
+            "win_rate_pct": "0",
+            "estimated_fees_usdt": "0.04965062406753250998297673615",
+            "gross_gain_usdt": "0",
+            "gross_loss_usdt": "0.39902655653502252700624059",
+            "profit_factor": "0E+26",
+            "exit_reasons": {
+              "TREND_REVERSAL_NEXT_OPEN": {
+                "count": 1,
+                "realized_pnl_usdt": "-0.39902655653502252700624059"
+              }
+            },
+            "has_open_position": false,
+            "halted": false,
+            "evaluation_start_ms": 1768867200000,
+            "evaluation_end_ms": 1771545599999
+          }
+        }
+      }
+    },
+    "apr_may_2026": {
+      "start_ms": 1776643200000,
+      "end_ms": 1779235199999,
+      "symbols": {
+        "BTCUSDT": {
+          "sma20_50_cross": {
+            "strategy": "sma20_50_cross",
+            "return_pct": "-0.545742649241732756777289600",
+            "ending_virtual_usdt": "99.45425735075826724322271040",
+            "benchmark_25pct_buy_hold_pct": "0.950249409209202379127989200",
+            "benchmark_cash_pct": "0",
+            "max_observed_drawdown_pct": "0.8673063468124929566112566500",
+            "trades_completed": 6,
+            "winning_trades": 3,
+            "win_rate_pct": "50",
+            "estimated_fees_usdt": "0.2992158331133046022853676830",
+            "gross_gain_usdt": "0.47384599652917528050065819",
+            "gross_loss_usdt": "1.01958864577090803727794779",
+            "profit_factor": "0.4647423237740174007528672528",
+            "exit_reasons": {
+              "ATR_STOP": {
+                "count": 6,
+                "realized_pnl_usdt": "-0.54574264924173275677728960"
+              }
+            },
+            "has_open_position": false,
+            "halted": false,
+            "evaluation_start_ms": 1776643200000,
+            "evaluation_end_ms": 1779235199999
+          },
+          "ema20_50_with_4h_confirm": {
+            "strategy": "ema20_50_with_4h_confirm",
+            "return_pct": "-0.5097735387958088170572109400",
+            "ending_virtual_usdt": "99.49022646120419118294278906",
+            "benchmark_25pct_buy_hold_pct": "0.950249409209202379127989200",
+            "benchmark_cash_pct": "0",
+            "max_observed_drawdown_pct": "0.5813647285594518482394070800",
+            "trades_completed": 4,
+            "winning_trades": 1,
+            "win_rate_pct": "25",
+            "estimated_fees_usdt": "0.1992565957247567393898454555",
+            "gross_gain_usdt": "0.02943335925380419675361522",
+            "gross_loss_usdt": "0.53920689804961301381082616",
+            "profit_factor": "0.05458639227403949368585437533",
+            "exit_reasons": {
+              "ATR_STOP": {
+                "count": 3,
+                "realized_pnl_usdt": "-0.28740549370361154131177801"
+              },
+              "TREND_REVERSAL_NEXT_OPEN": {
+                "count": 1,
+                "realized_pnl_usdt": "-0.22236804509219727574543293"
+              }
+            },
+            "has_open_position": false,
+            "halted": false,
+            "evaluation_start_ms": 1776643200000,
+            "evaluation_end_ms": 1779235199999
+          }
+        },
+        "ETHUSDT": {
+          "sma20_50_cross": {
+            "strategy": "sma20_50_cross",
+            "return_pct": "-0.8100047331755472769294474100",
+            "ending_virtual_usdt": "99.18999526682445272307055259",
+            "benchmark_25pct_buy_hold_pct": "-1.743420761993168344603633990",
+            "benchmark_cash_pct": "0",
+            "max_observed_drawdown_pct": "1.081175711527479091524245120",
+            "trades_completed": 6,
+            "winning_trades": 2,
+            "win_rate_pct": "33.33333333333333333333333333",
+            "estimated_fees_usdt": "0.2985537622721539304583155457",
+            "gross_gain_usdt": "0.34149794302603774796145479",
+            "gross_loss_usdt": "1.15150267620158502489090220",
+            "profit_factor": "0.2965672161114927694009058023",
+            "exit_reasons": {
+              "ATR_STOP": {
+                "count": 6,
+                "realized_pnl_usdt": "-0.81000473317554727692944741"
+              }
+            },
+            "has_open_position": false,
+            "halted": false,
+            "evaluation_start_ms": 1776643200000,
+            "evaluation_end_ms": 1779235199999
+          },
+          "ema20_50_with_4h_confirm": {
+            "strategy": "ema20_50_with_4h_confirm",
+            "return_pct": "0E-15",
+            "ending_virtual_usdt": "100.000000000000000",
+            "benchmark_25pct_buy_hold_pct": "-1.743420761993168344603633990",
+            "benchmark_cash_pct": "0",
+            "max_observed_drawdown_pct": "0",
+            "trades_completed": 0,
+            "winning_trades": 0,
+            "win_rate_pct": null,
+            "estimated_fees_usdt": "0",
+            "gross_gain_usdt": "0",
+            "gross_loss_usdt": "0",
+            "profit_factor": null,
+            "exit_reasons": {},
+            "has_open_position": false,
+            "halted": false,
+            "evaluation_start_ms": 1776643200000,
+            "evaluation_end_ms": 1779235199999
+          }
+        },
+        "SOLUSDT": {
+          "sma20_50_cross": {
+            "strategy": "sma20_50_cross",
+            "return_pct": "-1.431569644566686253544516320",
+            "ending_virtual_usdt": "98.56843035543331374645548368",
+            "benchmark_25pct_buy_hold_pct": "0.170143875588263134516364700",
+            "benchmark_cash_pct": "0",
+            "max_observed_drawdown_pct": "1.501180337889894864913020190",
+            "trades_completed": 7,
+            "winning_trades": 1,
+            "win_rate_pct": "14.28571428571428571428571429",
+            "estimated_fees_usdt": "0.3466569516933614640345178614",
+            "gross_gain_usdt": "0.19234967879389774296807076",
+            "gross_loss_usdt": "1.62391932336058399651258708",
+            "profit_factor": "0.1184478046580811331267825779",
+            "exit_reasons": {
+              "ATR_STOP": {
+                "count": 7,
+                "realized_pnl_usdt": "-1.43156964456668625354451632"
+              }
+            },
+            "has_open_position": false,
+            "halted": false,
+            "evaluation_start_ms": 1776643200000,
+            "evaluation_end_ms": 1779235199999
+          },
+          "ema20_50_with_4h_confirm": {
+            "strategy": "ema20_50_with_4h_confirm",
+            "return_pct": "-0.3173477152053869649318242800",
+            "ending_virtual_usdt": "99.68265228479461303506817572",
+            "benchmark_25pct_buy_hold_pct": "0.170143875588263134516364700",
+            "benchmark_cash_pct": "0",
+            "max_observed_drawdown_pct": "0.3199540076404918819186458200",
+            "trades_completed": 1,
+            "winning_trades": 0,
+            "win_rate_pct": "0",
+            "estimated_fees_usdt": "0.04973238466946407711218035608",
+            "gross_gain_usdt": "0",
+            "gross_loss_usdt": "0.31734771520538696493182428",
+            "profit_factor": "0E+26",
+            "exit_reasons": {
+              "TREND_REVERSAL_NEXT_OPEN": {
+                "count": 1,
+                "realized_pnl_usdt": "-0.31734771520538696493182428"
+              }
+            },
+            "has_open_position": false,
+            "halted": false,
+            "evaluation_start_ms": 1776643200000,
+            "evaluation_end_ms": 1779235199999
+          }
+        }
+      }
+    },
+    "jul_aug_2026": {
+      "start_ms": 1784505600000,
+      "end_ms": 1787183999999,
+      "symbols": {
+        "BTCUSDT": {
+          "sma20_50_cross": {
+            "strategy": "sma20_50_cross",
+            "return_pct": "-0.055198278654455247766990700",
+            "ending_virtual_usdt": "99.94480172134554475223300930",
+            "benchmark_25pct_buy_hold_pct": "1.703019975344719519114189400",
+            "benchmark_cash_pct": "0",
+            "max_observed_drawdown_pct": "0.8498455877422085371787650700",
+            "trades_completed": 9,
+            "winning_trades": 4,
+            "win_rate_pct": "44.44444444444444444444444444",
+            "estimated_fees_usdt": "0.4502887312911236401397889958",
+            "gross_gain_usdt": "0.80893648290406501930493861",
+            "gross_loss_usdt": "0.86413476155852026707192938",
+            "profit_factor": "0.9361230665516779438552199658",
+            "exit_reasons": {
+              "ATR_STOP": {
+                "count": 9,
+                "realized_pnl_usdt": "-0.05519827865445524776699077"
+              }
+            },
+            "has_open_position": false,
+            "halted": false,
+            "evaluation_start_ms": 1784505600000,
+            "evaluation_end_ms": 1787183999999
+          },
+          "ema20_50_with_4h_confirm": {
+            "strategy": "ema20_50_with_4h_confirm",
+            "return_pct": "0E-15",
+            "ending_virtual_usdt": "100.000000000000000",
+            "benchmark_25pct_buy_hold_pct": "1.703019975344719519114189400",
+            "benchmark_cash_pct": "0",
+            "max_observed_drawdown_pct": "0",
+            "trades_completed": 0,
+            "winning_trades": 0,
+            "win_rate_pct": null,
+            "estimated_fees_usdt": "0",
+            "gross_gain_usdt": "0",
+            "gross_loss_usdt": "0",
+            "profit_factor": null,
+            "exit_reasons": {},
+            "has_open_position": false,
+            "halted": false,
+            "evaluation_start_ms": 1784505600000,
+            "evaluation_end_ms": 1787183999999
+          }
+        },
+        "ETHUSDT": {
+          "sma20_50_cross": {
+            "strategy": "sma20_50_cross",
+            "return_pct": "-0.6079075331633299701072904500",
+            "ending_virtual_usdt": "99.39209246683667002989270955",
+            "benchmark_25pct_buy_hold_pct": "4.996495341292307313847242500",
+            "benchmark_cash_pct": "0",
+            "max_observed_drawdown_pct": "1.658402564988776452181791720",
+            "trades_completed": 9,
+            "winning_trades": 2,
+            "win_rate_pct": "22.22222222222222222222222222",
+            "estimated_fees_usdt": "0.4499537975852276104662484314",
+            "gross_gain_usdt": "1.06365623175694237541104466",
+            "gross_loss_usdt": "1.67156376492027234551833508",
+            "profit_factor": "0.6363240542054194383324087912",
+            "exit_reasons": {
+              "ATR_STOP": {
+                "count": 8,
+                "realized_pnl_usdt": "-0.43115761760288192810881636"
+              },
+              "TREND_REVERSAL_NEXT_OPEN": {
+                "count": 1,
+                "realized_pnl_usdt": "-0.17674991556044804199847406"
+              }
+            },
+            "has_open_position": false,
+            "halted": false,
+            "evaluation_start_ms": 1784505600000,
+            "evaluation_end_ms": 1787183999999
+          },
+          "ema20_50_with_4h_confirm": {
+            "strategy": "ema20_50_with_4h_confirm",
+            "return_pct": "-0.8418325375787327888309294100",
+            "ending_virtual_usdt": "99.15816746242126721116907059",
+            "benchmark_25pct_buy_hold_pct": "4.996495341292307313847242500",
+            "benchmark_cash_pct": "0",
+            "max_observed_drawdown_pct": "0.8418325375787327888309294100",
+            "trades_completed": 2,
+            "winning_trades": 0,
+            "win_rate_pct": "0",
+            "estimated_fees_usdt": "0.09899126132095860959055801082",
+            "gross_gain_usdt": "0",
+            "gross_loss_usdt": "0.84183253757873278883092941",
+            "profit_factor": "0E+26",
+            "exit_reasons": {
+              "ATR_STOP": {
+                "count": 2,
+                "realized_pnl_usdt": "-0.84183253757873278883092941"
+              }
+            },
+            "has_open_position": false,
+            "halted": false,
+            "evaluation_start_ms": 1784505600000,
+            "evaluation_end_ms": 1787183999999
+          }
+        },
+        "SOLUSDT": {
+          "sma20_50_cross": {
+            "strategy": "sma20_50_cross",
+            "return_pct": "3.375377662185597867033546600",
+            "ending_virtual_usdt": "103.3753776621855978670335466",
+            "benchmark_25pct_buy_hold_pct": "2.86494763223258755539747800",
+            "benchmark_cash_pct": "0",
+            "max_observed_drawdown_pct": "1.225751933884041190044986210",
+            "trades_completed": 7,
+            "winning_trades": 2,
+            "win_rate_pct": "28.57142857142857142857142857",
+            "estimated_fees_usdt": "0.3770741250211055831210375886",
+            "gross_gain_usdt": "1.10303682119729381232389374",
+            "gross_loss_usdt": "0.77164641173485322598944763",
+            "profit_factor": "1.429458887416313451222323089",
+            "exit_reasons": {
+              "ATR_STOP": {
+                "count": 5,
+                "realized_pnl_usdt": "0.52789684505683868023352440"
+              },
+              "TREND_REVERSAL_NEXT_OPEN": {
+                "count": 2,
+                "realized_pnl_usdt": "-0.19650643559439809389907829"
+              }
+            },
+            "has_open_position": true,
+            "halted": false,
+            "evaluation_start_ms": 1784505600000,
+            "evaluation_end_ms": 1787183999999
+          },
+          "ema20_50_with_4h_confirm": {
+            "strategy": "ema20_50_with_4h_confirm",
+            "return_pct": "-0.5185209884076483633246240100",
+            "ending_virtual_usdt": "99.48147901159235163667537599",
+            "benchmark_25pct_buy_hold_pct": "2.86494763223258755539747800",
+            "benchmark_cash_pct": "0",
+            "max_observed_drawdown_pct": "0.5803217286888143966074131800",
+            "trades_completed": 2,
+            "winning_trades": 0,
+            "win_rate_pct": "0",
+            "estimated_fees_usdt": "0.09949049261899873366302675029",
+            "gross_gain_usdt": "0",
+            "gross_loss_usdt": "0.51852098840764836332462401",
+            "profit_factor": "0E+26",
+            "exit_reasons": {
+              "ATR_STOP": {
+                "count": 2,
+                "realized_pnl_usdt": "-0.51852098840764836332462401"
+              }
+            },
+            "has_open_position": false,
+            "halted": false,
+            "evaluation_start_ms": 1784505600000,
+            "evaluation_end_ms": 1787183999999
+          }
+        }
+      }
+    },
+    "aug_sep_2026": {
+      "start_ms": 1787702400000,
+      "end_ms": 1790380799999,
+      "symbols": {
+        "BTCUSDT": {
+          "sma20_50_cross": {
+            "strategy": "sma20_50_cross",
+            "return_pct": "2.218035369290633500598321400",
+            "ending_virtual_usdt": "102.2180353692906335005983214",
+            "benchmark_25pct_buy_hold_pct": "1.691592132781942337336277100",
+            "benchmark_cash_pct": "0",
+            "max_observed_drawdown_pct": "1.246887649224333485902967650",
+            "trades_completed": 11,
+            "winning_trades": 4,
+            "win_rate_pct": "36.36363636363636363636363636",
+            "estimated_fees_usdt": "0.5546918125744790032068623894",
+            "gross_gain_usdt": "3.66905633035072796041949271",
+            "gross_loss_usdt": "1.45102096106009445982117130",
+            "profit_factor": "2.528603258542984558232924452",
+            "exit_reasons": {
+              "ATR_STOP": {
+                "count": 10,
+                "realized_pnl_usdt": "2.27843389338357252316018833"
+              },
+              "TREND_REVERSAL_NEXT_OPEN": {
+                "count": 1,
+                "realized_pnl_usdt": "-0.06039852409293902256186692"
+              }
+            },
+            "has_open_position": false,
+            "halted": false,
+            "evaluation_start_ms": 1787702400000,
+            "evaluation_end_ms": 1790380799999
+          },
+          "ema20_50_with_4h_confirm": {
+            "strategy": "ema20_50_with_4h_confirm",
+            "return_pct": "0.05993912016280749629428700",
+            "ending_virtual_usdt": "100.0599391201628074962942870",
+            "benchmark_25pct_buy_hold_pct": "1.691592132781942337336277100",
+            "benchmark_cash_pct": "0",
+            "max_observed_drawdown_pct": "0.3937220821775092836386855100",
+            "trades_completed": 1,
+            "winning_trades": 1,
+            "win_rate_pct": "100",
+            "estimated_fees_usdt": "0.05011004916933213963593021725",
+            "gross_gain_usdt": "0.05993912016280749629428703",
+            "gross_loss_usdt": "0",
+            "profit_factor": null,
+            "exit_reasons": {
+              "ATR_STOP": {
+                "count": 1,
+                "realized_pnl_usdt": "0.05993912016280749629428703"
+              }
+            },
+            "has_open_position": false,
+            "halted": false,
+            "evaluation_start_ms": 1787702400000,
+            "evaluation_end_ms": 1790380799999
+          }
+        },
+        "ETHUSDT": {
+          "sma20_50_cross": {
+            "strategy": "sma20_50_cross",
+            "return_pct": "-0.191380528967854441166902600",
+            "ending_virtual_usdt": "99.80861947103214555883309740",
+            "benchmark_25pct_buy_hold_pct": "2.467997517013298562271890500",
+            "benchmark_cash_pct": "0",
+            "max_observed_drawdown_pct": "2.605016655068938594760558140",
+            "trades_completed": 11,
+            "winning_trades": 3,
+            "win_rate_pct": "27.27272727272727272727272727",
+            "estimated_fees_usdt": "0.5471765957536606091603491699",
+            "gross_gain_usdt": "2.65518270924729517096947090",
+            "gross_loss_usdt": "2.84656323821514961213637343",
+            "profit_factor": "0.9327678632258829610386292636",
+            "exit_reasons": {
+              "ATR_STOP": {
+                "count": 11,
+                "realized_pnl_usdt": "-0.19138052896785444116690253"
+              }
+            },
+            "has_open_position": false,
+            "halted": false,
+            "evaluation_start_ms": 1787702400000,
+            "evaluation_end_ms": 1790380799999
+          },
+          "ema20_50_with_4h_confirm": {
+            "strategy": "ema20_50_with_4h_confirm",
+            "return_pct": "-1.649518451426335087071661330",
+            "ending_virtual_usdt": "98.35048154857366491292833867",
+            "benchmark_25pct_buy_hold_pct": "2.467997517013298562271890500",
+            "benchmark_cash_pct": "0",
+            "max_observed_drawdown_pct": "1.793200055412896644423171790",
+            "trades_completed": 7,
+            "winning_trades": 0,
+            "win_rate_pct": "0",
+            "estimated_fees_usdt": "0.3465001478271004309361158043",
+            "gross_gain_usdt": "0",
+            "gross_loss_usdt": "1.64951845142633508707166133",
+            "profit_factor": "0E+26",
+            "exit_reasons": {
+              "TREND_REVERSAL_NEXT_OPEN": {
+                "count": 1,
+                "realized_pnl_usdt": "-0.15916804761812002513636437"
+              },
+              "ATR_STOP": {
+                "count": 6,
+                "realized_pnl_usdt": "-1.49035040380821506193529696"
+              }
+            },
+            "has_open_position": false,
+            "halted": false,
+            "evaluation_start_ms": 1787702400000,
+            "evaluation_end_ms": 1790380799999
+          }
+        },
+        "SOLUSDT": {
+          "sma20_50_cross": {
+            "strategy": "sma20_50_cross",
+            "return_pct": "4.881824761770382337661632500",
+            "ending_virtual_usdt": "104.8818247617703823376616325",
+            "benchmark_25pct_buy_hold_pct": "6.524141597679421158985724500",
+            "benchmark_cash_pct": "0",
+            "max_observed_drawdown_pct": "1.711697270914771951705578780",
+            "trades_completed": 9,
+            "winning_trades": 6,
+            "win_rate_pct": "66.66666666666666666666666667",
+            "estimated_fees_usdt": "0.4841717104579450075879805987",
+            "gross_gain_usdt": "4.58299827521060877185210405",
+            "gross_loss_usdt": "0.90132520641789444544270692",
+            "profit_factor": "5.084733282257421941708200436",
+            "exit_reasons": {
+              "ATR_STOP": {
+                "count": 9,
+                "realized_pnl_usdt": "3.68167306879271432640939713"
+              }
+            },
+            "has_open_position": true,
+            "halted": false,
+            "evaluation_start_ms": 1787702400000,
+            "evaluation_end_ms": 1790380799999
+          },
+          "ema20_50_with_4h_confirm": {
+            "strategy": "ema20_50_with_4h_confirm",
+            "return_pct": "2.141198261494588698793652800",
+            "ending_virtual_usdt": "102.1411982614945886987936528",
+            "benchmark_25pct_buy_hold_pct": "6.524141597679421158985724500",
+            "benchmark_cash_pct": "0",
+            "max_observed_drawdown_pct": "1.444439882696185741200832140",
+            "trades_completed": 4,
+            "winning_trades": 2,
+            "win_rate_pct": "50",
+            "estimated_fees_usdt": "0.2284876912656961655577078852",
+            "gross_gain_usdt": "1.46030663105940661922897094",
+            "gross_loss_usdt": "0.38938471350915126500955551",
+            "profit_factor": "3.750292655043035471599946558",
+            "exit_reasons": {
+              "ATR_STOP": {
+                "count": 3,
+                "realized_pnl_usdt": "1.43466053523985765573950525"
+              },
+              "TREND_REVERSAL_NEXT_OPEN": {
+                "count": 1,
+                "realized_pnl_usdt": "-0.36373861768960230152008982"
+              }
+            },
+            "has_open_position": true,
+            "halted": false,
+            "evaluation_start_ms": 1787702400000,
+            "evaluation_end_ms": 1790380799999
+          }
+        }
+      }
+    }
+  },
+  "caveats": "Purely retrospective; no claims of out-of-sample or future profitability. Hypothetical fixed fees and slippage, no order-book depth, variable spreads, FX, taxes, exchange order filters or guaranteed stop fills. No authenticated endpoint, live trading, leverage, or user money. Drawdown observations are not guaranteed loss limits. Zero trades are not evidence of an edge."
+}

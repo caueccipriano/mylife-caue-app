@@ -1,0 +1,1312 @@
+{
+  "mode": "HISTORICAL_RESEARCH_ONLY",
+  "generated_at_utc": "2026-09-29T14:05:54.686860+00:00",
+  "strategy": "5m_volume_breakout_15m_trend",
+  "timeframe": "1m",
+  "symbols": [
+    "BTCUSDT",
+    "SOLUSDT"
+  ],
+  "sample_minutes": 20160,
+  "sample_start_ms": 1789480980000,
+  "sample_end_ms": 1790690579999,
+  "development_ratio_pct": 70,
+  "evaluation_ratio_pct": 30,
+  "assumptions": {
+    "initial_virtual_usdt_per_symbol": "100",
+    "max_allocation_pct": 25,
+    "fee_each_side_pct": "0.1",
+    "slippage_each_side_pct": "0.05",
+    "min_stop_pct": "0.5",
+    "atr_multiplier": "2",
+    "target_r_multiple": "1.8",
+    "max_hold_minutes": 180,
+    "max_drawdown_halt_pct": 10,
+    "execution_model": "next_1m_open_after_closed_signal; stop-first_when_ambiguous"
+  },
+  "results": {
+    "BTCUSDT": {
+      "development_70pct": {
+        "mode": "HISTORICAL_RESEARCH_ONLY",
+        "timeframe": "1m",
+        "strategy": "5m_volume_breakout_15m_trend",
+        "start_ms": 1789495380000,
+        "end_ms": 1790327699999,
+        "evaluated_minutes": 13872,
+        "initial_virtual_usdt": "100",
+        "final_virtual_usdt": "96.59199799706858473083469279",
+        "return_pct": "-3.408002002931415269165307210",
+        "comparator_25pct_buy_hold_pct": "2.406840051842811390869720100",
+        "max_drawdown_pct": "3.408002002931415269165307210",
+        "completed_round_trips": 33,
+        "win_rate_pct": "24.24242424242424242424242424",
+        "hypothetical_fees_usdt": "1.673328745499187796448630598",
+        "halted": false,
+        "open_position": true,
+        "open_unrealized_pnl_usdt": "-0.08841875662002392134727448",
+        "first_entry_signal_ms": 1789538519999,
+        "last_entry_signal_ms": 1790327399999,
+        "signal_count": 34,
+        "minutes_exposed": 3585,
+        "entry_mode": "legacy",
+        "sizing": "original",
+        "assumed_fee_pct_each_side": "0.100",
+        "assumed_slippage_pct_each_side": "0.0500",
+        "exit_diagnostics": {
+          "STOP": {
+            "count": 18,
+            "wins": 0,
+            "realized_net_pnl_usdt": "-3.37738494486705572883121680",
+            "avg_holding_minutes": "67.61111111111111111111111111"
+          },
+          "TARGET": {
+            "count": 3,
+            "wins": 3,
+            "realized_net_pnl_usdt": "0.48652533750000000000000000",
+            "avg_holding_minutes": "63.66666666666666666666666667"
+          },
+          "TIME_LIMIT": {
+            "count": 12,
+            "wins": 5,
+            "realized_net_pnl_usdt": "-0.42872363894433561898681593",
+            "avg_holding_minutes": "181"
+          }
+        },
+        "realized_net_pnl_usdt": "-3.31958324631139134781803273",
+        "gross_profit_usdt": "0.90280457405629856577925319",
+        "gross_loss_abs_usdt": "4.22238782036768991359728592",
+        "profit_factor": "0.2138137500542717571821449409",
+        "profit_factor_note": null
+      },
+      "evaluation_30pct": {
+        "mode": "HISTORICAL_RESEARCH_ONLY",
+        "timeframe": "1m",
+        "strategy": "5m_volume_breakout_15m_trend",
+        "start_ms": 1790327700000,
+        "end_ms": 1790690579999,
+        "evaluated_minutes": 6048,
+        "initial_virtual_usdt": "100",
+        "final_virtual_usdt": "98.43072649367981413311273101",
+        "return_pct": "-1.569273506320185866887268990",
+        "comparator_25pct_buy_hold_pct": "-0.2487434282699897020494848600",
+        "max_drawdown_pct": "1.649591386545869156320541690",
+        "completed_round_trips": 13,
+        "win_rate_pct": "7.692307692307692307692307692",
+        "hypothetical_fees_usdt": "0.6742261154888822200870122597",
+        "halted": false,
+        "open_position": true,
+        "open_unrealized_pnl_usdt": "-0.14616287971352373381251640",
+        "first_entry_signal_ms": 1790328599999,
+        "last_entry_signal_ms": 1790681699999,
+        "signal_count": 14,
+        "minutes_exposed": 1674,
+        "entry_mode": "legacy",
+        "sizing": "original",
+        "assumed_fee_pct_each_side": "0.100",
+        "assumed_slippage_pct_each_side": "0.0500",
+        "exit_diagnostics": {
+          "STOP": {
+            "count": 6,
+            "wins": 0,
+            "realized_net_pnl_usdt": "-1.13185909951781468111667133",
+            "avg_holding_minutes": "50.33333333333333333333333333"
+          },
+          "TARGET": {
+            "count": 1,
+            "wins": 1,
+            "realized_net_pnl_usdt": "0.16217511250000000000000000",
+            "avg_holding_minutes": "138"
+          },
+          "TIME_LIMIT": {
+            "count": 6,
+            "wins": 0,
+            "realized_net_pnl_usdt": "-0.45342663958884745195808126",
+            "avg_holding_minutes": "181"
+          }
+        },
+        "realized_net_pnl_usdt": "-1.42311062660666213307475259",
+        "gross_profit_usdt": "0.16217511250000000000000000",
+        "gross_loss_abs_usdt": "1.58528573910666213307475259",
+        "profit_factor": "0.1023002405808486479582128609",
+        "profit_factor_note": null
+      },
+      "diagnostic_experiments": {
+        "development_70pct": {
+          "fixed_alternatives": {
+            "fresh_signal_only": {
+              "mode": "HISTORICAL_RESEARCH_ONLY",
+              "timeframe": "1m",
+              "strategy": "5m_volume_breakout_15m_trend",
+              "start_ms": 1789495380000,
+              "end_ms": 1790327699999,
+              "evaluated_minutes": 13872,
+              "initial_virtual_usdt": "100",
+              "final_virtual_usdt": "97.61834235189682397026378542",
+              "return_pct": "-2.381657648103176029736214580",
+              "comparator_25pct_buy_hold_pct": "2.406840051842811390869720100",
+              "max_drawdown_pct": "2.381657648103176029736214580",
+              "completed_round_trips": 28,
+              "win_rate_pct": "28.57142857142857142857142857",
+              "hypothetical_fees_usdt": "1.424105866975492340231842903",
+              "halted": false,
+              "open_position": true,
+              "open_unrealized_pnl_usdt": "-0.08841875662002392134727448",
+              "first_entry_signal_ms": 1789542299999,
+              "last_entry_signal_ms": 1790327399999,
+              "signal_count": 29,
+              "minutes_exposed": 3119,
+              "entry_mode": "fresh_5m",
+              "sizing": "original",
+              "assumed_fee_pct_each_side": "0.100",
+              "assumed_slippage_pct_each_side": "0.0500",
+              "exit_diagnostics": {
+                "STOP": {
+                  "count": 13,
+                  "wins": 0,
+                  "realized_net_pnl_usdt": "-2.43490081250000000000000000",
+                  "avg_holding_minutes": "59.92307692307692307692307692"
+                },
+                "TARGET": {
+                  "count": 4,
+                  "wins": 4,
+                  "realized_net_pnl_usdt": "0.64870045000000000000000000",
+                  "avg_holding_minutes": "86"
+                },
+                "TIME_LIMIT": {
+                  "count": 11,
+                  "wins": 4,
+                  "realized_net_pnl_usdt": "-0.50703852898315210838894010",
+                  "avg_holding_minutes": "181"
+                }
+              },
+              "realized_net_pnl_usdt": "-2.29323889148315210838894010",
+              "gross_profit_usdt": "0.98666479651748207637712902",
+              "gross_loss_abs_usdt": "3.27990368800063418476606912",
+              "profit_factor": "0.3008212711023029588756895201",
+              "profit_factor_note": null
+            },
+            "equity_sizing_only": {
+              "mode": "HISTORICAL_RESEARCH_ONLY",
+              "timeframe": "1m",
+              "strategy": "5m_volume_breakout_15m_trend",
+              "start_ms": 1789495380000,
+              "end_ms": 1790327699999,
+              "evaluated_minutes": 13872,
+              "initial_virtual_usdt": "100",
+              "final_virtual_usdt": "96.64515742739269628883825512",
+              "return_pct": "-3.354842572607303711161744880",
+              "comparator_25pct_buy_hold_pct": "2.406840051842811390869720100",
+              "max_drawdown_pct": "3.354842572607303711161744880",
+              "completed_round_trips": 33,
+              "win_rate_pct": "24.24242424242424242424242424",
+              "hypothetical_fees_usdt": "1.646595362846428526193314949",
+              "halted": false,
+              "open_position": true,
+              "open_unrealized_pnl_usdt": "-0.08552806938627777830295717",
+              "first_entry_signal_ms": 1789538519999,
+              "last_entry_signal_ms": 1790327399999,
+              "signal_count": 34,
+              "minutes_exposed": 3585,
+              "entry_mode": "legacy",
+              "sizing": "equity",
+              "assumed_fee_pct_each_side": "0.100",
+              "assumed_slippage_pct_each_side": "0.0500",
+              "exit_diagnostics": {
+                "STOP": {
+                  "count": 18,
+                  "wins": 0,
+                  "realized_net_pnl_usdt": "-3.32599602768169502018409283",
+                  "avg_holding_minutes": "67.61111111111111111111111111"
+                },
+                "TARGET": {
+                  "count": 3,
+                  "wins": 3,
+                  "realized_net_pnl_usdt": "0.47698127158115173394578617",
+                  "avg_holding_minutes": "63.66666666666666666666666667"
+                },
+                "TIME_LIMIT": {
+                  "count": 12,
+                  "wins": 5,
+                  "realized_net_pnl_usdt": "-0.42029974712048264662048105",
+                  "avg_holding_minutes": "181"
+                }
+              },
+              "realized_net_pnl_usdt": "-3.26931450322102593285878771",
+              "gross_profit_usdt": "0.88698209377810337550068671",
+              "gross_loss_abs_usdt": "4.15629659699912930835947442",
+              "profit_factor": "0.2134068330009243531967821336",
+              "profit_factor_note": null
+            },
+            "fresh_signal_and_equity": {
+              "mode": "HISTORICAL_RESEARCH_ONLY",
+              "timeframe": "1m",
+              "strategy": "5m_volume_breakout_15m_trend",
+              "start_ms": 1789495380000,
+              "end_ms": 1790327699999,
+              "evaluated_minutes": 13872,
+              "initial_virtual_usdt": "100",
+              "final_virtual_usdt": "97.64293759690580425256277478",
+              "return_pct": "-2.357062403094195747437225220",
+              "comparator_25pct_buy_hold_pct": "2.406840051842811390869720100",
+              "max_drawdown_pct": "2.357062403094195747437225220",
+              "completed_round_trips": 28,
+              "win_rate_pct": "28.57142857142857142857142857",
+              "hypothetical_fees_usdt": "1.406884847954534653326798998",
+              "halted": false,
+              "open_position": true,
+              "open_unrealized_pnl_usdt": "-0.08641107494850143916744664",
+              "first_entry_signal_ms": 1789542299999,
+              "last_entry_signal_ms": 1790327399999,
+              "signal_count": 29,
+              "minutes_exposed": 3119,
+              "entry_mode": "fresh_5m",
+              "sizing": "equity",
+              "assumed_fee_pct_each_side": "0.100",
+              "assumed_slippage_pct_each_side": "0.0500",
+              "exit_diagnostics": {
+                "STOP": {
+                  "count": 13,
+                  "wins": 0,
+                  "realized_net_pnl_usdt": "-2.40949245997054274052264165",
+                  "avg_holding_minutes": "59.92307692307692307692307692"
+                },
+                "TARGET": {
+                  "count": 4,
+                  "wins": 4,
+                  "realized_net_pnl_usdt": "0.63914801188706356161208582",
+                  "avg_holding_minutes": "86"
+                },
+                "TIME_LIMIT": {
+                  "count": 11,
+                  "wins": 4,
+                  "realized_net_pnl_usdt": "-0.50030688006221512935922275",
+                  "avg_holding_minutes": "181"
+                }
+              },
+              "realized_net_pnl_usdt": "-2.27065132814569430826977858",
+              "gross_profit_usdt": "0.97277182788623271816236190",
+              "gross_loss_abs_usdt": "3.24342315603192702643214048",
+              "profit_factor": "0.2999213426953338066155697491",
+              "profit_factor_note": null
+            }
+          },
+          "candidate_cost_sensitivity": {
+            "half_costs": {
+              "mode": "HISTORICAL_RESEARCH_ONLY",
+              "timeframe": "1m",
+              "strategy": "5m_volume_breakout_15m_trend",
+              "start_ms": 1789495380000,
+              "end_ms": 1790327699999,
+              "evaluated_minutes": 13872,
+              "initial_virtual_usdt": "100",
+              "final_virtual_usdt": "98.62320878294157356052450648",
+              "return_pct": "-1.376791217058426439475493520",
+              "comparator_25pct_buy_hold_pct": "2.446795919639475129581982600",
+              "max_drawdown_pct": "1.395425921441549373129698690",
+              "completed_round_trips": 28,
+              "win_rate_pct": "28.57142857142857142857142857",
+              "hypothetical_fees_usdt": "0.7068493172544234396284462182",
+              "halted": false,
+              "open_position": true,
+              "open_unrealized_pnl_usdt": "-0.05028434092223137922140105",
+              "first_entry_signal_ms": 1789542299999,
+              "last_entry_signal_ms": 1790327399999,
+              "signal_count": 29,
+              "minutes_exposed": 3155,
+              "entry_mode": "fresh_5m",
+              "sizing": "equity",
+              "assumed_fee_pct_each_side": "0.0500",
+              "assumed_slippage_pct_each_side": "0.02500",
+              "exit_diagnostics": {
+                "STOP": {
+                  "count": 12,
+                  "wins": 0,
+                  "realized_net_pnl_usdt": "-1.86259920319948354149029669",
+                  "avg_holding_minutes": "52.83333333333333333333333333"
+                },
+                "TARGET": {
+                  "count": 4,
+                  "wins": 4,
+                  "realized_net_pnl_usdt": "0.76724343382189814704264798",
+                  "avg_holding_minutes": "86"
+                },
+                "TIME_LIMIT": {
+                  "count": 12,
+                  "wins": 4,
+                  "realized_net_pnl_usdt": "-0.23115110675860966580644376",
+                  "avg_holding_minutes": "181"
+                }
+              },
+              "realized_net_pnl_usdt": "-1.32650687613619506025409247",
+              "gross_profit_usdt": "1.25161310462512474922996101",
+              "gross_loss_abs_usdt": "2.57811998076131980948405348",
+              "profit_factor": "0.4854751190654528514510027830",
+              "profit_factor_note": null
+            },
+            "double_costs": {
+              "mode": "HISTORICAL_RESEARCH_ONLY",
+              "timeframe": "1m",
+              "strategy": "5m_volume_breakout_15m_trend",
+              "start_ms": 1789495380000,
+              "end_ms": 1790327699999,
+              "evaluated_minutes": 13872,
+              "initial_virtual_usdt": "100",
+              "final_virtual_usdt": "95.65587438768570473897982467",
+              "return_pct": "-4.344125612314295261020175330",
+              "comparator_25pct_buy_hold_pct": "2.32699005339332536495223100",
+              "max_drawdown_pct": "4.344125612314295261020175330",
+              "completed_round_trips": 28,
+              "win_rate_pct": "25.00",
+              "hypothetical_fees_usdt": "2.785875146963619031277576025",
+              "halted": false,
+              "open_position": true,
+              "open_unrealized_pnl_usdt": "-0.15644185361755922127887702",
+              "first_entry_signal_ms": 1789542299999,
+              "last_entry_signal_ms": 1790327399999,
+              "signal_count": 29,
+              "minutes_exposed": 3026,
+              "entry_mode": "fresh_5m",
+              "sizing": "equity",
+              "assumed_fee_pct_each_side": "0.200",
+              "assumed_slippage_pct_each_side": "0.1000",
+              "exit_diagnostics": {
+                "STOP": {
+                  "count": 15,
+                  "wins": 0,
+                  "realized_net_pnl_usdt": "-3.67055823051492511241506503",
+                  "avg_holding_minutes": "67.93333333333333333333333333"
+                },
+                "TARGET": {
+                  "count": 3,
+                  "wins": 3,
+                  "realized_net_pnl_usdt": "0.29012817822367018240108361",
+                  "avg_holding_minutes": "64"
+                },
+                "TIME_LIMIT": {
+                  "count": 10,
+                  "wins": 4,
+                  "realized_net_pnl_usdt": "-0.80725370640548110972731689",
+                  "avg_holding_minutes": "181"
+                }
+              },
+              "realized_net_pnl_usdt": "-4.18768375869673603974129831",
+              "gross_profit_usdt": "0.45092923681983415026493010",
+              "gross_loss_abs_usdt": "4.63861299551657019000622841",
+              "profit_factor": "0.09721208414146161928067331854",
+              "profit_factor_note": null
+            }
+          }
+        },
+        "evaluation_30pct": {
+          "fixed_alternatives": {
+            "fresh_signal_only": {
+              "mode": "HISTORICAL_RESEARCH_ONLY",
+              "timeframe": "1m",
+              "strategy": "5m_volume_breakout_15m_trend",
+              "start_ms": 1790327700000,
+              "end_ms": 1790690579999,
+              "evaluated_minutes": 6048,
+              "initial_virtual_usdt": "100",
+              "final_virtual_usdt": "98.62773076382320473462368299",
+              "return_pct": "-1.372269236176795265376317010",
+              "comparator_25pct_buy_hold_pct": "-0.2487434282699897020494848600",
+              "max_drawdown_pct": "1.463333611372996253841583050",
+              "completed_round_trips": 11,
+              "win_rate_pct": "9.090909090909090909090909091",
+              "hypothetical_fees_usdt": "0.5743232168603971255940302296",
+              "halted": false,
+              "open_position": true,
+              "open_unrealized_pnl_usdt": "-0.14616287971352373381251640",
+              "first_entry_signal_ms": 1790328599999,
+              "last_entry_signal_ms": 1790681699999,
+              "signal_count": 12,
+              "minutes_exposed": 1481,
+              "entry_mode": "fresh_5m",
+              "sizing": "original",
+              "assumed_fee_pct_each_side": "0.100",
+              "assumed_slippage_pct_each_side": "0.0500",
+              "exit_diagnostics": {
+                "STOP": {
+                  "count": 5,
+                  "wins": 0,
+                  "realized_net_pnl_usdt": "-0.94455903701781468111667133",
+                  "avg_holding_minutes": "58.4"
+                },
+                "TARGET": {
+                  "count": 1,
+                  "wins": 1,
+                  "realized_net_pnl_usdt": "0.16217511250000000000000000",
+                  "avg_holding_minutes": "136"
+                },
+                "TIME_LIMIT": {
+                  "count": 5,
+                  "wins": 0,
+                  "realized_net_pnl_usdt": "-0.44372243194545685044712928",
+                  "avg_holding_minutes": "181"
+                }
+              },
+              "realized_net_pnl_usdt": "-1.22610635646327153156380061",
+              "gross_profit_usdt": "0.16217511250000000000000000",
+              "gross_loss_abs_usdt": "1.38828146896327153156380061",
+              "profit_factor": "0.1168171700952744732953360654",
+              "profit_factor_note": null
+            },
+            "equity_sizing_only": {
+              "mode": "HISTORICAL_RESEARCH_ONLY",
+              "timeframe": "1m",
+              "strategy": "5m_volume_breakout_15m_trend",
+              "start_ms": 1790327700000,
+              "end_ms": 1790690579999,
+              "evaluated_minutes": 6048,
+              "initial_virtual_usdt": "100",
+              "final_virtual_usdt": "98.44147913059517348984668699",
+              "return_pct": "-1.558520869404826510153313010",
+              "comparator_25pct_buy_hold_pct": "-0.2487434282699897020494848600",
+              "max_drawdown_pct": "1.637341199146581956341241350",
+              "completed_round_trips": 13,
+              "win_rate_pct": "7.692307692307692307692307692",
+              "hypothetical_fees_usdt": "0.6687638619123334909069982577",
+              "halted": false,
+              "open_position": true,
+              "open_unrealized_pnl_usdt": "-0.14409551488395781487011251",
+              "first_entry_signal_ms": 1790328599999,
+              "last_entry_signal_ms": 1790681699999,
+              "signal_count": 14,
+              "minutes_exposed": 1674,
+              "entry_mode": "legacy",
+              "sizing": "equity",
+              "assumed_fee_pct_each_side": "0.100",
+              "assumed_slippage_pct_each_side": "0.0500",
+              "exit_diagnostics": {
+                "STOP": {
+                  "count": 6,
+                  "wins": 0,
+                  "realized_net_pnl_usdt": "-1.12397447449386161787851736",
+                  "avg_holding_minutes": "50.33333333333333333333333333"
+                },
+                "TARGET": {
+                  "count": 1,
+                  "wins": 1,
+                  "realized_net_pnl_usdt": "0.15962239878527204378700455",
+                  "avg_holding_minutes": "138"
+                },
+                "TIME_LIMIT": {
+                  "count": 6,
+                  "wins": 0,
+                  "realized_net_pnl_usdt": "-0.45007327881227912119168769",
+                  "avg_holding_minutes": "181"
+                }
+              },
+              "realized_net_pnl_usdt": "-1.41442535452086869528320050",
+              "gross_profit_usdt": "0.15962239878527204378700455",
+              "gross_loss_abs_usdt": "1.57404775330614073907020505",
+              "profit_factor": "0.1014088666941648106332775492",
+              "profit_factor_note": null
+            },
+            "fresh_signal_and_equity": {
+              "mode": "HISTORICAL_RESEARCH_ONLY",
+              "timeframe": "1m",
+              "strategy": "5m_volume_breakout_15m_trend",
+              "start_ms": 1790327700000,
+              "end_ms": 1790690579999,
+              "evaluated_minutes": 6048,
+              "initial_virtual_usdt": "100",
+              "final_virtual_usdt": "98.63577782978949212405714035",
+              "return_pct": "-1.364222170210507875942859650",
+              "comparator_25pct_buy_hold_pct": "-0.2487434282699897020494848600",
+              "max_drawdown_pct": "1.453796288456206974181421410",
+              "completed_round_trips": 11,
+              "win_rate_pct": "9.090909090909090909090909091",
+              "hypothetical_fees_usdt": "0.5700782144490057225055293752",
+              "halted": false,
+              "open_position": true,
+              "open_unrealized_pnl_usdt": "-0.14437992315726856262160946",
+              "first_entry_signal_ms": 1790328599999,
+              "last_entry_signal_ms": 1790681699999,
+              "signal_count": 12,
+              "minutes_exposed": 1481,
+              "entry_mode": "fresh_5m",
+              "sizing": "equity",
+              "assumed_fee_pct_each_side": "0.100",
+              "assumed_slippage_pct_each_side": "0.0500",
+              "exit_diagnostics": {
+                "STOP": {
+                  "count": 5,
+                  "wins": 0,
+                  "realized_net_pnl_usdt": "-0.93931339207819315921833051",
+                  "avg_holding_minutes": "58.4"
+                },
+                "TARGET": {
+                  "count": 1,
+                  "wins": 1,
+                  "realized_net_pnl_usdt": "0.15993745321883160618021870",
+                  "avg_holding_minutes": "136"
+                },
+                "TIME_LIMIT": {
+                  "count": 5,
+                  "wins": 0,
+                  "realized_net_pnl_usdt": "-0.44046630819387776028313838",
+                  "avg_holding_minutes": "181"
+                }
+              },
+              "realized_net_pnl_usdt": "-1.21984224705323931332125019",
+              "gross_profit_usdt": "0.15993745321883160618021870",
+              "gross_loss_abs_usdt": "1.37977970027207091950146889",
+              "profit_factor": "0.1159152096434629734792562863",
+              "profit_factor_note": null
+            }
+          },
+          "candidate_cost_sensitivity": {
+            "half_costs": {
+              "mode": "HISTORICAL_RESEARCH_ONLY",
+              "timeframe": "1m",
+              "strategy": "5m_volume_breakout_15m_trend",
+              "start_ms": 1790327700000,
+              "end_ms": 1790690579999,
+              "evaluated_minutes": 6048,
+              "initial_virtual_usdt": "100",
+              "final_virtual_usdt": "99.04318296936428100458876635",
+              "return_pct": "-0.9568170306357189954112336500",
+              "comparator_25pct_buy_hold_pct": "-0.2114454699979946612208654300",
+              "max_drawdown_pct": "1.077737510569660504735878730",
+              "completed_round_trips": 11,
+              "win_rate_pct": "9.090909090909090909090909091",
+              "hypothetical_fees_usdt": "0.2855990759942542634599348483",
+              "halted": false,
+              "open_position": true,
+              "open_unrealized_pnl_usdt": "-0.10783888329803777408425050",
+              "first_entry_signal_ms": 1790328599999,
+              "last_entry_signal_ms": 1790681699999,
+              "signal_count": 12,
+              "minutes_exposed": 1525,
+              "entry_mode": "fresh_5m",
+              "sizing": "equity",
+              "assumed_fee_pct_each_side": "0.0500",
+              "assumed_slippage_pct_each_side": "0.02500",
+              "exit_diagnostics": {
+                "STOP": {
+                  "count": 5,
+                  "wins": 0,
+                  "realized_net_pnl_usdt": "-0.78556234199245037906089182",
+                  "avg_holding_minutes": "67.2"
+                },
+                "TARGET": {
+                  "count": 1,
+                  "wins": 1,
+                  "realized_net_pnl_usdt": "0.19157006408069786774387237",
+                  "avg_holding_minutes": "136"
+                },
+                "TIME_LIMIT": {
+                  "count": 5,
+                  "wins": 0,
+                  "realized_net_pnl_usdt": "-0.25498586942592871000996370",
+                  "avg_holding_minutes": "181"
+                }
+              },
+              "realized_net_pnl_usdt": "-0.84897814733768122132698315",
+              "gross_profit_usdt": "0.19157006408069786774387237",
+              "gross_loss_abs_usdt": "1.04054821141837908907085552",
+              "profit_factor": "0.1841049381263817399779379945",
+              "profit_factor_note": null
+            },
+            "double_costs": {
+              "mode": "HISTORICAL_RESEARCH_ONLY",
+              "timeframe": "1m",
+              "strategy": "5m_volume_breakout_15m_trend",
+              "start_ms": 1790327700000,
+              "end_ms": 1790690579999,
+              "evaluated_minutes": 6048,
+              "initial_virtual_usdt": "100",
+              "final_virtual_usdt": "97.82600853953554136059391962",
+              "return_pct": "-2.173991460464458639406080380",
+              "comparator_25pct_buy_hold_pct": "-0.3232835842338316485982337800",
+              "max_drawdown_pct": "2.201599653271748555692474590",
+              "completed_round_trips": 11,
+              "win_rate_pct": "9.090909090909090909090909091",
+              "hypothetical_fees_usdt": "1.135694490248216007759352094",
+              "halted": false,
+              "open_position": true,
+              "open_unrealized_pnl_usdt": "-0.21658407325116852864532183",
+              "first_entry_signal_ms": 1790328599999,
+              "last_entry_signal_ms": 1790681699999,
+              "signal_count": 12,
+              "minutes_exposed": 1438,
+              "entry_mode": "fresh_5m",
+              "sizing": "equity",
+              "assumed_fee_pct_each_side": "0.200",
+              "assumed_slippage_pct_each_side": "0.1000",
+              "exit_diagnostics": {
+                "STOP": {
+                  "count": 5,
+                  "wins": 0,
+                  "realized_net_pnl_usdt": "-1.24546510051805422662276993",
+                  "avg_holding_minutes": "49.6"
+                },
+                "TARGET": {
+                  "count": 1,
+                  "wins": 1,
+                  "realized_net_pnl_usdt": "0.09733354195530452781923525",
+                  "avg_holding_minutes": "137"
+                },
+                "TIME_LIMIT": {
+                  "count": 5,
+                  "wins": 0,
+                  "realized_net_pnl_usdt": "-0.80927582865054041195722387",
+                  "avg_holding_minutes": "181"
+                }
+              },
+              "realized_net_pnl_usdt": "-1.95740738721329011076075855",
+              "gross_profit_usdt": "0.09733354195530452781923525",
+              "gross_loss_abs_usdt": "2.05474092916859463857999380",
+              "profit_factor": "0.04737022588764433071078187885",
+              "profit_factor_note": null
+            }
+          }
+        }
+      }
+    },
+    "SOLUSDT": {
+      "development_70pct": {
+        "mode": "HISTORICAL_RESEARCH_ONLY",
+        "timeframe": "1m",
+        "strategy": "5m_volume_breakout_15m_trend",
+        "start_ms": 1789495380000,
+        "end_ms": 1790327699999,
+        "evaluated_minutes": 13872,
+        "initial_virtual_usdt": "100",
+        "final_virtual_usdt": "97.07785693940210581797569550",
+        "return_pct": "-2.922143060597894182024304500",
+        "comparator_25pct_buy_hold_pct": "4.206522624867643952477844200",
+        "max_drawdown_pct": "3.032975279035062066559740530",
+        "completed_round_trips": 36,
+        "win_rate_pct": "30.55555555555555555555555556",
+        "hypothetical_fees_usdt": "1.823857896246480843521278255",
+        "halted": false,
+        "open_position": true,
+        "open_unrealized_pnl_usdt": "0.01881858916774314021871689",
+        "first_entry_signal_ms": 1789532699999,
+        "last_entry_signal_ms": 1790324399999,
+        "signal_count": 37,
+        "minutes_exposed": 2585,
+        "entry_mode": "legacy",
+        "sizing": "original",
+        "assumed_fee_pct_each_side": "0.100",
+        "assumed_slippage_pct_each_side": "0.0500",
+        "exit_diagnostics": {
+          "STOP": {
+            "count": 23,
+            "wins": 0,
+            "realized_net_pnl_usdt": "-4.85361627643394479937417764",
+            "avg_holding_minutes": "60.13043478260869565217391304"
+          },
+          "TARGET": {
+            "count": 9,
+            "wins": 9,
+            "realized_net_pnl_usdt": "1.60442186934181556664015655",
+            "avg_holding_minutes": "47"
+          },
+          "TIME_LIMIT": {
+            "count": 4,
+            "wins": 2,
+            "realized_net_pnl_usdt": "0.30823275732649191049099970",
+            "avg_holding_minutes": "181"
+          }
+        },
+        "realized_net_pnl_usdt": "-2.94096164976563732224302139",
+        "gross_profit_usdt": "2.09969405699520908578439052",
+        "gross_loss_abs_usdt": "5.04065570676084640802741191",
+        "profit_factor": "0.4165517700760570787066888248",
+        "profit_factor_note": null
+      },
+      "evaluation_30pct": {
+        "mode": "HISTORICAL_RESEARCH_ONLY",
+        "timeframe": "1m",
+        "strategy": "5m_volume_breakout_15m_trend",
+        "start_ms": 1790327700000,
+        "end_ms": 1790690579999,
+        "evaluated_minutes": 6048,
+        "initial_virtual_usdt": "100",
+        "final_virtual_usdt": "98.56754894338345125317634539",
+        "return_pct": "-1.432451056616548746823654610",
+        "comparator_25pct_buy_hold_pct": "0.630008753070273373951322200",
+        "max_drawdown_pct": "1.889885211723359027167047850",
+        "completed_round_trips": 15,
+        "win_rate_pct": "33.33333333333333333333333333",
+        "hypothetical_fees_usdt": "0.7743815634580234145415335587",
+        "halted": false,
+        "open_position": true,
+        "open_unrealized_pnl_usdt": "-0.06463295118193987381567973",
+        "first_entry_signal_ms": 1790328599999,
+        "last_entry_signal_ms": 1790685599999,
+        "signal_count": 16,
+        "minutes_exposed": 1044,
+        "entry_mode": "legacy",
+        "sizing": "original",
+        "assumed_fee_pct_each_side": "0.100",
+        "assumed_slippage_pct_each_side": "0.0500",
+        "exit_diagnostics": {
+          "STOP": {
+            "count": 10,
+            "wins": 0,
+            "realized_net_pnl_usdt": "-2.13805602721780776684596614",
+            "avg_holding_minutes": "53.5"
+          },
+          "TARGET": {
+            "count": 4,
+            "wins": 4,
+            "realized_net_pnl_usdt": "0.67598544534941055839303193",
+            "avg_holding_minutes": "61.25"
+          },
+          "TIME_LIMIT": {
+            "count": 1,
+            "wins": 1,
+            "realized_net_pnl_usdt": "0.09425247643378833544495933",
+            "avg_holding_minutes": "181"
+          }
+        },
+        "realized_net_pnl_usdt": "-1.36781810543460887300797488",
+        "gross_profit_usdt": "0.77023792178319889383799126",
+        "gross_loss_abs_usdt": "2.13805602721780776684596614",
+        "profit_factor": "0.3602515144495478256112406101",
+        "profit_factor_note": null
+      },
+      "diagnostic_experiments": {
+        "development_70pct": {
+          "fixed_alternatives": {
+            "fresh_signal_only": {
+              "mode": "HISTORICAL_RESEARCH_ONLY",
+              "timeframe": "1m",
+              "strategy": "5m_volume_breakout_15m_trend",
+              "start_ms": 1789495380000,
+              "end_ms": 1790327699999,
+              "evaluated_minutes": 13872,
+              "initial_virtual_usdt": "100",
+              "final_virtual_usdt": "97.25591172246464584450407023",
+              "return_pct": "-2.744088277535354155495929770",
+              "comparator_25pct_buy_hold_pct": "4.206522624867643952477844200",
+              "max_drawdown_pct": "2.854920495972522040031365800",
+              "completed_round_trips": 33,
+              "win_rate_pct": "30.30303030303030303030303030",
+              "hypothetical_fees_usdt": "1.673885979112409312016301654",
+              "halted": false,
+              "open_position": true,
+              "open_unrealized_pnl_usdt": "0.01881858916774314021871689",
+              "first_entry_signal_ms": 1789532699999,
+              "last_entry_signal_ms": 1790324399999,
+              "signal_count": 34,
+              "minutes_exposed": 2159,
+              "entry_mode": "fresh_5m",
+              "sizing": "original",
+              "assumed_fee_pct_each_side": "0.100",
+              "assumed_slippage_pct_each_side": "0.0500",
+              "exit_diagnostics": {
+                "STOP": {
+                  "count": 22,
+                  "wins": 0,
+                  "realized_net_pnl_usdt": "-4.51971238877518829398732994",
+                  "avg_holding_minutes": "53.68181818181818181818181818"
+                },
+                "TARGET": {
+                  "count": 8,
+                  "wins": 8,
+                  "realized_net_pnl_usdt": "1.42861753630538012323699078",
+                  "avg_holding_minutes": "47.5"
+                },
+                "TIME_LIMIT": {
+                  "count": 3,
+                  "wins": 2,
+                  "realized_net_pnl_usdt": "0.32818798576671087503569250",
+                  "avg_holding_minutes": "181"
+                }
+              },
+              "realized_net_pnl_usdt": "-2.76290686670309729571464666",
+              "gross_profit_usdt": "1.92388972395877364238122475",
+              "gross_loss_abs_usdt": "4.68679659066187093809587141",
+              "profit_factor": "0.4104914063887464999103815430",
+              "profit_factor_note": null
+            },
+            "equity_sizing_only": {
+              "mode": "HISTORICAL_RESEARCH_ONLY",
+              "timeframe": "1m",
+              "strategy": "5m_volume_breakout_15m_trend",
+              "start_ms": 1789495380000,
+              "end_ms": 1790327699999,
+              "evaluated_minutes": 13872,
+              "initial_virtual_usdt": "100",
+              "final_virtual_usdt": "97.11251975534702657282197486",
+              "return_pct": "-2.887480244652973427178025140",
+              "comparator_25pct_buy_hold_pct": "4.206522624867643952477844200",
+              "max_drawdown_pct": "2.995091953672640660193539640",
+              "completed_round_trips": 36,
+              "win_rate_pct": "30.55555555555555555555555556",
+              "hypothetical_fees_usdt": "1.798896338222494297168757972",
+              "halted": false,
+              "open_position": true,
+              "open_unrealized_pnl_usdt": "0.01827176763431736579277362",
+              "first_entry_signal_ms": 1789532699999,
+              "last_entry_signal_ms": 1790324399999,
+              "signal_count": 37,
+              "minutes_exposed": 2585,
+              "entry_mode": "legacy",
+              "sizing": "equity",
+              "assumed_fee_pct_each_side": "0.100",
+              "assumed_slippage_pct_each_side": "0.0500",
+              "exit_diagnostics": {
+                "STOP": {
+                  "count": 23,
+                  "wins": 0,
+                  "realized_net_pnl_usdt": "-4.78984216416588839508229988",
+                  "avg_holding_minutes": "60.13043478260869565217391304"
+                },
+                "TARGET": {
+                  "count": 9,
+                  "wins": 9,
+                  "realized_net_pnl_usdt": "1.58106942238517409867241859",
+                  "avg_holding_minutes": "47"
+                },
+                "TIME_LIMIT": {
+                  "count": 4,
+                  "wins": 2,
+                  "realized_net_pnl_usdt": "0.30302072949342350343908253",
+                  "avg_holding_minutes": "181"
+                }
+              },
+              "realized_net_pnl_usdt": "-2.90575201228729079297079876",
+              "gross_profit_usdt": "2.06925503108397476824653825",
+              "gross_loss_abs_usdt": "4.97500704337126556121733701",
+              "profit_factor": "0.4159300706601138890359043113",
+              "profit_factor_note": null
+            },
+            "fresh_signal_and_equity": {
+              "mode": "HISTORICAL_RESEARCH_ONLY",
+              "timeframe": "1m",
+              "strategy": "5m_volume_breakout_15m_trend",
+              "start_ms": 1789495380000,
+              "end_ms": 1790327699999,
+              "evaluated_minutes": 13872,
+              "initial_virtual_usdt": "100",
+              "final_virtual_usdt": "97.28631423745147488794892740",
+              "return_pct": "-2.713685762548525112051072600",
+              "comparator_25pct_buy_hold_pct": "4.206522624867643952477844200",
+              "max_drawdown_pct": "2.821490055606631095434799090",
+              "completed_round_trips": 33,
+              "win_rate_pct": "30.30303030303030303030303030",
+              "hypothetical_fees_usdt": "1.652281734142443701288623861",
+              "halted": false,
+              "open_position": true,
+              "open_unrealized_pnl_usdt": "0.01830446715031323369089193",
+              "first_entry_signal_ms": 1789532699999,
+              "last_entry_signal_ms": 1790324399999,
+              "signal_count": 34,
+              "minutes_exposed": 2159,
+              "entry_mode": "fresh_5m",
+              "sizing": "equity",
+              "assumed_fee_pct_each_side": "0.100",
+              "assumed_slippage_pct_each_side": "0.0500",
+              "exit_diagnostics": {
+                "STOP": {
+                  "count": 22,
+                  "wins": 0,
+                  "realized_net_pnl_usdt": "-4.46350358894330586331495852",
+                  "avg_holding_minutes": "53.68181818181818181818181818"
+                },
+                "TARGET": {
+                  "count": 8,
+                  "wins": 8,
+                  "realized_net_pnl_usdt": "1.40816366272592146625555104",
+                  "avg_holding_minutes": "47.5"
+                },
+                "TIME_LIMIT": {
+                  "count": 3,
+                  "wins": 2,
+                  "realized_net_pnl_usdt": "0.32334969651854605131744295",
+                  "avg_holding_minutes": "181"
+                }
+              },
+              "realized_net_pnl_usdt": "-2.73199022969883834574196453",
+              "gross_profit_usdt": "1.89734927840345035404073140",
+              "gross_loss_abs_usdt": "4.62933950810228869978269593",
+              "profit_factor": "0.4098531280936950045933327154",
+              "profit_factor_note": null
+            }
+          },
+          "candidate_cost_sensitivity": {
+            "half_costs": {
+              "mode": "HISTORICAL_RESEARCH_ONLY",
+              "timeframe": "1m",
+              "strategy": "5m_volume_breakout_15m_trend",
+              "start_ms": 1789495380000,
+              "end_ms": 1790327699999,
+              "evaluated_minutes": 13872,
+              "initial_virtual_usdt": "100",
+              "final_virtual_usdt": "98.76763100275475920456858713",
+              "return_pct": "-1.232368997245240795431412870",
+              "comparator_25pct_buy_hold_pct": "4.248279751592164776634139400",
+              "max_drawdown_pct": "1.365495774022752365877071730",
+              "completed_round_trips": 32,
+              "win_rate_pct": "34.37500",
+              "hypothetical_fees_usdt": "0.8066225961428431064145793822",
+              "halted": false,
+              "open_position": true,
+              "open_unrealized_pnl_usdt": "0.05565809819071753050185649",
+              "first_entry_signal_ms": 1789532699999,
+              "last_entry_signal_ms": 1790324399999,
+              "signal_count": 33,
+              "minutes_exposed": 2295,
+              "entry_mode": "fresh_5m",
+              "sizing": "equity",
+              "assumed_fee_pct_each_side": "0.0500",
+              "assumed_slippage_pct_each_side": "0.02500",
+              "exit_diagnostics": {
+                "STOP": {
+                  "count": 20,
+                  "wins": 0,
+                  "realized_net_pnl_usdt": "-3.42421149586351499985049482",
+                  "avg_holding_minutes": "57.05"
+                },
+                "TARGET": {
+                  "count": 8,
+                  "wins": 8,
+                  "realized_net_pnl_usdt": "1.66685843897154637556974560",
+                  "avg_holding_minutes": "46.875"
+                },
+                "TIME_LIMIT": {
+                  "count": 4,
+                  "wins": 3,
+                  "realized_net_pnl_usdt": "0.46932596145601029834747986",
+                  "avg_holding_minutes": "181"
+                }
+              },
+              "realized_net_pnl_usdt": "-1.28802709543595832593326936",
+              "gross_profit_usdt": "2.26508065824740782361285606",
+              "gross_loss_abs_usdt": "3.55310775368336614954612542",
+              "profit_factor": "0.6374928134108199713663390919",
+              "profit_factor_note": null
+            },
+            "double_costs": {
+              "mode": "HISTORICAL_RESEARCH_ONLY",
+              "timeframe": "1m",
+              "strategy": "5m_volume_breakout_15m_trend",
+              "start_ms": 1789495380000,
+              "end_ms": 1790327699999,
+              "evaluated_minutes": 13872,
+              "initial_virtual_usdt": "100",
+              "final_virtual_usdt": "94.74960379121463977746310546",
+              "return_pct": "-5.250396208785360222536894540",
+              "comparator_25pct_buy_hold_pct": "4.123074158865364369402658400",
+              "max_drawdown_pct": "5.355258314638028481848317160",
+              "completed_round_trips": 33,
+              "win_rate_pct": "24.24242424242424242424242424",
+              "hypothetical_fees_usdt": "3.263352834054173695399903727",
+              "halted": false,
+              "open_position": true,
+              "open_unrealized_pnl_usdt": "-0.05333286846384386596240090",
+              "first_entry_signal_ms": 1789532699999,
+              "last_entry_signal_ms": 1790324399999,
+              "signal_count": 34,
+              "minutes_exposed": 2097,
+              "entry_mode": "fresh_5m",
+              "sizing": "equity",
+              "assumed_fee_pct_each_side": "0.200",
+              "assumed_slippage_pct_each_side": "0.1000",
+              "exit_diagnostics": {
+                "STOP": {
+                  "count": 24,
+                  "wins": 0,
+                  "realized_net_pnl_usdt": "-6.27051548279779574344013910",
+                  "avg_holding_minutes": "57.16666666666666666666666667"
+                },
+                "TARGET": {
+                  "count": 7,
+                  "wins": 7,
+                  "realized_net_pnl_usdt": "0.73579540218545381108279434",
+                  "avg_holding_minutes": "44"
+                },
+                "TIME_LIMIT": {
+                  "count": 2,
+                  "wins": 1,
+                  "realized_net_pnl_usdt": "0.33765674029082557578285112",
+                  "avg_holding_minutes": "181"
+                }
+              },
+              "realized_net_pnl_usdt": "-5.19706334032151635657449364",
+              "gross_profit_usdt": "1.07594148012014952278483323",
+              "gross_loss_abs_usdt": "6.27300482044166587935932687",
+              "profit_factor": "0.1715193134578836963781177199",
+              "profit_factor_note": null
+            }
+          }
+        },
+        "evaluation_30pct": {
+          "fixed_alternatives": {
+            "fresh_signal_only": {
+              "mode": "HISTORICAL_RESEARCH_ONLY",
+              "timeframe": "1m",
+              "strategy": "5m_volume_breakout_15m_trend",
+              "start_ms": 1790327700000,
+              "end_ms": 1790690579999,
+              "evaluated_minutes": 6048,
+              "initial_virtual_usdt": "100",
+              "final_virtual_usdt": "99.23020553566707035886158788",
+              "return_pct": "-0.7697944643329296411384121200",
+              "comparator_25pct_buy_hold_pct": "0.630008753070273373951322200",
+              "max_drawdown_pct": "1.229035025970758112138502910",
+              "completed_round_trips": 12,
+              "win_rate_pct": "41.66666666666666666666666667",
+              "hypothetical_fees_usdt": "0.6248947332200690793119892569",
+              "halted": false,
+              "open_position": true,
+              "open_unrealized_pnl_usdt": "-0.06463295118193987381567973",
+              "first_entry_signal_ms": 1790328599999,
+              "last_entry_signal_ms": 1790685599999,
+              "signal_count": 13,
+              "minutes_exposed": 995,
+              "entry_mode": "fresh_5m",
+              "sizing": "original",
+              "assumed_fee_pct_each_side": "0.100",
+              "assumed_slippage_pct_each_side": "0.0500",
+              "exit_diagnostics": {
+                "STOP": {
+                  "count": 7,
+                  "wins": 0,
+                  "realized_net_pnl_usdt": "-1.47539943493418866116072365",
+                  "avg_holding_minutes": "69.42857142857142857142857143"
+                },
+                "TARGET": {
+                  "count": 4,
+                  "wins": 4,
+                  "realized_net_pnl_usdt": "0.67598544534941055839303193",
+                  "avg_holding_minutes": "61.25"
+                },
+                "TIME_LIMIT": {
+                  "count": 1,
+                  "wins": 1,
+                  "realized_net_pnl_usdt": "0.09425247643378833544495933",
+                  "avg_holding_minutes": "181"
+                }
+              },
+              "realized_net_pnl_usdt": "-0.70516151315098976732273239",
+              "gross_profit_usdt": "0.77023792178319889383799126",
+              "gross_loss_abs_usdt": "1.47539943493418866116072365",
+              "profit_factor": "0.5220538272861382484925923519",
+              "profit_factor_note": null
+            },
+            "equity_sizing_only": {
+              "mode": "HISTORICAL_RESEARCH_ONLY",
+              "timeframe": "1m",
+              "strategy": "5m_volume_breakout_15m_trend",
+              "start_ms": 1790327700000,
+              "end_ms": 1790690579999,
+              "evaluated_minutes": 6048,
+              "initial_virtual_usdt": "100",
+              "final_virtual_usdt": "98.57480280698696056126926013",
+              "return_pct": "-1.425197193013039438730739870",
+              "comparator_25pct_buy_hold_pct": "0.630008753070273373951322200",
+              "max_drawdown_pct": "1.879785697208238618020778670",
+              "completed_round_trips": 15,
+              "win_rate_pct": "33.33333333333333333333333333",
+              "hypothetical_fees_usdt": "0.7693701423272173271794760413",
+              "halted": false,
+              "open_position": true,
+              "open_unrealized_pnl_usdt": "-0.06375300962752295297502179",
+              "first_entry_signal_ms": 1790328599999,
+              "last_entry_signal_ms": 1790685599999,
+              "signal_count": 16,
+              "minutes_exposed": 1044,
+              "entry_mode": "legacy",
+              "sizing": "equity",
+              "assumed_fee_pct_each_side": "0.100",
+              "assumed_slippage_pct_each_side": "0.0500",
+              "exit_diagnostics": {
+                "STOP": {
+                  "count": 10,
+                  "wins": 0,
+                  "realized_net_pnl_usdt": "-2.12585577261493636378577342",
+                  "avg_holding_minutes": "53.5"
+                },
+                "TARGET": {
+                  "count": 4,
+                  "wins": 4,
+                  "realized_net_pnl_usdt": "0.67078608050428667567024046",
+                  "avg_holding_minutes": "61.25"
+                },
+                "TIME_LIMIT": {
+                  "count": 1,
+                  "wins": 1,
+                  "realized_net_pnl_usdt": "0.09362550872513320235981488",
+                  "avg_holding_minutes": "181"
+                }
+              },
+              "realized_net_pnl_usdt": "-1.36144418338551648575571808",
+              "gross_profit_usdt": "0.76441158922941987803005534",
+              "gross_loss_abs_usdt": "2.12585577261493636378577342",
+              "profit_factor": "0.3595782926934622309009781389",
+              "profit_factor_note": null
+            },
+            "fresh_signal_and_equity": {
+              "mode": "HISTORICAL_RESEARCH_ONLY",
+              "timeframe": "1m",
+              "strategy": "5m_volume_breakout_15m_trend",
+              "start_ms": 1790327700000,
+              "end_ms": 1790690579999,
+              "evaluated_minutes": 6048,
+              "initial_virtual_usdt": "100",
+              "final_virtual_usdt": "99.23092611419142373022933353",
+              "return_pct": "-0.7690738858085762697706664700",
+              "comparator_25pct_buy_hold_pct": "0.630008753070273373951322200",
+              "max_drawdown_pct": "1.226688174527774953607966230",
+              "completed_round_trips": 12,
+              "win_rate_pct": "41.66666666666666666666666667",
+              "hypothetical_fees_usdt": "0.6220411220093843477148585426",
+              "halted": false,
+              "open_position": true,
+              "open_unrealized_pnl_usdt": "-0.06417735575178507983640075",
+              "first_entry_signal_ms": 1790328599999,
+              "last_entry_signal_ms": 1790685599999,
+              "signal_count": 13,
+              "minutes_exposed": 995,
+              "entry_mode": "fresh_5m",
+              "sizing": "equity",
+              "assumed_fee_pct_each_side": "0.100",
+              "assumed_slippage_pct_each_side": "0.0500",
+              "exit_diagnostics": {
+                "STOP": {
+                  "count": 7,
+                  "wins": 0,
+                  "realized_net_pnl_usdt": "-1.47054966294832919852819052",
+                  "avg_holding_minutes": "69.42857142857142857142857143"
+                },
+                "TARGET": {
+                  "count": 4,
+                  "wins": 4,
+                  "realized_net_pnl_usdt": "0.67202762416640480623410992",
+                  "avg_holding_minutes": "61.25"
+                },
+                "TIME_LIMIT": {
+                  "count": 1,
+                  "wins": 1,
+                  "realized_net_pnl_usdt": "0.09362550872513320235981488",
+                  "avg_holding_minutes": "181"
+                }
+              },
+              "realized_net_pnl_usdt": "-0.70489653005679118993426572",
+              "gross_profit_usdt": "0.76565313289153800859392480",
+              "gross_loss_abs_usdt": "1.47054966294832919852819052",
+              "profit_factor": "0.5206577868009350009490074724",
+              "profit_factor_note": null
+            }
+          },
+          "candidate_cost_sensitivity": {
+            "half_costs": {
+              "mode": "HISTORICAL_RESEARCH_ONLY",
+              "timeframe": "1m",
+              "strategy": "5m_volume_breakout_15m_trend",
+              "start_ms": 1790327700000,
+              "end_ms": 1790690579999,
+              "evaluated_minutes": 6048,
+              "initial_virtual_usdt": "100",
+              "final_virtual_usdt": "99.72274904790825140637234559",
+              "return_pct": "-0.2772509520917485936276544100",
+              "comparator_25pct_buy_hold_pct": "0.668186233228926810850478900",
+              "max_drawdown_pct": "0.9698015237028118933135317100",
+              "completed_round_trips": 12,
+              "win_rate_pct": "41.66666666666666666666666667",
+              "hypothetical_fees_usdt": "0.3117879201267867373456206474",
+              "halted": false,
+              "open_position": true,
+              "open_unrealized_pnl_usdt": "-0.02708279871139526320358626",
+              "first_entry_signal_ms": 1790328599999,
+              "last_entry_signal_ms": 1790685599999,
+              "signal_count": 13,
+              "minutes_exposed": 1075,
+              "entry_mode": "fresh_5m",
+              "sizing": "equity",
+              "assumed_fee_pct_each_side": "0.0500",
+              "assumed_slippage_pct_each_side": "0.02500",
+              "exit_diagnostics": {
+                "STOP": {
+                  "count": 6,
+                  "wins": 0,
+                  "realized_net_pnl_usdt": "-1.10042188039998665012866484",
+                  "avg_holding_minutes": "65"
+                },
+                "TARGET": {
+                  "count": 4,
+                  "wins": 4,
+                  "realized_net_pnl_usdt": "0.79910702694461648455482322",
+                  "avg_holding_minutes": "60"
+                },
+                "TIME_LIMIT": {
+                  "count": 2,
+                  "wins": 1,
+                  "realized_net_pnl_usdt": "0.05114670007501683514977347",
+                  "avg_holding_minutes": "181"
+                }
+              },
+              "realized_net_pnl_usdt": "-0.25016815338035333042406815",
+              "gross_profit_usdt": "0.93050946686680324455845003",
+              "gross_loss_abs_usdt": "1.18067762024715657498251818",
+              "profit_factor": "0.7881147663932306078636027083",
+              "profit_factor_note": null
+            },
+            "double_costs": {
+              "mode": "HISTORICAL_RESEARCH_ONLY",
+              "timeframe": "1m",
+              "strategy": "5m_volume_breakout_15m_trend",
+              "start_ms": 1790327700000,
+              "end_ms": 1790690579999,
+              "evaluated_minutes": 6048,
+              "initial_virtual_usdt": "100",
+              "final_virtual_usdt": "98.40312386800640457262014245",
+              "return_pct": "-1.596876131993595427379857550",
+              "comparator_25pct_buy_hold_pct": "0.553711531022169320041660500",
+              "max_drawdown_pct": "1.853804016872601053763264820",
+              "completed_round_trips": 12,
+              "win_rate_pct": "41.66666666666666666666666667",
+              "hypothetical_fees_usdt": "1.239243071094433513872887454",
+              "halted": false,
+              "open_position": true,
+              "open_unrealized_pnl_usdt": "-0.13750481149223060227654584",
+              "first_entry_signal_ms": 1790328599999,
+              "last_entry_signal_ms": 1790685599999,
+              "signal_count": 13,
+              "minutes_exposed": 995,
+              "entry_mode": "fresh_5m",
+              "sizing": "equity",
+              "assumed_fee_pct_each_side": "0.200",
+              "assumed_slippage_pct_each_side": "0.1000",
+              "exit_diagnostics": {
+                "STOP": {
+                  "count": 7,
+                  "wins": 0,
+                  "realized_net_pnl_usdt": "-1.89854293179487444364157675",
+                  "avg_holding_minutes": "69"
+                },
+                "TARGET": {
+                  "count": 4,
+                  "wins": 4,
+                  "realized_net_pnl_usdt": "0.42035415537777225114988824",
+                  "avg_holding_minutes": "62"
+                },
+                "TIME_LIMIT": {
+                  "count": 1,
+                  "wins": 1,
+                  "realized_net_pnl_usdt": "0.01881745591573736738837680",
+                  "avg_holding_minutes": "181"
+                }
+              },
+              "realized_net_pnl_usdt": "-1.45937132050136482510331171",
+              "gross_profit_usdt": "0.43917161129350961853826504",
+              "gross_loss_abs_usdt": "1.89854293179487444364157675",
+              "profit_factor": "0.2313203477986766609381538900",
+              "profit_factor_note": null
+            }
+          }
+        }
+      }
+    }
+  },
+  "diagnostics_version": 2,
+  "analysis_note": "Unchanged baseline versus prespecified 5m fresh-signal and equity-sizing interventions. Not optimized for profitability; both symbols use same dates. Separate segments reset fictional capital.",
+  "warning": "Short sample, fixed illustrative fee/slippage and synthetic stress scenarios, no order-book depth, funding, exchange filters, taxes, FX or live fills. Out-of-sample is chronological within one recent interval; not independent market regimes. Not a profit forecast or real-time bot."
+}

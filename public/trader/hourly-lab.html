@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="pt-BR"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#091b16"><meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icon.svg" type="image/svg+xml">
+<title>Tendências 1 hora | Cauê Trader</title>
+<style>
+:root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#e8f5ec;background:#091b16;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at 90% 1%,#234d3b,transparent 36%),#091b16}
+main{max-width:940px;margin:auto;padding:max(22px,env(safe-area-inset-top)) 16px 50px}
+a{color:#a0ecc2;text-decoration:none}a:hover{text-decoration:underline}
+header{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}
+h1{font-size:clamp(34px,7vw,54px);letter-spacing:-1.5px;margin:26px 0 10px;line-height:1.05}
+h2{font-size:19px;margin:0 0 16px}.muted,small{color:#acc8b7;line-height:1.5}small{font-size:12px}
+.badge{border:1px solid #a8914c;color:#f1dca2;background:#382f19;font-weight:700;border-radius:99px;padding:9px 12px;font-size:12px;display:inline-flex}
+.panel{background:#113027;border:1px solid #345e49;border-radius:20px;padding:20px;margin-top:15px;min-width:0}
+nav{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0}
+button{cursor:pointer;border:1px solid #567862;background:#1b3d30;color:#e8f5ec;border-radius:12px;padding:10px 15px;font:inherit;font-weight:650}
+button[aria-pressed=true]{background:#b8f1ce;color:#123324;border-color:#b8f1ce}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.metric{background:#0c271f;border-radius:14px;padding:14px;min-width:0}
+.metric p{font-size:12px;color:#acc8b7;margin:0 0 7px}.metric strong{display:block;font-size:clamp(20px,5vw,30px);font-variant-numeric:tabular-nums}
+.neg{color:#ffaca4}.pos{color:#a6efc4}.neutral{color:#e8f5ec}
+.table-scroll{overflow-x:auto;width:100%;-webkit-overflow-scrolling:touch}
+table{width:100%;border-collapse:collapse;min-width:590px}td,th{text-align:left;padding:13px 10px;border-bottom:1px solid #345e49;font-size:13px}th{color:#acc8b7}
+tr:last-child td{border-bottom:0}footer{margin:24px 0;color:#acc8b7;line-height:1.6;font-size:12px}
+@media(max-width:620px){.grid{grid-template-columns:1fr}}
+</style></head><body><main>
+<header><a href="./index.html"><strong>← C / T · CAUÊ TRADER</strong></a><span class="badge">EXCLUSIVAMENTE SIMULADO</span></header>
+<h1>Tendências de<br>1 hora.</h1>
+<p class="muted">Bitcoin, Ethereum e Solana em quatro períodos históricos. Duas estratégias com parâmetros fixos, comparadas com manter 25% do capital no ativo e com ficar em dinheiro.</p>
+<div class="panel" role="status" aria-live="polite"><strong id="status">Aguardando estudo histórico…</strong><p class="muted" id="generated">Nenhum resultado verificado neste domínio.</p></div>
+<nav aria-label="Escolha o ativo"><button data-symbol="BTCUSDT" aria-pressed="true">Bitcoin</button><button data-symbol="ETHUSDT" aria-pressed="false">Ethereum</button><button data-symbol="SOLUSDT" aria-pressed="false">Solana</button></nav>
+<section id="results" aria-live="polite"><div class="panel"><p class="muted">Sem relatório publicado.</p></div></section>
+<section class="panel"><h2>Como interpretar</h2><p class="muted">Cada estratégia reinicia com 100 USDT fictícios e pode aplicar até 25% do patrimônio por compra. O resultado já inclui hipóteses fixas de 0,10% de taxa e 0,05% de slippage em cada sentido. Dinheiro parado corresponde a 0% na simulação. Poucas negociações ou lucro histórico não comprovam uma estratégia rentável.</p><p class="muted">A análise é retrospectiva, não um sistema funcionando a cada minuto nem um robô conectado à corretora. As perdas podem superar os limites observados em uma operação real.</p></section>
+<footer id="warning">Aguardando resultado público simulado, sem dados da sua conta e sem chaves de acesso. Se o painel estiver desatualizado, consulte o relatório original no seu GitHub privado.</footer>
+</main><script>
+const $=s=>document.querySelector(s);
+const fmt=n=>Number(n).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
+const pct=v=>{const n=Number(v);return Number.isFinite(n)?(n>0?'+':'')+fmt(n)+'%':'—'};
+const timestamp=ms=>new Date(ms).toLocaleDateString('pt-BR',{timeZone:'UTC'});
+const labels={sma20_50_cross:'Médias SMA 20/50h',ema20_50_with_4h_confirm:'EMA 20/50h + confirmação 4h'};
+const windows={jan_feb_2026:'Janeiro–fevereiro',apr_may_2026:'Abril–maio',jul_aug_2026:'Julho–agosto',aug_sep_2026:'Agosto–setembro'};
+let state=null,asset='BTCUSDT';
+function metric(label,value,number){const box=document.createElement('div');box.className='metric';
+ const t=document.createElement('p');t.textContent=label;const v=document.createElement('strong');v.textContent=value;
+ v.className=Number(number)<0?'neg':Number(number)>0?'pos':'neutral';box.append(t,v);return box;}
+function redraw(){if(!state)return;const output=$('#results');output.replaceChildren();
+ for(const [key,record] of Object.entries(state.results)){
+  const variants=record.symbols[asset];if(!variants)continue;
+  const section=document.createElement('section');section.className='panel';
+  const title=document.createElement('h2');title.textContent=(windows[key]||key)+' · '+timestamp(record.start_ms)+' a '+timestamp(record.end_ms);
+  section.append(title);
+  const comparison=document.createElement('div');comparison.className='grid';
+  for(const [strategyName,trial] of Object.entries(variants)){
+   const cell=document.createElement('div');cell.className='metric';
+   const p=document.createElement('p');p.textContent=labels[strategyName]||strategyName;
+   const val=document.createElement('strong');val.textContent=pct(trial.return_pct);
+   const n=Number(trial.return_pct);val.className=n<0?'neg':n>0?'pos':'neutral';
+   const desc=document.createElement('small');desc.textContent=trial.trades_completed+' operações encerradas · queda máxima '+pct(trial.max_observed_drawdown_pct)+' · taxas estimadas '+fmt(trial.estimated_fees_usdt)+' USDT';
+   cell.append(p,val,desc);comparison.append(cell);
+  }
+  section.append(comparison);
+  const benchmark=variants.sma20_50_cross;
+  const bench=document.createElement('p');bench.className='muted';
+  bench.textContent='Comprar e manter 25%: '+pct(benchmark.benchmark_25pct_buy_hold_pct)+' · Dinheiro parado: 0,00%';
+  section.append(bench);output.append(section);
+ }
+}
+for(const b of document.querySelectorAll('[data-symbol]'))b.addEventListener('click',()=>{
+ asset=b.dataset.symbol;for(const option of document.querySelectorAll('[data-symbol]'))
+ option.setAttribute('aria-pressed',String(option.dataset.symbol===asset));redraw();
+});
+(async()=>{try{
+ const res=await fetch('./hourly_trend_report.json?t='+Date.now(),{cache:'no-store'});
+ if(!res.ok)throw Error('Ainda não há relatório horário publicado');
+ const d=await res.json();if(d.mode!=='HISTORICAL_PAPER_RESEARCH'||d.status!=='NOT_APPROVED_FOR_LIVE'||
+ !d.results||!d.symbols.includes('ETHUSDT'))throw Error('Relatório incompleto ou inválido');
+ state=d;$('#status').textContent='Estudo histórico concluído · NÃO AUTORIZADO PARA OPERAÇÕES REAIS';
+ $('#generated').textContent='Gerado em '+new Date(d.generated_at_utc).toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo'})+' · Dados históricos, não cotações em tempo real.';
+ $('#warning').textContent=d.caveats||'Resultados passados não garantem lucros.';
+ redraw();
+ }catch(e){$('#status').textContent='Estudo ainda indisponível neste endereço';
+ $('#generated').textContent=String(e.message||e)+'; consulte a execução no GitHub.';}
+})();
+if('serviceWorker'in navigator&&(location.protocol==='https:'||location.hostname==='localhost')){
+ window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+}
+</script></body></html>

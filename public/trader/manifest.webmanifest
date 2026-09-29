@@ -1,0 +1,18 @@
+{
+  "name": "Cauê Trader — Simulador",
+  "short_name": "Cauê Trader",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#091b16",
+  "theme_color": "#091b16",
+  "description": "Monitor pessoal de operações fictícias, sem dinheiro real.",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

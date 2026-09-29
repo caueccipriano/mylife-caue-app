@@ -1,0 +1,143 @@
+{
+  "mode": "PAPER_ONLY_FORWARD",
+  "version": 1,
+  "timeframe": "1h",
+  "live_trading": false,
+  "at_utc": "2026-09-29T15:11:00.890000+00:00",
+  "status": "EXPERIMENTAL_NOT_APPROVED_FOR_LIVE",
+  "accounts": {
+    "BTCUSDT:sma20_50_cross": {
+      "symbol": "BTCUSDT",
+      "strategy": "sma20_50_cross",
+      "status": "BOOTSTRAPPED_NO_RETROACTIVE_ORDER",
+      "cash": "100",
+      "qty": "0",
+      "equity": "100",
+      "stop": "0",
+      "halted": false,
+      "paused": false,
+      "checks": 1,
+      "trades": 0,
+      "checked": 1790694660890,
+      "last_closed": 1790693999999,
+      "events": [],
+      "curve": [
+        {
+          "ms": 1790694660890,
+          "equity": "100"
+        }
+      ]
+    },
+    "BTCUSDT:ema20_50_with_4h_confirm": {
+      "symbol": "BTCUSDT",
+      "strategy": "ema20_50_with_4h_confirm",
+      "status": "BOOTSTRAPPED_NO_RETROACTIVE_ORDER",
+      "cash": "100",
+      "qty": "0",
+      "equity": "100",
+      "stop": "0",
+      "halted": false,
+      "paused": false,
+      "checks": 1,
+      "trades": 0,
+      "checked": 1790694660890,
+      "last_closed": 1790693999999,
+      "events": [],
+      "curve": [
+        {
+          "ms": 1790694660890,
+          "equity": "100"
+        }
+      ]
+    },
+    "ETHUSDT:sma20_50_cross": {
+      "symbol": "ETHUSDT",
+      "strategy": "sma20_50_cross",
+      "status": "BOOTSTRAPPED_NO_RETROACTIVE_ORDER",
+      "cash": "100",
+      "qty": "0",
+      "equity": "100",
+      "stop": "0",
+      "halted": false,
+      "paused": false,
+      "checks": 1,
+      "trades": 0,
+      "checked": 1790694660890,
+      "last_closed": 1790693999999,
+      "events": [],
+      "curve": [
+        {
+          "ms": 1790694660890,
+          "equity": "100"
+        }
+      ]
+    },
+    "ETHUSDT:ema20_50_with_4h_confirm": {
+      "symbol": "ETHUSDT",
+      "strategy": "ema20_50_with_4h_confirm",
+      "status": "BOOTSTRAPPED_NO_RETROACTIVE_ORDER",
+      "cash": "100",
+      "qty": "0",
+      "equity": "100",
+      "stop": "0",
+      "halted": false,
+      "paused": false,
+      "checks": 1,
+      "trades": 0,
+      "checked": 1790694660890,
+      "last_closed": 1790693999999,
+      "events": [],
+      "curve": [
+        {
+          "ms": 1790694660890,
+          "equity": "100"
+        }
+      ]
+    },
+    "SOLUSDT:sma20_50_cross": {
+      "symbol": "SOLUSDT",
+      "strategy": "sma20_50_cross",
+      "status": "BOOTSTRAPPED_NO_RETROACTIVE_ORDER",
+      "cash": "100",
+      "qty": "0",
+      "equity": "100",
+      "stop": "0",
+      "halted": false,
+      "paused": false,
+      "checks": 1,
+      "trades": 0,
+      "checked": 1790694660890,
+      "last_closed": 1790693999999,
+      "events": [],
+      "curve": [
+        {
+          "ms": 1790694660890,
+          "equity": "100"
+        }
+      ]
+    },
+    "SOLUSDT:ema20_50_with_4h_confirm": {
+      "symbol": "SOLUSDT",
+      "strategy": "ema20_50_with_4h_confirm",
+      "status": "BOOTSTRAPPED_NO_RETROACTIVE_ORDER",
+      "cash": "100",
+      "qty": "0",
+      "equity": "100",
+      "stop": "0",
+      "halted": false,
+      "paused": false,
+      "checks": 1,
+      "trades": 0,
+      "checked": 1790694660890,
+      "last_closed": 1790693999999,
+      "events": [],
+      "curve": [
+        {
+          "ms": 1790694660890,
+          "equity": "100"
+        }
+      ]
+    }
+  },
+  "notice": "Six SEPARATE fictional accounts, each starts at 100 virtual USDT. No real orders, balances, credentials, or funds. Hourly observed stops/drawdown are NOT loss guarantees. Missed hours permanently pause new buys pending manual review."
+}

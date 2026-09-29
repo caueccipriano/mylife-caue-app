@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="pt-BR"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#091b16"><meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="manifest" href="./manifest.webmanifest"><link rel="icon" href="./icon.svg" type="image/svg+xml"><meta name="application-name" content="Cauê Trader"><meta name="apple-mobile-web-app-title" content="Cauê Trader"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><title>Cauê Trader | Simulador</title>
+<style>
+:root{font-family:system-ui,-apple-system,sans-serif;background:#091b16;color:#f5fff9;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 90% 5%,#215342,transparent 40%),#091b16;min-height:100vh}
+main{max-width:960px;margin:auto;padding:28px 16px}header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{letter-spacing:3px;font-size:12px;font-weight:800;color:#81dcb4}.status{border:1px solid #588b70;color:#9fe5c1;border-radius:99px;padding:9px 13px;font-size:12px;font-weight:700}
+h1{font-size:clamp(32px,6vw,58px);letter-spacing:-2px;line-height:1.02;margin:28px 0 12px}.muted,small{color:#a4c3b4}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px;margin:30px 0 16px}
+.panel{background:#113127;border:1px solid #305d47;border-radius:20px;padding:22px;overflow:hidden}
+.value{font-size:clamp(22px,3vw,36px);letter-spacing:-1px;color:#9fe5c1;font-weight:750;margin:12px 0 4px}
+.section{margin:14px 0}h2{font-size:19px;letter-spacing:-.4px;margin:0 0 16px}
+table{border-collapse:collapse;width:100%;min-width:520px}th,td{text-align:left;padding:11px 8px;border-bottom:1px solid #305d47;font-size:12px}th{color:#a4c3b4}
+.scroll{overflow:auto}svg{width:100%;height:180px}footer{margin:24px 0;color:#a4c3b4;font-size:12px;line-height:1.6}
+@media(max-width:680px){.grid{grid-template-columns:1fr}.panel{padding:18px}}
+</style></head>
+<body><main>
+<header><div class="brand">C / T · CAUÊ TRADER</div><div id="status" class="status">SIMULAÇÃO · AGUARDANDO</div></header>
+<h1>Seu laboratório<br>de investimentos.</h1><p class='muted' style='color:#ffdca4'>Prévia pública estática: relatórios fictícios podem estar desatualizados; o robô real em simulação permanece em repositório privado.</p>
+<p class="muted">Monitoramento previsto a cada hora; sinais da estratégia somente após o fechamento diário. Todos os valores são fictícios.</p>
+<p id="heartbeat" class="muted">Aguardando a primeira verificação horária.</p>
+<div class="grid">
+ <div class="panel"><small>Patrimônio simulado</small><div id="equity" class="value">—</div><small>USDT virtual</small></div>
+ <div class="panel"><small>Saldo virtual disponível</small><div id="cash" class="value">—</div><small>USDT virtual</small></div>
+ <div class="panel"><small>Operações fictícias</small><div id="count" class="value">—</div><small id="updated">Ainda não executado</small></div>
+</div>
+<section class="panel section"><h2>Evolução do patrimônio virtual</h2><div id="chart" class="muted">Sem dados até a primeira execução.</div></section>
+<section class="panel section"><h2>Diário de operações fictícias</h2><p id="detail" class="muted">Sem operações.</p>
+<div class="scroll"><table><thead><tr><th>Data (UTC)</th><th>Operação</th><th>Preço estimado</th><th>Quantidade BTC</th><th>Taxa virtual</th></tr></thead>
+<tbody id="trades"><tr><td colspan="5">Nenhuma operação simulada.</td></tr></tbody></table></div></section>
+<section class="panel section"><h2>Robô experimental · 6 contas fictícias</h2><p class="muted">Monitoramento com dados novos, estratégias independentes e proteção observada a cada hora. Nunca dinheiro real.</p><p><a href="./forward-hourly.html" style="color:#a1efc1;font-weight:700">Acompanhar robô experimental →</a></p></section><section class="panel section"><h2>Laboratório de tendências · BTC × ETH × SOL · 1 hora</h2><p class="muted">Pesquisa histórica de tendências longas, custos, perdas e comparações com comprar e manter. Sem ordens reais nem promessa de lucro.</p><p><a href="./hourly-lab.html" style="color:#a1efc1;font-weight:700">Abrir laboratório de 1 hora →</a></p></section><section class="panel section"><h2>Laboratório BTC × SOL · 1 minuto</h2><p class="muted">Pesquisa histórica com dados de 1 minuto, tendências de 15 minutos e sinais de rompimento/volume de 5 minutos. Exclusivamente fictício.</p><p><a href="./minute-lab.html" style="color:#a1efc1;font-weight:700">Ver comparação BTC × SOL →</a></p></section><footer>Exclusivamente uma pesquisa automatizada. SMA20/SMA50 não garante lucro. Este aplicativo não envia ordens reais e não movimenta dinheiro.</footer>
+</main><script>
+const byId=id=>document.getElementById(id);
+function fmt(value){
+ const n=Number(value);
+ return Number.isFinite(n)?n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2}):'—';
+}
+function graph(items){
+ const arr=items.map(x=>Number(x.equity_usdt));
+ if(!arr.length||arr.some(x=>!Number.isFinite(x)))return;
+ let min=Math.min(...arr)-0.01,max=Math.max(...arr)+0.01;
+ const ns='http://www.w3.org/2000/svg';
+ const svg=document.createElementNS(ns,'svg');
+ svg.setAttribute('viewBox','0 0 800 180');svg.setAttribute('role','img');svg.setAttribute('aria-label','Gráfico de valores fictícios');
+ const line=document.createElementNS(ns,'polyline');
+ line.setAttribute('points',arr.map((v,i)=>(2+796*i/Math.max(1,arr.length-1)).toFixed(2)+','+(176-160*(v-min)/(max-min)).toFixed(2)).join(' '));
+ line.setAttribute('stroke','#9fe5c1');line.setAttribute('stroke-width','3');line.setAttribute('fill','none');
+ svg.append(line);byId('chart').replaceChildren(svg);
+}
+async function load(){
+ try{
+  const response=await fetch('./report.json',{cache:'no-store'});
+  if(!response.ok)throw Error('No report');
+  const r=await response.json();
+  if(r.mode!=='PAPER_ONLY')throw Error('Unsupported report');
+  byId('equity').textContent=fmt(r.equity_usdt);
+  byId('cash').textContent=fmt(r.cash_usdt);
+  byId('count').textContent=String(r.trade_count||0);
+  byId('status').textContent='SIMULAÇÃO · '+String(r.status||'AGUARDANDO');
+  if(Number(r.last_check_ms)>0){
+    byId('heartbeat').textContent='Última verificação: '+new Date(Number(r.last_check_ms)).toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo'})+' · '+String(r.checks_count||0)+' verificações registradas';
+    if(Date.now()-Number(r.last_check_ms)>3*60*60*1000)byId('status').textContent='SIMULAÇÃO · ATUALIZAÇÃO ATRASADA';
+  }
+  byId('detail').textContent=String(r.detail||'Sem operações');
+  if(r.last_processed_ms)byId('updated').textContent='Último candle: '+new Date(r.last_processed_ms).toLocaleDateString('pt-BR',{timeZone:'UTC'});
+  graph(r.equity_curve||[]);
+  if((r.trades||[]).length){
+   const rows=r.trades.slice().reverse().map(op=>{
+    const tr=document.createElement('tr');
+    const values=[new Date(op.close_ms).toLocaleDateString('pt-BR',{timeZone:'UTC'}),op.side,fmt(op.estimated_fill),Number(op.quantity_btc).toFixed(8),fmt(op.estimated_fee_usdt)];
+    values.forEach(value=>{const td=document.createElement('td');td.textContent=value;tr.append(td)});return tr;
+   });
+   byId('trades').replaceChildren(...rows);
+  }
+ }catch(e){byId('status').textContent='SIMULAÇÃO · RELATÓRIO INDISPONÍVEL';byId('detail').textContent='Dados indisponíveis. Verifique a execução no GitHub.'}
+}
+load();
+// Cache only the app shell. Financial/report JSON always comes from the network.
+if('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost')){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+}
+</script></body></html>

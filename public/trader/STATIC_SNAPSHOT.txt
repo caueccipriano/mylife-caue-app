@@ -1,0 +1,3 @@
+Cauê Trader · espelho público de pesquisa e saldos FICTÍCIOS.
+Os relatórios são uma FOTOGRAFIA histórica: este site não tem sincronização automática com o robô privado. A interface mostra a data do último relatório. Nunca executa ordens reais.
+Fonte privada: https://github.com/caueccipriano/caue-trader

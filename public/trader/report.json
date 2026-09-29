@@ -1,0 +1,43 @@
+{
+  "name": "Caue Trader",
+  "mode": "PAPER_ONLY",
+  "status": "ACTIVE",
+  "detail": "HOURLY_MONITOR_ONLY; no new daily candle",
+  "symbol": "BTCUSDT",
+  "quote_currency": "virtual_USDT",
+  "last_processed_ms": 1790639999999,
+  "last_check_ms": 1790694660777,
+  "checks_count": 2,
+  "observed_price_usdt": "83606.00000000",
+  "equity_usdt": "100.00000000",
+  "cash_usdt": "100",
+  "btc": "0",
+  "halted": false,
+  "trade_count": 0,
+  "trades": [],
+  "equity_curve": [
+    {
+      "close_ms": 1790639999999,
+      "equity_usdt": "100.00000000",
+      "cash_usdt": "100",
+      "btc": "0",
+      "peak_drawdown_pct": "0E-8"
+    },
+    {
+      "close_ms": 1790685741838,
+      "equity_usdt": "100.00000000",
+      "cash_usdt": "100",
+      "btc": "0",
+      "peak_drawdown_pct": "0E-8"
+    },
+    {
+      "close_ms": 1790694660777,
+      "equity_usdt": "100.00000000",
+      "cash_usdt": "100",
+      "btc": "0",
+      "peak_drawdown_pct": "0E-8"
+    }
+  ],
+  "disclaimer": "Paper only. Hypothetical fees, latency and fills.",
+  "updated_at_utc": "2026-09-29T15:11:00.777899+00:00"
+}

@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#0a1d19"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<link rel="manifest" href="./manifest.webmanifest"/>
+<title>Lab 1m · Cauê Trader</title>
+<style>
+:root{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#0a1d19;color:#ecf7f0;color-scheme:dark}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 100% 0%,#224b3e,transparent 48%),#0a1d19;min-height:100vh}
+main{max-width:890px;margin:auto;padding:max(20px,env(safe-area-inset-top)) 18px max(36px,env(safe-area-inset-bottom))}
+a{color:#b3f4d5;text-decoration:none}.nav{display:flex;justify-content:space-between;align-items:center;gap:12px}.brand{letter-spacing:2px;font-weight:800;font-size:12px}
+h1{font-size:clamp(30px,8vw,48px);line-height:1.03;letter-spacing:-1.5px;margin:29px 0 12px}p{line-height:1.5}.sub{color:#a5beae}
+.badge{display:inline-block;color:#bbf3d5;background:#173f2e;border:1px solid #39715a;padding:7px 11px;border-radius:30px;font-size:11px;font-weight:750;letter-spacing:.5px}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:20px 0}
+.panel{padding:19px;background:linear-gradient(145deg,#143428,#0e2923);border:1px solid #335c4b;border-radius:19px;min-width:0}
+.panel h2{margin:0 0 15px;font-size:19px}.meta{font-size:12px;color:#a7c2b1;margin:2px 0}
+.big{font-size:clamp(28px,6vw,39px);font-weight:800;letter-spacing:-1px;margin:6px 0 2px;font-variant-numeric:tabular-nums}
+.negative{color:#ffa69a}.positive{color:#a4f4bd}.neutral{color:#ecf7f0}
+.metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:16px}
+.metric{border-top:1px solid #356452;padding-top:12px;overflow-wrap:anywhere;font-size:14px}.metric strong{display:block;font-size:19px;margin-top:3px;font-variant-numeric:tabular-nums}
+button{border:1px solid #65b98b;background:#235a40;color:#ecf7f0;border-radius:12px;padding:10px 15px;font:inherit;font-weight:650;cursor:pointer}
+small{font-size:12px;color:#aac8b7}footer{padding-top:20px;color:#a8c7b7;font-size:12px;line-height:1.6}
+@media(max-width:580px){.grid{grid-template-columns:1fr}}
+.review{margin-top:18px}.asset-review{border-top:1px solid #335c4b;padding:10px 0 14px}.review h3{font-size:16px;margin:20px 0 7px}</style></head><body><main>
+<div class="nav"><a class="brand" href="./index.html">← C / T · CAUÊ TRADER</a><button id="refresh" type="button">Atualizar</button></div>
+<h1>Laboratório<br/>1 minuto.</h1>
+<p class="sub">BTC versus SOL, mesmas regras e mesmo intervalo. Não é uma carteira real nem uma operação ao vivo.</p>
+<div class="badge">PESQUISA HISTÓRICA · SEM DINHEIRO REAL</div>
+<section class="panel" style="margin-top:20px"><div id="status" role="status" aria-live="polite">Aguardando o primeiro teste publicado.</div><p id="window" class="meta">Nenhuma métrica histórica verificada disponível.</p></section>
+<div id="cards" class="grid" aria-live="polite"><div class="panel"><h2>Bitcoin · BTC</h2><p class="sub">Aguardando dados reais do teste.</p></div><div class="panel"><h2>Solana · SOL</h2><p class="sub">Aguardando dados reais do teste.</p></div></div>
+<section class="panel" style="margin:16px 0">
+ <h2>Outra janela: agosto de 2026</h2>
+ <p class="sub">Mesmo método, em um período diferente: 3 a 16 de agosto (UTC). É uma comparação histórica anterior, não um teste prospectivo nem uma recomendação de investimento.</p>
+ <p id="aug-status" class="meta">Consultando estudo adicional...</p>
+ <div id="aug-cards" class="grid" aria-live="polite"></div>
+</section>
+<section class="panel"><h2>O que estes números significam?</h2>
+<p class="sub">Cada estratégia começa com 100 USDT <b>fictícios</b>, aplica no máximo 25% por entrada e simula 0,10% de taxa e 0,05% de deslizamento em cada sentido. Os 70% iniciais e os últimos 30% são simulados separadamente com regras pré-definidas. As comparações servem para diagnóstico, não comprovam rentabilidade futura.</p>
+<p class="sub">O comparador aplica 25% do capital virtual à compra e manutenção do próprio ativo. Sem operações, o robô pode ter desempenho semelhante ao dinheiro parado. Rentabilidade simulada não demonstra vantagem real, especialmente em poucos dias.</p></section>
+<section class="panel review" aria-labelledby="robust-title"><h2 id="robust-title">Quatro períodos históricos · BTC × SOL</h2><p class="sub">Estudo retrospectivo: versão original, correções de segurança e filtro experimental de custos. Nenhuma versão foi aprovada para negociar.</p><p id="robust-status" class="sub" role="status" aria-live="polite">Aguardando resultados completos.</p><div id="robust-cards"></div><small id="robust-limit">Pesquisa, não sinal de compra ou promessa de rentabilidade.</small></section><footer id="warning">Se a API estiver indisponível ou o GitHub atrasar, dados antigos não devem ser interpretados como operações recentes. Não conecte chaves de corretoras a este painel.</footer>
+</main>
+<script>
+const el=id=>document.getElementById(id);
+const num=(v,unit='')=>{const n=Number(v);return Number.isFinite(n)?n.toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2})+unit:'N/D'};
+const date=ms=>new Date(ms).toLocaleString('pt-BR',{timeZone:'America/Sao_Paulo',dateStyle:'short',timeStyle:'short'});
+function metric(parent,label,value,color='neutral'){
+ const item=document.createElement('div');item.className='metric';
+ const lbl=document.createElement('small');lbl.textContent=label;
+ const val=document.createElement('strong');val.className=color;val.textContent=value;
+ item.append(lbl,val);parent.appendChild(item);
+}
+function render(symbol,data){
+ const name=symbol==='BTCUSDT'?'Bitcoin · BTC':'Solana · SOL';
+ const card=document.createElement('section');card.className='panel';
+ const h=document.createElement('h2');h.textContent=name;card.appendChild(h);
+ for(const [label,key] of [['Primeiros 70% do período','development_70pct'],['Últimos 30% · teste separado','evaluation_30pct']]){
+  const item=data[key];const p=document.createElement('p');p.className='meta';p.textContent=label;card.appendChild(p);
+  const headline=document.createElement('div');headline.className='big';const r=Number(item.return_pct);
+  headline.classList.add(Number.isFinite(r)?(r>0?'positive':r<0?'negative':'neutral'):'neutral');
+  headline.textContent=(r>0?'+':'')+num(r,'%');card.appendChild(headline);
+  const grid=document.createElement('div');grid.className='metrics';
+  metric(grid,'Patrimônio simulado',num(item.final_virtual_usdt)+' USDT');
+  metric(grid,'Comprar e manter 25%',num(item.comparator_25pct_buy_hold_pct,'%'));
+  metric(grid,'Maior queda observada',num(item.max_drawdown_pct,'%'));
+  metric(grid,'Operações completas',String(item.completed_round_trips));
+  card.appendChild(grid);
+  const experiments=data.diagnostic_experiments?.[key];
+  if(experiments){
+   const sub=document.createElement('h3');sub.textContent='Diagnóstico e testes controlados';
+   sub.style.fontSize='15px';sub.style.margin='18px 0 8px';card.appendChild(sub);
+   const legend=document.createElement('p');legend.className='meta';
+   legend.textContent='Mesmo intervalo, capital fictício reiniciado por teste. A estratégia original não foi alterada.';
+   card.appendChild(legend);
+   const compare=document.createElement('div');compare.className='metrics';
+   const variants=[['Estratégia original',item],
+     ['Sinal de 5 min atualizado',experiments.fixed_alternatives?.fresh_signal_only],
+     ['Exposição pelo patrimônio',experiments.fixed_alternatives?.equity_sizing_only],
+     ['Duas correções juntas',experiments.fixed_alternatives?.fresh_signal_and_equity]];
+   variants.forEach(([label,v])=>{if(!v)return;
+     const percent=Number(v.return_pct);
+     metric(compare,label,(percent>0?'+':'')+num(percent,'%')+' · '+v.completed_round_trips+' saídas',
+            percent<0?'negative':percent>0?'positive':'neutral');
+   });
+   card.appendChild(compare);
+   const reasons=item.exit_diagnostics||{};
+   const reasonList=Object.entries(reasons).map(([reason,v])=>
+       reason+': '+v.count+' saídas, '+num(v.realized_net_pnl_usdt)+' USDT');
+   if(reasonList.length){const note=document.createElement('p');note.className='meta';
+     note.textContent='Estratégia original — motivos das saídas: '+reasonList.join(' · ');
+     card.appendChild(note);}
+   const pf=document.createElement('p');pf.className='meta';
+   pf.textContent='Estratégia original: lucro bruto '+num(item.gross_profit_usdt)+' USDT · perdas brutas '+num(item.gross_loss_abs_usdt)+' USDT · profit factor '+
+      (item.profit_factor===null?'indefinido (sem perdas encerradas)':num(item.profit_factor)) +
+      '. P&L de posições ainda abertas não integra o resultado realizado.';
+   card.appendChild(pf);
+   const stress=experiments.candidate_cost_sensitivity;
+   if(stress){const note=document.createElement('p');note.className='meta';
+     note.textContent='Duas correções, cenário com metade dos custos: '+
+       num(stress.half_costs?.return_pct,'%')+'; custos duplicados: '+
+       num(stress.double_costs?.return_pct,'%')+'.';
+     card.appendChild(note);}
+  }
+ }
+ return card;
+}
+function renderOtherWindow(symbol,data){
+ const card=document.createElement('article');card.className='panel';
+ const head=document.createElement('h3');head.textContent=symbol==='BTCUSDT'?'Bitcoin · BTC':'Solana · SOL';card.appendChild(head);
+ const baseline=data.evaluation_30pct;
+ const variant=data.diagnostic_experiments?.evaluation_30pct?.fixed_alternatives?.fresh_signal_and_equity;
+ const summary=document.createElement('p');summary.className='meta';
+ summary.textContent='Últimos 30% desta janela histórica · capital fictício reiniciado por estudo';card.appendChild(summary);
+ const grid=document.createElement('div');grid.className='metrics';
+ const show=(title,record)=>{if(!record)return;
+   const amount=Number(record.return_pct);
+   metric(grid,title,(amount>0?'+':'')+num(amount,'%')+' · '+record.completed_round_trips+' saídas',
+          amount<0?'negative':amount>0?'positive':'neutral');
+ };
+ show('Estratégia original',baseline);
+ show('Sinal atualizado + exposição pelo patrimônio',variant);
+ card.appendChild(grid);
+ return card;
+}
+async function update(){
+ el('status').textContent='Consultando resultados publicados…';
+ try{
+  const res=await fetch('./minute_compare.json?t='+Date.now(),{cache:'no-store'});
+  if(!res.ok)throw new Error('Ainda não há relatório histórico publicado');
+  const doc=await res.json();
+  if(doc.mode!=='HISTORICAL_RESEARCH_ONLY' || doc.timeframe!=='1m' ||
+     !doc.results?.BTCUSDT || !doc.results?.SOLUSDT)throw new Error('Relatório não validado');
+  el('cards').replaceChildren(render('BTCUSDT',doc.results.BTCUSDT),render('SOLUSDT',doc.results.SOLUSDT));
+  el('status').textContent='Último estudo: '+date(doc.generated_at_utc);
+  el('window').textContent='Amostra: '+date(doc.sample_start_ms)+' a '+date(doc.sample_end_ms)+'. '+doc.sample_minutes.toLocaleString('pt-BR')+' candles/ativo.';
+  el('warning').textContent=doc.warning||'Resultados exclusivamente simulados; não são recomendação ou previsão de retorno.';
+  try{
+    const response=await fetch('./minute_validation_aug2026.json?t='+Date.now(),{cache:'no-store'});
+    if(!response.ok)throw Error('Relatório separado indisponível');
+    const aug=await response.json();
+    const expectedStart=Date.UTC(2026,7,3,0,0,0,0);
+    const expectedEnd=Date.UTC(2026,7,17,0,0,0,0)-1;
+    if(aug.mode!=='HISTORICAL_RESEARCH_ONLY' || aug.diagnostics_version!==2 ||
+       aug.sample_start_ms!==expectedStart || aug.sample_end_ms!==expectedEnd ||
+       !aug.results?.BTCUSDT || !aug.results?.SOLUSDT)throw Error('Relatório de agosto não validado');
+    el('aug-cards').replaceChildren(renderOtherWindow('BTCUSDT',aug.results.BTCUSDT),
+                                     renderOtherWindow('SOLUSDT',aug.results.SOLUSDT));
+    el('aug-status').textContent='Estudo separado concluído: '+date(aug.generated_at_utc)+
+      '. Resultados exclusivamente hipotéticos; esta janela é anterior à de setembro.';
+  }catch(e){
+    el('aug-status').textContent='Estudo de agosto indisponível. Consulte o relatório no repositório privado.';
+  }
+
+ }catch(err){el('status').textContent='Sem resultados verificados';el('window').textContent=String(err.message||err)+' — consulte a execução no GitHub.';}
+}
+el('refresh').addEventListener('click',update);
+update();
+
+const robustOrder=[['may_2026','Maio de 2026'],['jul_2026','Julho de 2026'],
+ ['aug_2026','Agosto de 2026'],['sep_2026','Setembro de 2026']];
+async function loadRobustness(){
+ const status=el('robust-status'), container=el('robust-cards');
+ try{
+  const res=await fetch('./robustness_study.json?t='+Date.now(),{cache:'no-store'});
+  if(!res.ok)throw Error('Estudo não publicado');
+  const doc=await res.json();
+  if(doc.mode!=='HISTORICAL_RESEARCH_ONLY'||doc.version!==1||
+     doc.strategy_status!=='NOT_APPROVED_FOR_LIVE'||
+     !robustOrder.every(([key])=>doc.results?.[key]?.results?.BTCUSDT?.evaluation_30pct &&
+                               doc.results?.[key]?.results?.SOLUSDT?.evaluation_30pct))
+      throw Error('Estudo incompleto ou não validado');
+  container.replaceChildren();
+  for(const [key,label] of robustOrder){
+    const windowData=doc.results[key];
+    const heading=document.createElement('h3');heading.textContent=label;container.appendChild(heading);
+    for(const [symbol,name] of [['BTCUSDT','Bitcoin'],['SOLUSDT','Solana']]){
+      const entry=windowData.results[symbol].evaluation_30pct;
+      const asset=document.createElement('div');asset.className='asset-review';
+      const h=document.createElement('strong');h.textContent=name;asset.append(h);
+      const grid=document.createElement('div');grid.className='metrics';
+      const metrics=[['Original',entry.original.return_pct],
+                     ['Corrigida',entry.corrected.return_pct],
+                     ['Filtro de custos',entry.cost_aware_experimental.return_pct],
+                     ['Comprar e manter 25%',entry.original.comparator_25pct_buy_hold_pct]];
+      for(const [label,value] of metrics){
+        const n=Number(value);
+        metric(grid,label,(n>0?'+':'')+num(n,'%'),n<0?'negative':n>0?'positive':'neutral');
+      }
+      asset.append(grid);
+      const note=document.createElement('p');note.className='meta';
+      note.textContent='Operações encerradas com filtro: '+entry.cost_aware_experimental.completed_round_trips+
+                       '. Zero operações não comprova uma estratégia lucrativa.';
+      asset.append(note);container.append(asset);
+    }
+    const note=document.createElement('p');note.className='meta';
+    note.textContent='Últimos 30% deste período histórico; capital fictício reiniciado por teste.';
+    container.append(note);
+  }
+  status.textContent='Estudo concluído: '+date(doc.generated_at_utc)+'. Negociação real: DESATIVADA.';
+  el('robust-limit').textContent=String(doc.limitations||'Histórico não garante retornos futuros.');
+ }catch(err){
+  container.replaceChildren();
+  status.textContent='Estudo incompleto ou não validado: '+String(err.message||err)+'. Sem negociação real.';
+ }
+}
+el('refresh').addEventListener('click',loadRobustness);
+loadRobustness();
+</script></body></html>
