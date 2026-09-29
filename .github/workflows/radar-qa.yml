@@ -19,7 +19,7 @@ on:
 permissions:
   contents: read
 concurrency:
-  group: editalume-browser-qa
+  group: editalume-browser-qa-${{ github.ref }}
   cancel-in-progress: true
 jobs:
   browser-qa:
