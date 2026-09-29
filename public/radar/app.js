@@ -95,7 +95,7 @@ function updatePreview(){
  list.replaceChildren();
  summary.textContent="Pesquisa atual: "+fmt.format(found.length)+(found.length===1?" oportunidade compatível nesta amostra.":" oportunidades compatíveis nesta amostra.")+" Exibindo até três exemplos.";
  for(const record of found.slice(0,3)){
-  const link=officialNotice(record.source_url);if(!link)continue;
+  const link=officialNotice(record);if(!link)continue;
   const wrapper=node("div","preview-item"),content=node("div");
   content.append(node("strong",null,record.object),node("span",null,record.city+"/SP · Encerramento informado: "+dt.format(new Date(record.deadline))));
   const a=node("a",null,"Abrir fonte ↗");a.href=link;a.target="_blank";a.rel="noopener noreferrer";
