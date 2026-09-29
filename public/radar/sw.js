@@ -1,9 +1,9 @@
 /* Editalume-specific app-shell worker. Never intercept Supabase or PNCP data. */
 const PREFIX="editalume-shell-";
-const VERSION=PREFIX+"br-20260929-5";
+const VERSION=PREFIX+"br-20260929-6";
 const SHELL=["./","./index.html","./style.css?v=br-20260929-2",
-"./national.css?v=br-20260929-5","./app.js?v=br-20260929-2",
-"./national.js?v=br-20260929-5","./icon.svg",
+"./national.css?v=br-20260929-6","./app.js?v=br-20260929-2",
+"./national.js?v=br-20260929-6","./icon.svg",
 "./manifest.webmanifest?v=br-20260929-4"];
 self.addEventListener("install",event=>{
  event.waitUntil(caches.open(VERSION).then(cache=>cache.addAll(SHELL)).then(()=>self.skipWaiting()));
