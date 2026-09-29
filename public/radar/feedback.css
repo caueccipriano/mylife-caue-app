@@ -13,7 +13,9 @@ a{color:#235d40;text-decoration:underline;text-underline-offset:3px}button,input
 .form-card{background:#fff;border:1px solid #dce7db;border-radius:23px;box-shadow:0 28px 75px #274f3212;padding:42px 48px;min-width:0}
 .step{font-size:10px;letter-spacing:.11em;font-weight:800;color:#4c8260}.step span{color:#849987}
 .form-card h2,.info-box h2{font:800 29px/1.35 Manrope,sans-serif;letter-spacing:-.05em;margin:9px 0 30px}
-#feedback{display:grid;gap:30px}.field{display:grid;gap:10px}
+#feedback{display:grid;gap:30px}
+/* An explicit completion state must hide the filled survey despite grid CSS. */
+#feedback[hidden],#thanks[hidden]{display:none!important}.field{display:grid;gap:10px}
 .field>label,.contact-section>label:not(.consent){font-weight:800;font-size:12px;color:#2c523c}.optional{font-weight:500;color:#718777;font-size:11px}
 .field input,.field textarea,.contact-section>input{width:100%;border:1px solid #bfcfbe;background:#fbfdf9;border-radius:10px;min-height:49px;padding:12px 14px;color:#183626;font-size:13px;outline:none}
 .field textarea{resize:vertical;min-height:104px}.field input:focus,.field textarea:focus,.contact-section>input:focus{border-color:#438e60;box-shadow:0 0 0 3px #e1f0e4}
