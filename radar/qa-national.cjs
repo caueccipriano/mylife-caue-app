@@ -43,6 +43,21 @@ async function run(browser,name,width,height){
   return r.fulfill({json:dataset});
  });
  await page.goto(BASE,{waitUntil:"networkidle"});
+ if(name==="desktop-1400"){
+  const manifest=await page.evaluate(async()=>{
+    const href=document.querySelector('link[rel="manifest"]')?.href;
+    return href?await (await fetch(href)).json():null;
+  });
+  assert.ok(manifest&&manifest.id==="/mylife-caue-app/radar/","Editalume must have a distinct manifest identity");
+  assert.equal(manifest.scope,"/mylife-caue-app/radar/");
+  await page.waitForFunction(async()=>{
+    if(!("serviceWorker" in navigator))return false;
+    const registrations=await navigator.serviceWorker.getRegistrations();
+    return registrations.some(r=>new URL(r.scope).pathname==="/mylife-caue-app/radar/");
+  },undefined,{timeout:20000});
+  console.log("PASS Editalume PWA: separate manifest, service-worker scope and installation shell");
+ }
+
  assert.match(await page.locator('link[rel="manifest"]').getAttribute("href"),/manifest\.webmanifest/);
  await page.waitForFunction(()=>document.getElementById("national-result-count")?.textContent?.includes("3 editais"));
  assert.equal(await page.locator(".national-result-card").count(),3);
