@@ -20,8 +20,11 @@ MAX_FILTER_VALUES = 12
 def _clean_label(value: Any, limit: int) -> str | None:
     if not isinstance(value, str):
         return None
+    # Reject header/control injection before normalizing ordinary whitespace.
+    if any(ord(ch) < 32 or ord(ch) == 127 for ch in value):
+        return None
     value = " ".join(value.split())
-    if not value or len(value) > limit or any(ord(ch) < 32 for ch in value):
+    if not value or len(value) > limit:
         return None
     return value
 
