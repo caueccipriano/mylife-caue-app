@@ -1,6 +1,6 @@
 {
   "brand": "Editalume",
-  "generated_at": "2026-09-29T15:42:57.306951-03:00",
+  "generated_at": "2026-09-29T15:49:23.004595-03:00",
   "status": "sample_ok",
   "region": "SP",
   "niche": "manutenção, conservação e serviços prediais",
@@ -11,7 +11,7 @@
   "sample_limit_pages_per_modality": 12,
   "pages_examined": 24,
   "records_examined": 1200,
-  "catalog_count": 1162,
+  "catalog_count": 1161,
   "focus_count": 123,
   "coverage_note": "SP; apenas modalidades 6 e 8; até 12 páginas por modalidade; propostas com data final informada nos próximos 45 dias; não inclui todo o PNCP.",
   "exhaustive": false,
@@ -6793,20 +6793,6 @@
       "estimated_value_brl": 263296.31,
       "source": "PNCP",
       "source_url": "https://pncp.gov.br/app/editais/44215846000114/2026/182",
-      "relevance": 0,
-      "sector_focus": false
-    },
-    {
-      "id": "45353315000150-1-000072/2026",
-      "object": "[LICITANET] - CONTRATAÇÃO DE EMPRESA ESPECIALIZADA PARA PRESTAÇÃO DE SERVIÇOS DE CONFECÇÃO DE PRÓTESES DENTÁRIAS, INCLUINDO PRÓTESE TOTAL E/OU PARCIAL REMOVÍVEL, DESTINADAS AO ATENDIMENTO DOS PACIENTES DA REDE PÚBLICA MUNICIPAL DE SAÚDE, CONFORME DEMANDA DO DEPARTAMENTO DE SAÚDE.",
-      "organ": "MUNICIPIO DE JERIQUARA",
-      "city": "Jeriquara",
-      "uf": "SP",
-      "deadline": "2026-10-01T08:00:00-03:00",
-      "modality": "Dispensa",
-      "estimated_value_brl": 37700.0,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/45353315000150/2026/72",
       "relevance": 0,
       "sector_focus": false
     },
