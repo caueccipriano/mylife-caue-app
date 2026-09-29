@@ -15,7 +15,7 @@ def notice(uf="RJ",desc="Prestação de serviços de limpeza predial",serial=1):
 class NationalTests(unittest.TestCase):
  def test_all_27_ufs_covered_in_nine_rotation_slots(self):
     first=datetime(2026,9,29,0,tzinfo=timezone.utc)
-    batches=[rotation(first+timedelta(hours=6*i)) for i in range(9)]
+    batches=[rotation(first+timedelta(hours=3*i)) for i in range(9)]
     self.assertEqual(len(set(sum(batches,[]))),27)
     self.assertTrue(all(len(x)==3 and len(set(x))==3 for x in batches))
  def test_manual_selection_is_explicitly_bounded(self):
