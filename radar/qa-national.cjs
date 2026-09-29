@@ -33,6 +33,7 @@ async function run(browser,name,width,height){
  // from service-worker routing in WebKit where interception differs.
  const context=await browser.newContext({viewport:{width,height},acceptDownloads:true,serviceWorkers:name==="desktop-1400"?"allow":"block"});
  const page=await context.newPage();
+ await page.addInitScript(()=>{Object.defineProperty(navigator,"clipboard",{configurable:true,value:{writeText:async text=>{window.__lastSharedUrl=text;}}});});
  const errors=[],apiCalls=[];let bulk=false,coverageDown=false;page.on("pageerror",e=>errors.push(e.message));
  await page.route("**/rest/v1/editalume_uf_coverage*",r=>coverageDown?r.fulfill({status:503,json:{error:"synthetic outage"}}):r.fulfill({json:COVERAGE}));
  await page.route("**/rest/v1/rpc/editalume_search*",r=>{
@@ -93,6 +94,19 @@ async function run(browser,name,width,height){
  fs.mkdirSync("radar/qa-artifacts",{recursive:true});
  await dl.saveAs("radar/qa-artifacts/"+name+"-national.csv");
  assert.match(fs.readFileSync("radar/qa-artifacts/"+name+"-national.csv","utf8"),/Santos/);
+ // Link sharing is explicit: no clipboard use before click.
+ assert.equal(await page.evaluate(()=>window.__lastSharedUrl),undefined);
+ await page.click("#national-share");
+ await page.waitForFunction(()=>Boolean(window.__lastSharedUrl));
+ const shared=await page.evaluate(()=>window.__lastSharedUrl);
+ assert.equal(new URL(shared).searchParams.get("q"),"climatização");
+ assert.equal(new URL(shared).hash,"#brasil");
+ assert.match(await page.locator("#national-share-status").innerText(),/copiado/);
+ await page.goto(shared,{waitUntil:"networkidle"});
+ assert.equal(await page.locator("#national-q").inputValue(),"climatização");
+ await page.waitForFunction(()=>document.getElementById("national-result-count")?.textContent?.includes("1 edital"));
+ await page.goto(BASE,{waitUntil:"networkidle"});
+ await page.waitForFunction(()=>document.getElementById("national-result-count")?.textContent?.includes("3 editais"));
  if(width<=390)await page.locator(".national-search-card").screenshot({path:"radar/qa-artifacts/"+name+"-national.png"});
  assert.ok(apiCalls.some(x=>x.p_uf==="RJ")&&apiCalls.some(x=>x.p_uf==="AM"));
  assert.ok(apiCalls.every(x=>x.p_limit===12),"Small-screen pagination must request at most twelve results");
@@ -115,6 +129,12 @@ async function run(browser,name,width,height){
  assert.equal(await page.locator("#national-uf-count").innerText(),"—/27");
  assert.equal(await page.locator(".national-state.unknown").count(),27);
  assert.equal(await page.locator(".national-state.has-data").count(),0);
+ // The search can be shared even when coverage information is unavailable.
+ await page.selectOption("#national-uf","AM");
+ await page.click("#national-share");
+ await page.waitForFunction(()=>window.__lastSharedUrl?.includes("uf=AM"));
+ assert.equal(new URL(await page.evaluate(()=>window.__lastSharedUrl)).searchParams.get("uf"),"AM");
+ await page.selectOption("#national-uf","");
  assert.match(await page.locator('.national-state').first().getAttribute("aria-label"),/não verificada/);
  // Search continues independently even when the coverage count is unknown.
  await page.waitForFunction(()=>document.getElementById("national-result-count")?.textContent?.includes("15 editais"));
