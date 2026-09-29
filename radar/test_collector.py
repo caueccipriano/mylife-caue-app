@@ -39,6 +39,15 @@ class CollectorTests(unittest.TestCase):
         x=item()
         x["valorTotalEstimado"]=0
         self.assertIsNone(eligible(x,NOW)["estimated_value_brl"])
+    def test_id_year_and_serial_must_match_source(self):
+        wrong_year=item()
+        wrong_year["anoCompra"]=2025
+        wrong_serial=item()
+        wrong_serial["sequencialCompra"]=12
+        self.assertIsNone(catalog_record(wrong_year,NOW))
+        self.assertIsNone(catalog_record(wrong_serial,NOW))
+        self.assertIsNotNone(catalog_record(item(),NOW))
+
     def test_partial_pagination_and_dedupe(self):
         def downloader(url):
             if "codigoModalidadeContratacao=8" in url:
