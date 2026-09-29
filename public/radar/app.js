@@ -83,7 +83,9 @@ $("more").addEventListener("click",()=>{visible+=12;render(false);});
 $("copyrightYear").textContent=new Date().getFullYear();
 async function init(){
  try{
-  const res=await fetch("./opportunities.json?cache="+Date.now(),{cache:"no-store"});
+  let res=await fetch("./search-index.json?cache="+Date.now(),{cache:"no-store"});
+  const indexed=res.ok;
+  if(!indexed)res=await fetch("./opportunities.json?cache="+Date.now(),{cache:"no-store"});
   if(!res.ok)throw Error("HTTP "+res.status);
   const doc=await res.json();
   if(!doc||!Array.isArray(doc.opportunities))throw Error("Formato inválido");
@@ -95,14 +97,14 @@ async function init(){
    for(const v of unique){let opt=node("option",null,v);opt.value=v;$(key).append(opt);}
   }
   const focus=data.filter(r=>r.sector_focus||(!("sector_focus" in r)&&Number(r.relevance)>0)).length;
-  const metrics={metricCatalog:data.length,metricFocus:focus,metricScanned:Number(doc.records_examined)||0,heroCount:data.length,heroFocus:focus};
+  const metrics={metricCatalog:data.length,metricFocus:focus,metricScanned:Number(doc.records_examined_this_run??doc.records_examined)||0,heroCount:data.length,heroFocus:focus};
   for(const key in metrics)$(key).textContent=fmt.format(metrics[key]);
   const time=Date.parse(doc.generated_at),stale=!Number.isFinite(time)||Date.now()-time>36*3600000;
-  const partial=doc.status==="partial"||!Array.isArray(doc.catalog);
+  const partial=indexed?!!doc.partial:doc.status==="partial";
   let msg=(stale?"⚠ Dados desatualizados. ":"")+(partial?"⚠ Coleta parcial ou versão reduzida. ":"")+
   (Number.isFinite(time)?"Última atualização: "+dt.format(new Date(time))+". ":"Data da coleta não verificada. ")+
-  fmt.format(Number(doc.records_examined)||0)+" registros examinados · "+fmt.format(data.length)+" oportunidades nesta amostra. "+
-  "Cobertura limitada a SP e modalidades monitoradas; para a base completa consulte o PNCP.";
+  fmt.format(Number(doc.records_examined_this_run??doc.records_examined)||0)+" registros examinados nesta coleta · "+fmt.format(data.length)+" oportunidades nesta amostra. "+
+  "Amostra parcial. Registros de coletas anteriores podem ter sido alterados ou cancelados; para a fonte integral consulte o PNCP.";
   if(doc.status==="awaiting_first_scan")msg="Primeira coleta ainda não concluída. Nenhum edital está confirmado.";
   $("notice").className="data-notice"+(stale||partial?" warning":"");$("notice").textContent=msg;
   ready=true;render(true);
