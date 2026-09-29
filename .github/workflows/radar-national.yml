@@ -22,7 +22,7 @@ on:
       - 'supabase/functions/editalume-ingest/**'
       - '.github/workflows/radar-national.yml'
   schedule:
-    - cron: '23 0,6,12,18 * * *'
+    - cron: '23 0,3,6,9,12,15,18,21 * * *'
 permissions:
   contents: read
 concurrency:
