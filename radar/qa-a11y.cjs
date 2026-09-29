@@ -53,7 +53,8 @@ async function audit(page,label,errors){
  let passed=true;
  try{
   for(const config of [{name:"desktop",width:1440,height:900},{name:"mobile",width:390,height:844}]){
-   const page=await browser.newPage({viewport:{width:config.width,height:config.height}});
+   const context=await browser.newContext({viewport:{width:config.width,height:config.height}});
+   const page=await context.newPage();
    const errors=[];page.on("pageerror",e=>errors.push(e.message));
    await page.route("**/radar/search-index.json*",r=>r.fulfill({json:fixture}));
    await page.route("**/radar/refresh-status.json*",r=>r.fulfill({json:{degraded:false,attempted_at:stamp}}));
@@ -65,6 +66,7 @@ async function audit(page,label,errors){
    await page.click("#previewAlert");
    if(!await audit(page,config.name+"-premium-preview",errors))passed=false;
    await page.close();
+   await context.close();
   }
  }finally{await browser.close();}
  if(!passed)process.exitCode=1;
