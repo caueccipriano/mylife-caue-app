@@ -25,7 +25,13 @@ def valid_prior(row,now):
         return False
     if not re.fullmatch(r"\d{14}-\d+-\d+/\d{4}",row["id"]):
         return False
-    if not isinstance(row.get("source_url"),str) or not row["source_url"].startswith("https://pncp.gov.br/app/editais/"):
+    if not isinstance(row.get("source_url"),str):
+        return False
+    match=re.fullmatch(r"(\d{14})-\d+-(\d+)/(\d{4})",row["id"])
+    if not match:
+        return False
+    expected=f"https://pncp.gov.br/app/editais/{match.group(1)}/{match.group(3)}/{int(match.group(2))}"
+    if row["source_url"] not in (expected,expected+"/"):
         return False
     if row.get("uf") != "SP":
         return False
