@@ -29,6 +29,7 @@ function card(record){
  const unreconfirmed=Boolean(lastIndexedAt && record.last_seen_at && record.last_seen_at!==lastIndexedAt);
  tags.append(node("span","tag",record.sector_focus?"SERVIÇOS · SELECIONADO":"SETOR GERAL"),
              node("span","tag gray",record.city+"/SP"));
+ if(lastIndexedAt && record.last_seen_at===lastIndexedAt)tags.append(node("span","tag observed-tag","VISTO NA COLETA"));
  if(unreconfirmed)tags.append(node("span","tag stale-tag","NÃO RECONFIRMADO"));
  left.append(tags,node("h4",null,record.object),node("div","card-organ",record.organ||"Órgão não informado"));
  const metadata=node("div","card-metadata");
@@ -37,7 +38,8 @@ function card(record){
  attr("Controle",record.id||"Não informado");left.append(metadata);
  const details=node("div");
  details.append(node("div","label","PRAZO INFORMADO"),node("div","value",dt.format(new Date(record.deadline))),
-                node("div","label",record.estimated_value_brl>0?"Valor estimado · "+money.format(record.estimated_value_brl):"Valor não informado"));
+                node("div","label","VALOR ESTIMADO"),
+                node("div","amount",record.estimated_value_brl>0?money.format(record.estimated_value_brl):"Não informado"));
  const a=node("a",null,"Conferir edital ↗");a.href=link.href;a.target="_blank";a.rel="noopener noreferrer";
  aside.append(details,a);el.append(left,aside);return el;
 }
@@ -66,6 +68,22 @@ function render(reset){
  $("resultsCount").textContent=fmt.format(found.length)+(found.length===1?" oportunidade encontrada":" oportunidades encontradas");
  $("shown").textContent="Exibindo "+fmt.format(Math.min(visible,found.length))+" de "+fmt.format(found.length)+" oportunidades nesta amostra.";
  $("more").hidden=visible>=found.length;$("empty").hidden=found.length!==0;$("csv").disabled=found.length===0;
+ if(!$("alertPreview").hidden)updatePreview();
+}
+function updatePreview(){
+ const summary=$("previewSummary"),list=$("previewItems");
+ list.replaceChildren();
+ summary.textContent="Pesquisa atual: "+fmt.format(found.length)+(found.length===1?" oportunidade compatível nesta amostra.":" oportunidades compatíveis nesta amostra.")+" Exibindo até três exemplos.";
+ for(const record of found.slice(0,3)){
+  let link;
+  try{link=new URL(record.source_url);}catch(_){continue;}
+  if(link.protocol!=="https:"||link.hostname!=="pncp.gov.br"||!link.pathname.startsWith("/app/editais/"))continue;
+  const wrapper=node("div","preview-item"),content=node("div");
+  content.append(node("strong",null,record.object),node("span",null,record.city+"/SP · Encerramento informado: "+dt.format(new Date(record.deadline))));
+  const a=node("a",null,"Abrir fonte ↗");a.href=link.href;a.target="_blank";a.rel="noopener noreferrer";
+  wrapper.append(content,a);list.append(wrapper);
+ }
+ if(!found.length)list.append(node("p","preview-disclaimer","Nenhum resultado com os filtros atuais. O futuro serviço não garante a existência de novas oportunidades."));
 }
 function csvSafe(value){
  let str=String(value??"").replace(/[\r\n]+/g," ").trim();
@@ -84,6 +102,14 @@ $("filters").addEventListener("reset",()=>setTimeout(()=>render(true),0));
 for(const key of ["q","segment","city","modality","deadline","minValue","observedOnly"])$(key).addEventListener("input",()=>render(true));
 $("sort").addEventListener("change",()=>render(false));
 $("more").addEventListener("click",()=>{visible+=12;render(false);});
+$("previewAlert").addEventListener("click",()=>{
+ $("alertPreview").hidden=false;$("previewAlert").setAttribute("aria-expanded","true");
+ updatePreview();$("alertPreview").scrollIntoView({behavior:"smooth",block:"start"});
+});
+$("closePreview").addEventListener("click",()=>{
+ $("alertPreview").hidden=true;$("previewAlert").setAttribute("aria-expanded","false");
+ $("previewAlert").focus();
+});
 $("copyrightYear").textContent=new Date().getFullYear();
 async function init(){
  try{
@@ -102,7 +128,11 @@ async function init(){
    for(const v of unique){let opt=node("option",null,v);opt.value=v;$(key).append(opt);}
   }
   const focus=data.filter(r=>r.sector_focus||(!("sector_focus" in r)&&Number(r.relevance)>0)).length;
-  const metrics={metricCatalog:data.length,metricFocus:focus,metricScanned:Number(doc.records_examined_this_run??doc.records_examined)||0,heroCount:data.length,heroFocus:focus};
+  // The historical index can carry forward records no longer open today.
+  const active=data.filter(r=>Number.isFinite(Date.parse(r.deadline))&&Date.parse(r.deadline)>Date.now());
+  const activeFocus=active.filter(r=>r.sector_focus||(!("sector_focus" in r)&&Number(r.relevance)>0)).length;
+  const scanned=Number(doc.sample_fallback?doc.verified_sample_records_examined:doc.records_examined_this_run??doc.records_examined)||0;
+  const metrics={metricCatalog:active.length,metricFocus:activeFocus,metricScanned:scanned,heroCount:active.length,heroFocus:activeFocus};
   for(const key in metrics)$(key).textContent=fmt.format(metrics[key]);
   const time=Date.parse(doc.generated_at),stale=!Number.isFinite(time)||Date.now()-time>36*3600000;
   const partial=indexed?!!doc.partial:doc.status==="partial";
@@ -120,13 +150,14 @@ async function init(){
   const carried=Number(doc.carried_forward_unreconfirmed)||0;
   let msg=(stale?"⚠ Dados desatualizados. ":"")+(partial?"⚠ Coleta parcial ou versão reduzida. ":"")+
   (Number.isFinite(time)?"Última atualização: "+dt.format(new Date(time))+". ":"Data da coleta não verificada. ")+
-  fmt.format(Number(doc.records_examined_this_run??doc.records_examined)||0)+" registros examinados nesta coleta · "+fmt.format(data.length)+" oportunidades nesta amostra. "+
+  fmt.format(scanned)+(doc.sample_fallback?" registros examinados no recorte auxiliar":" registros examinados nesta coleta")+" · "+fmt.format(active.length)+" registros no catálogo ainda com prazo informado no futuro. "+
   "Amostra parcial. Registros de coletas anteriores podem ter sido alterados ou cancelados; para a fonte integral consulte o PNCP.";
+  if(doc.sample_fallback)msg+="⚠ A consulta ampliada não respondeu; o índice foi parcialmente atualizado com a coleta auxiliar recente. ";
   if(carried)msg+=fmt.format(carried)+" registros vieram de coletas anteriores sem nova confirmação. ";
   if(refreshFailed)msg="⚠ A última tentativa de atualização falhou"+(attemptedAt?" em "+dt.format(new Date(attemptedAt)):"")+". Abaixo estão os dados da última coleta disponível, não uma confirmação atual. "+msg;
   if(doc.status==="awaiting_first_scan")msg="Primeira coleta ainda não concluída. Nenhum edital está confirmado.";
   $("notice").className="data-notice"+(stale||partial||refreshFailed?" warning":"");$("notice").textContent=msg;
-  ready=true;render(true);
+  ready=true;$("previewAlert").disabled=false;render(true);
  }catch(err){
   $("notice").className="data-notice error";
   $("notice").textContent="Não foi possível validar a base agora. Consulte diretamente o PNCP; dados antigos não serão apresentados como atuais.";
