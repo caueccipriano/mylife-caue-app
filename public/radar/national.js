@@ -6,6 +6,7 @@ const API="https://jhxhbgprjqppzfrjdfvj.supabase.co/rest/v1";
 const KEY="sb_publishable_O85v7HRJg7br9kxUbvticw_NNO8jp4w";
 const STATES={"AC":"Acre","AL":"Alagoas","AP":"Amapá","AM":"Amazonas","BA":"Bahia","CE":"Ceará","DF":"Distrito Federal","ES":"Espírito Santo","GO":"Goiás","MA":"Maranhão","MT":"Mato Grosso","MS":"Mato Grosso do Sul","MG":"Minas Gerais","PA":"Pará","PB":"Paraíba","PR":"Paraná","PE":"Pernambuco","PI":"Piauí","RJ":"Rio de Janeiro","RN":"Rio Grande do Norte","RS":"Rio Grande do Sul","RO":"Rondônia","RR":"Roraima","SC":"Santa Catarina","SP":"São Paulo","SE":"Sergipe","TO":"Tocantins"};
 const $=id=>document.getElementById(id);
+const PAGE_SIZE=12;
 const fmt=new Intl.NumberFormat("pt-BR"),money=new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL",maximumFractionDigits:0});
 const dt=new Intl.DateTimeFormat("pt-BR",{dateStyle:"short",timeStyle:"short",timeZone:"America/Sao_Paulo"});
 const node=(tag,cls,txt)=>{let x=document.createElement(tag);if(cls)x.className=cls;if(txt!==undefined)x.textContent=String(txt);return x};
@@ -67,7 +68,7 @@ function renderCards(){
  }
  $("national-result-count").textContent=fmt.format(state.total)+(state.total===1?" edital encontrado":" editais encontrados");
  $("national-page-indicator").textContent="Mostrando "+fmt.format(Math.min(state.total,state.offset+state.items.length))+" de "+fmt.format(state.total)+" registros indexados. Confirme tudo no PNCP.";
- $("national-next").hidden=state.items.length<24||state.offset+state.items.length>=state.total;
+ $("national-next").hidden=state.items.length<PAGE_SIZE||state.offset+state.items.length>=state.total;
  $("national-download").disabled=!state.items.length;
  const uf=$("national-uf").value;
  $("national-empty").hidden=state.items.length>0;
@@ -84,7 +85,7 @@ function args(){
   p_city:$("national-city").value.trim().slice(0,90)||null,
   p_focus:focus===""?null:focus==="true",
   p_days:days?Number(days):null,p_min_value:amount?Math.max(0,Number(amount)):null,
-  p_sort:$("national-sort").value,p_limit:24,p_offset:state.offset};
+  p_sort:$("national-sort").value,p_limit:PAGE_SIZE,p_offset:state.offset};
 }
 async function search(){
  if(state.request)state.request.abort();
@@ -143,7 +144,7 @@ function init(){
   $(id).addEventListener(id==="national-q"||id==="national-city"||id==="national-min"?"input":"change",filtersChanged);
  }
  $("national-reset").addEventListener("click",()=>{$("national-form").reset();state.offset=0;renderCoverage();search()});
- $("national-next").addEventListener("click",()=>{state.offset+=24;search();$("brasil").scrollIntoView({behavior:"smooth",block:"start"})});
+ $("national-next").addEventListener("click",()=>{state.offset+=PAGE_SIZE;search();$("brasil").scrollIntoView({behavior:"smooth",block:"start"})});
  $("national-download").addEventListener("click",downloadPage);
  renderCoverage();loadCoverage();search();
 }
