@@ -117,3 +117,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 .plans-grid .plan-free>.plan-label{color:#315e46}
 .plans-grid .plan-premium>.plan-label{color:#e4f4db}
 @media(max-width:420px){.results-controls select{min-width:0}}
+
+/* 27-UF release: compact, accessible supplementary provenance details. */
+.notice-details{margin-top:11px;border-top:1px solid #cbd6c8;padding-top:9px}
+.notice-details summary{display:list-item;cursor:pointer;font-size:12px;font-weight:800;color:#315641;line-height:1.6}
+.data-notice.warning .notice-details summary{color:#77521b}
+.notice-details p{margin:9px 0 0;font-size:11px;line-height:1.75;max-width:940px;color:#455949;overflow-wrap:anywhere}
+.data-notice.warning .notice-details p{color:#6a4d27}
+.notice-details summary:focus-visible{outline:3px solid #317257;outline-offset:4px;border-radius:4px}
