@@ -9,6 +9,11 @@ on:
       - 'public/radar/style.css'
       - 'public/radar/national.js'
       - 'public/radar/national.css'
+      - 'public/radar/avaliar.html'
+      - 'public/radar/feedback.js'
+      - 'public/radar/feedback.css'
+      - 'radar/qa-feedback.cjs'
+      - 'supabase/functions/editalume-feedback/**'
       - 'public/radar/sw.js'
       - 'public/radar/pwa.js'
       - 'public/radar/manifest.webmanifest'
@@ -22,6 +27,11 @@ on:
       - 'public/radar/style.css'
       - 'public/radar/national.js'
       - 'public/radar/national.css'
+      - 'public/radar/avaliar.html'
+      - 'public/radar/feedback.js'
+      - 'public/radar/feedback.css'
+      - 'radar/qa-feedback.cjs'
+      - 'supabase/functions/editalume-feedback/**'
       - 'radar/qa-national.cjs'
       - 'radar/qa-browser.cjs'
       - '.github/workflows/radar-qa.yml'
@@ -50,6 +60,10 @@ jobs:
           node --check public/radar/national.js
           node --check public/radar/sw.js
           node --check public/radar/pwa.js
+          node --check public/radar/feedback.js
+          node --check radar/qa-feedback.cjs
+          cp supabase/functions/editalume-feedback/index.ts /tmp/editalume-feedback-edge.mjs
+          node --check /tmp/editalume-feedback-edge.mjs
           node --check radar/qa-national.cjs
           python3 -m http.server 4173 --directory public > /tmp/radar-server.log 2>&1 &
           for n in $(seq 1 20); do curl --fail --silent http://127.0.0.1:4173/radar/ > /dev/null && break; sleep 1; done
@@ -57,6 +71,8 @@ jobs:
         run: node radar/qa-browser.cjs
       - name: National desktop/mobile/WebKit and Supabase RPC mock smoke
         run: node radar/qa-national.cjs
+      - name: Pilot feedback desktop, 320px and Safari-engine form QA
+        run: node radar/qa-feedback.cjs
       - name: Upload screenshot and filtered export for review
         if: always()
         uses: actions/upload-artifact@v4
