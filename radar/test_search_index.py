@@ -99,6 +99,9 @@ class IndexTests(unittest.TestCase):
         self.assertTrue(valid_prior(prior,NOW))
         self.assertFalse(valid_prior({**prior,"deadline":(NOW-timedelta(days=1)).isoformat()},NOW))
         self.assertFalse(valid_prior({**prior,"source_url":"https://attacker.example.com/"},NOW))
+        self.assertFalse(valid_prior({**prior,"source_url":prior["source_url"]+"?redirect=attacker"},NOW))
+        self.assertFalse(valid_prior({**prior,"source_url":"https://pncp.gov.br/app/editais/99999999999999/2026/1"},NOW))
+        self.assertFalse(valid_prior({**prior,"source_url":prior["source_url"]+"/../../other"},NOW))
     def test_capped_pagination_disclosed(self):
         def get(end,mod,page):return {"data":[sample() for _ in range(50)]}
         result=build(now=NOW,requester=get,modalities=(8,),max_pages=1)
