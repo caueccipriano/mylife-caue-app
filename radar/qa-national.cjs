@@ -62,7 +62,7 @@ async function run(browser,name,width,height){
  fs.mkdirSync("radar/qa-artifacts",{recursive:true});
  await dl.saveAs("radar/qa-artifacts/"+name+"-national.csv");
  assert.match(fs.readFileSync("radar/qa-artifacts/"+name+"-national.csv","utf8"),/Santos/);
- if(width<=390)await page.screenshot({path:"radar/qa-artifacts/"+name+"-national.png",fullPage:true});
+ if(width<=390)await page.locator(".national-search-card").screenshot({path:"radar/qa-artifacts/"+name+"-national.png"});
  assert.ok(apiCalls.some(x=>x.p_uf==="RJ")&&apiCalls.some(x=>x.p_uf==="AM"));
  assert.deepEqual(errors,[]);
  console.log("PASS "+name+" national: data, 27 states, region filters, empty coverage, CSV, viewport");
