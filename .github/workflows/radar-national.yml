@@ -1,0 +1,55 @@
+name: Editalume · national PNCP UF rotation
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'radar/national_batch.py'
+      - 'radar/collector.py'
+      - 'radar/test_national_batch.py'
+      - '.github/workflows/radar-national.yml'
+  schedule:
+    - cron: '13 0,6,12,18 * * *'
+permissions:
+  contents: read
+  id-token: write
+concurrency:
+  group: editalume-national-oidc-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  sample-uf:
+    runs-on: ubuntu-latest
+    timeout-minutes: 9
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Offline safety tests
+        run: PYTHONPATH=radar python -m unittest discover -s radar -p 'test_*.py' -v
+      - name: Sample next UF; do not hammer PNCP after 429
+        id: collect
+        shell: bash
+        run: |
+          set -euo pipefail
+          python radar/national_batch.py --output /tmp/editalume-national.json
+          if python -c 'import json; d=json.load(open("/tmp/editalume-national.json")); exit(0 if d.get("skip") else 1)'; then
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::PNCP 429 cooldown is active; no request or write."
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Send validated public metadata using short-lived GitHub OIDC identity
+        if: steps.collect.outputs.skip == 'false'
+        shell: bash
+        env:
+          SUPABASE_FUNCTION_URL: https://jhxhbgprjqppzfrjdfvj.supabase.co/functions/v1/editalume-ingest
+        run: |
+          set -euo pipefail
+          CLAIM="$(curl --fail --silent --show-error -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=editalume-national-sync-v1")"
+          TOKEN="$(printf '%s' "$CLAIM" | python -c 'import json,sys; print(json.load(sys.stdin)["value"])')"
+          echo "::add-mask::$TOKEN"
+          curl --fail-with-body --silent --show-error --retry 0 --max-time 60 \
+            -X POST "$SUPABASE_FUNCTION_URL" \
+            -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+            --data-binary @/tmp/editalume-national.json
