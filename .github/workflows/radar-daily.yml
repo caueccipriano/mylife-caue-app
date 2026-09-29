@@ -28,15 +28,47 @@ jobs:
         run: node --check public/radar/app.js
       - name: Offline validation
         run: PYTHONPATH=radar python -m unittest discover -s radar -p 'test_*.py' -v
-      - name: Refresh public PNCP sample without credentials
-        run: python radar/collector.py --output public/radar/opportunities.json
-      - name: Extend deduplicated searchable PNCP index
-        run: python radar/search_index.py --output public/radar/search-index.json
+      - name: Refresh public PNCP sample without credentials; keep last valid report on outage
+        shell: bash
+        run: |
+          if python radar/collector.py --output public/radar/opportunities.json; then
+            echo "RADAR_SAMPLE_RESULT=success" >> "$GITHUB_ENV"
+          else
+            echo "RADAR_SAMPLE_RESULT=failed" >> "$GITHUB_ENV"
+            test -s public/radar/opportunities.json || exit 1
+            echo "::warning::PNCP sample failed. Retaining last stored report without changing timestamp."
+          fi
+      - name: Extend deduplicated searchable PNCP index; keep last valid index on outage
+        shell: bash
+        run: |
+          if python radar/search_index.py --output public/radar/search-index.json; then
+            echo "RADAR_INDEX_RESULT=success" >> "$GITHUB_ENV"
+          else
+            echo "RADAR_INDEX_RESULT=failed" >> "$GITHUB_ENV"
+            test -s public/radar/search-index.json || exit 1
+            echo "::warning::PNCP index failed. Retaining last stored index without changing timestamp."
+          fi
+      - name: Record last attempted refresh and degraded status
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, os
+          from datetime import datetime,timezone
+          from pathlib import Path
+          sample=os.environ.get("RADAR_SAMPLE_RESULT", "unknown")
+          index=os.environ.get("RADAR_INDEX_RESULT", "unknown")
+          result={"attempted_at":datetime.now(timezone.utc).isoformat(),
+                  "sample_refresh":sample,"index_refresh":index,
+                  "degraded":sample!="success" or index!="success",
+                  "notice":"An attempted refresh may fail. Existing documents retain their original successful data timestamp. Source PNCP always prevails."}
+          Path("public/radar/refresh-status.json").write_text(json.dumps(result,indent=2)+"\n",encoding="utf-8")
+          print(result)
+          PY
       - name: Commit searchable official listings to public site
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add public/radar/opportunities.json public/radar/search-index.json
+          git add public/radar/opportunities.json public/radar/search-index.json public/radar/refresh-status.json
           if ! git diff --cached --quiet; then
             git commit -m 'data: refresh public PNCP sample'
             git pull --rebase origin main
