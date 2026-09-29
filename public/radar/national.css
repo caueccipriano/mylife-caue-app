@@ -99,3 +99,15 @@
 }
 @media(max-width:340px){.national-secondary-filters{grid-template-columns:1fr}.national-state-grid{grid-template-columns:repeat(5,minmax(0,1fr))}}
 @media(prefers-reduced-motion:reduce){.national-section *{scroll-behavior:auto;transition:none!important}}
+
+/* WCAG audit remediation: stronger contrast on white and dark surfaces. */
+.national-heading .national-progress-card p{color:#edf8e6;font-weight:750}
+.national-card-head p{color:#385943}
+.national-coverage-head p{color:#385943}
+.national-coverage-head .national-eyebrow{color:#356447}
+.national-state.pending{color:#425e4a;background:#e9eeea}
+.national-pill.muted{color:#365b40;background:#eef4ed;border-color:#b5ceb8}
+.national-result-meta{color:#385640;font-weight:700}
+.national-result-side .national-label{color:#3e5a46}
+.national-pagination p{color:#385640}
+.national-legal{color:#405f4d}
