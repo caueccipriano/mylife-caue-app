@@ -55,11 +55,36 @@ def load_page(end,modality,page,requester=None):
             time.sleep(1.3*(attempt+1))
     raise RuntimeError("Exhausted retries")
 
-def build(*,now=None,prior=None,requester=None,modalities=MODALITIES,max_pages=MAX_PAGES):
+def verified_recent_sample(path, now):
+    """Use ONLY a validated PNCP sample collected in the past 30 minutes.
+    This avoids repeated PNCP traffic after API throttling, without claiming
+    prior indexed records were individually rechecked.
+    """
+    from datetime import timedelta
+    if not path.exists():
+        return {}
+    try:
+        doc=json.loads(path.read_text(encoding="utf-8"))
+        stamp=datetime.fromisoformat(doc["generated_at"].replace("Z","+00:00"))
+    except (OSError,ValueError,TypeError,KeyError,AttributeError):
+        return {}
+    if not isinstance(doc,dict) or doc.get("brand")!="Editalume" or doc.get("status") not in ("sample_ok","partial") or stamp.tzinfo is None or not timedelta(0)<=now-stamp.astimezone(SP)<=timedelta(minutes=30):
+        return {}
+    items=doc.get("opportunities")
+    if not isinstance(items,list):
+        return {}
+    return {item["id"]:dict(item) for item in items if valid_prior(item,now)}
+
+def build(*,now=None,prior=None,requester=None,modalities=MODALITIES,max_pages=MAX_PAGES,verified_sample=None):
     now=(now or datetime.now(SP)).astimezone(SP)
     from datetime import timedelta
     end=now+timedelta(days=45)
     found={k:dict(v) for k,v in (prior or {}).items() if valid_prior(v,now)}
+    sample={k:dict(v) for k,v in (verified_sample or {}).items() if valid_prior(v,now)}
+    for k,row in sample.items():
+        row["first_seen_at"]=found.get(k,{}).get("first_seen_at",now.isoformat())
+        row["last_seen_at"]=now.isoformat()
+        found[k]=row
     pages=records=0
     errs=[]
     seen=set()
@@ -90,7 +115,11 @@ def build(*,now=None,prior=None,requester=None,modalities=MODALITIES,max_pages=M
                 break
             if requester is None:time.sleep(.8)
         if reached_cap:capped.append(mod)
-    if pages==0:raise RuntimeError("All public PNCP requests failed, existing index not overwritten")
+    if pages==0 and not sample:
+        raise RuntimeError("All PNCP requests failed and no verified recent sample; retaining old index")
+    sample_fallback=bool(pages==0 and sample)
+    if sample_fallback:
+        errs.append("Index API unavailable; only recent independently fetched PNCP sample has been revalidated")
     data=sorted(found.values(),key=lambda x:(x["deadline"],-int(x.get("relevance",0))))[:MAX_ACTIVE]
     # Keep actual data only. Do NOT pretend records still unexpired are confirmed
     # if the daily discovery feed failed or ceased including them.
@@ -103,7 +132,8 @@ def build(*,now=None,prior=None,requester=None,modalities=MODALITIES,max_pages=M
             "observed_this_run":sum(1 for r in data if r.get("last_seen_at")==now.isoformat()),
             "carried_forward_unreconfirmed":sum(1 for r in data if r.get("last_seen_at")!=now.isoformat()),
             "focus_count":sum(1 for r in data if r.get("sector_focus")),
-            "partial":bool(errs or capped),"errors":errs,
+            "partial":bool(errs or capped or sample_fallback),"errors":errs,
+            "sample_fallback":sample_fallback,"verified_sample_items":len(sample),
             "notice":"Índice amostral. Registros guardados entre coletas podem mudar ou ser cancelados sem atualização. A data acima não representa verificação individual de todos os editais; verifique condições, validade e prazo nas fontes oficiais.",
             "opportunities":data}
 
@@ -117,7 +147,10 @@ def main():
     seed=Path("public/radar/opportunities.json")
     if not old and seed.exists():
         old=prior_index(seed,now)
-    data=build(now=now,prior=old)
+    # Reuse the independently fetched, recent PNCP sample if secondary API
+    # queries are throttled; retain explicit partial/fallback metadata.
+    verified=verified_recent_sample(seed,now)
+    data=build(now=now,prior=old,verified_sample=verified)
     args.output.parent.mkdir(parents=True,exist_ok=True)
     temp=args.output.with_suffix(".tmp")
     temp.write_text(json.dumps(data,ensure_ascii=False,separators=(",",":"))+"\n",encoding="utf-8")

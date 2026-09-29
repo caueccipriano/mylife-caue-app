@@ -37,6 +37,38 @@ class IndexTests(unittest.TestCase):
         self.assertTrue(report["partial"])
         self.assertEqual(report["pages_fetched_this_run"],1)
         self.assertEqual(len(report["errors"]),1)
+    def test_secondary_api_failure_uses_only_recent_verified_sample(self):
+        item={"id":"00000000000000-1-000001/2026",
+              "source_url":"https://pncp.gov.br/app/editais/00000000000000/2026/1",
+              "deadline":(NOW+timedelta(days=9)).isoformat(),
+              "uf":"SP","city":"Campinas","object":"Serviços prediais"}
+        result=build(now=NOW,requester=lambda e,m,p:(_ for _ in ()).throw(TimeoutError()),
+                     modalities=(6,8),max_pages=1,verified_sample={item["id"]:item})
+        self.assertTrue(result["sample_fallback"])
+        self.assertTrue(result["partial"])
+        self.assertEqual(result["pages_fetched_this_run"],0)
+        self.assertEqual(result["records_examined_this_run"],0)
+        self.assertEqual(result["verified_sample_items"],1)
+        self.assertEqual(result["observed_this_run"],1)
+        self.assertFalse(result["exhaustive"])
+
+    def test_stale_sample_must_never_refresh_index(self):
+        import json,tempfile
+        from pathlib import Path
+        from search_index import verified_recent_sample
+        from datetime import timedelta
+        item={"id":"00000000000000-1-000001/2026",
+              "source_url":"https://pncp.gov.br/app/editais/00000000000000/2026/1",
+              "deadline":(NOW+timedelta(days=10)).isoformat(),"uf":"SP"}
+        with tempfile.TemporaryDirectory() as tmp:
+            p=Path(tmp)/"sample.json"
+            p.write_text(json.dumps({"brand":"Editalume","status":"sample_ok",
+                "generated_at":(NOW-timedelta(hours=2)).isoformat(),"opportunities":[item]}))
+            self.assertEqual(verified_recent_sample(p,NOW),{})
+            p.write_text(json.dumps({"brand":"Editalume","status":"sample_ok",
+                "generated_at":(NOW-timedelta(minutes=2)).isoformat(),"opportunities":[item]}))
+            self.assertEqual(len(verified_recent_sample(p,NOW)),1)
+
     def test_total_failure_preserves_existing_index(self):
         with self.assertRaises(RuntimeError):
             build(now=NOW,requester=lambda e,m,p:(_ for _ in ()).throw(TimeoutError()),

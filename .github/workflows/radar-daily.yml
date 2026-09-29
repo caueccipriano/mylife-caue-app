@@ -42,7 +42,12 @@ jobs:
         shell: bash
         run: |
           if python radar/search_index.py --output public/radar/search-index.json; then
-            echo "RADAR_INDEX_RESULT=success" >> "$GITHUB_ENV"
+            if python -c 'import json; d=json.load(open("public/radar/search-index.json")); exit(0 if not d.get("partial") else 1)'; then
+              echo "RADAR_INDEX_RESULT=success" >> "$GITHUB_ENV"
+            else
+              echo "RADAR_INDEX_RESULT=partial" >> "$GITHUB_ENV"
+              echo "::warning::Index is partial; the report discloses any reused verified sample and stale carry-forward entries."
+            fi
           else
             echo "RADAR_INDEX_RESULT=failed" >> "$GITHUB_ENV"
             test -s public/radar/search-index.json || exit 1
