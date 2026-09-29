@@ -15,7 +15,7 @@ Checkpoint: 29 September 2026. Distinguish ideas, code merged into GitHub main, 
 | Product | Already in main / existing work | Next specific microtask | Release gate |
 | --- | --- | --- | --- |
 | Fôlego | Flutter app; Fôlego 360 draft integration, read-only AI fallback and separate exploratory Pages beta | Stabilize authenticated AI error handling and all-user Premium contract on a synthetic isolated project; then original account-scope budget reconciliation | Real synthetic A/B HTTPS RLS QA, iPhone, RevenueCat sandbox, consent, user-owned launch approval |
-| Editalume | Independent Supabase, public national sampled search, survey and Asaas sandbox webhook | PR #24 manual shareable keyword/UF/city filter link and restore with no account; confirmed latest sample dates/unknown coverage already merged | PR #24 desktop/320px/WebKit/accessibility CI; verify live 27-UF coverage metadata and actual sample quality before commercial claim |
+| Editalume | Independent Supabase, public national sampled search, survey and Asaas sandbox webhook | Manual shareable keyword/UF/city filter links and restore without an account **merged in PR #24**; confirmed latest sample dates/unknown coverage also merged | PR #24 CI, desktop/320px/WebKit, accessibility and post-merge GitHub Pages deploy **passed**; verify actual sampled UF freshness and quality before commercial coverage claims |
 | EU | PWA GitHub Pages; manual clipboard capture and duplicate-link warning merged | Project-linked captures and reliable export/restore with private-by-default search | Read/write/restore synthetic tests, Safari physical device |
 | Repertório | Flutter GitHub Pages; stable finite flashcard queue merged | Compare baseline scheduler versus FSRS behind explicit opt-in migration on synthetic fixtures | No silent mass rescheduling; flutter analyze/test and mobile restore |
 | Traço | GitHub Pages; weekly phase progress with six regression tests merged | Rest/recovery configuration and original movement progression controls; never reimplement existing phase/deload or invent load | Existing data import/export regression and physical iPhone offline QA |
@@ -35,3 +35,8 @@ Checkpoint: 29 September 2026. Distinguish ideas, code merged into GitHub main, 
 3. Every rollout gets the exact GitHub Actions run or protected Vercel deployment cited in its release note; public URLs alone are not HTTP uptime evidence.
 4. Prioritize sign-in/AI correctness in Fôlego and verified coverage + survey + sandbox billing in Editalume before unrelated features.
 5. Do not disclose private beta participant details, app credentials or test results to outside services.
+
+## Release verification: shareable search
+- [PR #24](https://github.com/caueccipriano/mylife-caue-app/pull/24) merged into `main` following passing CI, accessibility and Chromium/WebKit browser QA on its head commit.
+- Post-merge [GitHub Pages deployment](https://github.com/caueccipriano/mylife-caue-app/actions/runs/36641166343) and [mobile/browser QA](https://github.com/caueccipriano/mylife-caue-app/actions/runs/36641166334) both passed for the integrated commit.
+- Public URL is https://caueccipriano.github.io/mylife-caue-app/radar/ . Browser HTTP reachability can still depend on viewer connection and cache. This is not certification of all 27 UFs nor activation of Asaas billing.
