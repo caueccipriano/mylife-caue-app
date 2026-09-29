@@ -13,7 +13,7 @@ import time
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.error import HTTPError, URLError
-from collector import SP, normalize, eligible, request_page, PAGE_SIZE
+from collector import SP, normalize, catalog_record, request_page, PAGE_SIZE
 
 MODALITIES=(4,6,8) # Public PNCP: concorrência eletrônica, pregão eletrônico, dispensa
 MAX_PAGES=14
@@ -78,7 +78,7 @@ def build(*,now=None,prior=None,requester=None,modalities=MODALITIES,max_pages=M
             rows=payload["data"]
             pages+=1; records+=len(rows)
             for item in rows:
-                rec=eligible(item,now)
+                rec=catalog_record(item,now)
                 if not rec:continue
                 key=rec["id"]
                 rec["first_seen_at"]=found.get(key,{}).get("first_seen_at",now.isoformat())
@@ -95,11 +95,14 @@ def build(*,now=None,prior=None,requester=None,modalities=MODALITIES,max_pages=M
     # Keep actual data only. Do NOT pretend records still unexpired are confirmed
     # if the daily discovery feed failed or ceased including them.
     return {"brand":"Editalume","format_version":2,"generated_at":now.isoformat(),
-            "coverage":"amostra indexada de propostas públicas com prazo registrado no futuro",
+            "coverage":"amostra indexada de contratações públicas de múltiplos setores em SP, com prazo registrado no futuro",
             "exhaustive":False,"region":"São Paulo","modalities":list(modalities),
             "max_pages_per_modality":max_pages,"pagination_limit_hit_for":capped,
             "pages_fetched_this_run":pages,"records_examined_this_run":records,
             "new_or_reobserved_count":len(seen),"indexed_open_by_recorded_deadline":len(data),
+            "observed_this_run":sum(1 for r in data if r.get("last_seen_at")==now.isoformat()),
+            "carried_forward_unreconfirmed":sum(1 for r in data if r.get("last_seen_at")!=now.isoformat()),
+            "focus_count":sum(1 for r in data if r.get("sector_focus")),
             "partial":bool(errs or capped),"errors":errs,
             "notice":"Índice amostral. Registros guardados entre coletas podem mudar ou ser cancelados sem atualização. A data acima não representa verificação individual de todos os editais; verifique condições, validade e prazo nas fontes oficiais.",
             "opportunities":data}
