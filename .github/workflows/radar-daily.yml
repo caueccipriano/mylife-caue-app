@@ -20,6 +20,8 @@ concurrency:
   cancel-in-progress: true
 jobs:
   refresh:
+    outputs:
+      should_deploy: ${{ steps.publish.outputs.should_deploy }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -72,30 +74,56 @@ jobs:
           Path("public/radar/refresh-status.json").write_text(json.dumps(result,indent=2)+"\n",encoding="utf-8")
           print(result)
           PY
-      - name: Commit searchable official listings to public site
+      - name: Publish verified snapshot only when checkout is still current
+        id: publish
+        shell: bash
         run: |
-          git config user.name 'github-actions[bot]'
-          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          set -euo pipefail
+          BASE_SHA="$(git rev-parse HEAD)"
           git add public/radar/opportunities.json public/radar/search-index.json public/radar/refresh-status.json
-          if ! git diff --cached --quiet; then
+          git fetch origin main
+          if [ "$(git rev-parse origin/main)" != "$BASE_SHA" ]; then
+            echo "::warning::Repository advanced during PNCP collection; newer workflow owns publishing. Do not deploy stale source."
+            echo "should_deploy=false" >> "$GITHUB_OUTPUT"
+          elif git diff --cached --quiet; then
+            echo "should_deploy=true" >> "$GITHUB_OUTPUT"
+          else
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
             git commit -m 'data: refresh public PNCP sample'
-            git pull --rebase origin main
-            git push origin HEAD:main
+            if git push origin HEAD:main; then
+              echo "should_deploy=true" >> "$GITHUB_OUTPUT"
+            else
+              # A concurrent update won the race. Never replace newer source
+              # or deploy the stale checkout's generated public files.
+              git fetch origin main
+              if [ "$(git rev-parse origin/main)" != "$BASE_SHA" ]; then
+                echo "::warning::Newer repository revision detected. Superseded run will not deploy."
+                echo "should_deploy=false" >> "$GITHUB_OUTPUT"
+              else
+                echo "::error::Publish failed without a confirmed newer revision"
+                exit 1
+              fi
+            fi
           fi
       - name: Build the public site with freshly collected data
+        if: steps.publish.outputs.should_deploy == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: 22
       - name: Build static searchable catalog and EU application
+        if: steps.publish.outputs.should_deploy == 'true'
         run: |
           npm install
           npm run build
       - name: Upload site with fresh data
+        if: steps.publish.outputs.should_deploy == 'true'
         uses: actions/upload-pages-artifact@v3
         with:
           path: dist
 
   deploy:
+    if: needs.refresh.outputs.should_deploy == 'true'
     runs-on: ubuntu-latest
     needs: refresh
     timeout-minutes: 10
