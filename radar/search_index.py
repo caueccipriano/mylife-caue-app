@@ -75,7 +75,7 @@ def verified_recent_sample(path, now):
         return {}
     return {item["id"]:dict(item) for item in items if valid_prior(item,now)}
 
-def build(*,now=None,prior=None,requester=None,modalities=MODALITIES,max_pages=MAX_PAGES,verified_sample=None):
+def build(*,now=None,prior=None,requester=None,modalities=MODALITIES,max_pages=MAX_PAGES,verified_sample=None,sample_records_examined=0):
     now=(now or datetime.now(SP)).astimezone(SP)
     from datetime import timedelta
     end=now+timedelta(days=45)
@@ -134,6 +134,7 @@ def build(*,now=None,prior=None,requester=None,modalities=MODALITIES,max_pages=M
             "focus_count":sum(1 for r in data if r.get("sector_focus")),
             "partial":bool(errs or capped or sample_fallback),"errors":errs,
             "sample_fallback":sample_fallback,"verified_sample_items":len(sample),
+            "verified_sample_records_examined":sample_records_examined if sample else 0,
             "notice":"Índice amostral. Registros guardados entre coletas podem mudar ou ser cancelados sem atualização. A data acima não representa verificação individual de todos os editais; verifique condições, validade e prazo nas fontes oficiais.",
             "opportunities":data}
 
@@ -150,7 +151,16 @@ def main():
     # Reuse the independently fetched, recent PNCP sample if secondary API
     # queries are throttled; retain explicit partial/fallback metadata.
     verified=verified_recent_sample(seed,now)
-    data=build(now=now,prior=old,verified_sample=verified)
+    sampled_count=0
+    if verified:
+        try:
+            sample_doc=json.loads(seed.read_text(encoding="utf-8"))
+            count=sample_doc.get("records_examined",0)
+            sampled_count=count if isinstance(count,int) and not isinstance(count,bool) and count>=0 else 0
+        except (ValueError,OSError):
+            pass
+    data=build(now=now,prior=old,verified_sample=verified,
+               sample_records_examined=sampled_count)
     args.output.parent.mkdir(parents=True,exist_ok=True)
     temp=args.output.with_suffix(".tmp")
     temp.write_text(json.dumps(data,ensure_ascii=False,separators=(",",":"))+"\n",encoding="utf-8")
