@@ -1,4 +1,4 @@
-name: Cauê Radar · PNCP sample refresh
+name: Editalume · PNCP sample refresh
 on:
   workflow_dispatch:
   push:

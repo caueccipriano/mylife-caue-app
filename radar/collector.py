@@ -1,4 +1,4 @@
-"""Cauê Radar: cautious, read-only SAMPLE from the public PNCP proposals API.
+"""Editalume: cautious, read-only SAMPLE from the public PNCP proposals API.
 
 This is a bounded discovery feed, NOT a complete or certified list of open bids.
 No client records, passwords, email sending or authenticated operations.
@@ -100,7 +100,7 @@ def request_page(end, modality, page, *, downloader=None):
     if downloader is not None:
         return downloader(url)
     req=Request(url,headers={"Accept":"application/json",
-                              "User-Agent":"CaueRadarResearch/0.1 (+public PNCP feed)"})
+                              "User-Agent":"EditalumeResearch/0.1 (+public PNCP feed)"})
     with urlopen(req,timeout=35) as res:
         payload=json.load(res)
     if not isinstance(payload, dict) or not isinstance(payload.get("data"), list):
@@ -140,7 +140,7 @@ def collect(*, now=None, downloader=None, modalities=MODALITIES, max_pages=MAX_P
         raise RuntimeError("No validated PNCP page received; retaining last valid public report")
     sorted_rows=sorted(found.values(),key=lambda row:(-row["relevance"],row["deadline"]))
     return {
-        "brand":"Cauê Radar","generated_at":now.isoformat(),
+        "brand":"Editalume","generated_at":now.isoformat(),
         "status":"partial" if errors else "sample_ok","region":"SP",
         "niche":"manutenção, conservação e serviços prediais",
         "covered_modalities":list(modalities),
