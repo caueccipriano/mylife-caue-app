@@ -32,8 +32,8 @@ jobs:
           node-version: 22
       - name: Install QA browser without changing project lockfile
         run: npm install --no-save --no-package-lock @playwright/test
-      - name: Install Chromium for desktop + iPhone-width checks
-        run: npx playwright install --with-deps chromium
+      - name: Install Chromium and WebKit for desktop and Safari-engine smoke
+        run: npx playwright install --with-deps chromium webkit
       - name: Node syntax and static server
         run: |
           node --check public/radar/app.js
