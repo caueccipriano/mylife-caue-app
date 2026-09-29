@@ -22,6 +22,7 @@ async function run(browser,label,width,height,withContact){
  });
  await page.goto(BASE,{waitUntil:"networkidle"});
  assert.equal(await page.title(),"Avalie o Editalume · Pesquisa com empresas");
+ assert.equal(await page.locator("#thanks").isVisible(),false,"Thanks must be hidden before submission");
  assert.ok(await page.getByRole("link",{name:/explorar plataforma/i}).count());
  const radio=async(name,value)=>page.locator('input[name="'+name+'"][value="'+value+'"]').check();
  await page.getByRole("button",{name:/enviar avaliação/i}).click();
