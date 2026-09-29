@@ -117,3 +117,6 @@
 .national-pagination .national-page-buttons button{background:#fff;border:1px solid #8fb49b;color:#1e5237;white-space:nowrap}
 .national-pagination .national-page-buttons button:hover{background:#e5f2e7}
 @media(max-width:420px){.national-pagination{align-items:stretch;flex-direction:column}.national-page-buttons{justify-content:stretch}.national-page-buttons button{flex:1}}
+
+/* Unknown coverage is not the same as an uncollected state. */
+.national-state.unknown{border-style:dashed;border-color:#97a2ab;background:#eff1f3;color:#52606a}
