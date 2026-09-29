@@ -51,7 +51,7 @@ Deno.serve(async(req)=>{
  }catch(_){return err("invalid_json",400);}
  if(!raw||typeof raw!=="object"||Array.isArray(raw))return err("invalid_payload",400);
  const id=safe(raw.id,150),event=safe(raw.event,90);
- if(!id||!event||!/^[-_&.a-zA-Z0-9]+$/.test(id)||!/^[A-Z_]+$/.test(event))return err("invalid_event",400);
+ if(!id||id.length<5||!event||event.length<5||!/^[-_&.a-zA-Z0-9]+$/.test(id)||!/^[A-Z_]+$/.test(event))return err("invalid_event",400);
  if(!ALLOWED.has(event))return json({ok:true,ignored:true},200);
  const payment=raw.payment&&typeof raw.payment==="object"&&!Array.isArray(raw.payment)?raw.payment:null;
  const subscription=raw.subscription&&typeof raw.subscription==="object"&&!Array.isArray(raw.subscription)?raw.subscription:null;
