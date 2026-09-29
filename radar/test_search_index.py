@@ -16,6 +16,19 @@ class IndexTests(unittest.TestCase):
         self.assertEqual(result["records_examined_this_run"],2)
         self.assertEqual(result["indexed_open_by_recorded_deadline"],1)
         self.assertFalse(result["exhaustive"])
+    def test_general_sectors_really_appear_in_search_index(self):
+        general=sample(desc="COMPRA DE PAPEL SULFITE PARA ESCRITÓRIO")
+        general["numeroControlePNCP"]="00000000000001-1-000002/2026"
+        general["sequencialCompra"]=2
+        def get(end,mod,page):return {"data":[sample(),general]}
+        report=build(now=NOW,requester=get,modalities=(8,),max_pages=1)
+        self.assertEqual(report["indexed_open_by_recorded_deadline"],2)
+        self.assertEqual(report["focus_count"],1)
+        self.assertEqual(report["observed_this_run"],2)
+        self.assertEqual(report["carried_forward_unreconfirmed"],0)
+        self.assertFalse(report["exhaustive"])
+        self.assertTrue(any(not r["sector_focus"] for r in report["opportunities"]))
+
     def test_failed_one_modality_is_disclosed(self):
         def get(end,mod,page):
             if mod==6:raise TimeoutError("simulated network fault")
