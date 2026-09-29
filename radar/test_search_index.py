@@ -1,4 +1,5 @@
 import unittest
+from urllib.error import HTTPError
 from datetime import datetime,timedelta
 from zoneinfo import ZoneInfo
 from search_index import build,valid_prior,prior_index,MAX_ACTIVE
@@ -52,6 +53,24 @@ class IndexTests(unittest.TestCase):
         self.assertEqual(result["verified_sample_records_examined"],400)
         self.assertEqual(result["observed_this_run"],1)
         self.assertFalse(result["exhaustive"])
+
+    def test_throttling_stops_other_modalities_and_keeps_verified_fallback(self):
+        calls=[]
+        def throttled(end,mod,page):
+            calls.append((mod,page))
+            raise HTTPError("https://pncp.gov.br/api/consulta",429,"Too Many Requests",{},None)
+        seed={"id":"00000000000000-1-000001/2026",
+              "source_url":"https://pncp.gov.br/app/editais/00000000000000/2026/1",
+              "deadline":(NOW+timedelta(days=8)).isoformat(),
+              "uf":"SP","city":"Campinas","object":"Serviços prediais"}
+        report=build(now=NOW,requester=throttled,modalities=(4,6,8),
+                     max_pages=2,verified_sample={seed["id"]:seed})
+        self.assertEqual(calls,[(4,1)])
+        self.assertTrue(report["rate_limited"])
+        self.assertTrue(report["partial"])
+        self.assertTrue(report["sample_fallback"])
+        self.assertIn("HTTP 429",report["errors"][0])
+        self.assertEqual(report["observed_this_run"],1)
 
     def test_stale_sample_must_never_refresh_index(self):
         import json,tempfile

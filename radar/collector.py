@@ -11,6 +11,7 @@ import time
 import unicodedata
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
+from urllib.error import HTTPError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 from zoneinfo import ZoneInfo
@@ -79,12 +80,19 @@ def catalog_record(item, now):
     if not isinstance(desc, str) or len(desc.strip()) < 8:
         return None
     ident = item.get("numeroControlePNCP")
-    if not isinstance(ident, str) or not re.fullmatch(r"\d{14}-\d+-\d+/\d{4}", ident):
+    if not isinstance(ident,str):
         return None
-    cnpj = ident.split("-", 1)[0]
-    year = item.get("anoCompra")
-    serial = item.get("sequencialCompra")
-    if not isinstance(year, int) or not isinstance(serial, int) or serial < 1:
+    match=re.fullmatch(r"(\d{14})-\d+-(\d+)/(\d{4})",ident)
+    if not match:
+        return None
+    cnpj=match.group(1)
+    year=item.get("anoCompra")
+    serial=item.get("sequencialCompra")
+    # ID and API fields must refer to the exact same PNCP notice before
+    # constructing a link or including the notice in any public count.
+    if (not isinstance(year,int) or isinstance(year,bool) or
+        not isinstance(serial,int) or isinstance(serial,bool) or serial<1 or
+        year!=int(match.group(3)) or serial!=int(match.group(2))):
         return None
     organ = item.get("orgaoEntidade") or {}
     if not isinstance(organ,dict):
@@ -132,6 +140,7 @@ def collect(*, now=None, downloader=None, modalities=MODALITIES, max_pages=MAX_P
     errors=[]
     scanned=0
     pages=0
+    rate_limited=False
     for modality in modalities:
         for page in range(1,max_pages+1):
             try:
@@ -139,7 +148,10 @@ def collect(*, now=None, downloader=None, modalities=MODALITIES, max_pages=MAX_P
                 if not isinstance(batch,dict) or not isinstance(batch.get("data"),list):
                     raise ValueError("PNCP returned unexpected schema")
             except Exception as exc:
-                errors.append(f"modality={modality},page={page}: {type(exc).__name__}")
+                status=exc.code if isinstance(exc,HTTPError) else None
+                reason=type(exc).__name__+(f" HTTP {status}" if status is not None else "")
+                errors.append(f"modality={modality},page={page}: {reason}")
+                rate_limited=rate_limited or status==429
                 break
             rows=batch["data"]
             pages+=1
@@ -152,6 +164,7 @@ def collect(*, now=None, downloader=None, modalities=MODALITIES, max_pages=MAX_P
                 break
             # Rate limiting: bounded and intentionally gentle against official API.
             if downloader is None: time.sleep(0.6)
+        if rate_limited:break
     if pages==0:
         raise RuntimeError("No validated PNCP page received; retaining last valid public report")
     sorted_rows=sorted(found.values(),key=lambda row:(row["deadline"],-row["relevance"]))
@@ -167,7 +180,7 @@ def collect(*, now=None, downloader=None, modalities=MODALITIES, max_pages=MAX_P
         "coverage_note":"SP; apenas modalidades 6 e 8; até 12 páginas por modalidade; propostas com data final informada nos próximos 45 dias; não inclui todo o PNCP.",
         "exhaustive":False,
         "notice":"Amostra parcial e automatizada. Não representa todas as licitações. Consulte o edital oficial e confirme prazos, elegibilidade e eventuais alterações antes de qualquer proposta.",
-        "errors":errors,"opportunities":focus_rows,
+        "rate_limited":rate_limited,"errors":errors,"opportunities":focus_rows,
         "catalog":sorted_rows
     }
 

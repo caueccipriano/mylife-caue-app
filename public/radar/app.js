@@ -160,7 +160,7 @@ async function init(){
   const metrics={metricCatalog:active.length,metricFocus:activeFocus,metricScanned:scanned,heroCount:active.length,heroFocus:activeFocus};
   for(const key in metrics)$(key).textContent=fmt.format(metrics[key]);
   const time=Date.parse(doc.generated_at),stale=!Number.isFinite(time)||Date.now()-time>36*3600000;
-  const partial=indexed?!!doc.partial:doc.status==="partial";
+  const partial=!!doc.rate_limited||(indexed?!!doc.partial:doc.status==="partial");
   let refreshFailed=false,attemptedAt=null;
   try{
     const statusRes=await fetch("./refresh-status.json?cache="+Date.now(),{cache:"no-store"});
@@ -178,6 +178,7 @@ async function init(){
   fmt.format(scanned)+(doc.sample_fallback?" registros examinados no recorte auxiliar":" registros examinados nesta coleta")+" · "+fmt.format(active.length)+" registros no catálogo ainda com prazo informado no futuro. "+
   "Amostra parcial. Registros de coletas anteriores podem ter sido alterados ou cancelados; para a fonte integral consulte o PNCP.";
   if(doc.sample_fallback)msg+="⚠ A consulta ampliada não respondeu; o índice foi parcialmente atualizado com a coleta auxiliar recente. ";
+  if(doc.rate_limited)msg+="⚠ Limite temporário de consultas ao PNCP: esta coleta está incompleta e não reconfirma todo o catálogo. ";
   if(carried)msg+=fmt.format(carried)+" registros vieram de coletas anteriores sem nova confirmação. ";
   if(refreshFailed)msg="⚠ A última tentativa de atualização falhou"+(attemptedAt?" em "+dt.format(new Date(attemptedAt)):"")+". Abaixo estão os dados da última coleta disponível, não uma confirmação atual. "+msg;
   if(doc.status==="awaiting_first_scan")msg="Primeira coleta ainda não concluída. Nenhum edital está confirmado.";

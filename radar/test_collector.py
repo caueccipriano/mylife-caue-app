@@ -1,4 +1,5 @@
 import unittest
+from urllib.error import HTTPError
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 from collector import collect, eligible, relevance, catalog_record
@@ -38,6 +39,15 @@ class CollectorTests(unittest.TestCase):
         x=item()
         x["valorTotalEstimado"]=0
         self.assertIsNone(eligible(x,NOW)["estimated_value_brl"])
+    def test_id_year_and_serial_must_match_source(self):
+        wrong_year=item()
+        wrong_year["anoCompra"]=2025
+        wrong_serial=item()
+        wrong_serial["sequencialCompra"]=12
+        self.assertIsNone(catalog_record(wrong_year,NOW))
+        self.assertIsNone(catalog_record(wrong_serial,NOW))
+        self.assertIsNotNone(catalog_record(item(),NOW))
+
     def test_partial_pagination_and_dedupe(self):
         def downloader(url):
             if "codigoModalidadeContratacao=8" in url:
@@ -68,6 +78,21 @@ class CollectorTests(unittest.TestCase):
         self.assertEqual(report["focus_count"],1)
         self.assertEqual(len(report["opportunities"]),1)
         self.assertFalse(report["exhaustive"])
+
+    def test_429_stops_collection_without_erasing_valid_sample(self):
+        calls=[]
+        def downloader(url):
+            calls.append(url)
+            if "pagina=1" in url:
+                return {"data":[item() for _ in range(50)]}
+            raise HTTPError(url,429,"Too Many Requests",{},None)
+        report=collect(now=NOW,downloader=downloader,modalities=(6,8),max_pages=3)
+        self.assertEqual(len(calls),2)
+        self.assertEqual(report["pages_examined"],1)
+        self.assertTrue(report["rate_limited"])
+        self.assertEqual(report["status"],"partial")
+        self.assertIn("HTTP 429",report["errors"][0])
+        self.assertEqual(report["catalog_count"],1)
 
     def test_total_api_failure_does_not_fake_empty_feed(self):
         with self.assertRaises(RuntimeError):
