@@ -80,12 +80,19 @@ def catalog_record(item, now):
     if not isinstance(desc, str) or len(desc.strip()) < 8:
         return None
     ident = item.get("numeroControlePNCP")
-    if not isinstance(ident, str) or not re.fullmatch(r"\d{14}-\d+-\d+/\d{4}", ident):
+    if not isinstance(ident,str):
         return None
-    cnpj = ident.split("-", 1)[0]
-    year = item.get("anoCompra")
-    serial = item.get("sequencialCompra")
-    if not isinstance(year, int) or not isinstance(serial, int) or serial < 1:
+    match=re.fullmatch(r"(\d{14})-\d+-(\d+)/(\d{4})",ident)
+    if not match:
+        return None
+    cnpj=match.group(1)
+    year=item.get("anoCompra")
+    serial=item.get("sequencialCompra")
+    # ID and API fields must refer to the exact same PNCP notice before
+    # constructing a link or including the notice in any public count.
+    if (not isinstance(year,int) or isinstance(year,bool) or
+        not isinstance(serial,int) or isinstance(serial,bool) or serial<1 or
+        year!=int(match.group(3)) or serial!=int(match.group(2))):
         return None
     organ = item.get("orgaoEntidade") or {}
     if not isinstance(organ,dict):
