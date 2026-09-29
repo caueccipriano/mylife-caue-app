@@ -29,7 +29,10 @@ function subset(filters){
  return arr.slice(filters.p_offset||0,(filters.p_offset||0)+(filters.p_limit||12)).map(r=>({...r,total_count:arr.length}));
 }
 async function run(browser,name,width,height){
- const page=await browser.newPage({viewport:{width,height},acceptDownloads:true});
+ // Keep the offline-install check in Chromium, and isolate functional API mocks
+ // from service-worker routing in WebKit where interception differs.
+ const context=await browser.newContext({viewport:{width,height},acceptDownloads:true,serviceWorkers:name==="desktop-1400"?"allow":"block"});
+ const page=await context.newPage();
  const errors=[],apiCalls=[];let bulk=false;page.on("pageerror",e=>errors.push(e.message));
  await page.route("**/rest/v1/editalume_uf_coverage*",r=>r.fulfill({json:COVERAGE}));
  await page.route("**/rest/v1/rpc/editalume_search*",r=>{
@@ -106,7 +109,7 @@ async function run(browser,name,width,height){
  assert.equal(await page.locator("#national-prev").isHidden(),true);
  assert.deepEqual(errors,[]);
  console.log("PASS "+name+" national: data, 27 states, region filters, empty coverage, CSV, viewport");
- await page.close();
+ await context.close();
 }
 (async()=>{
  const chrome=await chromium.launch({headless:true});
