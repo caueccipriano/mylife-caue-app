@@ -25,6 +25,16 @@ const fixture={brand:"Editalume",generated_at:current,format_version:2,partial:f
  make("00000000000004-1-000004/2026","SERVIÇOS DE CLIMATIZAÇÃO","Sorocaba",true,5000,6,old),
  {...make("00000000000005-1-000005/2026","HARMFUL OFFICIAL-LIKE LINK","Campinas",true,99999,2),source_url:"https://pncp.gov.br/app/editais/00000000000005/2026/5?redirect=evil"}
  ]};
+// Exact official-looking URLs with an ID mismatch must never pass the UI or CSV.
+fixture.opportunities.push({
+ ...make("00000000000010-1-000010/2026","MISMATCHED PNCP NOTICE ID","Santos",false,1234,19),
+ source_url:"https://pncp.gov.br/app/editais/00000000000011/2026/10"
+});
+// Missing observation timestamp must NOT be treated as just reconfirmed.
+fixture.opportunities.push({
+ ...make("00000000000012-1-000012/2026","UNCONFIRMED SAMPLE ENTRY","Ribeirão Preto",false,3210,19),
+ last_seen_at:null
+});
 function success(name){console.log("PASS "+name)}
 async function check(){
  const browser=await chromium.launch({headless:true});
@@ -47,8 +57,8 @@ async function check(){
    await page.selectOption("#segment","all");
    assert.equal(await page.locator(".result-card").count(),3);
    await page.uncheck("#observedOnly");
-   assert.equal(await page.locator(".result-card").count(),4);
-   assert.equal(await page.locator(".stale-tag").count(),1,"Prior records should be visibly unconfirmed");
+   assert.equal(await page.locator(".result-card").count(),5);
+   assert.equal(await page.locator(".stale-tag").count(),2,"Old and undated records should be visibly unconfirmed");
    await page.fill("#q","limpeza");
    assert.equal(await page.locator(".result-card").count(),1);
    await page.fill("#q","");
@@ -81,6 +91,7 @@ async function check(){
    assert.match(csv,/Jundiaí/);assert.match(csv,/Campinas/);
    assert.ok(!csv.includes("PAPEL SULFITE"),"CSV must contain only filtered data");
    assert.ok(!csv.includes("HARMFUL OFFICIAL-LIKE LINK"),"Reject malformed official-looking PNCP links before rendering or exporting");
+   assert.ok(!csv.includes("MISMATCHED PNCP NOTICE ID"),"Reject valid-host links for another procurement ID");
    const url=await page.locator(".result-card").first().locator("a").getAttribute("href");
    assert.ok(url.startsWith("https://pncp.gov.br/app/editais/"),"Cards must link only to PNCP");
    success(shape.name+": filters, stale badge, sort, export and official links");
@@ -99,6 +110,25 @@ async function check(){
    assert.deepEqual(errors,[],"No JS page errors");
    await page.close();
   }
+  // The older auxiliary sample has no last_seen_at per record. The checkbox
+  // must automatically switch off and must not imply individual reconfirmation.
+  const fallbackPage=await browser.newPage();
+  const fallbackErrors=[];fallbackPage.on("pageerror",e=>fallbackErrors.push(e.message));
+  await fallbackPage.route("**/radar/search-index.json*",route=>route.fulfill({status:503,body:"Unavailable"}));
+  await fallbackPage.route("**/radar/opportunities.json*",route=>route.fulfill({json:{
+    brand:"Editalume",generated_at:current,status:"sample_ok",catalog:[
+      {...make("00000000000020-1-000020/2026","FALLBACK PUBLIC SAMPLE","Campinas",false,1200,3),last_seen_at:undefined}
+    ],opportunities:[],records_examined:1
+  }}));
+  await fallbackPage.goto(base,{waitUntil:"networkidle"});
+  await fallbackPage.waitForSelector(".result-card");
+  assert.equal(await fallbackPage.locator(".result-card").count(),1);
+  assert.equal(await fallbackPage.locator("#observedOnly").isChecked(),false);
+  assert.equal(await fallbackPage.locator("#observedOnly").isDisabled(),true);
+  assert.match(await fallbackPage.locator(".latest-toggle span").innerText(),/indisponível/);
+  assert.deepEqual(fallbackErrors,[]);
+  success("fallback sample: results accessible without false per-record freshness");
+  await fallbackPage.close();
   const livePage=await browser.newPage({viewport:{width:1300,height:850}});
   const jsErrors=[];livePage.on("pageerror",e=>jsErrors.push(e.message));
   await livePage.goto(base,{waitUntil:"networkidle"});
