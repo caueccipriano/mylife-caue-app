@@ -1,6 +1,9 @@
 import unittest
 from datetime import datetime,timedelta,timezone
 from urllib.error import HTTPError
+from http.client import RemoteDisconnected
+from unittest.mock import patch
+import national_collector
 from zoneinfo import ZoneInfo
 from national_collector import UFS,rotation,parse_requested,sample_state
 from collector import catalog_record
@@ -74,4 +77,60 @@ class NationalTests(unittest.TestCase):
     self.assertEqual(r["records_examined"],100)
     self.assertEqual(len(r["opportunities"]),50)
     self.assertTrue(all("uf=BA" in x for x in calls))
+
+ def test_remote_disconnect_retries_once_then_recovers_without_fake_partial(self):
+    attempts=[]
+    delays=[]
+    def response(url):
+      attempts.append(url)
+      if len(attempts)==1:
+       raise RemoteDisconnected("PNCP closed without response")
+      return {"data":[notice("RJ")]}
+    r=sample_state("RJ",now=NOW,downloader=response,sleeper=delays.append)
+    self.assertEqual(r["status"],"complete_sample")
+    self.assertEqual(r["pages_examined"],2)
+    self.assertEqual(r["records_examined"],2)
+    self.assertEqual(len(attempts),3)
+    self.assertEqual(delays,[3])
+
+ def test_persistent_remote_disconnect_generates_honest_failed_report(self):
+    calls=[]
+    def disconnect(url):
+      calls.append(url)
+      raise RemoteDisconnected("network dropped")
+    r=sample_state("RJ",now=NOW,downloader=disconnect,sleeper=lambda _:None)
+    self.assertEqual(r["status"],"failed")
+    self.assertEqual(r["pages_examined"],0)
+    self.assertEqual(r["records_examined"],0)
+    self.assertEqual(r["opportunities"],[])
+    self.assertEqual(len(calls),4)  # one retry per bounded modality
+
+ def test_server_503_is_bounded_and_429_never_retried(self):
+    calls=[]
+    def response(url):
+      calls.append(url)
+      if len(calls)==1:
+       raise HTTPError(url,503,"Service unavailable",{},None)
+      if len(calls)==3:
+       raise HTTPError(url,429,"Too many requests",{},None)
+      return {"data":[notice("RJ")]}
+    r=sample_state("RJ",now=NOW,downloader=response,sleeper=lambda _:None)
+    self.assertEqual(len(calls),3)
+    self.assertEqual(r["pages_examined"],1)
+    self.assertEqual(r["status"],"partial")
+    self.assertEqual(r["last_http_status"],429)
+
+ def test_zero_verified_pages_flags_workflow_without_discarding_reports(self):
+    failed={"uf":"RJ","status":"failed","pages_examined":0,"records_examined":0,
+            "last_http_status":None,"opportunities":[]}
+    uploaded=[]
+    with patch.object(national_collector,"github_oidc",return_value="synthetic"), \\
+         patch.object(national_collector,"rotation",return_value=["RJ"]), \\
+         patch.object(national_collector,"sample_state",return_value=failed), \\
+         patch.object(national_collector,"upload",side_effect=lambda report,_id:
+             uploaded.append(report) or {"accepted":0}), \\
+         patch("sys.argv",["national_collector.py"]):
+      with self.assertRaisesRegex(RuntimeError,"No validated PNCP page"):
+       national_collector.main()
+    self.assertEqual(len(uploaded),1)
 if __name__=="__main__":unittest.main()
