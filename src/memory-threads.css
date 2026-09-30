@@ -1,0 +1,14 @@
+/* Quiet editorial recap for explicitly connected, non-private memories. */
+.memory-threads{margin:20px 0 26px;}
+.memory-threads-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.memory-threads-head h2{font-family:Georgia,serif;font-size:23px;line-height:1.12;font-weight:500;color:var(--ink);margin:5px 0 0}
+.memory-thread-list{display:grid;gap:10px}
+.memory-thread-card{width:100%;border:1px solid var(--line-strong);border-radius:19px;background:var(--card);display:flex;gap:15px;align-items:center;text-align:left;padding:16px;color:var(--ink)}
+.memory-thread-card:focus-visible{outline:3px solid var(--cobalt);outline-offset:3px}
+.memory-thread-card:active{transform:scale(.995)}
+.memory-thread-symbol{flex:0 0 34px;height:34px;border-radius:12px;background:var(--green-soft);display:flex;justify-content:center;align-items:center;color:#226652}
+.memory-thread-copy{min-width:0;flex:1;display:flex;flex-direction:column;gap:4px}
+.memory-thread-copy strong{font-size:14px;line-height:1.4;font-weight:700;overflow-wrap:anywhere}
+.memory-thread-copy small{font-size:11px;line-height:1.5;color:var(--muted);overflow-wrap:anywhere}
+.memory-thread-copy em{font-size:10px;font-style:normal;letter-spacing:.055em;font-weight:700;color:var(--muted);text-transform:uppercase}
+@media(prefers-reduced-motion:reduce){.memory-thread-card{transition:none}}
