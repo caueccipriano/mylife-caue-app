@@ -12,7 +12,7 @@ const dt=new Intl.DateTimeFormat("pt-BR",{dateStyle:"short",timeStyle:"short",ti
 const node=(tag,cls,txt)=>{let x=document.createElement(tag);if(cls)x.className=cls;if(txt!==undefined)x.textContent=String(txt);return x};
 const empty=el=>el.replaceChildren();
 const knownStatus={not_started:"Aguardando coleta",complete_sample:"Amostra recebida",partial:"Cobertura parcial",rate_limited:"Consulta limitada",failed:"Falha recente"};
-const state={coverage:[],coverageState:"pending",items:[],total:0,offset:0,loading:false,request:null,firstLoad:true};
+const state={coverage:[],coverageState:"pending",items:[],total:0,offset:0,loading:false,request:null,firstLoad:true,saved:[]};
 function official(row){
  const m=/^(\d{14})-\d+-(\d+)\/(\d{4})$/.exec(row?.pncp_id||"");
  if(!m||Number(m[2])<1)return null;
@@ -55,6 +55,71 @@ function renderCoverage(){
   wrap.append(item);
  }
 }
+// Device-only public PNCP bookmarks. They are NOT cloud-synced, Premium
+// saved searches, deadline reminders or evidence that a notice is still open.
+const SAVED_KEY="editalume_saved_pncp_v1";
+const MAX_SAVED=30;
+function cleanBookmark(v){
+ if(!v||typeof v!=="object"||!STATES[v.uf]||typeof v.title!=="string"||
+    typeof v.pncp_id!=="string"||!official(v)||typeof v.closing_at!=="string"||
+    !Number.isFinite(Date.parse(v.closing_at)))return null;
+ return {pncp_id:v.pncp_id,uf:v.uf,title:v.title.slice(0,220),
+         closing_at:new Date(v.closing_at).toISOString()};
+}
+function loadBookmarks(){
+ try{
+  const rows=JSON.parse(localStorage.getItem(SAVED_KEY)||"[]");
+  if(!Array.isArray(rows))return [];
+  const seen=new Set();
+  return rows.map(cleanBookmark).filter(x=>{
+    if(!x||seen.has(x.pncp_id))return false;
+    seen.add(x.pncp_id);return true;
+  }).slice(0,MAX_SAVED);
+ }catch{return [];}
+}
+function updateBookmarks(items){
+ try{
+  localStorage.setItem(SAVED_KEY,JSON.stringify(items));
+  state.saved=items;
+  return true;
+ }catch{
+  $("national-save-status").textContent="Não foi possível guardar neste navegador. Verifique o armazenamento privado ou bloqueado.";
+  return false;
+ }
+}
+function renderBookmarks(){
+ $("national-saved-count").textContent=fmt.format(state.saved.length);
+ const root=$("national-saved-list");empty(root);
+ const sorted=[...state.saved].sort((a,b)=>Date.parse(a.closing_at)-Date.parse(b.closing_at));
+ for(const row of sorted){
+  const wrap=node("div","national-saved-item");
+  const name=node("div","national-saved-main");
+  const title=node("strong",null,row.title);
+  const closed=Date.parse(row.closing_at)<=Date.now();
+  name.append(node("span","national-pill",row.uf),title,
+    node("small",closed?"Prazo informado já passou. Confirme no PNCP.":"Prazo informado: "+formatDate(row.closing_at)));
+  const actions=node("div","national-saved-actions");
+  const url=publicLink(row,"Ver no PNCP ↗");if(url)actions.append(url);
+  const remove=node("button","national-unsave","Remover");remove.type="button";
+  remove.setAttribute("aria-label","Remover edital salvo: "+row.title);
+  remove.addEventListener("click",()=>toggleBookmark(row));
+  actions.append(remove);wrap.append(name,actions);root.append(wrap);
+ }
+ $("national-saved-empty").hidden=sorted.length>0;
+}
+function toggleBookmark(raw){
+ const candidate=cleanBookmark(raw);
+ if(!candidate)return;
+ const exists=state.saved.some(v=>v.pncp_id===candidate.pncp_id);
+ if(!exists&&state.saved.length>=MAX_SAVED){
+  $("national-save-status").textContent="Limite de 30 editais neste dispositivo. Remova algum antes de salvar mais.";
+  return;
+ }
+ const next=exists?state.saved.filter(v=>v.pncp_id!==candidate.pncp_id):[...state.saved,candidate];
+ if(!updateBookmarks(next))return;
+ $("national-save-status").textContent=exists?"Edital removido dos salvos.":"Edital salvo somente neste navegador; confira prazos no PNCP.";
+ renderBookmarks();renderCards();
+}
 function publicLink(row,label){
  const href=official(row);if(!href)return null;
  const a=node("a","national-source",label);a.href=href;a.target="_blank";a.rel="noopener noreferrer";return a;
@@ -73,7 +138,12 @@ function renderCards(){
   const metadata=node("div","national-result-meta");
   metadata.append(node("span",null,row.modality||"Modalidade: consultar PNCP"),
    node("span",null,"Último registro: "+formatDate(row.last_observed_at)));
-  main.append(head,title,agency,metadata);
+  const saved=state.saved.some(x=>x.pncp_id===row.pncp_id);
+  const save=node("button","national-save"+(saved?" is-saved":""),saved?"★ Salvo":"☆ Salvar");
+  save.type="button";save.setAttribute("aria-pressed",String(saved));
+  save.setAttribute("aria-label",(saved?"Remover dos salvos: ":"Salvar edital: ")+row.title);
+  save.addEventListener("click",()=>toggleBookmark(row));
+  main.append(head,title,agency,metadata,save);
   const side=node("div","national-result-side");
   side.append(node("span","national-label","PRAZO INFORMADO"),
     node("strong","national-date",formatDate(row.closing_at)),
@@ -210,6 +280,14 @@ async function loadCoverage(){
 }
 function init(){
  if(!$("national-form"))return;
+ state.saved=loadBookmarks();
+ renderBookmarks();
+ $("national-show-saved").addEventListener("click",()=>{
+  const panel=$("national-saved-panel"),open=panel.hidden;
+  panel.hidden=!open;
+  $("national-show-saved").setAttribute("aria-expanded",String(open));
+  if(open)renderBookmarks();
+ });
  const picker=$("national-uf");for(const [uf,name] of Object.entries(STATES)){const o=node("option",null,name+" ("+uf+")");o.value=uf;picker.append(o)}
  restoreSharedSearch();
  $("national-form").addEventListener("submit",event=>{event.preventDefault();state.offset=0;clearTimeout(debounce);renderCoverage();search()});
