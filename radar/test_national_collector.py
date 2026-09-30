@@ -21,6 +21,22 @@ class NationalTests(unittest.TestCase):
     batches=[rotation(first+timedelta(hours=3*i)) for i in range(9)]
     self.assertEqual(len(set(sum(batches,[]))),27)
     self.assertTrue(all(len(x)==3 and len(set(x))==3 for x in batches))
+ def test_daily_round_attempts_all_27_ufs_including_empty_states(self):
+    attempted=[]
+    def sample(uf):
+      attempted.append(uf)
+      return {"uf":uf,"status":"complete_sample","pages_examined":1,
+              "records_examined":0,"last_http_status":None,"opportunities":[]}
+    with (patch.object(national_collector,"github_oidc",return_value="synthetic") as oidc,
+          patch.object(national_collector,"sample_state",side_effect=sample),
+          patch.object(national_collector,"upload",side_effect=lambda report,_id:{"accepted":0}),
+          patch.object(national_collector.time,"sleep",return_value=None),
+          patch("sys.argv",["national_collector.py"])):
+      national_collector.main()
+    self.assertEqual(attempted,UFS)
+    self.assertEqual(len(set(attempted)),27)
+    self.assertEqual(oidc.call_count,27)
+
  def test_manual_selection_is_explicitly_bounded(self):
     self.assertEqual(parse_requested("ac, rj, sp"),["AC","RJ","SP"])
     self.assertIsNone(parse_requested(""))
@@ -126,11 +142,11 @@ class NationalTests(unittest.TestCase):
     uploaded=[]
     with (
          patch.object(national_collector,"github_oidc",return_value="synthetic"),
-         patch.object(national_collector,"rotation",return_value=["RJ"]),
+         patch.object(national_collector.time,"sleep",return_value=None),
          patch.object(national_collector,"sample_state",return_value=failed),
          patch.object(national_collector,"upload",side_effect=lambda report,_id:
               uploaded.append(report) or {"accepted":0}),
-         patch("sys.argv",["national_collector.py"]),
+         patch("sys.argv",["national_collector.py","--states","RJ"]),
     ):
       with self.assertRaisesRegex(RuntimeError,"No validated PNCP page"):
        national_collector.main()
