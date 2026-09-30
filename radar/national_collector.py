@@ -11,6 +11,7 @@ import json
 import os
 import time
 from datetime import datetime, timedelta, timezone
+from http.client import RemoteDisconnected
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
@@ -53,20 +54,38 @@ def sample_state(uf,*,now=None,downloader=None,sleeper=time.sleep):
     for index,mod in enumerate(MODALITIES):
         if index and downloader is None:
             sleeper(2.5)
-        try:
-            # Explicit UF, proven public modalities, at most one page each.
-            response=request_page(end,mod,1,downloader=downloader,uf=uf)
-            if not isinstance(response,dict) or not isinstance(response.get("data"),list):
-                raise ValueError("Invalid public PNCP response")
-            rows=response["data"]
-        except (HTTPError,TimeoutError,URLError,ValueError) as exc:
-            code=exc.code if isinstance(exc,HTTPError) else None
-            if code is not None:
-                http_status=code
-            rate_limited=rate_limited or code==429
-            failed=True
-            if rate_limited:
+        # Retry an interrupted connection once, never a 429. A final failure
+        # still produces a partial/failed report without fabricated records.
+        rows=None
+        for attempt in range(2):
+            try:
+                response=request_page(end,mod,1,downloader=downloader,uf=uf)
+                if not isinstance(response,dict) or not isinstance(response.get("data"),list):
+                    raise ValueError("Invalid public PNCP response")
+                rows=response["data"]
                 break
+            except HTTPError as exc:
+                http_status=exc.code
+                rate_limited=rate_limited or exc.code==429
+                if exc.code in (500,502,503,504) and attempt==0:
+                    sleeper(3)
+                    continue
+                failed=True
+                break
+            except (RemoteDisconnected, URLError, TimeoutError, ConnectionError, OSError):
+                # RemoteDisconnected is not a urllib.URLError; the exception
+                # previously killed scheduled runs before their status upload.
+                if attempt==0:
+                    sleeper(3)
+                    continue
+                failed=True
+                break
+            except ValueError:
+                failed=True
+                break
+        if rate_limited:
+            break
+        if rows is None:
             continue
         pages+=1
         examined+=len(rows)
@@ -130,6 +149,8 @@ def main():
     identity=github_oidc()
     selected=requested or rotation()
     print("Editalume round: "+",".join(selected))
+    valid_pages=0
+    was_throttled=False
     for index,uf in enumerate(selected):
         if index:
             time.sleep(3)
@@ -137,12 +158,18 @@ def main():
         # All reports, including throttling with zero records, carry honest
         # per-UF diagnostics. The public site never infers complete coverage.
         ack=upload(result,identity)
+        valid_pages+=result["pages_examined"]
         print(json.dumps({"uf":uf,"status":result["status"],"pages":result["pages_examined"],
                           "examined":result["records_examined"],"accepted":ack["accepted"],
                           "http_status":result["last_http_status"]},ensure_ascii=False))
         if result["status"]=="rate_limited" or result["last_http_status"]==429:
+            was_throttled=True
             print("PNCP throttled: stop this entire rotation without further API traffic.")
             break
+    if valid_pages==0 and not was_throttled:
+        # Keep previous confirmed data but fail the GitHub monitor visibly.
+        # A valid, empty PNCP page counts as a successful page.
+        raise RuntimeError("No validated PNCP page this rotation; previous records remain available.")
 
 if __name__=="__main__":
     main()
