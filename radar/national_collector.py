@@ -1,8 +1,8 @@
 """Editalume: bounded national PNCP discovery, OIDC-authenticated Supabase sync.
 
-Every run scans three UFs and only one page per modality (6 and 8).
-At this cadence 27 UFs rotate across successive three-hour runs. Data is always
-a partial sample, and states without successful queries stay explicitly pending.
+The scheduled daily run attempts all 27 UFs, with one page per modality (6 and 8).
+It remains a partial sample, and states without successful queries stay pending.
+A PNCP 429 stops the round to respect the official service.
 No static credentials or private customer data are stored in this repository.
 """
 from __future__ import annotations
@@ -146,8 +146,7 @@ def main():
         selected=requested or rotation()
         print(json.dumps({"selected":selected,"scheduled_rotation":rotation()}))
         return
-    identity=github_oidc()
-    selected=requested or rotation()
+    selected=requested if requested is not None else UFS
     print("Editalume round: "+",".join(selected))
     valid_pages=0
     was_throttled=False
@@ -157,7 +156,8 @@ def main():
         result=sample_state(uf)
         # All reports, including throttling with zero records, carry honest
         # per-UF diagnostics. The public site never infers complete coverage.
-        ack=upload(result,identity)
+        # GitHub OIDC credentials expire during long 27-UF rounds.
+        ack=upload(result,github_oidc())
         valid_pages+=result["pages_examined"]
         print(json.dumps({"uf":uf,"status":result["status"],"pages":result["pages_examined"],
                           "examined":result["records_examined"],"accepted":ack["accepted"],
