@@ -124,12 +124,14 @@ class NationalTests(unittest.TestCase):
     failed={"uf":"RJ","status":"failed","pages_examined":0,"records_examined":0,
             "last_http_status":None,"opportunities":[]}
     uploaded=[]
-    with patch.object(national_collector,"github_oidc",return_value="synthetic"), \\
-         patch.object(national_collector,"rotation",return_value=["RJ"]), \\
-         patch.object(national_collector,"sample_state",return_value=failed), \\
+    with (
+         patch.object(national_collector,"github_oidc",return_value="synthetic"),
+         patch.object(national_collector,"rotation",return_value=["RJ"]),
+         patch.object(national_collector,"sample_state",return_value=failed),
          patch.object(national_collector,"upload",side_effect=lambda report,_id:
-             uploaded.append(report) or {"accepted":0}), \\
-         patch("sys.argv",["national_collector.py"]):
+              uploaded.append(report) or {"accepted":0}),
+         patch("sys.argv",["national_collector.py"]),
+    ):
       with self.assertRaisesRegex(RuntimeError,"No validated PNCP page"):
        national_collector.main()
     self.assertEqual(len(uploaded),1)
