@@ -16,9 +16,9 @@
 <meta property="og:description" content="Da informação à oportunidade. Um ambiente para descobrir licitações relevantes com clareza.">
 <title>Editalume | Inteligência em oportunidades públicas</title>
 <link rel="stylesheet" href="./style.css?v=br-20260929-2">
-<link rel="stylesheet" href="./national.css?v=br-20260929-6">
+<link rel="stylesheet" href="./national.css?v=br-20260930-7">
 <script src="./app.js?v=br-20260929-2" defer></script>
-<script src="./national.js?v=br-20260929-6" defer></script>
+<script src="./national.js?v=br-20260930-7" defer></script>
 <script src="./pwa.js?v=br-20260929-4" defer></script>
 </head>
 <body>
@@ -81,7 +81,12 @@
  </form></div>
  <div class="national-coverage-panel"><div class="national-coverage-head"><div><span class="national-eyebrow">TRANSPARÊNCIA POR ESTADO</span><h3>Onde já temos resultados</h3></div><p>Verde: amostra recebida. Cinza: aguardando. Toque na sigla para pesquisar.</p></div><div class="national-state-grid" id="national-state-grid" role="group" aria-label="Selecionar estado"></div></div>
  <div id="national-status" class="national-status" role="status" aria-live="polite">Carregando pesquisa nacional...</div>
- <div class="national-results-header"><div><span class="national-eyebrow">RESULTADOS DO BANCO</span><h3 id="national-result-count">Conectando...</h3></div><div class="national-results-actions"><label for="national-sort">Ordenar</label><select id="national-sort" aria-label="Ordenar resultados nacionais"><option value="deadline">Prazo mais próximo</option><option value="value">Maior valor</option><option value="relevance">Relevância</option></select><button id="national-download" type="button" disabled>Exportar página ↓</button></div></div>
+ <div class="national-results-header"><div><span class="national-eyebrow">RESULTADOS DO BANCO</span><h3 id="national-result-count">Conectando...</h3></div><div class="national-results-actions"><button type="button" id="national-show-saved" aria-expanded="false" aria-controls="national-saved-panel">Meus salvos (<span id="national-saved-count">0</span>)</button><label for="national-sort">Ordenar</label><select id="national-sort" aria-label="Ordenar resultados nacionais"><option value="deadline">Prazo mais próximo</option><option value="value">Maior valor</option><option value="relevance">Relevância</option></select><button id="national-download" type="button" disabled>Exportar página ↓</button></div></div>
+ <p class="national-save-status" id="national-save-status" role="status" aria-live="polite"></p>
+ <section id="national-saved-panel" class="national-saved-panel" aria-label="Editais guardados neste dispositivo" hidden>
+  <h3>Meus salvos neste aparelho</h3><p>Sem conta ou sincronização. Se você limpar os dados do navegador ou trocar de aparelho, perderá esta lista. O prazo e a situação dos editais podem mudar: confira sempre no PNCP.</p>
+  <div id="national-saved-list" class="national-saved-list"></div><p id="national-saved-empty">Nenhum edital salvo ainda. Selecione ☆ Salvar nos resultados.</p>
+ </section>
  <div class="national-results" id="national-results" aria-live="polite"></div><div id="national-empty" class="national-empty" hidden><h3 id="national-empty-title">Nenhum registro neste filtro</h3><p id="national-empty-description">Experimente ampliar a pesquisa.</p><a href="https://pncp.gov.br/app/editais" target="_blank" rel="noopener noreferrer">Consultar o PNCP ↗</a></div>
  <div class="national-pagination"><p id="national-page-indicator">Preparando resultados...</p><div class="national-page-buttons"><button type="button" id="national-prev" hidden>← Anterior</button><button type="button" id="national-next" hidden>Próxima página →</button></div></div>
  <p class="national-legal">Fonte: Portal Nacional de Contratações Públicas (PNCP). Base independente e amostral, não exaustiva; prazos e situações podem mudar. Sempre confira o edital oficial.</p>

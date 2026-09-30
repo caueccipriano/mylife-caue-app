@@ -128,3 +128,22 @@
 .national-share-feedback p:empty{display:none}
 #national-share-fallback:not([hidden]){display:block;width:100%;margin:8px 0 12px;min-height:44px;border:1px solid #89a994;border-radius:8px;padding:10px;font-size:12px;background:#fff;color:#244e35}
 @media(max-width:1050px){.national-action-row>div{flex-wrap:wrap}}
+
+/* Device-only bookmarks: existing editorial layout, accessible at 320px. */
+.national-save{margin-top:15px;align-self:start;min-height:40px;padding:8px 14px;border:1px solid #9dbca2;border-radius:8px;background:#f6faf5;color:#29543a;font-size:12px;font-weight:800;cursor:pointer}
+.national-save.is-saved{background:#e3f2e5;border-color:#57996d}
+.national-save:focus-visible,.national-unsave:focus-visible,#national-show-saved:focus-visible{outline:3px solid #499267;outline-offset:2px}
+.national-save-status{color:#2d6040;font-size:12px;margin:9px 0}
+.national-save-status:empty{display:none}
+.national-saved-panel{border:1px solid #cbdccd;background:#f7faf7;border-radius:14px;padding:19px;margin:0 0 22px}
+.national-saved-panel[hidden],#national-saved-empty[hidden]{display:none}
+.national-saved-panel>h3{font:800 19px Manrope,sans-serif;color:#264734}
+.national-saved-panel>p{font-size:12px;line-height:1.7;color:#5b7463}
+.national-saved-list{display:grid;gap:10px}
+.national-saved-item{background:white;border:1px solid #dce8de;border-radius:10px;padding:13px;display:flex;justify-content:space-between;align-items:center;gap:14px;min-width:0}
+.national-saved-main{min-width:0;display:grid;gap:6px;overflow-wrap:anywhere;color:#2d4d35;font-size:12px}
+.national-saved-main .national-pill{justify-self:start}
+.national-saved-main small{color:#617c65;font-size:11px}
+.national-saved-actions{display:flex;align-items:center;gap:11px;flex-shrink:0;flex-wrap:wrap}
+.national-unsave{cursor:pointer;border:1px solid #b4c8bb;border-radius:7px;background:#fff;color:#345f45;padding:9px;font-size:11px;font-weight:750}
+@media(max-width:540px){.national-saved-item{align-items:stretch;flex-direction:column}.national-saved-actions{justify-content:space-between}}

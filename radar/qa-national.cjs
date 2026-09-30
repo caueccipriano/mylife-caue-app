@@ -65,6 +65,23 @@ async function run(browser,name,width,height){
  assert.match(await page.locator('link[rel="manifest"]').getAttribute("href"),/manifest\.webmanifest/);
  await page.waitForFunction(()=>document.getElementById("national-result-count")?.textContent?.includes("3 editais"));
  assert.equal(await page.locator(".national-result-card").count(),3);
+ // Bookmarks are explicitly device-only; browser reload restores a saved notice.
+ assert.equal(await page.locator("#national-saved-count").innerText(),"0");
+ await page.locator(".national-result-card .national-save").first().click();
+ assert.equal(await page.locator("#national-saved-count").innerText(),"1");
+ assert.equal(await page.locator(".national-result-card .national-save[aria-pressed='true']").count(),1);
+ await page.locator("#national-show-saved").click();
+ assert.equal(await page.locator("#national-saved-panel").isVisible(),true);
+ assert.equal(await page.locator(".national-saved-item").count(),1);
+ await page.reload({waitUntil:"networkidle"});
+ await page.waitForFunction(()=>document.getElementById("national-result-count")?.textContent?.includes("3 editais"));
+ assert.equal(await page.locator("#national-saved-count").innerText(),"1");
+ await page.locator("#national-show-saved").click();
+ await page.locator(".national-unsave").first().click();
+ assert.equal(await page.locator("#national-saved-count").innerText(),"0");
+ assert.equal(await page.locator(".national-saved-item").count(),0);
+ assert.equal(await page.locator("#national-saved-empty").isVisible(),true);
+ 
  assert.equal(await page.locator("#national-uf-count").innerText(),"2/27");
  assert.equal(await page.locator(".national-state").count(),27);
  assert.match(await page.locator(".national-state.has-data").first().getAttribute("aria-label"),/Última amostra:/);
