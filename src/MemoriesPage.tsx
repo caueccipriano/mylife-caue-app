@@ -1,6 +1,8 @@
 import { useMemo, useState } from 'react'
 import { NavLink, useNavigate, useSearchParams } from 'react-router-dom'
 import { groupTimeline, smartSearch } from './intelligence'
+import { deriveMemoryThreads } from './memoryThreads'
+import './memory-threads.css'
 import { isRecordVisibleForInsights, listMoodCheckins, suggestTags } from './storage'
 import { useRecords } from './appState'
 import { BrandTop, EuIcon, SectionTitle, Tag, formatShortDate, typeIcon, typeTone } from './v2Ui'
@@ -18,6 +20,7 @@ export default function MemoriesPage() {
   const [statusFilter, setStatusFilter] = useState(initialCollection === 'pinned' ? 'pinned' : initialCollection === 'completed' ? 'completed' : '')
   const [periodFilter, setPeriodFilter] = useState<'all' | '30' | '90' | '365'>('all')
   const [moodFilter, setMoodFilter] = useState('')
+  const threads = useMemo(() => deriveMemoryThreads(records, isRecordVisibleForInsights), [records])
   const allMoods = listMoodCheckins()
   const moods = allMoods.slice(-14).reverse()
   const moodByDate = new Map(allMoods.map((item) => [item.date, item.mood]))
@@ -160,6 +163,36 @@ export default function MemoriesPage() {
         </div>
         <b><EuIcon name="arrow-up-right" /></b>
       </NavLink>
+
+      {mode === 'search' && !query.trim() && activeFilterCount === 0 && !initialCollection && threads.length > 0 && (
+        <section className="memory-threads" aria-label="Histórias que você conectou">
+          <div className="memory-threads-head">
+            <div>
+              <Tag tone="ink">ENCONTROS DO SEU ARQUIVO</Tag>
+              <h2>Coisas que se conectam.</h2>
+            </div>
+          </div>
+          <div className="memory-thread-list">
+            {threads.map((thread) => (
+              <button
+                type="button"
+                key={thread.id}
+                className="memory-thread-card"
+                onClick={() => navigate('/registro/' + encodeURIComponent(thread.lead.id))}
+                aria-label={'Abrir ' + thread.members.length + ' registros relacionados, começando por ' + thread.lead.text.slice(0, 70)}
+              >
+                <span className="memory-thread-symbol" aria-hidden="true"><EuIcon name="link" /></span>
+                <span className="memory-thread-copy">
+                  <em>{thread.members.length} registros relacionados · {thread.lead.area}</em>
+                  <strong>{thread.lead.text || 'Registro com anexo'}</strong>
+                  <small>{thread.members.slice(1, 3).map((item) => item.text || 'Registro com anexo').join(' · ')}</small>
+                </span>
+                <EuIcon name="arrow-up-right" />
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
 
       <div className="memory-mode-switch">
         <button className={mode === 'search' ? 'active' : ''} onClick={() => selectMode('search')}><EuIcon name="search" />Buscar</button>

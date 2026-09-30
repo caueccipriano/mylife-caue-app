@@ -19,8 +19,8 @@ jobs:
         run: npm install
       - name: Build
         run: npm run build
-      - name: Test safe link capture
-        run: node --experimental-strip-types --test tests/link-capture.test.mjs
+      - name: Test safe EU link capture and explicit memory threads
+        run: node --experimental-strip-types --test tests/link-capture.test.mjs tests/memory-threads.test.mjs
       - name: Validate Editalume JavaScript
         run: |
           node --check public/radar/app.js
