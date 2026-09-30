@@ -20,6 +20,21 @@ function official(row){
 }
 function formatDate(iso){const date=new Date(iso);return Number.isFinite(date.getTime())?dt.format(date):"Verificar no PNCP"}
 function formatValue(n){return n!==null&&Number(n)>0?money.format(Number(n)):"Não informado"}
+// Approximate grouping from the published PNCP title; verify the official notice.
+function category(title){
+ const t=String(title||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+ const groups=[
+  ["Saúde",/\b(saude|hospital|medicamento|farmac|odontolog|laborator|enfermagem)/],
+  ["Educação",/\b(escola|educacao|pedagog|didatic|universidad|creche)/],
+  ["Tecnologia",/\b(software|informat|computad|tecnolog|servidor|licenca digital|sistema de informacao)/],
+  ["Obras e engenharia",/\b(obra|engenharia|construc|reforma|paviment|infraestrutura)/],
+  ["Limpeza e serviços",/\b(limpeza|higieniz|conservac|portaria|vigilancia|manutenc|facilities)/],
+  ["Transporte e logística",/\b(transporte|veiculo|combustivel|logistica|frete|passagem)/],
+  ["Alimentos",/\b(aliment|merenda|refeic|generos alimenticios)/],
+  ["Materiais e equipamentos",/\b(equipament|material|mobiliario|ferramenta|maquina)/]
+ ];
+ return groups.find(([,pattern])=>pattern.test(t))?.[0]||"Outros";
+}
 function renderCoverage(){
  // A failed status request is UNKNOWN, not proof that zero states have data.
  const verified=state.coverageState==="loaded";
@@ -132,7 +147,7 @@ function renderCards(){
   const main=node("div","national-result-main");
   const head=node("div","national-result-tags");
   head.append(node("span","national-pill",row.uf+" · "+(row.municipality||"Município não identificado")),
-   node("span","national-pill muted",row.sector_focus?"Serviços monitorados":"Setor geral"));
+   node("span","national-pill muted",category(row.title)+" · categoria sugerida"));
   const title=node("h3",null,row.title);
   const agency=node("p","national-agency",row.agency||"Órgão não informado");
   const metadata=node("div","national-result-meta");
@@ -253,9 +268,9 @@ function filtersChanged(){state.offset=0;clearTimeout(debounce);debounce=setTime
 function csvCell(v){let s=String(v??"").replace(/[\r\n]/g," ").trim();if(/^[\s]*[=+\-@]/.test(s))s="'"+s;return '"'+s.replace(/"/g,'""')+'"'}
 function downloadPage(){
  if(!state.items.length)return;
- const rows=[["Controle PNCP","Título","Órgão","Município","UF","Modalidade","Prazo informado","Valor estimado BRL","Último registro","Edital oficial"]];
+ const rows=[["Controle PNCP","Título","Órgão","Município","UF","Categoria sugerida","Modalidade","Prazo informado","Valor estimado BRL","Último registro","Edital oficial"]];
  for(const r of state.items){const url=official(r);if(!url)continue;
-  rows.push([r.pncp_id,r.title,r.agency,r.municipality,r.uf,r.modality,r.closing_at,r.estimated_value_brl??"",r.last_observed_at,url]);}
+  rows.push([r.pncp_id,r.title,r.agency,r.municipality,r.uf,category(r.title),r.modality,r.closing_at,r.estimated_value_brl??"",r.last_observed_at,url]);}
  const blob=new Blob(["\ufeff",rows.map(row=>row.map(csvCell).join(";")).join("\r\n")],{type:"text/csv;charset=utf-8"});
  const url=URL.createObjectURL(blob),a=node("a");a.href=url;a.download="editalume-brasil-pagina.csv";document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
