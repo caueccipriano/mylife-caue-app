@@ -1,6 +1,6 @@
 import { type FormEvent, useMemo, useState } from 'react'
 import { NavLink, useNavigate, useParams } from 'react-router-dom'
-import { defaultJourneyStage, deleteRecord, nextFollowUpDate, suggestTags, updateRecord, type ObjectState, type RecordFreshness, type RecordOutcome, type RecordProgress, type RecordStatus, type StoredAttachment } from './storage'
+import { defaultJourneyStage, deleteRecord, isRecordVisibleForInsights, nextFollowUpDate, suggestTags, updateRecord, type ObjectState, type RecordFreshness, type RecordOutcome, type RecordProgress, type RecordStatus, type StoredAttachment } from './storage'
 import { hasPrivacyPin, isPrivateUnlocked, unlockPrivateRecords } from './privacy'
 import { useBridges, useRecords } from './appState'
 import { BrandTop, EuIcon, Tag, formatShortDate, sourceLabel, sourceTone, typeTone, type EuIconName } from './v2Ui'
@@ -70,10 +70,10 @@ export default function RecordDetailPage() {
   const [privacyError, setPrivacyError] = useState('')
 
   const relatedSuggestions = useMemo(() => {
-    if (!record) return []
+    if (!record || !isRecordVisibleForInsights(record)) return []
     const recordTags = new Set(record.tags ?? suggestTags(record.text, record.area, record.type))
     return records
-      .filter((item) => item.id !== record.id)
+      .filter((item) => item.id !== record.id && isRecordVisibleForInsights(item))
       .map((item) => {
         const itemTags = item.tags ?? suggestTags(item.text, item.area, item.type)
         const overlap = itemTags.filter((tag) => recordTags.has(tag)).length
@@ -166,7 +166,8 @@ export default function RecordDetailPage() {
 
   const actualTags = currentRecord.tags?.length ? currentRecord.tags : suggestTags(currentRecord.text, currentRecord.area, currentRecord.type)
   const stage = currentRecord.journeyStage || defaultJourneyStage(currentRecord.type, currentRecord.status)
-  const related = records.filter((item) => (currentRecord.relatedIds ?? []).includes(item.id))
+  // Never reveal labels of private/deleted/sealed records as related previews.
+  const related = records.filter((item) => isRecordVisibleForInsights(item) && (currentRecord.relatedIds ?? []).includes(item.id))
   const appHint = crossAppHint(currentRecord.area)
   const linkedApp = appHint ? bridges.find((card) => card.id === appHint.id) : null
   const quickTags = [
@@ -281,7 +282,7 @@ export default function RecordDetailPage() {
 
   async function connect(otherId: string) {
     const other = records.find((item) => item.id === otherId)
-    if (!other) return
+    if (!other || !isRecordVisibleForInsights(other)) return
 
     await updateRecord(currentRecord.id, { relatedIds: [...new Set([...(currentRecord.relatedIds ?? []), otherId])] })
     await updateRecord(other.id, { relatedIds: [...new Set([...(other.relatedIds ?? []), currentRecord.id])] })
