@@ -68,6 +68,20 @@ async function audit(page,label,errors){
    await page.close();
    await context.close();
   }
+  // Audit the new passwordless account page without real external authentication.
+  const fakeSdk='export function createClient(){return {auth:{getSession:async()=>({data:{session:null},error:null}),onAuthStateChange:()=>({}),getUser:async()=>({data:{user:null},error:null})}}}';
+  for(const cfg of [{name:"desktop",width:1440,height:900},{name:"mobile",width:390,height:844}]){
+   const context=await browser.newContext({viewport:{width:cfg.width,height:cfg.height}});
+   const page=await context.newPage();const errors=[];
+   page.on("pageerror",e=>errors.push(e.message));
+   await page.route("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.2/+esm",
+     r=>r.fulfill({status:200,contentType:"application/javascript",
+       headers:{"Access-Control-Allow-Origin":"*"},body:fakeSdk}));
+   await page.goto(base+"conta.html",{waitUntil:"networkidle"});
+   await page.waitForFunction(()=>document.getElementById("account-status").textContent.includes("Entre com um link"));
+   if(!await audit(page,cfg.name+"-account",errors))passed=false;
+   await context.close();
+  }
  }finally{await browser.close();}
  if(!passed)process.exitCode=1;
 })().catch(e=>{console.error("A11Y RUN FAILED: "+(e.stack||e));process.exitCode=1;});
