@@ -1,11 +1,11 @@
 {
-  "id": "/mylife-caue-app/radar/",
+  "id": "./",
   "name": "Editalume — Licitações e Oportunidades",
   "short_name": "Editalume",
   "description": "Encontre licitações no Brasil com filtros por estado, setor e prazo. Consulte sempre o edital no PNCP.",
   "lang": "pt-BR",
-  "start_url": "/mylife-caue-app/radar/?v=br-20260929-4#brasil",
-  "scope": "/mylife-caue-app/radar/",
+  "start_url": "./#brasil",
+  "scope": "./",
   "display": "standalone",
   "theme_color": "#163c2c",
   "background_color": "#f5f6f2",
@@ -15,7 +15,7 @@
   ],
   "icons": [
     {
-      "src": "./icon.svg",
+      "src": "./icon.svg?v=mascot-20261001",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
@@ -25,7 +25,7 @@
     {
       "name": "Pesquisar no Brasil",
       "short_name": "Pesquisar",
-      "url": "/mylife-caue-app/radar/?v=br-20260929-3#brasil"
+      "url": "./#brasil"
     }
   ]
 }
