@@ -73,7 +73,7 @@ function renderCoverage(){
 // Device-only public PNCP bookmarks. They are NOT cloud-synced, Premium
 // saved searches, deadline reminders or evidence that a notice is still open.
 const SAVED_KEY="editalume_saved_pncp_v1";
-const MAX_SAVED=30;
+const MAX_SAVED=3; // New device-only guest saves; previously saved entries are retained.
 function cleanBookmark(v){
  if(!v||typeof v!=="object"||!STATES[v.uf]||typeof v.title!=="string"||
     typeof v.pncp_id!=="string"||!official(v)||typeof v.closing_at!=="string"||
@@ -89,7 +89,7 @@ function loadBookmarks(){
   return rows.map(cleanBookmark).filter(x=>{
     if(!x||seen.has(x.pncp_id))return false;
     seen.add(x.pncp_id);return true;
-  }).slice(0,MAX_SAVED);
+  }).slice(0,30); // Never discard existing device bookmarks during rollout.
  }catch{return [];}
 }
 function updateBookmarks(items){
@@ -122,17 +122,26 @@ function renderBookmarks(){
  }
  $("national-saved-empty").hidden=sorted.length>0;
 }
-function toggleBookmark(raw){
- const candidate=cleanBookmark(raw);
- if(!candidate)return;
+async function toggleBookmark(raw){
+ const candidate=cleanBookmark(raw);if(!candidate)return;
+ const account=window.EditalumeAccount;
+ if(account?.user){
+   try{
+     const saved=await account.toggleFavorite(candidate);
+     $("national-save-status").textContent=saved
+       ?"Favorito salvo na sua conta e sincronizado entre dispositivos."
+       :"Favorito removido da sua conta.";
+   }catch(error){$("national-save-status").textContent=error.message||"Não foi possível atualizar seus favoritos.";}
+   return;
+ }
  const exists=state.saved.some(v=>v.pncp_id===candidate.pncp_id);
  if(!exists&&state.saved.length>=MAX_SAVED){
-  $("national-save-status").textContent="Limite de 30 editais neste dispositivo. Remova algum antes de salvar mais.";
+  $("national-save-status").textContent="Sem conta, você pode adicionar até três novos favoritos neste dispositivo. Crie uma conta para sincronizar até cinco.";
   return;
  }
  const next=exists?state.saved.filter(v=>v.pncp_id!==candidate.pncp_id):[...state.saved,candidate];
  if(!updateBookmarks(next))return;
- $("national-save-status").textContent=exists?"Edital removido dos salvos.":"Edital salvo somente neste navegador; confira prazos no PNCP.";
+ $("national-save-status").textContent=exists?"Edital removido.":"Salvo só neste navegador. Crie uma conta para sincronizar.";
  renderBookmarks();renderCards();
 }
 function publicLink(row,label){
@@ -295,6 +304,11 @@ async function loadCoverage(){
 }
 function init(){
  if(!$("national-form"))return;
+ window.addEventListener("editalume-account-changed",()=>{
+   const account=window.EditalumeAccount;
+   state.saved=account?.user?account.favorites.map(cleanBookmark).filter(Boolean):loadBookmarks();
+   renderBookmarks();renderCards();
+ });
  state.saved=loadBookmarks();
  renderBookmarks();
  $("national-show-saved").addEventListener("click",()=>{
