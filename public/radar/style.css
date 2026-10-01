@@ -128,3 +128,18 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 
 .plan-premium .plan-action.button-outline{color:#f4f8f1;border-color:#b9d5c1;background:transparent}
 .plan-premium .plan-action.button-outline:hover{background:#285443;color:#fff;border-color:#d3e6d8}
+
+/* No-cost manual pilot: honest scope, conversion on devices without an email app. */
+.pilot-section{background:#f0f5ee}
+.pilot-section h2{max-width:850px}
+.pilot-intro{max-width:850px;font-size:16px;line-height:1.85;color:#324f3f}
+.pilot-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;list-style:none;margin:34px 0;padding:0;counter-reset:pilot}
+.pilot-steps li{counter-increment:pilot;min-width:0;background:#fff;border:1px solid #d1dfd1;border-radius:14px;padding:24px;box-shadow:0 5px 18px rgba(20,65,43,.04)}
+.pilot-steps li:before{content:"0" counter(pilot);display:block;font-weight:850;font-size:13px;color:#24533e;letter-spacing:.09em;margin-bottom:17px}
+.pilot-steps strong{display:block;color:#1b3d2c;font-size:16px;line-height:1.5;margin-bottom:9px}
+.pilot-steps span{display:block;color:#435c4b;font-size:13px;line-height:1.7}
+.pilot-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.pilot-note{color:#425e4c;font-size:12px;max-width:900px;line-height:1.7;margin-top:18px}
+.pilot-actions .button-outline{background:#fff;border-color:#7eab88;color:#244d36}
+.pilot-actions .button-outline:hover{background:#e4eee2}
+@media(max-width:760px){.pilot-steps{grid-template-columns:1fr;gap:12px}.pilot-steps li{padding:20px}.pilot-actions{flex-direction:column;align-items:stretch}.pilot-actions .button{white-space:normal;text-align:center;width:100%}}
