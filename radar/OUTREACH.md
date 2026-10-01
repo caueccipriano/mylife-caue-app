@@ -1,50 +1,49 @@
-# Editalume · abordagem comercial piloto (AINDA NÃO ENVIADA)
+# Editalume · operação comercial (piloto e serviço pago)
 
-## Produto
-Um radar independente de licitações abertas para empresas de manutenção, conservação e serviços prediais em SP.
-Preço piloto cogitado: R$39,90/mês. Não prometer cobertura exaustiva, habilitação, assessoria jurídica, contratos ou resultado financeiro.
-Site de demonstração: [DOMÍNIO PRÓPRIO DA MARCA PENDENTE]
+Checkpoint: 01/10/2026. Operador comercial: **CIPRI Studios** (caixa comercial conectada). Não publicar listas de contatos, respostas nem informações pessoais no repositório.
 
-## Requisitos antes do envio
-- Usar a caixa comercial existente do CIPRI Studios, se ela for confirmada e conectada pelo proprietário, ou um alias da marca no mesmo serviço. Nunca enviar campanhas do Gmail pessoal do proprietário. Não compartilhar senha.
-- Amostra atualizada e testada. Verifique data, cidade, objeto e prazo oficial antes de mencionar oportunidades.
-- Prospectar **somente contatos comerciais adequados de empresas realmente atuantes**; verificar endereço no próprio site oficial da empresa e relevância do negócio.
-- Avaliar base legal e legítima expectativa antes de tratar dados pessoais. Preferir caixas institucionais (contato@ ou comercial@), evitar listas compradas, dados de pessoas e envios massivos.
-- Deduplicar prospects, no máximo uma mensagem inicial personalizada e um acompanhamento moderado se adequado. Qualquer solicitação de exclusão ou oposição interrompe os contatos imediatamente.
-- Remetente reconhecível com nome da empresa, site e resposta funcional. Não fingir indicação ou relacionamento prévio.
-- Antes do primeiro lote, apresentar ao proprietário destinatários reais, fonte da verificação e mensagens para revisão.
+## O que está disponível
+- **Pesquisa pública gratuita:** base PNCP independente e **amostral**, com links à fonte; não vender acesso exclusivo a dados públicos.
+- **Editalume Sob Medida: R$ 49,90 por relatório avulso**, para NOVOS pedidos; briefing por e-mail e pesquisa manual de até três oportunidades potencialmente relevantes, quando disponíveis. **Ainda não há checkout automático** no site.
+- **Assinatura com alertas automáticos:** futura hipótese de produto, ainda **não disponível**, sem preço definitivo e sem checkout de produção.
 
-## Mensagem de apresentação (ajustar depois de verificar cada empresa)
-Assunto: [Empresa] · editais de manutenção em São Paulo
+## Como funciona a oferta avulsa (obrigatório)
+1. Receber pedido por e-mail no endereço CIPRI Studios divulgado no site. Perguntar segmento e estados/municípios onde a empresa realmente pode atender.
+2. Conferir a amostra e, se possível, validar manualmente na fonte oficial a viabilidade de entregar o relatório. Se não houver resultados compatíveis, avisar **antes de cobrar**.
+3. Para pedidos viáveis, enviar **link de pagamento individual Asaas de produção** (cobrança avulsa de R$ 49,90), criado e conferido pelo operador após aprovação da conta. O site não deve exibir link fictício nem anunciar emissão instantânea.
+4. Conferir o recebimento **no painel oficial Asaas** (não confiar só em print ou e-mail encaminhado). **Entregar somente depois do pagamento confirmado**, dentro do escopo e prazo acordados com o cliente.
+5. Relatório: até 3 oportunidades encontradas, links PNCP, objeto, região, valor/prazo conforme a publicação e ressalva de que detalhes, retificações, participação, status e habilitação devem ser confirmados no edital oficial. Não prometer resultado, vitória, inscrição nem cobertura completa.
+6. Enviar recibo/documento fiscal conforme obrigações aplicáveis; respeitar pedidos de exclusão ou oposição a mensagens futuras.
 
-Olá, equipe da [Empresa].
+**Exceção já prometida:** os cinco contatos da primeira rodada receberam convite para um piloto gratuito. Respeitar o convite para quem aceitar, com escopo razoável; NÃO enviar cobranças a esses convidados nem mudar retroativamente os termos.
 
-Encontrei a atuação da empresa em [serviço verificado no site oficial]. Estou validando o Editalume, um serviço independente que filtra informações públicas do PNCP e identifica uma amostra de licitações de manutenção e serviços prediais em SP.
+## Para criar o link Asaas manualmente (etapa humana)
+- Abrir conta Asaas de **produção**, confirmar que está aprovada e que pode receber pagamentos.
+- Menu Criar Cobrança > Criar Link de Pagamento; nome **Editalume Sob Medida — relatório avulso**, valor fixo **R$ 49,90**, cobrança única, formas de pagamento desejadas.
+- Descrição sugerida: *Pesquisa manual personalizada em amostra pública de licitações, até três oportunidades pertinentes quando disponíveis, com links e referências oficiais. Pedido sujeito à conferência prévia por e-mail; prazo de entrega combinado antes da cobrança. Não inclui inscrição, assessoria jurídica nem garantia de contratação.*
+- Revisar taxas e notificações antes de ativar; o link deve ser usado **após** confirmar possibilidade de atendimento e aceite do escopo. Não incluir segredos nem links de acesso administrativos no site ou GitHub.
+- Para automatizar pagamentos e assinaturas em etapas futuras, exigem-se webhook autenticado em produção, reconciliação, idempotência, habilitação do cliente apenas após cobrança confirmada, tratamento de atraso/cancelamento/reembolso e testes ponta a ponta.
 
-Preparamos uma demonstração gratuita: [DOMÍNIO PRÓPRIO DA MARCA PENDENTE]
+Referência oficial: https://central.ajuda.asaas.com/hc/pt-br/articles/32053358645787-Como-criar-um-link-de-pagamento-no-Asaas
 
-Gostariam de receber um exemplo de alerta relacionado a [serviço] para avaliar se faz sentido para a empresa? O preço piloto previsto é R$ 39,90/mês, mas não estamos cobrando durante a validação.
+## Prospecção comercial
+- Oferta gratuita anterior: **5 convites enviados em 01/10/2026**, aguardando respostas. Os detalhes permanecem rotulados somente no Gmail privado, sem publicação.
+- Novos contatos: interesse verificável no tema, e-mails comerciais públicos conferidos no site institucional, personalização, deduplicação, uma mensagem inicial e acompanhamento moderado apenas quando adequado.
+- Respeitar pedidos de não contato imediatamente; não comprar listas nem disparar campanhas indiscriminadas.
+- Oferta padrão em novos envios: pesquisa pública gratuita como demonstração; serviço manual pago avulso claramente precificado. Não convidar novos clientes para piloto grátis sem decisão específica.
+- Marca de operação CIPRI Studios. O atual endereço GitHub Pages é funcional e pode ser usado em pilotos individuais; contém o identificador pessoal do repositório e mantém `noindex`, então não o apresentar como domínio profissional permanente.
 
-Atenciosamente,
-Equipe Editalume
-[endereço comercial confirmado da caixa CIPRI Studios, ou alias Editalume]
+## Prévia comercial sugerida
+Assunto: [Empresa] · pesquisa personalizada de licitações
 
-Se não fizer sentido receber novos contatos, basta responder "não tenho interesse" e não voltaremos a escrever.
+Olá, equipe [Empresa].
 
-## Primeiro acompanhamento (opcional, somente quando adequado)
-Assunto: Re: [Empresa] · editais de manutenção em São Paulo
+Vi que vocês atuam com [atividade confirmada no site] e queria apresentar o Editalume, uma ferramenta independente de pesquisa em amostra pública do PNCP.
 
-Olá! Apenas verificando se interessaria receber uma amostra de alertas públicos relevantes para a atividade da [Empresa]. Se não for prioridade, desconsiderem; não faremos novos contatos.
+Nossa busca gratuita fica em [URL pública efetivamente verificada]. Para empresas que preferem economizar tempo, oferecemos um relatório manual direcionado à atividade e região por **R$ 49,90 por pedido**, com até três oportunidades pertinentes quando disponíveis.
 
-Atenciosamente,
-Equipe Editalume
+Se interessar, basta responder com a área de atuação e as regiões; antes de qualquer cobrança, confirmamos se há oportunidades que se encaixam nesse recorte e combinamos a entrega.
 
-## Registro privado de prospecção
-Guardar apenas em local privado: empresa, URL pública da fonte, endereço institucional confirmado, data, razão da pertinência, status, oposição/opt-out.
-NUNCA publicar a lista de e-mails em repositório público, website ou relatório de pesquisa.
+CIPRI Studios | Editalume
 
-## Identidade independente
-Não enviar mensagens comerciais com o endereço temporário do GitHub Pages, que ainda exibe o identificador do proprietário. É necessário usar domínio próprio da marca (ou subdomínio comercial desvinculado do usuário pessoal) e caixa CIPRI Studios identificada de forma transparente. Confirmar SPF/DKIM/DMARC, base legal e finalidade antes de prospectar. Os dados legais exigidos em pagamentos e notas fiscais continuam sujeitos às obrigações legais.
-
-## Identidade do remetente e operação multimarcas
-Assinatura sugerida: Equipe Editalume | Operação comercial: CIPRI Studios, quando comprovado o vínculo. Não declarar empresa registrada ou domínio próprio até validação. Conta corporativa pode servir a várias iniciativas, mas separar alias, segmentação, respostas e pedidos de não contato de cada marca. Não enviar campanhas em massa automaticamente; validar destinatários corporativos, pertinência, mensagem individual e oposição antes do primeiro lote.
+Se não quiser receber novos contatos, é só responder e não voltaremos a escrever.
