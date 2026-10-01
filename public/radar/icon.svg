@@ -1,11 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
- <title>Editalume</title>
- <rect width="512" height="512" rx="118" fill="#163c2c"/>
- <path d="M140 124C140 105 155 90 174 90h164c19 0 34 15 34 34v16H140z" fill="#c8e4bb"/>
- <rect x="115" y="143" width="282" height="226" rx="32" fill="#f7faf1"/>
- <rect x="157" y="188" width="196" height="22" rx="11" fill="#2c6148"/>
- <rect x="157" y="230" width="149" height="18" rx="9" fill="#a7c4a8"/>
- <rect x="157" y="270" width="179" height="18" rx="9" fill="#a7c4a8"/>
- <circle cx="347" cy="343" r="78" fill="#93c998"/>
- <path d="m310 344 25 25 52-57" fill="none" stroke="#153c2b" stroke-width="19" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="name"><title id="name">Editalume — documento simpático com lupa</title>
+<rect width="512" height="512" rx="112" fill="#fffdfa"/>
+<path d="M99 380c68-18 222-10 303-18" fill="none" stroke="#b5ec12" stroke-width="22" stroke-linecap="round"/>
+<g stroke="#121915" stroke-linecap="round" stroke-linejoin="round">
+<path d="M113 285l-33 18m35-65-32-12m285-95 13-29m24 46 24-18" stroke-width="13" fill="none"/>
+<path d="M181 336l-40 41m190-44 46 41" stroke-width="18"/>
+<path d="M169 299l-60-6m242 0 42-27" stroke-width="20" fill="none"/>
+<path d="M157 112Q160 99 175 95L289 64q14-3 26 9l54 57q8 9 6 22l2 159q0 20-17 24l-160 36q-21 4-25-16l-35-221q-4-16 17-22z" stroke-width="13" fill="#fff"/>
+<path d="M298 67l13 65 59-12" stroke-width="11" fill="#b5ec12"/>
+<path d="M198 158l79-20m-73 43 28-8m-22 87 111-26m-103 51 94-20" stroke-width="11" fill="none"/>
+<path d="M254 202q-1 14 6 20m45-30q-1 16 6 23" stroke-width="10"/>
+<path d="M268 241q18 24 38-3" stroke-width="10" fill="none"/>
+<path d="M220 280l43-9" stroke="#b5ec12" stroke-width="13"/>
+<circle cx="392" cy="209" r="54" fill="#fff" stroke-width="17"/>
+<circle cx="392" cy="209" r="35" fill="#b5ec12" stroke="none"/>
+<path d="M384 189q25-11 29 17" fill="none" stroke="#fff" stroke-width="10"/>
+<path d="M354 252l-25 41" stroke-width="22"/>
+</g></svg>
