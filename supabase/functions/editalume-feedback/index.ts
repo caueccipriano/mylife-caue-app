@@ -3,7 +3,7 @@
  * rate limiting. The service credential never leaves this Edge Function.
  * Public access: verify_jwt=false because requests authenticate with a
  * short-lived, HMAC-signed, IP-bound challenge issued by this handler. */
-const ORIGINS=new Set(["https://caueccipriano.github.io","http://127.0.0.1:4173","http://localhost:4173"]);
+const ORIGINS=new Set(["https://caueccipriano.github.io","https://cipri-studios.github.io","http://127.0.0.1:4173","http://localhost:4173"]);
 const AREA=new Set(["limpeza_facilities","engenharia_manutencao","fornecimento","tecnologia","consultoria","outro"]);
 const PROCUREMENT=new Set(["already_bid","considering","never","prefer_not"]);
 const PRICE=new Set(["free_only","under_20","20_39","40_69","70_plus","unsure"]);
