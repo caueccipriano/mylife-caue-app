@@ -5,6 +5,12 @@ on:
     branches: [main]
     paths:
       - 'public/radar/index.html'
+      - 'public/radar/account.js'
+      - 'public/radar/account.css'
+      - 'public/radar/conta.html'
+      - 'public/radar/account-bridge.js'
+      - 'radar/qa-account.cjs'
+      - 'supabase/migrations/**'
       - 'public/radar/app.js'
       - 'public/radar/style.css'
       - 'public/radar/national.js'
@@ -25,6 +31,12 @@ on:
   pull_request:
     paths:
       - 'public/radar/index.html'
+      - 'public/radar/account.js'
+      - 'public/radar/account.css'
+      - 'public/radar/conta.html'
+      - 'public/radar/account-bridge.js'
+      - 'radar/qa-account.cjs'
+      - 'supabase/migrations/**'
       - 'public/radar/app.js'
       - 'public/radar/style.css'
       - 'public/radar/national.js'
@@ -62,6 +74,9 @@ jobs:
           node --check public/radar/app.js
           node --check radar/qa-browser.cjs
           node --check public/radar/national.js
+          node --check public/radar/account.js
+          node --check public/radar/account-bridge.js
+          node --check radar/qa-account.cjs
           node --check public/radar/sw.js
           node --check public/radar/pwa.js
           node --check public/radar/feedback.js
@@ -76,6 +91,8 @@ jobs:
           for n in $(seq 1 20); do curl --fail --silent http://127.0.0.1:4173/radar/ > /dev/null && break; sleep 1; done
       - name: Desktop/mobile functional and live-index smoke
         run: node radar/qa-browser.cjs
+      - name: Account Magic Link and synchronized favorites (offline mocked)
+        run: node radar/qa-account.cjs
       - name: National desktop/mobile/WebKit and Supabase RPC mock smoke
         run: node radar/qa-national.cjs
       - name: Pilot feedback desktop, 320px and Safari-engine form QA
