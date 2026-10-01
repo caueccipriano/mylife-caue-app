@@ -110,7 +110,7 @@
  function render(){
    const logged=!!state.user,login=$("account-login"),panel=$("account-panel");
    if(login)login.hidden=logged;if(panel)panel.hidden=!logged;
-   if(logged){
+   if(logged&&panel){
      $("account-email").textContent=state.user.email||"Conta Editalume";
      $("account-plan").textContent=state.pro?"Editalume Pro ativo":"Explorar · Grátis";
      $("account-plan-note").textContent=state.pro
