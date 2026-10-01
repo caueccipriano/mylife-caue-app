@@ -57,6 +57,13 @@
      announce(state.error,true);emit();
    }
  }
+ function guestFavorites(){
+   try{
+     const rows=JSON.parse(localStorage.getItem("editalume_saved_pncp_v1")||"[]");
+     return Array.isArray(rows)?rows.filter(x=>x&&official(x.pncp_id)&&typeof x.title==="string"
+       &&/^[A-Z]{2}$/.test(x.uf)&&Number.isFinite(Date.parse(x.closing_at))).slice(0,30):[];
+   }catch{return []}
+ }
  async function toggleFavorite(raw){
    if(!state.user)throw new Error("Entre na conta antes de sincronizar os favoritos.");
    const row={pncp_id:String(raw?.pncp_id||""),title:String(raw?.title||"").slice(0,300),
@@ -110,6 +117,12 @@
        ?"Acesso Pro verificado. Alertas por e-mail serão liberados somente quando o serviço estiver operacional."
        :"Sua conta gratuita permite até cinco favoritos sincronizados. A assinatura Pro está em preparação.";
      renderFavorites();
+     const importButton=$("account-import");
+     if(importButton){
+       const pending=guestFavorites().filter(x=>!state.favorites.some(f=>f.pncp_id===x.pncp_id));
+       importButton.hidden=!pending.length;
+       importButton.textContent="Importar favoritos deste dispositivo ("+pending.length+")";
+     }
    }
    if(!state.error)announce(logged?"Sua conta está conectada.":"Entre com um link enviado para seu e-mail.");
  }
@@ -129,6 +142,21 @@
        announce("Confira sua caixa de entrada. Enviamos um link para acessar sua conta.");
      }catch(_error){announce("Não foi possível enviar o link agora. Verifique o e-mail e tente novamente.",true);}
      finally{button.disabled=false;}
+   });
+ }
+ if($("account-import")){
+   $("account-import").addEventListener("click",async()=>{
+     if(!state.user)return;
+     const pending=guestFavorites().filter(x=>!state.favorites.some(f=>f.pncp_id===x.pncp_id));
+     const slots=Math.max(0,(state.pro?200:5)-state.favorites.length);
+     if(!slots){announce("Seu limite de favoritos na nuvem já foi atingido.",true);return;}
+     if(!window.confirm("Importar até "+Math.min(slots,pending.length)+" favoritos deste aparelho? Os originais serão mantidos."))return;
+     const btn=$("account-import");btn.disabled=true;let imported=0;
+     for(const item of pending.slice(0,slots)){
+       try{await toggleFavorite(item);imported++}catch(_err){}
+     }
+     btn.disabled=false;
+     announce(imported?imported+" favoritos importados. Mantivemos os originais neste dispositivo.":"Nenhum favorito foi importado. Alguns editais podem ter saído da amostra.",!imported);
    });
  }
  if($("account-logout")){
