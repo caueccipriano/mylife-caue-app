@@ -3,9 +3,9 @@
 Checkpoint: 01/10/2026. Operador comercial: **CIPRI Studios** (caixa comercial conectada). Não publicar listas de contatos, respostas nem informações pessoais no repositório.
 
 ## O que está disponível
-- **Pesquisa pública gratuita:** base PNCP independente e **amostral**, com links à fonte; não vender acesso exclusivo a dados públicos.
-- **Editalume Sob Medida: R$ 49,90 por relatório avulso**, para NOVOS pedidos; briefing por e-mail e pesquisa manual de até três oportunidades potencialmente relevantes, quando disponíveis. **Ainda não há checkout automático** no site.
-- **Assinatura com alertas automáticos:** futura hipótese de produto, ainda **não disponível**, sem preço definitivo e sem checkout de produção.
+- **Explorar — grátis:** base amostral PNCP, cadastro por Magic Link e até cinco favoritos privados/sincronizados após configuração e verificação de Auth. Sem cobrança.
+- **Editalume Pro — único plano pago, valor proposto R$ 49,90/mês:** buscas personalizadas, resumos diários por e-mail, alertas e favoritos ampliados. **Ainda em desenvolvimento; não cobrar assinatura antes de validar cobrança, consentimento, entrega e cancelamento.**
+- **Serviço avulso anterior R$ 49,90:** o link de pagamento já criado continua reservado para solicitações manuais existentes; não é um terceiro plano nem aparece no catálogo principal novo. Pedidos viáveis podem ser tratados individualmente, sem prometer funcionalidades automatizadas.
 
 ## Como funciona a oferta avulsa (obrigatório)
 1. Receber pedido por e-mail no endereço CIPRI Studios divulgado no site. Perguntar segmento e estados/municípios onde a empresa realmente pode atender.

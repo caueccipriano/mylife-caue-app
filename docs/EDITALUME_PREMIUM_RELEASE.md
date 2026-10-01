@@ -25,3 +25,12 @@
 
 ## Launch stage
 Public search is in pilot. Premium alert generation is being built and validated **offline**, with billing/delivery intentionally disabled until the above security and operational gates pass.
+
+## 01/10/2026 — Accounts and single Pro plan
+- Public offer: **Explorar grátis** + **only one paid plan, Editalume Pro at proposed R$ 49,90/month**. No Business/other subscription tier. Do not imply recurring Asaas payment is wired.
+- Added passwordless Supabase email login screen `/radar/conta.html`, private synced favorites and limited guest/device bookmarks without deleting older guest data.
+- Supabase migration `editalume_account_private_favorites_and_quotas` was applied to the existing dedicated project. Follow-up `editalume_favorites_revoke_unwanted_grants` removed inherited UPDATE/TRUNCATE/TRIGGER permissions: owner-bound RLS and five authenticated Free / two hundred verified Pro favorites are database-enforced.
+- Existing three saved-search quotas remain gated by verified Pro entitlement. No web client can self-upgrade; entitlement table is owner-read-only.
+- Subscription, semantic search, daily digest, dispatch, payment webhooks and cancellations remain **NOT ACTIVE**; users must not be charged for unavailable capabilities. Keep earlier five pilot invites free as promised.
+- Before opening public signups, **owner must** configure Supabase Auth Site URL / Redirect URLs to include exact `https://caueccipriano.github.io/mylife-caue-app/radar/conta.html`, review auth email sender/deliverability, and complete a real email login test plus two-account RLS isolation test. Until then, published screen is beta and not proof that sending login emails works for real users.
+- Privacy summary and user deletion requests: `/radar/privacidade.html`. Implement a self-serve auth-account deletion flow after separate security review; existing private favorites can be removed individually.
