@@ -62,7 +62,13 @@ async function check(){
    assert.equal(await page.locator("#segment").inputValue(),"all");
    assert.match(await page.locator("#resultsCount").innerText(),/3 oportunidades/);
    assert.equal(await page.locator(".plan-free").count(),1);
-   assert.equal(await page.locator(".plan-premium .plan-pending").count(),1,"Premium must not claim live checkout");
+   assert.equal(await page.locator(".plan-premium .plan-pending").count(),1,"Paid manual service must not imply automatic checkout");
+   assert.match(await page.locator(".plan-premium .plan-price").innerText(),/49,90/);
+   assert.match(await page.locator(".plan-premium .plan-pending").innerText(),/Antes de cobrar/);
+   assert.match(await page.locator(".plan-premium .plan-pending").innerText(),/não há checkout automático/);
+   const paidCta=page.locator(".plan-premium .plan-action");
+   assert.match(await paidCta.getAttribute("href"),/^mailto:cipristudios@gmail\.com\?/);
+   assert.match(await paidCta.innerText(),/49,90/);
    await page.screenshot({path:"radar/qa-artifacts/"+shape.name+"-home.png",fullPage:true});
    success(shape.name+": homepage and honest freemium price");
    await page.selectOption("#segment","all");
