@@ -125,3 +125,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 .notice-details p{margin:9px 0 0;font-size:11px;line-height:1.75;max-width:940px;color:#455949;overflow-wrap:anywhere}
 .data-notice.warning .notice-details p{color:#6a4d27}
 .notice-details summary:focus-visible{outline:3px solid #317257;outline-offset:4px;border-radius:4px}
+
+.plan-premium .plan-action.button-outline{color:#f4f8f1;border-color:#b9d5c1;background:transparent}
+.plan-premium .plan-action.button-outline:hover{background:#285443;color:#fff;border-color:#d3e6d8}
