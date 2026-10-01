@@ -4,6 +4,10 @@ on:
   pull_request:
     paths:
       - 'public/radar/index.html'
+      - 'public/radar/conta.html'
+      - 'public/radar/account.js'
+      - 'public/radar/account.css'
+      - 'public/radar/privacidade.html'
       - 'public/radar/app.js'
       - 'public/radar/style.css'
       - 'public/radar/national.js'
@@ -14,6 +18,10 @@ on:
     branches: [main]
     paths:
       - 'public/radar/index.html'
+      - 'public/radar/conta.html'
+      - 'public/radar/account.js'
+      - 'public/radar/account.css'
+      - 'public/radar/privacidade.html'
       - 'public/radar/app.js'
       - 'public/radar/style.css'
       - 'public/radar/national.js'
