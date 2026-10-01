@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="pt-BR"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#163c2c"><meta name="robots" content="noindex,nofollow">
+<meta name="description" content="Acesse seus favoritos sincronizados e sua conta Editalume.">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" href="./icon.svg" type="image/svg+xml">
+<title>Minha conta · Editalume</title>
+<link rel="stylesheet" href="./account.css?v=1">
+<script type="module" src="./account.js?v=1"></script>
+</head><body>
+<a class="skip" href="#main">Pular para conteúdo</a>
+<header class="top"><a class="logo" href="./">editalume<span>.</span></a><a class="back" href="./#brasil">← Voltar à pesquisa</a></header>
+<main id="main" class="wrap">
+<section class="intro"><span class="eyebrow">SEU RADAR PARTICULAR</span><h1>Uma conta. <em>Suas oportunidades.</em></h1>
+<p>Acesse seus favoritos em diferentes dispositivos. A busca pública permanece gratuita.</p></section>
+<p class="status" id="account-status" role="status" aria-live="polite">Conectando sua conta com segurança...</p>
+<section class="panel" id="account-login" aria-labelledby="login-heading">
+ <h2 id="login-heading">Entrar ou criar conta</h2><p>Use seu e-mail profissional. Enviaremos um link de acesso, sem necessidade de senha.</p>
+ <form id="account-login-form">
+  <label for="account-login-email">E-mail</label>
+  <input id="account-login-email" type="email" required autocomplete="email" maxlength="160" placeholder="voce@empresa.com.br">
+  <button id="account-login-button" type="submit">Enviar link de acesso ↗</button>
+ </form>
+ <small>Ao criar uma conta, você terá acesso aos favoritos gratuitos. Não será feita nenhuma cobrança. Se não pediu o link, ignore o e-mail.</small>
+</section>
+<section class="panel" id="account-panel" hidden aria-labelledby="account-heading">
+ <div class="account-top"><div><span class="eyebrow" id="account-plan">Explorar · Grátis</span><h2 id="account-heading">Minha conta</h2><p id="account-email"></p></div><button type="button" id="account-logout" class="quiet">Sair</button></div>
+ <p id="account-plan-note"></p>
+ <div class="favorite-heading"><h3>Favoritos sincronizados</h3><strong id="account-favorites-count">0 / 5 favoritos na nuvem</strong></div>
+ <div id="account-favorites" class="favorite-list"></div>
+ <a class="cta" href="./#brasil">Encontrar oportunidades ↗</a>
+ <div class="plan-teaser"><h3>Editalume Pro · R$ 49,90/mês</h3>
+  <p>Estamos preparando pesquisas salvas, e-mails personalizados diários, alertas de prazos e mais espaço para favoritos. A assinatura ainda não está disponível.</p>
+  <a href="mailto:cipristudios@gmail.com?subject=Tenho%20interesse%20no%20Editalume%20Pro%20R%24%2049%2C90%2Fm%C3%AAs">Quero receber novidades do Pro ↗</a>
+ </div>
+</section>
+<p class="fine">Editalume é independente do PNCP. Dados públicos podem sofrer alterações. Para solicitar acesso ou exclusão de seus dados: <a href="mailto:cipristudios@gmail.com?subject=Privacidade%20Editalume">cipristudios@gmail.com</a>.</p>
+</main><footer class="footer">Uma iniciativa CIPRI Studios · <a href="./">Editalume</a></footer>
+</body></html>
