@@ -128,3 +128,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{ou
 
 .plan-premium .plan-action.button-outline{color:#f4f8f1;border-color:#b9d5c1;background:transparent}
 .plan-premium .plan-action.button-outline:hover{background:#285443;color:#fff;border-color:#d3e6d8}
+
+/* Match Editalume’s document-and-magnifier mascot to the existing wordmark. */
+.identity .brand-mascot{display:block;flex:none;width:42px;height:42px;border-radius:11px;box-shadow:0 0 0 1px rgba(21,50,34,.14)}
+@media(max-width:400px){.identity .brand-mascot{width:36px;height:36px}}
