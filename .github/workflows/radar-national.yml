@@ -1,25 +1,12 @@
-name: Editalume · national rotating PNCP sync
+name: Editalume · retired monorepo collector (offline tests only)
+# Migrated to CIPRI-studios/editalume on 2026-10-02.
+# Do not schedule or upload national tenders from this legacy application.
 on:
   workflow_dispatch:
-    inputs:
-      states:
-        description: "Optional: 1–3 UFs separated by commas (e.g. AC,RJ,SP)"
-        type: string
-        required: false
-  pull_request:
-    paths:
-      - 'radar/national_collector.py'
-      - 'radar/test_national_collector.py'
-      - 'radar/collector.py'
-      - 'supabase/functions/editalume-ingest/**'
-      - '.github/workflows/radar-national.yml'
 permissions:
   contents: read
-concurrency:
-  group: editalume-national-sync
-  cancel-in-progress: false
 jobs:
-  validate:
+  historical-validation:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
@@ -27,28 +14,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: National collector unit and safety tests
-        run: PYTHONPATH=radar python -m unittest radar.test_national_collector -v
-      - name: Ensure no secret-based ingestion
+      - name: Historical collector offline regression tests
         run: |
-          python -m py_compile radar/national_collector.py
+          PYTHONPATH=radar python -m unittest radar.test_national_collector -v
           python radar/national_collector.py --offline-check
-  synchronize:
-    needs: validate
-    if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
-    runs-on: ubuntu-latest
-    timeout-minutes: 60
-    permissions:
-      id-token: write
-      contents: read
-    env:
-      REQUESTED_UFS: ${{ inputs.states }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: PNCP daily — 27 UFs, 2 proven modalities, 1 page each
-        run: |
-          set +x
-          PYTHONUNBUFFERED=1 python radar/national_collector.py
