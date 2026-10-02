@@ -13,16 +13,6 @@ on:
       - 'radar/collector.py'
       - 'supabase/functions/editalume-ingest/**'
       - '.github/workflows/radar-national.yml'
-  push:
-    branches: [main]
-    paths:
-      - 'radar/national_collector.py'
-      - 'radar/test_national_collector.py'
-      - 'radar/collector.py'
-      - 'supabase/functions/editalume-ingest/**'
-      - '.github/workflows/radar-national.yml'
-  schedule:
-    - cron: '0 8 * * *' # 05:00 America/Sao_Paulo (UTC-3); GitHub schedules can be delayed
 permissions:
   contents: read
 concurrency:
@@ -45,7 +35,7 @@ jobs:
           python radar/national_collector.py --offline-check
   synchronize:
     needs: validate
-    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
     timeout-minutes: 60
     permissions:
