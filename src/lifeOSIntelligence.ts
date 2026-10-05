@@ -128,3 +128,108 @@ export function buildWeeklyReset(records: StoredRecord[]) {
         : 'Semana quieta no arquivo. Uma revisão curta já basta.',
   }
 }
+
+
+export type LifeOSScout = {
+  id: string
+  level: 'low' | 'medium' | 'high'
+  title: string
+  detail: string
+  actionUrl?: string
+  reason: string
+}
+
+export function deriveLifeOSScouts(records: StoredRecord[], inboxCount: number): LifeOSScout[] {
+  const visible = records.filter(isRecordVisibleForInsights)
+  const waiting = deriveWaiting(visible)
+  const now = Date.now()
+  const scouts: LifeOSScout[] = []
+
+  visible
+    .filter((record) => record.status === 'active' && record.followUpAt && new Date(record.followUpAt).getTime() <= now)
+    .forEach((record) => {
+      const waitingOnSomeone = isWaitingRecord(record)
+      scouts.push({
+        id: 'due:' + record.id,
+        level: waitingOnSomeone ? 'medium' : 'high',
+        title: waitingOnSomeone ? 'Vale conferir se houve retorno' : 'Isso já voltou para você',
+        detail: record.text,
+        actionUrl: '/registro/' + record.id,
+        reason: waitingOnSomeone ? 'dependência externa com data de conferência vencida' : 'próxima ação vencida',
+      })
+    })
+
+  visible
+    .filter((record) => record.status === 'active' && ts(record) < now - 21 * 86400000 && !record.followUpAt && !isWaitingRecord(record))
+    .slice(0, 4)
+    .forEach((record) => scouts.push({
+      id: 'stale:' + record.id,
+      level: 'medium',
+      title: 'Uma frente ficou quieta',
+      detail: record.text,
+      actionUrl: '/registro/' + record.id,
+      reason: 'ativa, mas sem movimento há mais de 3 semanas',
+    }))
+
+  visible
+    .filter((record) => lower(record.type).includes('projeto') && record.status === 'active' && !record.nextMove)
+    .slice(0, 3)
+    .forEach((record) => scouts.push({
+      id: 'next:' + record.id,
+      level: 'low',
+      title: 'Projeto sem próximo passo claro',
+      detail: record.text,
+      actionUrl: '/registro/' + record.id,
+      reason: 'projeto ativo sem nextMove registrado',
+    }))
+
+  if (inboxCount > 0) {
+    scouts.push({
+      id: 'inbox',
+      level: inboxCount >= 5 ? 'medium' : 'low',
+      title: 'A entrada está acumulando',
+      detail: inboxCount + (inboxCount === 1 ? ' entrada espera revisão.' : ' entradas esperam revisão.'),
+      actionUrl: '/inbox',
+      reason: 'informação nova ainda não foi roteada para o sistema',
+    })
+  }
+
+  if (waiting.length >= 5) {
+    scouts.push({
+      id: 'waiting-volume',
+      level: 'low',
+      title: 'Muitas coisas estão nas mãos de terceiros',
+      detail: waiting.length + ' dependências externas estão sendo acompanhadas.',
+      actionUrl: '/sistema#aguardando',
+      reason: 'volume alto de itens em espera',
+    })
+  }
+
+  const rank = { high: 0, medium: 1, low: 2 } as const
+  return scouts
+    .sort((a, b) => rank[a.level] - rank[b.level])
+    .slice(0, 8)
+}
+
+export function buildContextBootstrap(records: StoredRecord[]) {
+  const visible = records.filter(isRecordVisibleForInsights)
+  const recentCutoff = Date.now() - 14 * 86400000
+  const activeProjects = visible
+    .filter((record) => record.status === 'active' && lower(record.type).includes('projeto'))
+    .sort((a, b) => ts(b) - ts(a))
+    .slice(0, 5)
+  const recentDecisions = visible
+    .filter((record) => lower(record.type).includes('decis') && ts(record) >= recentCutoff)
+    .sort((a, b) => ts(b) - ts(a))
+    .slice(0, 5)
+  const waiting = deriveWaiting(visible).slice(0, 5)
+  const carryOver = deriveCarryOver(visible).slice(0, 5)
+
+  return {
+    generatedAt: new Date().toISOString(),
+    activeProjects: activeProjects.map((record) => ({ id: record.id, text: record.text, area: record.area, nextMove: record.nextMove })),
+    recentDecisions: recentDecisions.map((record) => ({ id: record.id, text: record.text, area: record.area, outcome: record.outcome })),
+    waiting: waiting.map((record) => ({ id: record.id, text: record.text, area: record.area, followUpAt: record.followUpAt })),
+    carryOver: carryOver.map((record) => ({ id: record.id, text: record.text, area: record.area, nextMove: record.nextMove })),
+  }
+}
