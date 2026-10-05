@@ -394,14 +394,25 @@ export default function RecordDetailPage() {
           </section>
 
           {linkedApp && linkedApp.bridge && (
-            <a className={'record-cross-app cross-app-' + linkedApp.id} href={linkedApp.href} target="_blank" rel="noopener noreferrer">
-              <div>
-                <Tag tone={linkedApp.id === 'folego' ? 'green' : linkedApp.id === 'traco' ? 'cobalt' : 'amber'}>OUTRO APP</Tag>
-                <strong>Isso também conversa com {linkedApp.title}.</strong>
-                <p>{linkedApp.bridge.summary || linkedApp.description}</p>
-              </div>
-              <span className="record-cross-app-arrow"><EuIcon name="arrow-up-right" /></span>
-            </a>
+            linkedApp.id === 'folego' ? (
+              <NavLink className="record-cross-app cross-app-folego" to="/dinheiro">
+                <div>
+                  <Tag tone="green">NO EU</Tag>
+                  <strong>Isso conversa com seu Dinheiro.</strong>
+                  <p>{linkedApp.bridge.summary || linkedApp.description}</p>
+                </div>
+                <span className="record-cross-app-arrow"><EuIcon name="arrow-up-right" /></span>
+              </NavLink>
+            ) : (
+              <a className={'record-cross-app cross-app-' + linkedApp.id} href={linkedApp.href} target="_blank" rel="noopener noreferrer">
+                <div>
+                  <Tag tone={linkedApp.id === 'traco' ? 'cobalt' : 'amber'}>OUTRO APP</Tag>
+                  <strong>Isso também conversa com {linkedApp.title}.</strong>
+                  <p>{linkedApp.bridge.summary || linkedApp.description}</p>
+                </div>
+                <span className="record-cross-app-arrow"><EuIcon name="arrow-up-right" /></span>
+              </a>
+            )
           )}
 
           {currentRecord.whyItMatters && (
