@@ -36,7 +36,7 @@ import { EuIcon } from './v2Ui'
 const nav = [
   { path: '/', label: 'Hoje', icon: 'sun' },
   { path: '/dinheiro', label: 'Dinheiro', icon: 'wallet' },
-  { path: '/sistema', label: 'Sistema', icon: 'collections' },
+  { path: '/sistema', label: 'Central', icon: 'collections' },
   { path: '/vida', label: 'Vida', icon: 'compass' },
   { path: '/memorias', label: 'Memórias', icon: 'sparkles' },
 ] as const
