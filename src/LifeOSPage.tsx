@@ -60,7 +60,7 @@ export default function LifeOSPage() {
   const rawView = searchParams.get('view')
   const view: SystemView = rawView === 'goals' || rawView === 'projects' || rawView === 'agenda' ? rawView : 'panel'
 
-  const visible = useMemo(() => records.filter(isRecordVisibleForInsights), [records])
+  const visible = useMemo(() => records.filter((record) => isRecordVisibleForInsights(record)), [records])
   const active = useMemo(() => visible.filter((record) => record.status === 'active'), [visible])
   const followups = useMemo(() => activeFollowUps(visible), [visible])
   const due = useMemo(() => followups.filter((item) => item.due).map((item) => item.record), [followups])
