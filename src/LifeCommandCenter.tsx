@@ -99,13 +99,6 @@ export default function LifeCommandCenter({ records, inboxCount }: { records: St
     navigate('/capturar?' + params.toString())
   }
 
-  function runSearch(event: React.FormEvent) {
-    event.preventDefault()
-    const value = command.trim()
-    if (!value) return
-    setSearchQuery(value)
-  }
-
   return (
     <section className="eu-command-center now-only" aria-label="EU Command Center">
       <div className={'eu-now-answer attention-' + attention.level}>
@@ -141,7 +134,7 @@ export default function LifeCommandCenter({ records, inboxCount }: { records: St
         </form>
         <div className="eu-command-actions">
           <button onClick={() => runCommand()}><EuIcon name="bolt" />entender e encaminhar</button>
-          <button onClick={(event) => { event.preventDefault(); runSearch(event as unknown as React.FormEvent) }}><EuIcon name="search" />buscar na minha vida</button>
+          <button onClick={() => { const value = command.trim(); if (value) setSearchQuery(value) }}><EuIcon name="search" />buscar na minha vida</button>
         </div>
         <p className="eu-command-guard"><EuIcon name="shield" />Gastos, receitas e outras ações consequenciais nunca são gravados sem confirmação.</p>
       </div>
@@ -305,7 +298,7 @@ export default function LifeCommandCenter({ records, inboxCount }: { records: St
       </section>
 
       <details className="personal-api-card">
-        <summary><span><EuIcon name="collections" /></span><div><strong>Personal API</strong><small>uma única resposta estruturada para o resto do EU</small></div><EuIcon name="arrow-down" /></summary>
+        <summary><span><EuIcon name="collections" /></span><div><strong>Personal API</strong><small>uma única resposta estruturada para o resto do EU</small></div><EuIcon name="arrow-right" /></summary>
         <div className="personal-api-grid">
           <span><b>{snapshot.counts.openLoops}</b> loops</span>
           <span><b>{snapshot.counts.waiting}</b> aguardando</span>
