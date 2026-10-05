@@ -5,6 +5,7 @@ import { useChatInbox, useRecords } from './appState'
 import { activeFollowUps, isRecordVisibleForInsights, type StoredRecord } from './storage'
 import { reviewCandidates } from './intelligence'
 import { BrandTop, EuIcon, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
+import { buildWeeklyReset, deriveCarryOver, deriveWaiting, isWaitingRecord } from './lifeOSIntelligence'
 
 type SystemView = 'panel' | 'goals' | 'projects' | 'agenda'
 
@@ -63,6 +64,10 @@ export default function LifeOSPage() {
   const active = useMemo(() => visible.filter((record) => record.status === 'active'), [visible])
   const followups = useMemo(() => activeFollowUps(visible), [visible])
   const due = useMemo(() => followups.filter((item) => item.due).map((item) => item.record), [followups])
+  const waiting = useMemo(() => deriveWaiting(visible), [visible])
+  const carryOver = useMemo(() => deriveCarryOver(visible), [visible])
+  const actionDue = useMemo(() => due.filter((record) => !isWaitingRecord(record)), [due])
+  const weeklyReset = useMemo(() => buildWeeklyReset(visible), [visible])
   const review = useMemo(() => reviewCandidates(visible), [visible])
 
   const goals = useMemo(() => (
@@ -103,7 +108,7 @@ export default function LifeOSPage() {
 
   const stale = useMemo(() => {
     const cutoff = Date.now() - 21 * 86400000
-    return active.filter((record) => recordTimestamp(record) < cutoff)
+    return active.filter((record) => recordTimestamp(record) < cutoff && !isWaitingRecord(record))
   }, [active])
 
   const nextMoves = useMemo(() => active.filter((record) => record.nextMove?.trim()), [active])
@@ -111,13 +116,13 @@ export default function LifeOSPage() {
   const areaStates = useMemo(() => areas.map((area) => {
     const areaRecords = visible.filter((record) => record.area.toLowerCase() === area.name.toLowerCase())
     const areaActive = areaRecords.filter((record) => record.status === 'active')
-    const areaDue = due.filter((record) => record.area.toLowerCase() === area.name.toLowerCase())
+    const areaDue = actionDue.filter((record) => record.area.toLowerCase() === area.name.toLowerCase())
     const recentCutoff = Date.now() - 14 * 86400000
     const recent = areaRecords.filter((record) => recordTimestamp(record) >= recentCutoff)
     const state = areaDue.length ? 'atenção' : recent.length || areaActive.length ? 'movimento' : 'quieta'
     const lead = areaDue[0] || areaActive.find((record) => record.nextMove) || recent[0] || areaRecords[0]
     return { ...area, count: areaRecords.length, activeCount: areaActive.length, state, lead }
-  }), [visible, due])
+  }), [visible, actionDue])
 
   const tabs: Array<{ id: SystemView; label: string; count?: number }> = [
     { id: 'panel', label: 'Painel' },
@@ -174,7 +179,7 @@ export default function LifeOSPage() {
 
             <NavLink className="system-command-card attention" to={review.length ? '/revisao' : '/?view=now'}>
               <span className="system-command-icon"><EuIcon name="bell" /></span>
-              <div><small>ATENÇÃO</small><strong>{due.length + review.length}</strong><p>{due.length ? due.length + ' retornos vencidos' : review.length ? 'revisões pendentes' : 'nada urgente'}</p></div>
+              <div><small>ATENÇÃO</small><strong>{actionDue.length + review.length}</strong><p>{actionDue.length ? actionDue.length + ' ações vencidas' : review.length ? 'revisões pendentes' : 'nada urgente'}</p></div>
               <EuIcon name="arrow-up-right" />
             </NavLink>
 
@@ -195,16 +200,31 @@ export default function LifeOSPage() {
             <SectionTitle eyebrow="AGORA" title="O sistema está vendo isso" action={<button className="quiet-link" onClick={() => selectView('agenda')}>abrir agenda <EuIcon name="arrow-up-right" /></button>} />
             <div className="system-now-card">
               <div className="system-now-lead">
-                <Tag tone={due.length ? 'coral' : 'green'}>{due.length ? 'PEDE ATENÇÃO' : 'EM DIA'}</Tag>
-                <h2>{due[0] ? compactText(due[0].text, 105) : goals[0] ? compactText(goals[0].text, 105) : 'Seu sistema está respirando bem.'}</h2>
-                <p>{due[0] ? nextAction(due[0]) : goals[0] ? nextAction(goals[0]) : 'Continue registrando decisões, movimentos e coisas que quer construir.'}</p>
-                {due[0] && <NavLink to={'/registro/' + due[0].id}>abrir <EuIcon name="arrow-up-right" /></NavLink>}
+                <Tag tone={actionDue.length ? 'coral' : carryOver.length ? 'cobalt' : 'green'}>{actionDue.length ? 'PEDE ATENÇÃO' : carryOver.length ? 'CONTINUIDADE' : 'EM DIA'}</Tag>
+                <h2>{actionDue[0] ? compactText(actionDue[0].text, 105) : carryOver[0] ? compactText(carryOver[0].text, 105) : goals[0] ? compactText(goals[0].text, 105) : 'Seu sistema está respirando bem.'}</h2>
+                <p>{actionDue[0] ? nextAction(actionDue[0]) : carryOver[0] ? 'Isso veio de antes e continua vivo — sem precisar recadastrar.' : goals[0] ? nextAction(goals[0]) : 'Continue registrando decisões, movimentos e coisas que quer construir.'}</p>
+                {(actionDue[0] || carryOver[0]) && <NavLink to={'/registro/' + (actionDue[0] || carryOver[0]).id}>abrir <EuIcon name="arrow-up-right" /></NavLink>}
               </div>
               <div className="system-now-stats">
                 <div><strong>{completedThisWeek}</strong><span>concluídos em 7 dias</span></div>
-                <div><strong>{nextMoves.length}</strong><span>próximos passos claros</span></div>
+                <div><strong>{carryOver.length}</strong><span>continuidades automáticas</span></div>
                 <div><strong>{stale.length}</strong><span>parados há 3+ semanas</span></div>
               </div>
+            </div>
+          </section>
+
+          <section className="life-os-block" id="aguardando">
+            <SectionTitle eyebrow="DEPENDÊNCIAS" title="Aguardando alguém" />
+            <p className="life-os-intro">Aqui ficam coisas que ainda importam, mas cuja próxima jogada não é sua. Elas não entram na fila de ação até voltarem para você.</p>
+            <div className="waiting-system-list">
+              {waiting.slice(0, 5).map((record) => (
+                <NavLink key={record.id} to={'/registro/' + record.id}>
+                  <span><EuIcon name="clock" /></span>
+                  <div><strong>{record.text}</strong><small>{record.area}{record.followUpAt ? ' · conferir ' + relativeDay(record.followUpAt) : ''}</small></div>
+                  <EuIcon name="arrow-up-right" />
+                </NavLink>
+              ))}
+              {!waiting.length && <div className="soft-empty wide"><span><EuIcon name="check" /></span><p>Nada dependendo de terceiros agora.</p></div>}
             </div>
           </section>
 
@@ -223,6 +243,28 @@ export default function LifeOSPage() {
                 </NavLink>
               ))}
             </div>
+          </section>
+
+          <section className="life-os-block">
+            <SectionTitle eyebrow="RESET SEMANAL" title="O que mudou esta semana" />
+            <article className="weekly-reset-card">
+              <div className="weekly-reset-copy">
+                <Tag tone="lilac">10 MINUTOS</Tag>
+                <h2>{weeklyReset.sentence}</h2>
+                <p>O reset não serve para reorganizar tudo. Serve para limpar ruído, reconhecer o que mudou e escolher o que merece continuar.</p>
+              </div>
+              <div className="weekly-reset-metrics">
+                <div><strong>{weeklyReset.captured}</strong><span>coisas entraram</span></div>
+                <div><strong>{weeklyReset.completed}</strong><span>foram fechadas</span></div>
+                <div><strong>{weeklyReset.waiting}</strong><span>aguardando</span></div>
+                <div><strong>{weeklyReset.carryOver}</strong><span>continuam vivas</span></div>
+              </div>
+              <div className="weekly-reset-actions">
+                <NavLink to="/inbox"><EuIcon name="inbox" />limpar entrada</NavLink>
+                <NavLink to="/revisao"><EuIcon name="refresh" />revisar pendências</NavLink>
+                <NavLink to="/?view=signals"><EuIcon name="sparkles" />ver sinais</NavLink>
+              </div>
+            </article>
           </section>
 
           <section className="life-os-block">
