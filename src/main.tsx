@@ -6,7 +6,7 @@ import './styles.css'
 import './life-os.css'
 import './money.css'
 
-const APP_VERSION = 'eu-v20-central'
+const APP_VERSION = 'eu-v21-no-zoom-auth'
 
 async function refreshPwaShell() {
   if (!('serviceWorker' in navigator)) return
@@ -49,6 +49,25 @@ function routeSharedContent() {
 }
 
 routeSharedContent()
+
+function lockViewportZoom() {
+  const prevent = (event: Event) => event.preventDefault()
+
+  // Safari/iOS pinch gesture.
+  document.addEventListener('gesturestart', prevent, { passive: false })
+  document.addEventListener('gesturechange', prevent, { passive: false })
+  document.addEventListener('gestureend', prevent, { passive: false })
+
+  // Double-tap zoom fallback on older iOS builds.
+  let lastTouchEnd = 0
+  document.addEventListener('touchend', (event) => {
+    const now = Date.now()
+    if (now - lastTouchEnd <= 300) event.preventDefault()
+    lastTouchEnd = now
+  }, { passive: false })
+}
+
+lockViewportZoom()
 
 window.addEventListener('load', () => {
   void refreshPwaShell()
