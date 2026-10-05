@@ -83,6 +83,16 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   const ecosystemInsights = useMemo(() => deriveEcosystemInsights(records, bridges), [records, bridges])
   const dailyBrief = useMemo(() => buildDailyBrief(records, bridges), [records, bridges])
   const readyCapsules = useMemo(() => dueCapsules(records), [records])
+  const focusRecords = useMemo(() => {
+    const seen = new Set<string>()
+    return [...due, ...continueRecords]
+      .filter((record) => {
+        if (seen.has(record.id)) return false
+        seen.add(record.id)
+        return true
+      })
+      .slice(0, 3)
+  }, [due, continueRecords])
 
   useEffect(() => {
     if (requestedView === 'signals') setTodayView('signals')
@@ -182,18 +192,21 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
         </button>
       )}
 
-      {continueRecords.length > 0 && (
+      {focusRecords.length > 0 && (
         <section className="today-block continue-block now-only">
           <SectionTitle
-            eyebrow="CONTINUAR"
-            title="De onde você parou"
-            action={focusAreas.length ? <span className="focus-inline-label">foco: {focusAreas.join(' + ')}</span> : undefined}
+            eyebrow="UMA LISTA"
+            title="Seu foco agora"
+            action={<span className="focus-inline-label">{focusRecords.length}/3 · {focusAreas.length ? focusAreas.join(' + ') : 'só o que importa'}</span>}
           />
+          <p className="today-focus-principle">No máximo três coisas. O resto continua guardado no sistema sem disputar sua atenção.</p>
           <div className="continue-strip">
-            {continueRecords.slice(0, 4).map((record, index) => (
+            {focusRecords.map((record, index) => (
               <NavLink key={record.id} className={'continue-card continue-card-' + index} to={'/registro/' + record.id}>
                 <div>
-                  <Tag tone={record.pinned ? 'cobalt' : typeTone(record.type)}>{record.pinned ? 'FIXADO' : record.type}</Tag>
+                  <Tag tone={due.some((item) => item.id === record.id) ? 'coral' : record.pinned ? 'cobalt' : typeTone(record.type)}>
+                    {due.some((item) => item.id === record.id) ? 'AGORA' : record.pinned ? 'FIXADO' : record.type}
+                  </Tag>
                   <span>{record.area}</span>
                 </div>
                 <h3>{record.text}</h3>
@@ -202,6 +215,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
               </NavLink>
             ))}
           </div>
+          <NavLink className="today-system-link" to="/sistema">ver o restante no Sistema <EuIcon name="arrow-up-right" /></NavLink>
         </section>
       )}
 
