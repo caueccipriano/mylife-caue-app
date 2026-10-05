@@ -2,9 +2,12 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { HashRouter } from 'react-router-dom'
 import App from './App'
+import CentralAuthGate from './CentralAuthGate'
 import './styles.css'
 import './life-os.css'
 import './money.css'
+import './central-auth.css'
+import './polish.css'
 
 const APP_VERSION = 'eu-v21-no-zoom-auth'
 
@@ -76,7 +79,9 @@ window.addEventListener('load', () => {
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <HashRouter>
-      <App />
+      <CentralAuthGate>
+        <App />
+      </CentralAuthGate>
     </HashRouter>
   </React.StrictMode>,
 )
