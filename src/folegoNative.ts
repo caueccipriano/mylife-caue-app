@@ -263,6 +263,67 @@ async function budgetItems(spaceId: string) {
     .sort((a, b) => a.categoryPath.localeCompare(b.categoryPath))
 }
 
+function publishMoneyBridge(snapshot: MoneySnapshot) {
+  const budgetPercent = snapshot.monthlyBudgetPlanned > 0
+    ? Math.round((snapshot.monthlyBudgetUsed / snapshot.monthlyBudgetPlanned) * 100)
+    : null
+  const payload = {
+    version: 2,
+    schema: 'eu.bridge/2',
+    app: 'folego',
+    title: 'Dinheiro · FÔLEGO',
+    updatedAt: new Date().toISOString(),
+    status: statusForBridge(snapshot.status),
+    summary: [
+      snapshot.dailyFolego == null ? null : moneyForBridge(snapshot.dailyFolego) + ' por dia',
+      budgetPercent == null ? null : budgetPercent + '% do orçamento variável usado',
+      snapshot.daysUntilIncome == null ? null : snapshot.daysUntilIncome + ' dias até o próximo recebimento',
+      snapshot.shortfall > 0 ? 'atenção ao caixa' : snapshot.cashHeadroom > 0 ? 'caixa com folga' : 'sem déficit projetado',
+    ].filter(Boolean).join(' · '),
+    metrics: {
+      dailyFolego: snapshot.dailyFolego,
+      budgetUsedPercent: budgetPercent,
+      daysUntilIncome: snapshot.daysUntilIncome,
+      shortfall: snapshot.shortfall,
+      liquidBalance: snapshot.liquidBalance,
+      protectedBalance: snapshot.protectedBalance,
+      cashHeadroom: snapshot.cashHeadroom,
+      spendablePool: snapshot.spendablePool,
+      nextIncomeAmount: snapshot.nextIncomeAmount,
+      monthlyBudgetPlanned: snapshot.monthlyBudgetPlanned,
+      monthlyBudgetUsed: snapshot.monthlyBudgetUsed,
+      budgetConfigured: snapshot.budgetConfigured,
+      limitingFactor: snapshot.limitingFactor,
+    },
+  }
+  const encoded = JSON.stringify(payload)
+  localStorage.setItem('eu_bridge_folego_v2', encoded)
+  localStorage.setItem('eu_bridge_folego_v1', encoded)
+  window.dispatchEvent(new Event('eu-bridge-updated'))
+}
+
+function moneyForBridge(value: number) {
+  return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 2 }).format(value)
+}
+
+function statusForBridge(status: string) {
+  if (status === 'tranquilo') return 'dentro do plano'
+  if (status === 'segure_gastos') return 'segure gastos'
+  if (status === 'sem_folga') return 'sem folga'
+  if (status === 'configurar_recebimento') return 'configurar recebimento'
+  return status
+}
+
+export async function refreshMoneyBridge() {
+  const { data } = await moneySupabase.auth.getSession()
+  if (!data.session) return false
+  const space = await primarySpace()
+  const { data: snapshotData, error } = await moneySupabase.rpc('get_folego_snapshot', { p_space_id: space.id })
+  if (error) throw error
+  publishMoneyBridge(parseSnapshot(snapshotData))
+  return true
+}
+
 export async function loadMoneyBundle(): Promise<MoneyBundle> {
   const session = await requireSession()
   const space = await primarySpace()
@@ -305,11 +366,14 @@ export async function loadMoneyBundle(): Promise<MoneyBundle> {
     contributed.set(id, (contributed.get(id) || 0) + numberValue(row.amount))
   }
 
+  const snapshot = parseSnapshot(snapshotResult.data)
+  publishMoneyBridge(snapshot)
+
   return {
     session,
     space,
     firstName,
-    snapshot: parseSnapshot(snapshotResult.data),
+    snapshot,
     accounts: (accountsResult.data || []) as MoneyAccount[],
     expenseCategories,
     incomeCategories,
