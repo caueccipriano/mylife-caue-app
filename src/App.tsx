@@ -3,6 +3,7 @@ import { Navigate, NavLink, Route, Routes, useLocation, useNavigationType } from
 import RegisterSheet from './RegisterSheet'
 import TodayPage from './TodayPage'
 import LifeOSPage from './LifeOSPage'
+import MoneyPage from './MoneyPage'
 import LifePage, { CareerPlanPage } from './LifePage'
 import DiscoveriesPage from './DiscoveriesPage'
 import MemoriesPage from './MemoriesPage'
@@ -34,6 +35,7 @@ import { EuIcon } from './v2Ui'
 
 const nav = [
   { path: '/', label: 'Hoje', icon: 'sun' },
+  { path: '/dinheiro', label: 'Dinheiro', icon: 'wallet' },
   { path: '/sistema', label: 'Sistema', icon: 'collections' },
   { path: '/vida', label: 'Vida', icon: 'compass' },
   { path: '/memorias', label: 'Memórias', icon: 'sparkles' },
@@ -68,6 +70,7 @@ function AppShell({ onRegister }: { onRegister: () => void }) {
         <Routes>
           <Route path="/" element={<TodayPage onRegister={onRegister} />} />
           <Route path="/sistema" element={<LifeOSPage />} />
+          <Route path="/dinheiro" element={<MoneyPage />} />
           <Route path="/vida" element={<LifePage />} />
           <Route path="/vida/carreira" element={<CareerPlanPage />} />
           <Route path="/vida/area/:id" element={<AreaPage />} />
