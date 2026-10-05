@@ -56,12 +56,14 @@ export function useBridges() {
 
     window.addEventListener('focus', refresh)
     window.addEventListener('storage', refresh)
+    window.addEventListener('eu-bridge-updated', refresh)
     document.addEventListener('visibilitychange', visible)
     const timer = window.setInterval(refresh, 15000)
 
     return () => {
       window.removeEventListener('focus', refresh)
       window.removeEventListener('storage', refresh)
+      window.removeEventListener('eu-bridge-updated', refresh)
       document.removeEventListener('visibilitychange', visible)
       window.clearInterval(timer)
     }
