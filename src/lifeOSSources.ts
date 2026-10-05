@@ -41,7 +41,15 @@ export function buildLifeOSSources(bridges: BridgeCard[]): LifeOSSource[] {
       permissions: ['read', 'derive'],
       note: 'Fonte local-first. Continua funcionando offline.',
     },
-    bridgeSource('folego', 'FÔLEGO', 'finanças pessoais', 'orçamento, ritmo do mês e margem de decisão'),
+    {
+      id: 'folego',
+      title: 'Dinheiro · FÔLEGO',
+      role: 'módulo financeiro nativo do EU',
+      truthFor: 'orçamento, caixa, lançamentos, cartões, dívidas, recorrências e metas',
+      state: 'connected',
+      permissions: ['read', 'derive', 'prepare', 'confirm'],
+      note: 'Usa diretamente o backend financeiro original do FÔLEGO. O app separado deixa de ser necessário.',
+    },
     bridgeSource('traco', 'Traço', 'rotina e performance', 'treinos e sinais de consistência'),
     bridgeSource('repertorio', 'Repertório', 'aprendizado', 'estudos, leituras e revisões'),
     {
