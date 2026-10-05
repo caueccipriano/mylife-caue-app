@@ -1,4 +1,3 @@
-import { refreshMoneyBridge } from './folegoNative'
 export type BridgeAppId = 'folego' | 'traco' | 'repertorio'
 
 export type BridgeMetricValue = string | number | boolean | null
@@ -240,6 +239,7 @@ export async function forceRefreshAppBridges(timeoutMs = 15000): Promise<BridgeC
   if (typeof document === 'undefined') return readAppBridges()
 
   try {
+    const { refreshMoneyBridge } = await import('./folegoNative')
     await refreshMoneyBridge()
   } catch {
     // O módulo Dinheiro continua utilizável mesmo que a atualização do resumo falhe.

@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { Navigate, NavLink, Route, Routes, useLocation, useNavigationType } from 'react-router-dom'
 import RegisterSheet from './RegisterSheet'
 import TodayPage from './TodayPage'
 import LifeOSPage from './LifeOSPage'
-import MoneyPage from './MoneyPage'
 import LifePage, { CareerPlanPage } from './LifePage'
 import DiscoveriesPage from './DiscoveriesPage'
 import MemoriesPage from './MemoriesPage'
@@ -32,6 +31,8 @@ import { initPrivacyAutoLock } from './privacy'
 import { applyDiscreetMode, haptic } from './securitySettings'
 import { emptyExpiredTrash } from './storage'
 import { EuIcon } from './v2Ui'
+
+const MoneyPage = lazy(() => import('./MoneyPage'))
 
 const nav = [
   { path: '/', label: 'Hoje', icon: 'sun' },
@@ -70,7 +71,11 @@ function AppShell({ onRegister }: { onRegister: () => void }) {
         <Routes>
           <Route path="/" element={<TodayPage onRegister={onRegister} />} />
           <Route path="/sistema" element={<LifeOSPage />} />
-          <Route path="/dinheiro" element={<MoneyPage />} />
+          <Route path="/dinheiro" element={
+            <Suspense fallback={<div className="v2-page"><div className="money-loading"><span /><p>Abrindo seu Dinheiro…</p></div></div>}>
+              <MoneyPage />
+            </Suspense>
+          } />
           <Route path="/vida" element={<LifePage />} />
           <Route path="/vida/carreira" element={<CareerPlanPage />} />
           <Route path="/vida/area/:id" element={<AreaPage />} />
