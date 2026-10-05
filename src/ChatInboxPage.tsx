@@ -22,9 +22,9 @@ export default function ChatInboxPage() {
     <div className="v2-page chat-inbox-page">
       <BrandTop />
       <header className="v2-hero">
-        <Tag tone="cobalt">ENTRADA</Tag>
-        <h1>Coisas que chegaram<br />até o seu EU.</h1>
-        <p>ChatGPT, compartilhamentos e outras pontes passam por aqui quando precisam da sua revisão antes de virar parte do arquivo.</p>
+        <Tag tone="cobalt">INBOX UNIVERSAL</Tag>
+        <h1>Tudo chega aqui<br />antes de virar ação.</h1>
+        <p>Conversas, links, compartilhamentos e futuras integrações entram por uma fila só. Você revisa uma vez; o EU decide onde cada coisa pertence.</p>
       </header>
 
       <SectionTitle eyebrow="AGUARDANDO" title={batches.length ? batches.length + (batches.length === 1 ? ' entrada' : ' entradas') : 'Tudo limpo'} />
