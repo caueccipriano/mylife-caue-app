@@ -143,7 +143,7 @@ export default function LifePage() {
               {bridges.map((card) => (
                 <article key={card.id}>
                   <div className="signal-title-row"><strong>{card.title}</strong><span className={card.bridge ? 'signal-dot on' : 'signal-dot'} /></div>
-                  <p>{card.bridge?.summary || 'Abra o app uma vez para o EU receber o resumo.'}</p>
+                  <p>{card.bridge?.summary || (card.id === 'folego' ? 'Entre em Dinheiro no EU para ativar seu resumo financeiro.' : 'Abra o app uma vez para o EU receber o resumo.')}</p>
                   <small>{card.stale ? 'resumo antigo · atualizar' : card.bridge?.status || 'aguardando'}</small>
                 </article>
               ))}
