@@ -1,11 +1,12 @@
 import { useMemo } from 'react'
 import { NavLink, useSearchParams } from 'react-router-dom'
 import { areas } from './data'
-import { useChatInbox, useRecords } from './appState'
+import { useBridges, useChatInbox, useRecords } from './appState'
 import { activeFollowUps, isRecordVisibleForInsights, type StoredRecord } from './storage'
 import { reviewCandidates } from './intelligence'
 import { BrandTop, EuIcon, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
-import { buildContextBootstrap, buildWeeklyReset, deriveCarryOver, deriveLifeOSScouts, deriveProjectHandoff, deriveWaiting, isWaitingRecord } from './lifeOSIntelligence'
+import { buildContextBootstrap, buildWeeklyReset, deriveCarryOver, deriveCrossSignals, deriveLifeOSScouts, deriveProjectHandoff, deriveWaiting, isWaitingRecord } from './lifeOSIntelligence'
+import { autonomyRules, buildLifeOSSources } from './lifeOSSources'
 
 type SystemView = 'panel' | 'goals' | 'projects' | 'agenda'
 
@@ -56,6 +57,7 @@ function compactText(value: string, size = 92) {
 export default function LifeOSPage() {
   const records = useRecords()
   const inbox = useChatInbox()
+  const { bridges } = useBridges()
   const [searchParams, setSearchParams] = useSearchParams()
   const rawView = searchParams.get('view')
   const view: SystemView = rawView === 'goals' || rawView === 'projects' || rawView === 'agenda' ? rawView : 'panel'
@@ -70,6 +72,8 @@ export default function LifeOSPage() {
   const weeklyReset = useMemo(() => buildWeeklyReset(visible), [visible])
   const scouts = useMemo(() => deriveLifeOSScouts(visible, inbox.length), [visible, inbox.length])
   const bootstrap = useMemo(() => buildContextBootstrap(visible), [visible])
+  const crossSignals = useMemo(() => deriveCrossSignals(visible), [visible])
+  const sources = useMemo(() => buildLifeOSSources(bridges), [bridges])
   const review = useMemo(() => reviewCandidates(visible), [visible])
 
   const goals = useMemo(() => (
@@ -234,6 +238,20 @@ export default function LifeOSPage() {
             </div>
           </section>
 
+          {crossSignals.length > 0 && (
+            <section className="life-os-block">
+              <SectionTitle eyebrow="INTELIGÊNCIA CRUZADA" title="Conexões que mudam o contexto" />
+              <div className="system-cross-signals">
+                {crossSignals.map((signal) => (
+                  <article key={signal.id}>
+                    <span><EuIcon name="sparkles" /></span>
+                    <div><strong>{signal.title}</strong><p>{signal.detail}</p></div>
+                  </article>
+                ))}
+              </div>
+            </section>
+          )}
+
           <section className="life-os-block context-bootstrap-block">
             <SectionTitle eyebrow="CONTEXTO" title="O EU já acorda orientado" />
             <div className="context-bootstrap-card">
@@ -297,6 +315,36 @@ export default function LifeOSPage() {
                 <NavLink to="/?view=signals"><EuIcon name="sparkles" />ver sinais</NavLink>
               </div>
             </article>
+          </section>
+
+          <section className="life-os-block">
+            <SectionTitle eyebrow="SOURCE MAP" title="De onde cada verdade vem" />
+            <p className="life-os-intro">O EU pode raciocinar em cima de várias fontes, mas não deve substituir a fonte original quando precisão importa.</p>
+            <div className="source-map-grid">
+              {sources.map((source) => (
+                <article key={source.id} className={'source-map-card source-' + source.state}>
+                  <div className="source-map-top">
+                    <strong>{source.title}</strong>
+                    <span>{source.state === 'connected' ? 'conectado' : source.state === 'stale' ? 'antigo' : source.state === 'planned' ? 'planejado' : 'local'}</span>
+                  </div>
+                  <p>{source.role}</p>
+                  <small>fonte de verdade: {source.truthFor}</small>
+                  <em>{source.note}</em>
+                </article>
+              ))}
+            </div>
+          </section>
+
+          <section className="life-os-block">
+            <SectionTitle eyebrow="AUTONOMIA" title="O que o EU pode fazer sozinho" />
+            <div className="autonomy-grid">
+              {autonomyRules.map((rule) => (
+                <article key={rule.id} className={'autonomy-' + rule.id}>
+                  <span><EuIcon name={rule.id === 'auto' ? 'bolt' : rule.id === 'prepare' ? 'edit' : 'shield'} /></span>
+                  <div><strong>{rule.title}</strong><p>{rule.detail}</p></div>
+                </article>
+              ))}
+            </div>
           </section>
 
           <section className="life-os-block">
