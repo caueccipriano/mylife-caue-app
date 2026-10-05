@@ -408,7 +408,8 @@ export async function loadMoneyExtras(spaceId: string, userId: string, horizonMo
               net_change: n(row.net_change),
               closing_balance: n(row.closing_balance),
               closing_projected: n(row.closing_projected),
-            })),
+            }))
+          : [],
       }
     : null
 
