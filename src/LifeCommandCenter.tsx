@@ -10,11 +10,13 @@ import {
   deriveDecisionJournal,
   deriveFrictionMap,
   deriveNoActionNeeded,
+  deriveNightBrief,
   deriveOpenLoops,
   deriveOpportunities,
   deriveSomeday,
   deriveStateOfMe,
   deriveWhatChanged,
+  deriveWeekLens,
   parseLifeCommand,
   searchLife,
 } from './lifeCommandCenter'
@@ -67,6 +69,9 @@ export default function LifeCommandCenter({ records, inboxCount }: { records: St
   const quiet = useMemo(() => deriveNoActionNeeded(scopedRecords), [scopedRecords])
   const counterfactuals = useMemo(() => deriveCounterfactuals(scopedRecords), [scopedRecords])
   const snapshot = useMemo(() => buildPersonalApiSnapshot(scopedRecords, inboxCount), [scopedRecords, inboxCount])
+  const night = useMemo(() => deriveNightBrief(scopedRecords), [scopedRecords])
+  const week = useMemo(() => deriveWeekLens(scopedRecords), [scopedRecords])
+  const evening = new Date().getHours() >= 18
   const searchResults = useMemo(() => searchLife(records, searchQuery), [records, searchQuery])
 
   const mine = commitments.filter((item) => item.direction === 'mine')
@@ -184,6 +189,39 @@ export default function LifeCommandCenter({ records, inboxCount }: { records: St
           ))}
           {!changes.length && <p className="command-soft-empty">Nada importante mudou por aqui nos últimos dias.</p>}
         </div>
+      </section>
+
+      <section className="time-lens-grid">
+        {evening && (
+          <article className="night-brief-card">
+            <div className="time-lens-title">
+              <span><EuIcon name="moon" /></span>
+              <div><small>BRIEF DA NOITE</small><strong>{night.headline}</strong></div>
+            </div>
+            <p>{night.note}</p>
+            <div className="time-lens-metrics">
+              <span><b>{night.captured}</b> entraram</span>
+              <span><b>{night.completed}</b> fecharam</span>
+              <span><b>{night.decisions}</b> decisões</span>
+            </div>
+          </article>
+        )}
+
+        <article className={'week-lens-card week-' + week.level}>
+          <div className="time-lens-title">
+            <span><EuIcon name="clock" /></span>
+            <div><small>SEMANA INTELIGENTE</small><strong>{week.headline}</strong></div>
+          </div>
+          <div className="week-mini-chart" aria-label="Carga dos próximos sete dias">
+            {week.days.map((day) => (
+              <div key={day.date} title={day.total + ' itens'}>
+                <i style={{ height: Math.max(5, Math.min(32, 5 + day.action * 9 + day.waiting * 4)) }} />
+                <small>{day.label}</small>
+              </div>
+            ))}
+          </div>
+          <p>{week.note}</p>
+        </article>
       </section>
 
       <div className="command-summary-grid">
