@@ -10,8 +10,9 @@ import './central-auth.css'
 import './polish.css'
 import './command-center.css'
 import './visual-polish-v23.css'
+import './ambient-home.css'
 
-const APP_VERSION = 'eu-v23-spatial-polish'
+const APP_VERSION = 'eu-v24-ambient-home'
 
 async function refreshPwaShell() {
   if (!('serviceWorker' in navigator)) return
