@@ -5,7 +5,7 @@ import { useChatInbox, useRecords } from './appState'
 import { activeFollowUps, isRecordVisibleForInsights, type StoredRecord } from './storage'
 import { reviewCandidates } from './intelligence'
 import { BrandTop, EuIcon, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
-import { buildWeeklyReset, deriveCarryOver, deriveWaiting, isWaitingRecord } from './lifeOSIntelligence'
+import { buildContextBootstrap, buildWeeklyReset, deriveCarryOver, deriveLifeOSScouts, deriveWaiting, isWaitingRecord } from './lifeOSIntelligence'
 
 type SystemView = 'panel' | 'goals' | 'projects' | 'agenda'
 
@@ -68,6 +68,8 @@ export default function LifeOSPage() {
   const carryOver = useMemo(() => deriveCarryOver(visible), [visible])
   const actionDue = useMemo(() => due.filter((record) => !isWaitingRecord(record)), [due])
   const weeklyReset = useMemo(() => buildWeeklyReset(visible), [visible])
+  const scouts = useMemo(() => deriveLifeOSScouts(visible, inbox.length), [visible, inbox.length])
+  const bootstrap = useMemo(() => buildContextBootstrap(visible), [visible])
   const review = useMemo(() => reviewCandidates(visible), [visible])
 
   const goals = useMemo(() => (
@@ -211,6 +213,36 @@ export default function LifeOSPage() {
                 <div><strong>{stale.length}</strong><span>parados há 3+ semanas</span></div>
               </div>
             </div>
+          </section>
+
+          <section className="life-os-block">
+            <SectionTitle eyebrow="SCOUTS" title="O que merece ser notado" />
+            <p className="life-os-intro">O EU separa sinal de ruído. Alto pede ação; médio entra no radar; baixo fica registrado sem interromper você.</p>
+            <div className="life-os-scouts">
+              {scouts.slice(0, 5).map((scout) => (
+                <NavLink key={scout.id} to={scout.actionUrl || '/sistema'} className={'life-os-scout scout-' + scout.level}>
+                  <span className="scout-level">{scout.level === 'high' ? 'ALTO' : scout.level === 'medium' ? 'MÉDIO' : 'BAIXO'}</span>
+                  <div>
+                    <strong>{scout.title}</strong>
+                    <p>{compactText(scout.detail, 90)}</p>
+                    <small>por quê: {scout.reason}</small>
+                  </div>
+                  <EuIcon name="arrow-up-right" />
+                </NavLink>
+              ))}
+              {!scouts.length && <div className="soft-empty wide"><span><EuIcon name="check" /></span><p>Nenhum sinal relevante agora. O silêncio também é informação.</p></div>}
+            </div>
+          </section>
+
+          <section className="life-os-block context-bootstrap-block">
+            <SectionTitle eyebrow="CONTEXTO" title="O EU já acorda orientado" />
+            <div className="context-bootstrap-card">
+              <div><strong>{bootstrap.activeProjects.length}</strong><span>projetos ativos</span></div>
+              <div><strong>{bootstrap.recentDecisions.length}</strong><span>decisões recentes</span></div>
+              <div><strong>{bootstrap.waiting.length}</strong><span>dependências</span></div>
+              <div><strong>{bootstrap.carryOver.length}</strong><span>continuidades</span></div>
+            </div>
+            <p className="context-bootstrap-note">Esse é o “bootstrap” do Life OS: contexto curto e relevante carregado primeiro; detalhes entram só quando a tarefa pede.</p>
           </section>
 
           <section className="life-os-block" id="aguardando">
