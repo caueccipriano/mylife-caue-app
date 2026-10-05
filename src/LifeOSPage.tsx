@@ -5,7 +5,7 @@ import { useChatInbox, useRecords } from './appState'
 import { activeFollowUps, isRecordVisibleForInsights, type StoredRecord } from './storage'
 import { reviewCandidates } from './intelligence'
 import { BrandTop, EuIcon, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
-import { buildContextBootstrap, buildWeeklyReset, deriveCarryOver, deriveLifeOSScouts, deriveWaiting, isWaitingRecord } from './lifeOSIntelligence'
+import { buildContextBootstrap, buildWeeklyReset, deriveCarryOver, deriveLifeOSScouts, deriveProjectHandoff, deriveWaiting, isWaitingRecord } from './lifeOSIntelligence'
 
 type SystemView = 'panel' | 'goals' | 'projects' | 'agenda'
 
@@ -348,16 +348,24 @@ export default function LifeOSPage() {
           <SectionTitle eyebrow="EM CONSTRUÇÃO" title="Projetos" />
           <p className="life-os-intro">Projetos são coisas com começo, movimento e algum tipo de fim. O EU junta o estado atual e o próximo passo.</p>
           <div className="life-os-record-stack">
-            {projects.map((record) => (
-              <NavLink key={record.id} to={'/registro/' + record.id} className="life-os-record-card project-card">
-                <div><Tag tone="coral">PROJETO</Tag><span>{record.area}</span></div>
-                <h2>{record.text}</h2>
-                <div className="project-progress-line">
-                  <span className={'progress-' + (record.progressLevel || 'started')} />
-                </div>
-                <p className="next"><EuIcon name="arrow-right" />{nextAction(record)}</p>
-              </NavLink>
-            ))}
+            {projects.map((record) => {
+              const handoff = deriveProjectHandoff(record, visible)
+              return (
+                <NavLink key={record.id} to={'/registro/' + record.id} className="life-os-record-card project-card">
+                  <div><Tag tone="coral">PROJETO</Tag><span>{record.area}</span></div>
+                  <h2>{record.text}</h2>
+                  <div className="project-progress-line">
+                    <span className={'progress-' + (record.progressLevel || 'started')} />
+                  </div>
+                  <div className="project-handoff">
+                    <small>HANDOFF</small>
+                    <p>{handoff.nextMove ? 'Próximo: ' + compactText(handoff.nextMove, 74) : 'Último movimento: ' + compactText(handoff.lastMovement, 74)}</p>
+                    <span>{handoff.decisions.length} decisões · {handoff.waiting.length} aguardando · {handoff.relatedCount} conexões</span>
+                  </div>
+                  <p className="next"><EuIcon name="arrow-right" />{nextAction(record)}</p>
+                </NavLink>
+              )
+            })}
             {!projects.length && <div className="soft-empty wide"><span><EuIcon name="bolt" /></span><p>Registros do tipo Projeto aparecem aqui e ganham continuidade automática.</p></div>}
           </div>
         </section>
