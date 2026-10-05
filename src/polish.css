@@ -1,0 +1,50 @@
+/* EU Central · polish pass 01 */
+html,body,#root{min-height:100%;overscroll-behavior-y:none}
+html{background:var(--paper);-webkit-text-size-adjust:100%}
+body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
+button,a,input,select,textarea{font-family:var(--ui)}
+button,a{touch-action:manipulation}
+button{cursor:pointer}
+:focus-visible{outline:3px solid rgba(49,87,213,.22);outline-offset:3px;border-radius:10px}
+
+.route-stage{animation:eu-route-in .22s cubic-bezier(.22,.8,.24,1)}
+@keyframes eu-route-in{from{opacity:.55;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+.v2-page{max-width:760px;margin-inline:auto}
+.v2-topbar{padding-top:max(12px,env(safe-area-inset-top));backdrop-filter:blur(22px) saturate(1.12);-webkit-backdrop-filter:blur(22px) saturate(1.12)}
+.v2-brand{transition:transform .16s ease}.v2-brand:active{transform:scale(.97)}
+.top-icon-action{transition:transform .16s ease,background .16s ease,color .16s ease}.top-icon-action:active{transform:scale(.91)}
+
+.v2-section-title h2,.money-section-title h2,.life-os-page h2{letter-spacing:-.035em}
+.v2-section-title>small,.money-section-title small{letter-spacing:.1em;font-weight:850}
+
+.v2-card,.memory-card,.continue-card,.life-area,.system-command-card,.life-os-record-card,.money-section-card,.money-transactions article,.money-simple-list article,.money-plan-list article{transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+a.continue-card:active,a.life-area:active,a.life-os-record-card:active,.system-command-card:active,.money-transactions article:active{transform:scale(.985)}
+
+.v2-bottom-nav{padding-bottom:max(6px,env(safe-area-inset-bottom));transition:box-shadow .2s ease,background .2s ease}
+.v2-bottom-nav a{transition:color .16s ease,background .16s ease,transform .16s ease}.v2-bottom-nav a:active{transform:scale(.94)}
+.bottom-nav-icon-wrap{transition:transform .18s cubic-bezier(.2,.8,.2,1),background .18s ease,box-shadow .18s ease}.v2-bottom-nav a.active .bottom-nav-icon-wrap{transform:translateY(-1px)}
+
+.global-register-pill.compact{transition:transform .18s ease,box-shadow .18s ease,filter .18s ease}.global-register-pill.compact:active{transform:scale(.97);box-shadow:0 8px 22px rgba(49,87,213,.19);filter:saturate(.95)}
+
+.v2-tag{font-family:var(--ui);font-weight:850;letter-spacing:.075em}
+.soft-empty{border:1px dashed rgba(104,112,134,.22);background:rgba(255,255,255,.55)}
+
+input,select,textarea{font-size:16px}
+input::placeholder,textarea::placeholder{color:#9aa1b2}
+select{appearance:none;-webkit-appearance:none}
+
+.money-hero,.morning-intelligence,.weekly-reset-card{position:relative;overflow:hidden}
+.money-hero::after,.morning-intelligence::after{content:'';position:absolute;inset:-45% auto auto 55%;width:180px;height:180px;border-radius:50%;background:rgba(255,255,255,.08);filter:blur(2px);pointer-events:none}
+.money-metric-grid article,.money-section-card,.money-wallet-grid article,.money-goals article{box-shadow:0 8px 24px rgba(20,24,42,.035)}
+
+.life-os-hero{border-bottom-color:rgba(20,24,42,.065)}
+.life-os-tabs button,.money-tabs button{transition:transform .16s ease,background .16s ease,color .16s ease,box-shadow .16s ease}.life-os-tabs button:active,.money-tabs button:active{transform:scale(.975)}
+
+@media(hover:hover){
+  a.continue-card:hover,a.life-area:hover,a.life-os-record-card:hover,.system-command-card:hover{transform:translateY(-2px);box-shadow:0 18px 42px rgba(20,24,42,.085)}
+  .top-icon-action:hover{background:rgba(49,87,213,.06);color:var(--primary)}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
