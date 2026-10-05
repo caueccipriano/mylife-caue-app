@@ -48,3 +48,25 @@ select{appearance:none;-webkit-appearance:none}
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
 }
+
+/* Today · premium hierarchy */
+.today-glance{position:relative}
+.today-hello h1{font-family:var(--ui);font-weight:950;letter-spacing:-.06em}
+.daily-brief-card{border:1px solid rgba(49,87,213,.08);background:linear-gradient(145deg,rgba(255,255,255,.94),rgba(237,241,255,.7));box-shadow:0 14px 38px rgba(49,87,213,.065)}
+.daily-brief-card h2{font-family:var(--ui);font-weight:900;letter-spacing:-.035em}
+.simple-day-toggle{border:1px solid rgba(49,87,213,.08);background:rgba(255,255,255,.66)}
+.today-view-tabs{padding:4px;border-radius:17px;background:rgba(255,255,255,.58);border:1px solid rgba(20,24,42,.055)}
+.today-view-tabs button{border-radius:13px}
+.today-view-tabs button.active{background:#fff;color:var(--primary);box-shadow:0 6px 16px rgba(20,24,42,.07)}
+
+.morning-intelligence{background:linear-gradient(145deg,#3157d5 0%,#3f5fc8 58%,#7659c5 118%);box-shadow:0 20px 48px rgba(49,87,213,.18)}
+.morning-intelligence-head .v2-tag{background:rgba(255,255,255,.14);color:#fff}
+.morning-signal-grid div{border:1px solid rgba(255,255,255,.08);background:rgba(255,255,255,.085);backdrop-filter:blur(8px)}
+.morning-signal-grid strong{font-family:var(--ui);font-weight:900;letter-spacing:-.04em}
+
+.today-money-pulse{background:linear-gradient(145deg,#eff7f1,#f9fbfa);border-color:#dceade;box-shadow:0 10px 28px rgba(93,170,114,.07)}
+.today-money-pulse-mark{background:linear-gradient(145deg,#69b47c,#4e9963);box-shadow:0 8px 18px rgba(93,170,114,.19)}
+.today-money-pulse-copy small,.today-money-pulse>.eu-icon{color:#3f7f52}
+
+.continue-card{border:1px solid rgba(20,24,42,.06);box-shadow:0 9px 26px rgba(20,24,42,.045)}
+.waiting-strip{border:1px solid rgba(118,89,197,.08)}
