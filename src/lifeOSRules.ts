@@ -110,3 +110,21 @@ export function deriveDriftSignalsCore(records: DriftRecord[], focusAreas: strin
   }
   return signals.slice(0, 3)
 }
+
+
+export type WaitingRecord = DriftRecord & {
+  text: string
+  type: string
+  followUpAt?: string
+}
+
+export function deriveWaitingCore<T extends WaitingRecord>(records: T[]) {
+  return records
+    .filter((record) => record.status !== 'completed' && record.status !== 'abandoned')
+    .filter((record) => isWaitingText(record.type, record.text))
+    .sort((a, b) => {
+      const af = a.followUpAt ? new Date(a.followUpAt).getTime() : Number.MAX_SAFE_INTEGER
+      const bf = b.followUpAt ? new Date(b.followUpAt).getTime() : Number.MAX_SAFE_INTEGER
+      return af - bf || timestamp(b) - timestamp(a)
+    })
+}
