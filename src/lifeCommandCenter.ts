@@ -105,16 +105,32 @@ export function deriveCommitments(records: StoredRecord[]): Commitment[] {
     'ficou de ', 'vai me retornar', 'vai retornar', 'aguardando retorno', 'aguardando resposta',
     'esperando resposta', 'esperando retorno', 'me prometeu', 'disse que ia', 'depende de ',
   ]
+  const commitments: Commitment[] = []
 
-  return visible(records)
+  visible(records)
     .filter(active)
-    .flatMap((record) => {
+    .forEach((record) => {
       const haystack = lower(record.type + ' ' + record.text + ' ' + (record.nextMove || ''))
-      if (includesAny(haystack, mine)) return [{ id: 'mine:' + record.id, direction: 'mine' as const, record, reason: 'um compromisso seu ainda está aberto' }]
-      if (includesAny(haystack, theirs) || isWaitingRecord(record)) return [{ id: 'theirs:' + record.id, direction: 'theirs' as const, record, reason: 'algo foi prometido ou depende de outra pessoa' }]
-      return []
+      if (includesAny(haystack, mine)) {
+        commitments.push({
+          id: 'mine:' + record.id,
+          direction: 'mine',
+          record,
+          reason: 'um compromisso seu ainda está aberto',
+        })
+        return
+      }
+      if (includesAny(haystack, theirs) || isWaitingRecord(record)) {
+        commitments.push({
+          id: 'theirs:' + record.id,
+          direction: 'theirs',
+          record,
+          reason: 'algo foi prometido ou depende de outra pessoa',
+        })
+      }
     })
-    .sort((a, b) => stamp(b.record) - stamp(a.record))
+
+  return commitments.sort((a, b) => stamp(b.record) - stamp(a.record))
 }
 
 export function deriveDecisionJournal(records: StoredRecord[]): DecisionEntry[] {
