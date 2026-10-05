@@ -7,7 +7,8 @@ import './styles.css'
 import './life-os.css'
 import './money.css'
 import './central-auth.css'
-import './polish.css'\nimport './command-center.css'
+import './polish.css'
+import './command-center.css'
 
 const APP_VERSION = 'eu-v22-command-center'
 
