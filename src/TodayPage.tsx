@@ -10,6 +10,7 @@ import { useBridges, useChatInbox, useMood, useMoodHistory, usePersonalProfile, 
 import { BrandTop, EuIcon, SectionTitle, Tag, formatShortDate, typeTone, type EuIconName } from './v2Ui'
 import { AstroTodayPreview } from './AstrologyPage'
 import { haptic } from './securitySettings'
+import { buildMorningIntelligence, deriveCarryOver, deriveWaiting, isWaitingRecord } from './lifeOSIntelligence'
 
 function greeting() {
   const hour = new Date().getHours()
@@ -83,16 +84,19 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   const ecosystemInsights = useMemo(() => deriveEcosystemInsights(records, bridges), [records, bridges])
   const dailyBrief = useMemo(() => buildDailyBrief(records, bridges), [records, bridges])
   const readyCapsules = useMemo(() => dueCapsules(records), [records])
+  const waiting = useMemo(() => deriveWaiting(records), [records])
+  const carryOver = useMemo(() => deriveCarryOver(records), [records])
+  const morning = useMemo(() => buildMorningIntelligence(records, inbox.length), [records, inbox.length])
   const focusRecords = useMemo(() => {
     const seen = new Set<string>()
-    return [...due, ...continueRecords]
+    return [...due.filter((record) => !isWaitingRecord(record)), ...carryOver, ...continueRecords.filter((record) => !isWaitingRecord(record))]
       .filter((record) => {
         if (seen.has(record.id)) return false
         seen.add(record.id)
         return true
       })
       .slice(0, 3)
-  }, [due, continueRecords])
+  }, [due, carryOver, continueRecords])
 
   useEffect(() => {
     if (requestedView === 'signals') setTodayView('signals')
@@ -184,6 +188,21 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
       </nav>
       </section>
 
+      <section className="morning-intelligence now-only" aria-label="Inteligência da manhã">
+        <div className="morning-intelligence-head">
+          <Tag tone="ink">MORNING INTELLIGENCE</Tag>
+          <span>montado do que já existe no seu EU</span>
+        </div>
+        <h2>{morning.headline}</h2>
+        <p>{morning.note}</p>
+        <div className="morning-signal-grid">
+          <div className={morning.overdueCount ? 'hot' : ''}><strong>{morning.overdueCount}</strong><span>pedem ação</span></div>
+          <div><strong>{morning.carryOverCount}</strong><span>vieram de antes</span></div>
+          <div className={morning.waitingCount ? 'waiting' : ''}><strong>{morning.waitingCount}</strong><span>aguardando alguém</span></div>
+          <div><strong>{morning.inboxCount}</strong><span>na entrada</span></div>
+        </div>
+      </section>
+
       {readyCapsules.length > 0 && (
         <button className="capsule-ready-callout now-only" onClick={() => navigate('/vida/lab')}>
           <Tag tone="lilac">CÁPSULA DO FUTURO</Tag>
@@ -217,6 +236,18 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
           </div>
           <NavLink className="today-system-link" to="/sistema">ver o restante no Sistema <EuIcon name="arrow-up-right" /></NavLink>
         </section>
+      )}
+
+      {waiting.length > 0 && (
+        <NavLink className="waiting-strip now-only" to="/sistema?view=panel#aguardando">
+          <span className="waiting-strip-icon"><EuIcon name="clock" /></span>
+          <div>
+            <small>AGUARDANDO</small>
+            <strong>{waiting.length === 1 ? 'Uma coisa não depende de você agora.' : waiting.length + ' coisas não dependem de você agora.'}</strong>
+            <p>Ficam acompanhadas sem ocupar sua lista de ação.</p>
+          </div>
+          <EuIcon name="arrow-up-right" />
+        </NavLink>
       )}
 
       <section className="daily-idea now-only">
