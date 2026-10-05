@@ -627,7 +627,7 @@ h3 {
 /* Vida */
 .area-scroll {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 9px;
 }
 
@@ -16403,4 +16403,43 @@ a.top-icon-action,
 }
 @media (max-width: 360px) {
   .link-capture input { grid-column: 1 / -1; }
+}
+
+
+/* EU Central · five-module dock using the FÔLEGO palette. */
+.v2-bottom-nav a:nth-child(1).active .bottom-nav-icon-wrap{
+  background:linear-gradient(145deg,#e4f3f4,#dceff0);
+  color:#5f9fa0;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.94),0 7px 16px rgba(95,159,160,.16);
+}
+.v2-bottom-nav a:nth-child(2).active .bottom-nav-icon-wrap{
+  background:linear-gradient(145deg,#e9edff,#dfe6ff);
+  color:#3157d5;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.94),0 7px 16px rgba(49,87,213,.18);
+}
+.v2-bottom-nav a:nth-child(3).active .bottom-nav-icon-wrap{
+  background:linear-gradient(145deg,#eee9f8,#e8e1f6);
+  color:#7659c5;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.94),0 7px 16px rgba(118,89,197,.16);
+}
+.v2-bottom-nav a:nth-child(4).active .bottom-nav-icon-wrap{
+  background:linear-gradient(145deg,#eef5df,#e6efcc);
+  color:#768f2d;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.94),0 7px 16px rgba(166,191,91,.18);
+}
+.v2-bottom-nav a:nth-child(5).active .bottom-nav-icon-wrap{
+  border-radius:14px 18px 13px 17px;
+  background:linear-gradient(145deg,#fae8f1,#f5deea);
+  color:#d56c9f;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.94),0 7px 16px rgba(213,108,159,.16);
+}
+.v2-bottom-nav a:nth-child(2).active{color:#3157d5}
+.v2-bottom-nav a:nth-child(3).active{color:#7659c5}
+.v2-bottom-nav a:nth-child(4).active{color:#768f2d}
+.v2-bottom-nav a:nth-child(5).active{color:#b95384}
+@media(max-width:430px){
+  .v2-bottom-nav{padding-left:6px;padding-right:6px}
+  .v2-bottom-nav a{padding-left:1px;padding-right:1px}
+  .v2-bottom-nav a>small{font-size:6.5px}
+  .bottom-nav-icon-wrap{width:32px;height:32px}
 }
