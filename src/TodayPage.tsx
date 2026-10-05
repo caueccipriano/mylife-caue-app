@@ -59,6 +59,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   const mood = useMood()
   const moodHistory = useMoodHistory()
   const { bridges } = useBridges()
+  const moneyBridge = bridges.find((card) => card.id === 'folego')
   const inbox = useChatInbox()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -204,6 +205,20 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
           <div><strong>{morning.inboxCount}</strong><span>na entrada</span></div>
         </div>
       </section>
+
+      {moneyBridge?.bridge && (
+        <NavLink className="today-money-pulse now-only" to="/dinheiro">
+          <div className="today-money-pulse-mark"><EuIcon name="wallet" /></div>
+          <div className="today-money-pulse-copy">
+            <small>DINHEIRO</small>
+            <strong>{typeof moneyBridge.bridge.metrics.dailyFolego === 'number'
+              ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 2 }).format(moneyBridge.bridge.metrics.dailyFolego) + ' por dia'
+              : 'Seu FÔLEGO está no EU'}</strong>
+            <p>{moneyBridge.bridge.summary}</p>
+          </div>
+          <EuIcon name="arrow-up-right" />
+        </NavLink>
+      )}
 
       {readyCapsules.length > 0 && (
         <button className="capsule-ready-callout now-only" onClick={() => navigate('/vida/lab')}>
