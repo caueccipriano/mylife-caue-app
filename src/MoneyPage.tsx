@@ -35,6 +35,23 @@ function eventSign(type: string) {
   return ['income', 'reimbursement', 'benefit_credit'].includes(type) ? 1 : -1
 }
 
+function moneyDraftFromCommand(value: string) {
+  const normalized = value.trim()
+  const lower = normalized.toLocaleLowerCase('pt-BR')
+  const type: 'expense' | 'income' = ['recebi ', 'ganhei ', 'salário ', 'salario ', 'entrou '].some((token) => lower.includes(token)) ? 'income' : 'expense'
+  const amountMatch = normalized.match(/(?:r\$\s*)?(\d{1,3}(?:\.\d{3})*(?:,\d{1,2})?|\d+(?:[.,]\d{1,2})?)/i)
+  const amount = amountMatch?.[1] || ''
+  const description = normalized
+    .replace(/\b(gastei|paguei|recebi|ganhei|salário|salario|entrou)\b/ig, '')
+    .replace(/r\$\s*/ig, '')
+    .replace(amountMatch?.[0] || '', '')
+    .replace(/^\s*(de|com|em|no|na)\s+/i, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim()
+
+  return { type, amount, description }
+}
+
 function eventLabel(type: string) {
   if (type === 'expense') return 'despesa'
   if (type === 'income') return 'receita'
@@ -50,7 +67,8 @@ export default function MoneyPage() {
   const [bundle, setBundle] = useState<MoneyBundle | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [registerOpen, setRegisterOpen] = useState(false)
+  const [commandDraft, setCommandDraft] = useState(() => sessionStorage.getItem('eu-money-command-draft') || '')
+  const [registerOpen, setRegisterOpen] = useState(() => Boolean(sessionStorage.getItem('eu-money-command-draft')))
 
   async function refresh() {
     setLoading(true)
@@ -223,8 +241,18 @@ export default function MoneyPage() {
       {bundle && registerOpen && (
         <MoneyRegister
           bundle={bundle}
-          onClose={() => setRegisterOpen(false)}
-          onSaved={() => { setRegisterOpen(false); void refresh() }}
+          commandDraft={commandDraft}
+          onClose={() => {
+            setRegisterOpen(false)
+            setCommandDraft('')
+            sessionStorage.removeItem('eu-money-command-draft')
+          }}
+          onSaved={() => {
+            setRegisterOpen(false)
+            setCommandDraft('')
+            sessionStorage.removeItem('eu-money-command-draft')
+            void refresh()
+          }}
         />
       )}
     </div>
@@ -373,10 +401,11 @@ function MoneyLogin({ onSignedIn }: { onSignedIn: () => void }) {
   )
 }
 
-function MoneyRegister({ bundle, onClose, onSaved }: { bundle: MoneyBundle; onClose: () => void; onSaved: () => void }) {
-  const [type, setType] = useState<'expense' | 'income'>('expense')
-  const [description, setDescription] = useState('')
-  const [amount, setAmount] = useState('')
+function MoneyRegister({ bundle, commandDraft, onClose, onSaved }: { bundle: MoneyBundle; commandDraft?: string; onClose: () => void; onSaved: () => void }) {
+  const draft = useMemo(() => moneyDraftFromCommand(commandDraft || ''), [commandDraft])
+  const [type, setType] = useState<'expense' | 'income'>(draft.type)
+  const [description, setDescription] = useState(draft.description)
+  const [amount, setAmount] = useState(draft.amount)
   const [accountId, setAccountId] = useState(bundle.accounts[0]?.id || '')
   const [categoryId, setCategoryId] = useState(bundle.expenseCategories[0]?.id || '')
   const [busy, setBusy] = useState(false)
@@ -413,7 +442,8 @@ function MoneyRegister({ bundle, onClose, onSaved }: { bundle: MoneyBundle; onCl
     <div className="money-sheet-backdrop" onMouseDown={(e) => { if (e.target === e.currentTarget) onClose() }}>
       <section className="money-sheet" role="dialog" aria-modal="true">
         <div className="money-sheet-handle" />
-        <div className="money-sheet-head"><div><small>DINHEIRO</small><h2>Registrar agora</h2></div><button onClick={onClose}><EuIcon name="x" /></button></div>
+        <div className="money-sheet-head"><div><small>{commandDraft ? 'EU COMMAND → DINHEIRO' : 'DINHEIRO'}</small><h2>{commandDraft ? 'Revise antes de registrar' : 'Registrar agora'}</h2></div><button onClick={onClose}><EuIcon name="x" /></button></div>
+        {commandDraft && <p className="money-command-review"><EuIcon name="shield" /> O EU entendeu “{commandDraft}”. Confira os campos abaixo; nada foi gravado ainda.</p>}
         <div className="money-kind-switch">
           <button className={type === 'expense' ? 'active' : ''} onClick={() => switchType('expense')}>Despesa</button>
           <button className={type === 'income' ? 'active' : ''} onClick={() => switchType('income')}>Receita</button>
