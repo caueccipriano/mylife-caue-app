@@ -11,6 +11,8 @@ import { BrandTop, EuIcon, SectionTitle, Tag, formatShortDate, typeTone, type Eu
 import { AstroTodayPreview } from './AstrologyPage'
 import { haptic } from './securitySettings'
 import LifeCommandCenter from './LifeCommandCenter'
+import { deriveAttentionBudget } from './lifeCommandCenter'
+import { deriveAmbientProfile } from './ambientHome'
 import { deriveCarryOver, deriveCrossSignals, deriveDriftSignals, deriveWaiting, isWaitingRecord } from './lifeOSIntelligence'
 
 function greeting() {
@@ -72,6 +74,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
     return localStorage.getItem('eu-today-view') === 'signals' ? 'signals' : 'now'
   })
   const [focusAreas, setFocusAreasState] = useState(() => getFocusAreas())
+  const [ambientNow, setAmbientNow] = useState(() => new Date())
 
   const followups = useMemo(() => activeFollowUps(records), [records])
   const due = followups.filter((item) => item.due && isRecordVisibleForInsights(item.record)).map((item) => item.record)
@@ -90,6 +93,8 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   const carryOver = useMemo(() => deriveCarryOver(records), [records])
   const driftSignals = useMemo(() => deriveDriftSignals(records, focusAreas), [records, focusAreas])
   const crossSignals = useMemo(() => deriveCrossSignals(records), [records])
+  const ambientAttention = useMemo(() => deriveAttentionBudget(records, inbox.length), [records, inbox.length])
+  const ambient = useMemo(() => deriveAmbientProfile(ambientNow, ambientAttention.level), [ambientNow, ambientAttention.level])
   const focusRecords = useMemo(() => {
     const seen = new Set<string>()
     return [...due.filter((record) => !isWaitingRecord(record)), ...carryOver, ...continueRecords.filter((record) => !isWaitingRecord(record))]
@@ -110,6 +115,27 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
     setTodayView(value)
     localStorage.setItem('eu-today-view', value)
   }
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setAmbientNow(new Date()), 5 * 60 * 1000)
+    return () => window.clearInterval(timer)
+  }, [])
+
+  useEffect(() => {
+    const root = document.documentElement
+    const meta = document.querySelector('meta[name="theme-color"]') as HTMLMetaElement | null
+    const previousThemeColor = meta?.content
+
+    root.dataset.euAmbient = ambient.period
+    root.dataset.euPressure = ambient.pressure
+    if (meta) meta.content = ambient.themeColor
+
+    return () => {
+      delete root.dataset.euAmbient
+      delete root.dataset.euPressure
+      if (meta && previousThemeColor) meta.content = previousThemeColor
+    }
+  }, [ambient])
 
   useEffect(() => {
     const refreshSimple = () => setSimpleDay(getSimpleDayMode())
@@ -142,12 +168,12 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   }
 
   return (
-    <div className={'v2-page today-page today-view-' + todayView + (simpleDay ? ' simple-day' : '')}>
+    <div className={'v2-page today-page today-view-' + todayView + ' ambient-' + ambient.period + ' ambient-pressure-' + ambient.pressure + (simpleDay ? ' simple-day' : '')}>
       <BrandTop />
 
       <section className="today-glance" aria-label="Seu dia no EU">
         <section className="today-hello">
-        <p>{dayLabel()}</p>
+        <p className="today-date-row"><span>{dayLabel()}</span><span className="ambient-state-chip"><i /><b>{ambient.label}</b><em>{ambient.note}</em></span></p>
         <h1>{greeting()}{profile.displayName ? ', ' + profile.displayName : ''}</h1>
         <span>como tá seu humor hoje?</span>
       </section>
