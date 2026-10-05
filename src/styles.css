@@ -16443,3 +16443,222 @@ a.top-icon-action,
   .v2-bottom-nav a>small{font-size:6.5px}
   .bottom-nav-icon-wrap{width:32px;height:32px}
 }
+
+
+/* EU Central v20 — final theme authority: FÔLEGO visual DNA */
+:root {
+  --paper: #f6f7fb;
+  --card: #ffffff;
+  --surface-muted: #f0f2f8;
+  --ink: #14182a;
+  --muted: #687086;
+  --faint: #8e96aa;
+  --line: #e3e6ef;
+  --line-strong: #d4d9e5;
+  --primary: #3157d5;
+  --primary-deep: #2847b5;
+  --cobalt: #3157d5;
+  --cobalt-soft: #e8edfd;
+  --lilac: #7659c5;
+  --lilac-soft: #eee9f8;
+  --pink: #d56c9f;
+  --pink-soft: #f9e7f0;
+  --green: #5daa72;
+  --green-soft: #e6f4e9;
+  --amber: #d89b67;
+  --amber-soft: #fbefe4;
+  --coral: #d89b67;
+  --coral-soft: #f9eee4;
+  --sky: #6877c7;
+  --sky-soft: #eaecf8;
+  --acid: #a6bf5b;
+  --cyan: #6689df;
+  --hot-pink: #d56c9f;
+  --electric-violet: #7659c5;
+  --chrome: #e3e6ef;
+  --shadow-soft: 0 12px 32px rgba(20,24,42,.055);
+  --shadow-float: 0 18px 48px rgba(49,87,213,.13);
+}
+
+body {
+  background:
+    radial-gradient(circle at 4% 3%, rgba(49,87,213,.105), transparent 22rem),
+    radial-gradient(circle at 97% 17%, rgba(118,89,197,.075), transparent 25rem),
+    radial-gradient(circle at 80% 78%, rgba(213,108,159,.045), transparent 24rem),
+    radial-gradient(circle at 8% 91%, rgba(93,170,114,.055), transparent 27rem),
+    var(--paper);
+}
+
+.v2-topbar {
+  background: linear-gradient(180deg, rgba(246,247,251,.97), rgba(246,247,251,.86));
+  border-bottom-color: rgba(20,24,42,.05);
+}
+
+.v2-brand strong {
+  background: linear-gradient(120deg, #3157d5 0 43%, #7659c5 72%, #d56c9f 112%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 5px 14px rgba(49,87,213,.12));
+}
+
+.tag-cobalt { color: #2847b5; background: #e8edfd; }
+.tag-lilac { color: #6544b6; background: #eee9f8; }
+.tag-pink { color: #a34677; background: #f9e7f0; }
+.tag-sky { color: #4f5ea9; background: #eaecf8; }
+.tag-green { color: #3f7f52; background: #e6f4e9; }
+.tag-amber { color: #916136; background: #fbefe4; }
+.tag-coral { color: #916136; background: #f9eee4; }
+
+.v2-bottom-nav {
+  left: max(8px, env(safe-area-inset-left));
+  right: max(8px, env(safe-area-inset-right));
+  bottom: max(7px, env(safe-area-inset-bottom));
+  width: auto;
+  min-height: 68px;
+  padding: 6px 7px;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 2px;
+  border: 1px solid rgba(20,24,42,.075);
+  border-radius: 24px;
+  background: rgba(255,255,255,.88);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.98),
+    0 14px 38px rgba(20,24,42,.12);
+  backdrop-filter: blur(24px) saturate(1.16);
+  -webkit-backdrop-filter: blur(24px) saturate(1.16);
+}
+
+.v2-bottom-nav a {
+  min-width: 0;
+  min-height: 54px;
+  gap: 2px;
+  border-radius: 17px;
+  color: #8e96aa;
+}
+
+.v2-bottom-nav a > small {
+  max-width: 100%;
+  overflow: hidden;
+  font-family: var(--ui);
+  font-size: 7.5px;
+  font-weight: 750;
+  letter-spacing: -.01em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bottom-nav-icon-wrap {
+  width: 29px;
+  height: 29px;
+  border: 0;
+  border-radius: 11px;
+  background: transparent;
+  box-shadow: none;
+}
+
+.bottom-nav-icon {
+  width: 19px;
+  height: 19px;
+}
+
+.v2-bottom-nav a.active {
+  color: var(--primary);
+  background: rgba(49,87,213,.055);
+}
+
+.v2-bottom-nav a.active::after {
+  display: none;
+}
+
+.v2-bottom-nav a.active .bottom-nav-icon-wrap {
+  border: 0;
+  background: linear-gradient(145deg, #edf1ff, #e4e9fb);
+  color: var(--primary);
+  box-shadow: 0 6px 15px rgba(49,87,213,.11);
+}
+
+/* Dinheiro inherits the FÔLEGO green signal without becoming a different app. */
+.v2-bottom-nav a:nth-child(2).active {
+  color: #3f7f52;
+  background: rgba(93,170,114,.065);
+}
+.v2-bottom-nav a:nth-child(2).active .bottom-nav-icon-wrap {
+  background: linear-gradient(145deg, #eef8f0, #e3f2e7);
+  color: #4b9460;
+  box-shadow: 0 6px 15px rgba(93,170,114,.12);
+}
+
+/* The Life OS hub is the visual center of the dock. */
+.v2-bottom-nav a:nth-child(3) .bottom-nav-icon-wrap {
+  width: 32px;
+  height: 32px;
+}
+.v2-bottom-nav a:nth-child(3).active {
+  color: #6544b6;
+  background: rgba(118,89,197,.07);
+}
+.v2-bottom-nav a:nth-child(3).active .bottom-nav-icon-wrap {
+  background: linear-gradient(145deg, #f3effd, #e9e2f8);
+  color: #7659c5;
+  box-shadow: 0 7px 17px rgba(118,89,197,.13);
+}
+
+.v2-bottom-nav a:nth-child(4).active {
+  color: #2847b5;
+}
+.v2-bottom-nav a:nth-child(5).active {
+  color: #a34677;
+  background: rgba(213,108,159,.06);
+}
+.v2-bottom-nav a:nth-child(5).active .bottom-nav-icon-wrap {
+  background: linear-gradient(145deg, #fbedf4, #f7e3ed);
+  color: #b65382;
+}
+
+.global-register-pill.compact {
+  left: auto;
+  right: max(18px, env(safe-area-inset-right));
+  bottom: calc(86px + env(safe-area-inset-bottom));
+  width: auto;
+  min-width: 118px;
+  min-height: 46px;
+  padding: 0 17px 0 11px;
+  transform: none;
+  border: 1px solid rgba(255,255,255,.74);
+  background:
+    radial-gradient(circle at 27% 15%, rgba(255,255,255,.48), transparent 29%),
+    linear-gradient(145deg, #4265d6 0%, #3157d5 58%, #7659c5 110%);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.38),
+    0 13px 30px rgba(49,87,213,.23);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.global-register-pill.compact > span {
+  width: 27px;
+  height: 27px;
+}
+
+@media (max-width: 390px) {
+  .v2-bottom-nav {
+    left: 5px;
+    right: 5px;
+    padding-inline: 4px;
+    border-radius: 21px;
+  }
+  .v2-bottom-nav a > small {
+    font-size: 7px;
+  }
+  .bottom-nav-icon-wrap {
+    width: 27px;
+    height: 27px;
+  }
+  .global-register-pill.compact {
+    right: 12px;
+    min-width: 104px;
+    padding-right: 14px;
+    font-size: 10px;
+  }
+}
