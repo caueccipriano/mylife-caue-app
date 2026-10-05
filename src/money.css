@@ -41,3 +41,10 @@
 .today-money-pulse{display:grid;grid-template-columns:42px 1fr 16px;gap:12px;align-items:center;margin:0 0 24px;padding:15px 17px;border-radius:21px;background:linear-gradient(145deg,#edf1ff,#f8f9ff);border:1px solid #dfe5f5;text-decoration:none;box-shadow:0 10px 28px rgba(49,87,213,.07)}
 .today-money-pulse-mark{width:40px;height:40px;display:grid;place-items:center;border-radius:13px;background:linear-gradient(145deg,var(--primary),#4265d6);color:#fff;box-shadow:0 8px 18px rgba(49,87,213,.18)}.today-money-pulse-mark .eu-icon{width:18px}
 .today-money-pulse-copy small{display:block;color:var(--primary);font-size:8px;font-weight:900;letter-spacing:.09em}.today-money-pulse-copy strong{display:block;margin-top:3px;font-size:12px}.today-money-pulse-copy p{margin:3px 0 0;color:var(--muted);font-size:8px;line-height:1.35}.today-money-pulse>.eu-icon{width:14px;color:var(--primary)}
+
+
+/* EU Command → Dinheiro review */
+.money-command-review{display:grid;grid-template-columns:18px 1fr;gap:8px;align-items:flex-start;margin:14px 0 4px;padding:12px 13px;border:1px solid rgba(49,87,213,.09);border-radius:15px;background:linear-gradient(145deg,#eef2ff,#f9faff);color:var(--muted);font-size:8px;line-height:1.45}
+.money-command-review .eu-icon{width:15px;color:var(--primary);margin-top:1px}
+.money-sheet:has(.money-command-review){box-shadow:0 32px 96px rgba(20,24,42,.3),0 0 0 1px rgba(49,87,213,.04)}
+.money-sheet:has(.money-command-review) .money-submit{background:linear-gradient(145deg,var(--primary),#4669dd);box-shadow:0 10px 24px rgba(49,87,213,.18)}
