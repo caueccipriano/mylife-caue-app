@@ -233,3 +233,34 @@ export function buildContextBootstrap(records: StoredRecord[]) {
     carryOver: carryOver.map((record) => ({ id: record.id, text: record.text, area: record.area, nextMove: record.nextMove })),
   }
 }
+
+
+export function deriveProjectHandoff(project: StoredRecord, records: StoredRecord[]) {
+  const relatedSet = new Set(project.relatedIds || [])
+  const related = records
+    .filter((record) => record.id !== project.id)
+    .filter((record) => relatedSet.has(record.id) || (record.relatedIds || []).includes(project.id))
+    .filter((record) => isRecordVisibleForInsights(record))
+    .sort((a, b) => ts(b) - ts(a))
+
+  const decisions = related
+    .filter((record) => lower(record.type).includes('decis'))
+    .slice(0, 3)
+  const open = related
+    .filter((record) => record.status === 'active' && !isWaitingRecord(record))
+    .slice(0, 3)
+  const waiting = related
+    .filter(isWaitingRecord)
+    .slice(0, 3)
+  const latest = related[0]
+
+  return {
+    lastMovement: latest?.text || project.text,
+    lastMovementAt: latest?.updatedAt || latest?.createdAt || project.updatedAt || project.createdAt,
+    decisions,
+    open,
+    waiting,
+    nextMove: project.nextMove || open[0]?.nextMove || open[0]?.text || '',
+    relatedCount: related.length,
+  }
+}
