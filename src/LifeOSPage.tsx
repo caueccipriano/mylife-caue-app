@@ -7,6 +7,7 @@ import { reviewCandidates } from './intelligence'
 import { BrandTop, EuIcon, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
 import { buildContextBootstrap, buildWeeklyReset, deriveCarryOver, deriveCrossSignals, deriveLifeOSScouts, deriveProjectHandoff, deriveWaiting, isWaitingRecord } from './lifeOSIntelligence'
 import { autonomyRules, buildLifeOSSources } from './lifeOSSources'
+import { deriveLivingGoals } from './adaptiveLife'
 
 type SystemView = 'panel' | 'goals' | 'projects' | 'agenda'
 
@@ -82,6 +83,8 @@ export default function LifeOSPage() {
       .filter((record) => record.status !== 'completed' && record.status !== 'abandoned')
       .sort((a, b) => recordTimestamp(b) - recordTimestamp(a))
   ), [visible])
+
+  const livingGoals = useMemo(() => deriveLivingGoals(visible), [visible])
 
   const projects = useMemo(() => (
     visible
@@ -366,6 +369,8 @@ export default function LifeOSPage() {
           </section>
 
           <section className="life-os-shortcuts">
+            <NavLink to="/decidir"><EuIcon name="compass" /><span>Decida comigo</span><small>compare duas opções com seu contexto real</small></NavLink>
+            <NavLink to="/pessoas"><EuIcon name="user" /><span>Pessoas</span><small>promessas, retornos e histórias conectadas</small></NavLink>
             <NavLink to="/pergunte"><EuIcon name="search" /><span>Pergunte ao EU</span><small>encontre contexto na sua própria vida</small></NavLink>
             <NavLink to="/descobertas"><EuIcon name="sparkles" /><span>Descobertas</span><small>ideias, referências e coisas que chamaram atenção</small></NavLink>
             <NavLink to="/vida/lab"><EuIcon name="bolt" /><span>EU Lab</span><small>experimentos, padrões e ferramentas mais profundas</small></NavLink>
@@ -374,19 +379,34 @@ export default function LifeOSPage() {
       )}
 
       {view === 'goals' && (
-        <section className="life-os-list-view">
-          <SectionTitle eyebrow="DIREÇÃO" title="Objetivos ativos" />
-          <p className="life-os-intro">Objetivo aqui é direção, não cobrança. O importante é saber por que existe e qual é o próximo movimento.</p>
-          <div className="life-os-record-stack">
-            {goals.map((record) => (
-              <NavLink key={record.id} to={'/registro/' + record.id} className="life-os-record-card">
-                <div><Tag tone={typeTone(record.type)}>{record.type}</Tag><span>{record.area}</span></div>
-                <h2>{record.text}</h2>
-                {record.whyItMatters && <p className="why">{record.whyItMatters}</p>}
-                <p className="next"><EuIcon name="arrow-right" />{nextAction(record)}</p>
+        <section className="life-os-list-view living-goals-view">
+          <SectionTitle eyebrow="OBJETIVOS VIVOS" title="Direção que reage à sua vida" />
+          <p className="life-os-intro">O EU olha progresso explícito, movimentos recentes, registros relacionados e dependências. Quando não existe percentual real, ele não inventa um.</p>
+          <div className="living-goal-stack">
+            {livingGoals.map((goal) => (
+              <NavLink key={goal.record.id} to={'/registro/' + goal.record.id} className={'living-goal-card goal-state-' + goal.state}>
+                <div className="living-goal-top">
+                  <div><Tag tone={goal.state === 'attention' ? 'coral' : goal.state === 'waiting' ? 'lilac' : goal.state === 'quiet' ? 'amber' : 'green'}>{goal.stateLabel}</Tag><span>{goal.record.area}</span></div>
+                  {goal.progress !== null ? <b>{goal.progress}%</b> : <b className="qualitative">sem % inventada</b>}
+                </div>
+                <h2>{goal.record.text}</h2>
+                {goal.record.whyItMatters && <p className="why">{goal.record.whyItMatters}</p>}
+                {goal.progress !== null && <div className="living-goal-progress"><span style={{ width: goal.progress + '%' }} /></div>}
+                <div className="living-goal-signals">
+                  <span><strong>{goal.recentMovementCount}</strong> movimentos em 14 dias</span>
+                  <span><strong>{goal.relatedCount}</strong> conexões</span>
+                  <span><strong>{goal.evidence.length}</strong> evidências principais</span>
+                </div>
+                <p className="next"><EuIcon name="arrow-right" />{goal.nextMove}</p>
+                {goal.evidence.length > 0 && (
+                  <div className="living-goal-evidence">
+                    <small>CONTEXTO RELACIONADO</small>
+                    {goal.evidence.slice(0, 3).map((item) => <span key={item.id}>{compactText(item.text, 72)}</span>)}
+                  </div>
+                )}
               </NavLink>
             ))}
-            {!goals.length && <div className="soft-empty wide"><span><EuIcon name="compass" /></span><p>Quando você registrar algo como Objetivo ou Meta, ele aparece aqui automaticamente.</p></div>}
+            {!livingGoals.length && <div className="soft-empty wide"><span><EuIcon name="compass" /></span><p>Quando você registrar algo como Objetivo ou Meta, ele aparece aqui e começa a ganhar contexto automaticamente.</p></div>}
           </div>
         </section>
       )}

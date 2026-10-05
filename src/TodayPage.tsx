@@ -11,7 +11,9 @@ import { BrandTop, EuIcon, SectionTitle, Tag, formatShortDate, typeTone, type Eu
 import { AstroTodayPreview } from './AstrologyPage'
 import { haptic } from './securitySettings'
 import LifeCommandCenter from './LifeCommandCenter'
+import AdaptiveHomeDeck from './AdaptiveHomeDeck'
 import { deriveAttentionBudget } from './lifeCommandCenter'
+import { deriveAdaptiveHome } from './adaptiveLife'
 import { deriveAmbientProfile } from './ambientHome'
 import { deriveCarryOver, deriveCrossSignals, deriveDriftSignals, deriveWaiting, isWaitingRecord } from './lifeOSIntelligence'
 
@@ -95,6 +97,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   const crossSignals = useMemo(() => deriveCrossSignals(records), [records])
   const ambientAttention = useMemo(() => deriveAttentionBudget(records, inbox.length), [records, inbox.length])
   const ambient = useMemo(() => deriveAmbientProfile(ambientNow, ambientAttention.level), [ambientNow, ambientAttention.level])
+  const adaptiveItems = useMemo(() => deriveAdaptiveHome(records, { inboxCount: inbox.length, reviewCount: review.length, moneyReady: Boolean(moneyBridge?.bridge) }), [records, inbox.length, review.length, moneyBridge?.bridge])
   const focusRecords = useMemo(() => {
     const seen = new Set<string>()
     return [...due.filter((record) => !isWaitingRecord(record)), ...carryOver, ...continueRecords.filter((record) => !isWaitingRecord(record))]
@@ -168,7 +171,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   }
 
   return (
-    <div className={'v2-page today-page today-view-' + todayView + ' ambient-' + ambient.period + ' ambient-pressure-' + ambient.pressure + (simpleDay ? ' simple-day' : '')}>
+    <div className={'v2-page today-page today-view-' + todayView + ' ambient-' + ambient.period + ' ambient-pressure-' + ambient.pressure + ' adaptive-primary-' + (adaptiveItems[0]?.id || 'quiet') + (simpleDay ? ' simple-day' : '')}>
       <BrandTop />
 
       <section className="today-glance" aria-label="Seu dia no EU">
@@ -218,6 +221,8 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
       </section>
 
       <LifeCommandCenter records={records} inboxCount={inbox.length} />
+
+      <AdaptiveHomeDeck items={adaptiveItems} />
 
       {moneyBridge?.bridge && (
         <NavLink className="today-money-pulse now-only" to="/dinheiro">

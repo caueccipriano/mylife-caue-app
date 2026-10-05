@@ -26,6 +26,8 @@ import MoodPage from './MoodPage'
 import CollectionsPage from './CollectionsPage'
 import AreaPage from './AreaPage'
 import NotificationsPage from './NotificationsPage'
+import DecidePage from './DecidePage'
+import PeoplePage from './PeoplePage'
 import NotificationRuleSync from './NotificationRuleSync'
 import { initPrivacyAutoLock } from './privacy'
 import { applyDiscreetMode, haptic } from './securitySettings'
@@ -84,6 +86,8 @@ function AppShell({ onRegister }: { onRegister: () => void }) {
           <Route path="/memorias/humor" element={<MoodPage />} />
           <Route path="/memorias/colecoes" element={<CollectionsPage />} />
           <Route path="/notificacoes" element={<NotificationsPage />} />
+          <Route path="/decidir" element={<DecidePage />} />
+          <Route path="/pessoas" element={<PeoplePage />} />
           <Route path="/capturar" element={<ChatCapturePage />} />
           <Route path="/registro/:id" element={<RecordDetailPage />} />
           <Route path="/inbox" element={<ChatInboxPage />} />
