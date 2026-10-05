@@ -1,5 +1,6 @@
 import { type FormEvent, useEffect, useMemo, useState } from 'react'
 import { BrandTop, EuIcon, Tag } from './v2Ui'
+import MoneyMore from './MoneyMore'
 import {
   loadMoneyBundle,
   moneySupabase,
@@ -10,7 +11,7 @@ import {
   type MoneyCategory,
 } from './folegoNative'
 
-type MoneyView = 'overview' | 'movement' | 'plan' | 'wallet'
+type MoneyView = 'overview' | 'movement' | 'plan' | 'wallet' | 'more'
 
 function money(value?: number | null) {
   if (value == null) return '—'
@@ -96,6 +97,7 @@ export default function MoneyPage() {
     { id: 'movement', label: 'Movimento' },
     { id: 'plan', label: 'Plano' },
     { id: 'wallet', label: 'Carteira' },
+    { id: 'more', label: 'Mais' },
   ]
 
   const budgetProgress = bundle?.snapshot.monthlyBudgetPlanned
@@ -212,6 +214,7 @@ export default function MoneyPage() {
           )}
 
           {view === 'wallet' && <MoneyWallet bundle={bundle} />}
+          {view === 'more' && <MoneyMore bundle={bundle} onChanged={() => void refresh()} />}
         </>
       )}
 
