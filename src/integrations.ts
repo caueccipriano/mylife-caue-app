@@ -35,8 +35,8 @@ export type BridgeCard = {
 const APP_CONFIG: Record<BridgeAppId, Omit<BridgeCard, 'bridge'>> = {
   folego: {
     id: 'folego',
-    title: 'Fôlego',
-    description: 'Dinheiro, ritmo do mês e margem de decisão.',
+    title: 'Dinheiro',
+    description: 'FÔLEGO nativo: caixa, orçamento e margem de decisão.',
     href: '#/dinheiro',
   },
   traco: {
