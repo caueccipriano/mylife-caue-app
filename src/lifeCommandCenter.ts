@@ -242,7 +242,7 @@ export function deriveFrictionMap(records: StoredRecord[]): FrictionSignal[] {
         level: signals.length >= 3 ? 'high' as const : signals.length === 2 ? 'medium' as const : 'low' as const,
       }]
     })
-    .sort((a, b) => ({ high: 0, medium: 1, low: 2 }[a.level] - ({ high: 0, medium: 1, low: 2 }[b.level])) )
+    .sort((a, b) => ['high', 'medium', 'low'].indexOf(a.level) - ['high', 'medium', 'low'].indexOf(b.level))
     .slice(0, 8)
 }
 
