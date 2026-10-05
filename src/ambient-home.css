@@ -1,0 +1,352 @@
+/* EU v24 · Ambient Home
+   Time-aware atmosphere + attention-aware intensity.
+   No content is reordered or hidden: the environment adapts, not the truth. */
+
+html[data-eu-ambient="morning"]{
+  --ambient-page:#f7f9fd;
+  --ambient-glow-a:rgba(94,132,226,.16);
+  --ambient-glow-b:rgba(111,181,136,.09);
+  --ambient-chip:#3157d5;
+  --ambient-chip-soft:#edf2ff;
+  --ambient-glance-a:rgba(255,255,255,.92);
+  --ambient-glance-b:rgba(237,244,255,.82);
+  --ambient-glance-c:rgba(238,248,241,.68);
+}
+
+html[data-eu-ambient="afternoon"]{
+  --ambient-page:#f7f7fa;
+  --ambient-glow-a:rgba(49,87,213,.105);
+  --ambient-glow-b:rgba(216,155,103,.07);
+  --ambient-chip:#4960b9;
+  --ambient-chip-soft:#eef1fb;
+  --ambient-glance-a:rgba(255,255,255,.93);
+  --ambient-glance-b:rgba(244,246,252,.86);
+  --ambient-glance-c:rgba(249,246,241,.64);
+}
+
+html[data-eu-ambient="evening"]{
+  --ambient-page:#f6f4f9;
+  --ambient-glow-a:rgba(118,89,197,.14);
+  --ambient-glow-b:rgba(213,108,159,.08);
+  --ambient-chip:#7659c5;
+  --ambient-chip-soft:#f0ebfb;
+  --ambient-glance-a:rgba(255,255,255,.91);
+  --ambient-glance-b:rgba(242,237,250,.82);
+  --ambient-glance-c:rgba(251,241,246,.7);
+}
+
+html[data-eu-ambient="night"]{
+  --ambient-page:#eef0f6;
+  --ambient-glow-a:rgba(50,61,118,.19);
+  --ambient-glow-b:rgba(118,89,197,.12);
+  --ambient-chip:#6757b5;
+  --ambient-chip-soft:#ece9f8;
+  --ambient-glance-a:rgba(251,252,255,.92);
+  --ambient-glance-b:rgba(234,237,248,.86);
+  --ambient-glance-c:rgba(240,235,248,.72);
+}
+
+html[data-eu-ambient] body{
+  background:
+    radial-gradient(circle at 6% 2%,var(--ambient-glow-a),transparent 29rem),
+    radial-gradient(circle at 102% 29%,var(--ambient-glow-b),transparent 31rem),
+    linear-gradient(180deg,var(--ambient-page),#f7f8fb 72%,#fafbfc);
+  transition:background .8s ease;
+}
+
+.today-page{
+  isolation:isolate;
+}
+
+.today-page::before,
+.today-page::after{
+  content:'';
+  position:fixed;
+  z-index:-1;
+  pointer-events:none;
+  border-radius:50%;
+  filter:blur(1px);
+}
+
+.today-page::before{
+  width:380px;
+  height:380px;
+  top:-180px;
+  left:-210px;
+  background:radial-gradient(circle,var(--ambient-glow-a),transparent 70%);
+}
+
+.today-page::after{
+  width:420px;
+  height:420px;
+  right:-260px;
+  top:34vh;
+  background:radial-gradient(circle,var(--ambient-glow-b),transparent 72%);
+}
+
+/* Ambient status: visible, but quiet */
+.today-date-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.today-date-row>span:first-child{
+  color:var(--muted);
+}
+
+.ambient-state-chip{
+  min-width:0;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 8px;
+  border:1px solid color-mix(in srgb,var(--ambient-chip) 9%,transparent);
+  border-radius:999px;
+  background:color-mix(in srgb,var(--ambient-chip-soft) 80%,rgba(255,255,255,.72));
+  box-shadow:0 5px 14px rgba(20,24,42,.035);
+}
+
+.ambient-state-chip i{
+  width:6px;
+  height:6px;
+  min-width:6px;
+  border-radius:50%;
+  background:var(--ambient-chip);
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--ambient-chip) 10%,transparent);
+}
+
+.ambient-state-chip b{
+  color:var(--ambient-chip);
+  font-size:7px;
+  font-weight:900;
+  letter-spacing:.065em;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+
+.ambient-state-chip em{
+  color:var(--muted);
+  font-size:7px;
+  font-style:normal;
+  white-space:nowrap;
+}
+
+/* The first surface subtly follows the light of the day */
+.today-glance{
+  background:
+    radial-gradient(circle at 88% 4%,var(--ambient-glow-a),transparent 15rem),
+    radial-gradient(circle at 3% 100%,var(--ambient-glow-b),transparent 16rem),
+    linear-gradient(145deg,var(--ambient-glance-a),var(--ambient-glance-b) 68%,var(--ambient-glance-c));
+  transition:background .8s ease,border-color .5s ease,box-shadow .5s ease;
+}
+
+.ambient-morning .today-hello h1{
+  background:linear-gradient(120deg,#294aad,#3762d7 58%,#5f9c7c 130%);
+  -webkit-background-clip:text;
+  background-clip:text;
+}
+
+.ambient-afternoon .today-hello h1{
+  background:linear-gradient(120deg,#253d93,#3157d5 66%,#5b61b3 118%);
+  -webkit-background-clip:text;
+  background-clip:text;
+}
+
+.ambient-evening .today-hello h1{
+  background:linear-gradient(120deg,#374aaf,#6f59c3 63%,#bd6f9c 130%);
+  -webkit-background-clip:text;
+  background-clip:text;
+}
+
+.ambient-night .today-hello h1{
+  background:linear-gradient(120deg,#314b9f,#6152ae 58%,#9a67aa 128%);
+  -webkit-background-clip:text;
+  background-clip:text;
+}
+
+/* Attention changes intensity, not information */
+html[data-eu-pressure="quiet"] .ambient-state-chip i{
+  background:#5daa72;
+  box-shadow:0 0 0 4px rgba(93,170,114,.11);
+}
+html[data-eu-pressure="balanced"] .ambient-state-chip i{
+  background:#3157d5;
+  box-shadow:0 0 0 4px rgba(49,87,213,.11);
+}
+html[data-eu-pressure="loaded"] .ambient-state-chip i{
+  background:#d89b67;
+  box-shadow:0 0 0 4px rgba(216,155,103,.13);
+}
+
+html[data-eu-pressure="loaded"] .today-glance{
+  border-color:rgba(216,155,103,.11);
+  box-shadow:0 15px 42px rgba(140,102,78,.075);
+}
+
+html[data-eu-pressure="quiet"] .today-glance{
+  border-color:rgba(93,170,114,.08);
+}
+
+/* EU, Agora follows the moment too */
+.ambient-morning .eu-now-answer{
+  background:
+    radial-gradient(circle at 88% 3%,rgba(255,255,255,.23),transparent 13rem),
+    linear-gradient(145deg,#3157d5 0%,#456bc5 62%,#5d9f79 145%);
+}
+
+.ambient-afternoon .eu-now-answer{
+  background:
+    radial-gradient(circle at 88% 3%,rgba(255,255,255,.18),transparent 13rem),
+    linear-gradient(145deg,#3157d5 0%,#3d59c7 62%,#7659c5 132%);
+}
+
+.ambient-evening .eu-now-answer{
+  background:
+    radial-gradient(circle at 88% 3%,rgba(255,255,255,.16),transparent 13rem),
+    linear-gradient(145deg,#394fb6 0%,#6755b5 62%,#a76190 138%);
+}
+
+.ambient-night .eu-now-answer{
+  background:
+    radial-gradient(circle at 86% 0%,rgba(122,111,190,.25),transparent 14rem),
+    linear-gradient(145deg,#171b31 0%,#282d57 58%,#514585 128%);
+  box-shadow:0 26px 68px rgba(23,27,49,.25);
+}
+
+html[data-eu-pressure="loaded"] .eu-now-answer{
+  box-shadow:0 25px 70px rgba(89,67,84,.22);
+}
+
+html[data-eu-pressure="quiet"] .eu-now-answer .attention-pill{
+  background:rgba(124,202,145,.14)!important;
+}
+
+html[data-eu-pressure="loaded"] .eu-now-answer .attention-pill{
+  background:rgba(232,169,113,.16)!important;
+}
+
+/* Command becomes more subdued late at night */
+.ambient-night .eu-command-shell{
+  background:
+    radial-gradient(circle at 95% -20%,rgba(118,89,197,.22),transparent 13rem),
+    linear-gradient(145deg,#111524,#1d2340);
+  box-shadow:0 20px 52px rgba(17,21,36,.2);
+}
+
+.ambient-night .night-brief-card{
+  border:1px solid rgba(157,144,221,.12);
+  box-shadow:0 21px 52px rgba(23,27,49,.2)!important;
+}
+
+.ambient-evening .night-brief-card{
+  background:
+    radial-gradient(circle at 88% 5%,rgba(213,108,159,.18),transparent 12rem),
+    linear-gradient(145deg,#252340,#42355e)!important;
+}
+
+/* Chrome follows the home only while Today is mounted */
+html[data-eu-ambient="morning"] .v2-topbar,
+html[data-eu-ambient="afternoon"] .v2-topbar{
+  background:linear-gradient(180deg,rgba(248,249,252,.95),rgba(248,249,252,.7) 76%,transparent);
+}
+
+html[data-eu-ambient="evening"] .v2-topbar{
+  background:linear-gradient(180deg,rgba(247,244,250,.95),rgba(247,244,250,.72) 76%,transparent);
+}
+
+html[data-eu-ambient="night"] .v2-topbar{
+  margin-top:4px;
+  border-radius:0 0 18px 18px;
+  background:linear-gradient(180deg,rgba(23,27,49,.96),rgba(31,35,61,.88) 76%,rgba(31,35,61,0));
+}
+
+html[data-eu-ambient="night"] .v2-brand strong{color:#cbd4ff}
+html[data-eu-ambient="night"] .v2-brand span,
+html[data-eu-ambient="night"] .v2-top-note{color:rgba(255,255,255,.64)}
+html[data-eu-ambient="night"] .top-icon-action{
+  border-color:rgba(255,255,255,.08);
+  background:rgba(255,255,255,.08);
+  color:#e7eaff;
+}
+
+/* Floating dock also breathes with the time of day */
+html[data-eu-ambient="morning"] .v2-bottom-nav{
+  background:rgba(251,253,255,.87);
+}
+
+html[data-eu-ambient="evening"] .v2-bottom-nav{
+  background:rgba(250,248,253,.87);
+}
+
+html[data-eu-ambient="night"] .v2-bottom-nav{
+  border-color:rgba(255,255,255,.08);
+  background:rgba(26,30,52,.9);
+  box-shadow:
+    0 22px 62px rgba(20,24,42,.26),
+    inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+html[data-eu-ambient="night"] .v2-bottom-nav a{color:rgba(236,239,255,.5)}
+html[data-eu-ambient="night"] .v2-bottom-nav a.active{color:#fff}
+html[data-eu-ambient="night"] .v2-bottom-nav a.active .bottom-nav-icon-wrap{
+  background:rgba(255,255,255,.1);
+  box-shadow:0 6px 16px rgba(0,0,0,.12);
+}
+
+/* Register action remains discoverable, but is less luminous at night */
+html[data-eu-ambient="night"] .global-register-pill.compact{
+  background:linear-gradient(145deg,#465fc7,#6552a9);
+  box-shadow:0 15px 36px rgba(39,43,81,.32),inset 0 1px 0 rgba(255,255,255,.18);
+}
+html[data-eu-ambient="night"] .global-register-pill.compact::after{
+  background:rgba(31,35,61,.26);
+}
+
+/* A tiny visual rhythm change by daypart */
+.ambient-morning .daily-brief-card::before{background:linear-gradient(180deg,#3157d5,#5daa72)}
+.ambient-afternoon .daily-brief-card::before{background:linear-gradient(180deg,#3157d5,#6d72c5)}
+.ambient-evening .daily-brief-card::before{background:linear-gradient(180deg,#7659c5,#d56c9f)}
+.ambient-night .daily-brief-card::before{background:linear-gradient(180deg,#5869bd,#7659c5)}
+
+@media(max-width:520px){
+  .today-date-row{align-items:flex-start}
+  .ambient-state-chip{padding:5px 7px}
+  .ambient-state-chip em{display:none}
+  html[data-eu-ambient="night"] .v2-topbar{margin-inline:-15px;padding-inline:17px}
+}
+
+@media(max-width:380px){
+  .ambient-state-chip b{font-size:6.5px}
+  .ambient-state-chip{gap:5px}
+}
+
+@media(prefers-reduced-motion:no-preference){
+  .today-page::before{
+    animation:ambient-drift-a 16s ease-in-out infinite alternate;
+  }
+  .today-page::after{
+    animation:ambient-drift-b 19s ease-in-out infinite alternate;
+  }
+  .ambient-state-chip i{
+    animation:ambient-breathe 3.6s ease-in-out infinite;
+  }
+  @keyframes ambient-drift-a{
+    from{transform:translate3d(0,0,0) scale(1)}
+    to{transform:translate3d(24px,18px,0) scale(1.08)}
+  }
+  @keyframes ambient-drift-b{
+    from{transform:translate3d(0,0,0) scale(.98)}
+    to{transform:translate3d(-22px,28px,0) scale(1.06)}
+  }
+  @keyframes ambient-breathe{
+    0%,100%{transform:scale(1);opacity:.78}
+    50%{transform:scale(1.18);opacity:1}
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  html[data-eu-ambient] body,
+  .today-glance{transition:none}
+}
