@@ -4,8 +4,9 @@ import { HashRouter } from 'react-router-dom'
 import App from './App'
 import './styles.css'
 import './life-os.css'
+import './money.css'
 
-const APP_VERSION = 'eu-v19-life-os'
+const APP_VERSION = 'eu-v20-central'
 
 async function refreshPwaShell() {
   if (!('serviceWorker' in navigator)) return
