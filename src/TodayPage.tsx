@@ -10,6 +10,7 @@ import { useBridges, useChatInbox, useMood, useMoodHistory, usePersonalProfile, 
 import { BrandTop, EuIcon, SectionTitle, Tag, formatShortDate, typeTone, type EuIconName } from './v2Ui'
 import { AstroTodayPreview } from './AstrologyPage'
 import { haptic } from './securitySettings'
+import LifeCommandCenter from './LifeCommandCenter'
 import { buildMorningIntelligence, deriveCarryOver, deriveCrossSignals, deriveDriftSignals, deriveWaiting, isWaitingRecord } from './lifeOSIntelligence'
 
 function greeting() {
