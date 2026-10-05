@@ -194,8 +194,7 @@ function optionEvidence(records: StoredRecord[], option: string, criteria: strin
       const recordText = [record.text, record.type, record.area, record.whyItMatters, record.nextMove, ...(record.tags || [])].filter(Boolean).join(' ')
       const recordWords = words(recordText)
       const overlap = optionWords.filter((word) => recordWords.includes(word))
-      const explicitRelated = record.relatedIds?.length ? 1 : 0
-      const base = overlap.length * 4 + explicitRelated
+      const base = overlap.length * 4
       if (!base) return null
 
       const normalized = lower(recordText)
