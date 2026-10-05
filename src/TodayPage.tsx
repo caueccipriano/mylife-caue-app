@@ -10,7 +10,7 @@ import { useBridges, useChatInbox, useMood, useMoodHistory, usePersonalProfile, 
 import { BrandTop, EuIcon, SectionTitle, Tag, formatShortDate, typeTone, type EuIconName } from './v2Ui'
 import { AstroTodayPreview } from './AstrologyPage'
 import { haptic } from './securitySettings'
-import { buildMorningIntelligence, deriveCarryOver, deriveWaiting, isWaitingRecord } from './lifeOSIntelligence'
+import { buildMorningIntelligence, deriveCarryOver, deriveCrossSignals, deriveDriftSignals, deriveWaiting, isWaitingRecord } from './lifeOSIntelligence'
 
 function greeting() {
   const hour = new Date().getHours()
@@ -87,6 +87,8 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   const waiting = useMemo(() => deriveWaiting(records), [records])
   const carryOver = useMemo(() => deriveCarryOver(records), [records])
   const morning = useMemo(() => buildMorningIntelligence(records, inbox.length), [records, inbox.length])
+  const driftSignals = useMemo(() => deriveDriftSignals(records, focusAreas), [records, focusAreas])
+  const crossSignals = useMemo(() => deriveCrossSignals(records), [records])
   const focusRecords = useMemo(() => {
     const seen = new Set<string>()
     return [...due.filter((record) => !isWaitingRecord(record)), ...carryOver, ...continueRecords.filter((record) => !isWaitingRecord(record))]
@@ -324,6 +326,35 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
           </div>
         </article>
       </section>
+
+      {driftSignals.length > 0 && (
+        <section className="today-block signals-only">
+          <SectionTitle eyebrow="EU DRIFT" title="Prioridade x atenção real" />
+          <div className="drift-grid">
+            {driftSignals.map((signal) => (
+              <article key={signal.id} className={'drift-card drift-' + signal.tone}>
+                <Tag tone={signal.tone}>{signal.tone === 'amber' ? 'FORA DO RADAR' : 'ATENÇÃO MIGROU'}</Tag>
+                <h3>{signal.title}</h3>
+                <p>{signal.detail}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {crossSignals.length > 0 && (
+        <section className="today-block signals-only">
+          <SectionTitle eyebrow="INTELIGÊNCIA CRUZADA" title="Coisas que fazem mais sentido juntas" />
+          <div className="cross-signal-grid">
+            {crossSignals.map((signal) => (
+              <article key={signal.id}>
+                <span><EuIcon name="sparkles" /></span>
+                <div><strong>{signal.title}</strong><p>{signal.detail}</p></div>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
 
       {patterns.length > 0 && (
         <section className="today-block signals-only">
