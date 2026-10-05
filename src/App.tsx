@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Navigate, NavLink, Route, Routes, useLocation, useNavigationType } from 'react-router-dom'
 import RegisterSheet from './RegisterSheet'
 import TodayPage from './TodayPage'
+import LifeOSPage from './LifeOSPage'
 import LifePage, { CareerPlanPage } from './LifePage'
 import DiscoveriesPage from './DiscoveriesPage'
 import MemoriesPage from './MemoriesPage'
@@ -33,9 +34,9 @@ import { EuIcon } from './v2Ui'
 
 const nav = [
   { path: '/', label: 'Hoje', icon: 'sun' },
+  { path: '/sistema', label: 'Sistema', icon: 'collections' },
   { path: '/vida', label: 'Vida', icon: 'compass' },
-  { path: '/descobertas', label: 'Descobertas', icon: 'sparkles' },
-  { path: '/memorias', label: 'Memórias', icon: 'collections' },
+  { path: '/memorias', label: 'Memórias', icon: 'sparkles' },
 ] as const
 
 function RouteScrollMemory() {
@@ -58,7 +59,7 @@ function RouteScrollMemory() {
 
 function AppShell({ onRegister }: { onRegister: () => void }) {
   const location = useLocation()
-  const showRegister = ['/', '/vida', '/descobertas', '/memorias'].includes(location.pathname)
+  const showRegister = ['/', '/sistema', '/vida', '/descobertas', '/memorias'].includes(location.pathname)
   return (
     <div className="eu-v2-shell">
       <RouteScrollMemory />
@@ -66,6 +67,7 @@ function AppShell({ onRegister }: { onRegister: () => void }) {
         <div className="route-stage" key={location.pathname}>
         <Routes>
           <Route path="/" element={<TodayPage onRegister={onRegister} />} />
+          <Route path="/sistema" element={<LifeOSPage />} />
           <Route path="/vida" element={<LifePage />} />
           <Route path="/vida/carreira" element={<CareerPlanPage />} />
           <Route path="/vida/area/:id" element={<AreaPage />} />
@@ -91,8 +93,10 @@ function AppShell({ onRegister }: { onRegister: () => void }) {
           <Route path="/importar" element={<StarterPackImportPage />} />
 
           <Route path="/areas" element={<Navigate to="/vida" replace />} />
-          <Route path="/projetos" element={<Navigate to="/vida" replace />} />
-          <Route path="/projetos/:id" element={<Navigate to="/vida" replace />} />
+          <Route path="/objetivos" element={<Navigate to="/sistema?view=goals" replace />} />
+          <Route path="/projetos" element={<Navigate to="/sistema?view=projects" replace />} />
+          <Route path="/agenda" element={<Navigate to="/sistema?view=agenda" replace />} />
+          <Route path="/projetos/:id" element={<Navigate to="/sistema?view=projects" replace />} />
           <Route path="/arquivo" element={<Navigate to="/memorias" replace />} />
           <Route path="/evolucao" element={<Navigate to="/vida#sinais" replace />} />
           <Route path="/eu" element={<Navigate to="/vida" replace />} />
@@ -148,7 +152,7 @@ export default function App() {
             <strong>EU</strong>
             <i>✦</i>
           </div>
-          <span>arquivo vivo</span>
+          <span>Life OS</span>
         </div>
       )}
       <PhaseThemeSync />
