@@ -136,7 +136,7 @@ export default function LifePage() {
           <section className="life-block" id="sinais">
             <SectionTitle
               eyebrow="SINAIS"
-              title="O que seus apps estão contando"
+              title="O que sua central está contando"
               action={<button className="quiet-link" disabled={refreshing} onClick={() => void forceRefresh()}><EuIcon name="refresh" />{refreshing ? 'atualizando…' : 'atualizar'}</button>}
             />
             <div className="signals-life-grid">
