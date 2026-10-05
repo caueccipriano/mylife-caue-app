@@ -37,7 +37,7 @@ const APP_CONFIG: Record<BridgeAppId, Omit<BridgeCard, 'bridge'>> = {
     id: 'folego',
     title: 'Fôlego',
     description: 'Dinheiro, ritmo do mês e margem de decisão.',
-    href: 'https://caueccipriano.github.io/folego-app/',
+    href: '#/dinheiro',
   },
   traco: {
     id: 'traco',
