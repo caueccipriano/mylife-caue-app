@@ -11,7 +11,7 @@ import { BrandTop, EuIcon, SectionTitle, Tag, formatShortDate, typeTone, type Eu
 import { AstroTodayPreview } from './AstrologyPage'
 import { haptic } from './securitySettings'
 import LifeCommandCenter from './LifeCommandCenter'
-import { buildMorningIntelligence, deriveCarryOver, deriveCrossSignals, deriveDriftSignals, deriveWaiting, isWaitingRecord } from './lifeOSIntelligence'
+import { deriveCarryOver, deriveCrossSignals, deriveDriftSignals, deriveWaiting, isWaitingRecord } from './lifeOSIntelligence'
 
 function greeting() {
   const hour = new Date().getHours()
@@ -88,7 +88,6 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   const readyCapsules = useMemo(() => dueCapsules(records), [records])
   const waiting = useMemo(() => deriveWaiting(records), [records])
   const carryOver = useMemo(() => deriveCarryOver(records), [records])
-  const morning = useMemo(() => buildMorningIntelligence(records, inbox.length), [records, inbox.length])
   const driftSignals = useMemo(() => deriveDriftSignals(records, focusAreas), [records, focusAreas])
   const crossSignals = useMemo(() => deriveCrossSignals(records), [records])
   const focusRecords = useMemo(() => {
@@ -192,20 +191,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
       </nav>
       </section>
 
-      <section className="morning-intelligence now-only" aria-label="Inteligência da manhã">
-        <div className="morning-intelligence-head">
-          <Tag tone="ink">RADAR DO DIA</Tag>
-          <span>montado automaticamente pelo seu EU</span>
-        </div>
-        <h2>{morning.headline}</h2>
-        <p>{morning.note}</p>
-        <div className="morning-signal-grid">
-          <div className={morning.overdueCount ? 'hot' : ''}><strong>{morning.overdueCount}</strong><span>pedem ação</span></div>
-          <div><strong>{morning.carryOverCount}</strong><span>vieram de antes</span></div>
-          <div className={morning.waitingCount ? 'waiting' : ''}><strong>{morning.waitingCount}</strong><span>aguardando alguém</span></div>
-          <div><strong>{morning.inboxCount}</strong><span>na entrada</span></div>
-        </div>
-      </section>
+      <LifeCommandCenter records={records} inboxCount={inbox.length} />
 
       {moneyBridge?.bridge && (
         <NavLink className="today-money-pulse now-only" to="/dinheiro">
