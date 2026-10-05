@@ -1,3 +1,4 @@
+import { refreshMoneyBridge } from './folegoNative'
 export type BridgeAppId = 'folego' | 'traco' | 'repertorio'
 
 export type BridgeMetricValue = string | number | boolean | null
@@ -36,7 +37,7 @@ const APP_CONFIG: Record<BridgeAppId, Omit<BridgeCard, 'bridge'>> = {
     id: 'folego',
     title: 'Fôlego',
     description: 'Dinheiro, ritmo do mês e margem de decisão.',
-    href: 'https://caueccipriano.github.io/folego-app/',
+    href: '#/dinheiro',
   },
   traco: {
     id: 'traco',
@@ -238,7 +239,14 @@ export function latestBridgeDelta(id: BridgeAppId, metric: string) {
 export async function forceRefreshAppBridges(timeoutMs = 15000): Promise<BridgeCard[]> {
   if (typeof document === 'undefined') return readAppBridges()
 
-  const frames = (Object.keys(APP_CONFIG) as BridgeAppId[]).map((id) => {
+  try {
+    await refreshMoneyBridge()
+  } catch {
+    // O módulo Dinheiro continua utilizável mesmo que a atualização do resumo falhe.
+  }
+
+  const remoteIds = (Object.keys(APP_CONFIG) as BridgeAppId[]).filter((id) => id !== 'folego')
+  const frames = remoteIds.map((id) => {
     const frame = document.createElement('iframe')
     const separator = APP_CONFIG[id].href.includes('?') ? '&' : '?'
     frame.src = APP_CONFIG[id].href + separator + 'eu_bridge_refresh=' + Date.now()
@@ -273,7 +281,7 @@ export async function forceRefreshAppBridges(timeoutMs = 15000): Promise<BridgeC
 
     const poll = window.setInterval(() => {
       const cards = readAppBridges()
-      const allReady = cards.every((card) => Boolean(card.bridge?.summary) && !card.stale)
+      const allReady = cards.filter((card) => card.id !== 'folego').every((card) => Boolean(card.bridge?.summary) && !card.stale)
       if (allReady) {
         window.clearInterval(poll)
         window.clearTimeout(timeout)

@@ -68,6 +68,39 @@ function interpret(input: string): Interpretation {
     }
   }
 
+  if (includesAny(value, ['aguardando retorno', 'aguardando resposta', 'esperando retorno', 'esperando resposta', 'ficou de me responder', 'ficou de responder', 'dependendo de', 'à espera de', 'a espera de'])) {
+    return {
+      kind: 'Aguardando',
+      area,
+      title: input.slice(0, 88),
+      detail: 'Isso depende de outra pessoa ou evento. O EU separa de suas tarefas e volta a conferir depois.',
+      track: true,
+      followUpDays: 4,
+    }
+  }
+
+  if (includesAny(value, ['me candidatei', 'enviei candidatura', 'enviei meu currículo', 'enviei meu curriculo', 'apliquei para a vaga'])) {
+    return {
+      kind: 'Candidatura',
+      area: 'Carreira',
+      title: input.slice(0, 88),
+      detail: 'Candidatura registrada. Ela fica em acompanhamento para você não precisar lembrar de conferir retorno.',
+      track: true,
+      followUpDays: 7,
+    }
+  }
+
+  if (includesAny(value, ['projeto ', 'meu projeto', 'estou criando um app', 'tô criando um app', 'to criando um app', 'estou construindo'])) {
+    return {
+      kind: 'Projeto',
+      area,
+      title: input.slice(0, 88),
+      detail: 'Projeto detectado. O EU acompanha contexto e próximo passo sem exigir um painel separado.',
+      track: true,
+      followUpDays: 7,
+    }
+  }
+
   if (includesAny(value, ['preciso fazer', 'tenho que', 'não posso esquecer', 'nao posso esquecer', 'lembrar de', 'preciso resolver', 'tenho de'])) {
     return {
       kind: 'Pendência',
@@ -169,6 +202,8 @@ const quickStarts = [
   'Comecei ',
   'Decidi ',
   'Preciso fazer ',
+  'Aguardando resposta de ',
+  'Meu projeto ',
   'Saquei que ',
   'Andei pesquisando pra comprar ',
   'Um dia eu quero ',

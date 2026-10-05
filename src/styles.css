@@ -1,36 +1,40 @@
 
 :root {
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
-  color: #1f2940;
-  background: #f6f2e9;
+  color: #14182a;
+  background: #f6f7fb;
   font-synthesis: none;
-  --paper: #f6f2e9;
-  --card: #fcfaf6;
-  --ink: #1f2940;
-  --muted: #6f6b66;
-  --faint: #938f88;
-  --line: rgba(31, 41, 64, .10);
-  --line-strong: rgba(31, 41, 64, .18);
-  --coral: #e99a55;
-  --coral-soft: #fbe9d8;
-  --green: #49b39c;
-  --green-soft: #ddf4ee;
-  --amber: #d1a630;
-  --amber-soft: #fff1c7;
-  --pink: #6f63d9;
-  --pink-soft: #ece9fb;
-  --cobalt: #355fc9;
-  --cobalt-soft: #e8edfc;
-  --lilac: #8e7df2;
-  --lilac-soft: #ece6fb;
-  --lime: #6e9a35;
-  --lime-soft: #edf5dd;
-  --wine: #2d7f88;
-  --wine-soft: #e1f2f2;
-  --sky: #7fb2da;
-  --sky-soft: #e4f0fa;
+  --ui: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+  --paper: #f6f7fb;
+  --card: #ffffff;
+  --surface-muted: #f0f2f8;
+  --ink: #14182a;
+  --muted: #687086;
+  --faint: #8e96aa;
+  --line: #e3e6ef;
+  --line-strong: #d4d9e5;
+  --primary: #3157d5;
+  --primary-deep: #2847b5;
+  --coral: #d89b67;
+  --coral-soft: #f9eee4;
+  --green: #5daa72;
+  --green-soft: #e6f4e9;
+  --amber: #d89b67;
+  --amber-soft: #fbefe4;
+  --pink: #d56c9f;
+  --pink-soft: #f9e7f0;
+  --cobalt: #3157d5;
+  --cobalt-soft: #e8edfd;
+  --lilac: #7659c5;
+  --lilac-soft: #eee9f8;
+  --lime: #a6bf5b;
+  --lime-soft: #f0f5df;
+  --wine: #5f9fa0;
+  --wine-soft: #e6f1f1;
+  --sky: #6877c7;
+  --sky-soft: #eaecf8;
   --serif: ui-serif, 'Iowan Old Style', Baskerville, Georgia, 'Times New Roman', serif;
-  --shadow: 0 16px 42px rgba(31, 41, 64, .07);
+  --shadow: 0 16px 42px rgba(20, 24, 42, .07);
 }
 
 * { box-sizing: border-box; }
@@ -51,9 +55,9 @@ body {
   min-height: 100dvh;
   color: var(--ink);
   background:
-    radial-gradient(circle at 0% 0%, rgba(53, 95, 201, .055), transparent 25rem),
-    radial-gradient(circle at 100% 24%, rgba(22, 155, 122, .05), transparent 28rem),
-    radial-gradient(circle at 45% 90%, rgba(133, 104, 200, .035), transparent 26rem),
+    radial-gradient(circle at 4% 0%, rgba(49,87,213,.085), transparent 25rem),
+    radial-gradient(circle at 100% 24%, rgba(118,89,197,.055), transparent 29rem),
+    radial-gradient(circle at 46% 92%, rgba(93,170,114,.045), transparent 27rem),
     var(--paper);
   -webkit-font-smoothing: antialiased;
   overscroll-behavior-y: none;
@@ -623,7 +627,7 @@ h3 {
 /* Vida */
 .area-scroll {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 9px;
 }
 
@@ -16399,4 +16403,43 @@ a.top-icon-action,
 }
 @media (max-width: 360px) {
   .link-capture input { grid-column: 1 / -1; }
+}
+
+
+/* EU Central · five-module dock using the FÔLEGO palette. */
+.v2-bottom-nav a:nth-child(1).active .bottom-nav-icon-wrap{
+  background:linear-gradient(145deg,#e4f3f4,#dceff0);
+  color:#5f9fa0;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.94),0 7px 16px rgba(95,159,160,.16);
+}
+.v2-bottom-nav a:nth-child(2).active .bottom-nav-icon-wrap{
+  background:linear-gradient(145deg,#e9edff,#dfe6ff);
+  color:#3157d5;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.94),0 7px 16px rgba(49,87,213,.18);
+}
+.v2-bottom-nav a:nth-child(3).active .bottom-nav-icon-wrap{
+  background:linear-gradient(145deg,#eee9f8,#e8e1f6);
+  color:#7659c5;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.94),0 7px 16px rgba(118,89,197,.16);
+}
+.v2-bottom-nav a:nth-child(4).active .bottom-nav-icon-wrap{
+  background:linear-gradient(145deg,#eef5df,#e6efcc);
+  color:#768f2d;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.94),0 7px 16px rgba(166,191,91,.18);
+}
+.v2-bottom-nav a:nth-child(5).active .bottom-nav-icon-wrap{
+  border-radius:14px 18px 13px 17px;
+  background:linear-gradient(145deg,#fae8f1,#f5deea);
+  color:#d56c9f;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.94),0 7px 16px rgba(213,108,159,.16);
+}
+.v2-bottom-nav a:nth-child(2).active{color:#3157d5}
+.v2-bottom-nav a:nth-child(3).active{color:#7659c5}
+.v2-bottom-nav a:nth-child(4).active{color:#768f2d}
+.v2-bottom-nav a:nth-child(5).active{color:#b95384}
+@media(max-width:430px){
+  .v2-bottom-nav{padding-left:6px;padding-right:6px}
+  .v2-bottom-nav a{padding-left:1px;padding-right:1px}
+  .v2-bottom-nav a>small{font-size:6.5px}
+  .bottom-nav-icon-wrap{width:32px;height:32px}
 }

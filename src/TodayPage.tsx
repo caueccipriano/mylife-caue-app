@@ -10,6 +10,7 @@ import { useBridges, useChatInbox, useMood, useMoodHistory, usePersonalProfile, 
 import { BrandTop, EuIcon, SectionTitle, Tag, formatShortDate, typeTone, type EuIconName } from './v2Ui'
 import { AstroTodayPreview } from './AstrologyPage'
 import { haptic } from './securitySettings'
+import { buildMorningIntelligence, deriveCarryOver, deriveCrossSignals, deriveDriftSignals, deriveWaiting, isWaitingRecord } from './lifeOSIntelligence'
 
 function greeting() {
   const hour = new Date().getHours()
@@ -58,6 +59,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   const mood = useMood()
   const moodHistory = useMoodHistory()
   const { bridges } = useBridges()
+  const moneyBridge = bridges.find((card) => card.id === 'folego')
   const inbox = useChatInbox()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -83,6 +85,21 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   const ecosystemInsights = useMemo(() => deriveEcosystemInsights(records, bridges), [records, bridges])
   const dailyBrief = useMemo(() => buildDailyBrief(records, bridges), [records, bridges])
   const readyCapsules = useMemo(() => dueCapsules(records), [records])
+  const waiting = useMemo(() => deriveWaiting(records), [records])
+  const carryOver = useMemo(() => deriveCarryOver(records), [records])
+  const morning = useMemo(() => buildMorningIntelligence(records, inbox.length), [records, inbox.length])
+  const driftSignals = useMemo(() => deriveDriftSignals(records, focusAreas), [records, focusAreas])
+  const crossSignals = useMemo(() => deriveCrossSignals(records), [records])
+  const focusRecords = useMemo(() => {
+    const seen = new Set<string>()
+    return [...due.filter((record) => !isWaitingRecord(record)), ...carryOver, ...continueRecords.filter((record) => !isWaitingRecord(record))]
+      .filter((record) => {
+        if (seen.has(record.id)) return false
+        seen.add(record.id)
+        return true
+      })
+      .slice(0, 3)
+  }, [due, carryOver, continueRecords])
 
   useEffect(() => {
     if (requestedView === 'signals') setTodayView('signals')
@@ -174,6 +191,35 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
       </nav>
       </section>
 
+      <section className="morning-intelligence now-only" aria-label="Inteligência da manhã">
+        <div className="morning-intelligence-head">
+          <Tag tone="ink">MORNING INTELLIGENCE</Tag>
+          <span>montado do que já existe no seu EU</span>
+        </div>
+        <h2>{morning.headline}</h2>
+        <p>{morning.note}</p>
+        <div className="morning-signal-grid">
+          <div className={morning.overdueCount ? 'hot' : ''}><strong>{morning.overdueCount}</strong><span>pedem ação</span></div>
+          <div><strong>{morning.carryOverCount}</strong><span>vieram de antes</span></div>
+          <div className={morning.waitingCount ? 'waiting' : ''}><strong>{morning.waitingCount}</strong><span>aguardando alguém</span></div>
+          <div><strong>{morning.inboxCount}</strong><span>na entrada</span></div>
+        </div>
+      </section>
+
+      {moneyBridge?.bridge && (
+        <NavLink className="today-money-pulse now-only" to="/dinheiro">
+          <div className="today-money-pulse-mark"><EuIcon name="wallet" /></div>
+          <div className="today-money-pulse-copy">
+            <small>DINHEIRO</small>
+            <strong>{typeof moneyBridge.bridge.metrics.dailyFolego === 'number'
+              ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 2 }).format(moneyBridge.bridge.metrics.dailyFolego) + ' por dia'
+              : 'Seu FÔLEGO está no EU'}</strong>
+            <p>{moneyBridge.bridge.summary}</p>
+          </div>
+          <EuIcon name="arrow-up-right" />
+        </NavLink>
+      )}
+
       {readyCapsules.length > 0 && (
         <button className="capsule-ready-callout now-only" onClick={() => navigate('/vida/lab')}>
           <Tag tone="lilac">CÁPSULA DO FUTURO</Tag>
@@ -182,18 +228,21 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
         </button>
       )}
 
-      {continueRecords.length > 0 && (
+      {focusRecords.length > 0 && (
         <section className="today-block continue-block now-only">
           <SectionTitle
-            eyebrow="CONTINUAR"
-            title="De onde você parou"
-            action={focusAreas.length ? <span className="focus-inline-label">foco: {focusAreas.join(' + ')}</span> : undefined}
+            eyebrow="UMA LISTA"
+            title="Seu foco agora"
+            action={<span className="focus-inline-label">{focusRecords.length}/3 · {focusAreas.length ? focusAreas.join(' + ') : 'só o que importa'}</span>}
           />
+          <p className="today-focus-principle">No máximo três coisas. O resto continua guardado no sistema sem disputar sua atenção.</p>
           <div className="continue-strip">
-            {continueRecords.slice(0, 4).map((record, index) => (
+            {focusRecords.map((record, index) => (
               <NavLink key={record.id} className={'continue-card continue-card-' + index} to={'/registro/' + record.id}>
                 <div>
-                  <Tag tone={record.pinned ? 'cobalt' : typeTone(record.type)}>{record.pinned ? 'FIXADO' : record.type}</Tag>
+                  <Tag tone={due.some((item) => item.id === record.id) ? 'coral' : record.pinned ? 'cobalt' : typeTone(record.type)}>
+                    {due.some((item) => item.id === record.id) ? 'AGORA' : record.pinned ? 'FIXADO' : record.type}
+                  </Tag>
                   <span>{record.area}</span>
                 </div>
                 <h3>{record.text}</h3>
@@ -202,7 +251,20 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
               </NavLink>
             ))}
           </div>
+          <NavLink className="today-system-link" to="/sistema">ver o restante no Sistema <EuIcon name="arrow-up-right" /></NavLink>
         </section>
+      )}
+
+      {waiting.length > 0 && (
+        <NavLink className="waiting-strip now-only" to="/sistema?view=panel#aguardando">
+          <span className="waiting-strip-icon"><EuIcon name="clock" /></span>
+          <div>
+            <small>AGUARDANDO</small>
+            <strong>{waiting.length === 1 ? 'Uma coisa não depende de você agora.' : waiting.length + ' coisas não dependem de você agora.'}</strong>
+            <p>Ficam acompanhadas sem ocupar sua lista de ação.</p>
+          </div>
+          <EuIcon name="arrow-up-right" />
+        </NavLink>
       )}
 
       <section className="daily-idea now-only">
@@ -279,6 +341,35 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
           </div>
         </article>
       </section>
+
+      {driftSignals.length > 0 && (
+        <section className="today-block signals-only">
+          <SectionTitle eyebrow="EU DRIFT" title="Prioridade x atenção real" />
+          <div className="drift-grid">
+            {driftSignals.map((signal) => (
+              <article key={signal.id} className={'drift-card drift-' + signal.tone}>
+                <Tag tone={signal.tone}>{signal.tone === 'amber' ? 'FORA DO RADAR' : 'ATENÇÃO MIGROU'}</Tag>
+                <h3>{signal.title}</h3>
+                <p>{signal.detail}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {crossSignals.length > 0 && (
+        <section className="today-block signals-only">
+          <SectionTitle eyebrow="INTELIGÊNCIA CRUZADA" title="Coisas que fazem mais sentido juntas" />
+          <div className="cross-signal-grid">
+            {crossSignals.map((signal) => (
+              <article key={signal.id}>
+                <span><EuIcon name="sparkles" /></span>
+                <div><strong>{signal.title}</strong><p>{signal.detail}</p></div>
+              </article>
+            ))}
+          </div>
+        </section>
+      )}
 
       {patterns.length > 0 && (
         <section className="today-block signals-only">
