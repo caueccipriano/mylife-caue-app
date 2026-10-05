@@ -271,7 +271,7 @@ function publishMoneyBridge(snapshot: MoneySnapshot) {
     version: 2,
     schema: 'eu.bridge/2',
     app: 'folego',
-    title: 'Dinheiro · FÔLEGO',
+    title: 'Dinheiro',
     updatedAt: new Date().toISOString(),
     status: statusForBridge(snapshot.status),
     summary: [
