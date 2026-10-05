@@ -516,3 +516,227 @@ body{
   .bottom-nav-icon-wrap{width:29px;height:29px}
   .v2-bottom-nav a>small{font-size:6.5px}
 }
+
+
+/* Shared page polish */
+.v2-hero{
+  position:relative;
+  padding:42px 0 30px;
+}
+.v2-hero h1{
+  font-family:var(--ui);
+  font-weight:950;
+  letter-spacing:-.06em;
+}
+.v2-hero>p{font-size:13px}
+.v2-section-title h2{
+  font-family:var(--ui);
+  font-weight:900;
+  letter-spacing:-.04em;
+}
+
+/* Dinheiro */
+.money-header{
+  position:relative;
+  padding:38px 0 24px;
+}
+.money-header h1{
+  background:linear-gradient(120deg,#2445a5,#3157d5 58%,#5daa72 135%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.money-refresh{
+  border-color:var(--eu-hairline);
+  background:var(--eu-glass-strong);
+  box-shadow:var(--eu-shadow-soft);
+}
+.money-tabs{
+  top:calc(env(safe-area-inset-top) + 52px);
+  padding:7px;
+  border:1px solid var(--eu-hairline);
+  border-radius:18px;
+  background:rgba(248,249,252,.82);
+  box-shadow:0 9px 26px rgba(20,24,42,.045);
+  backdrop-filter:blur(20px) saturate(1.2);
+  -webkit-backdrop-filter:blur(20px) saturate(1.2);
+}
+.money-tabs button{
+  min-height:38px;
+  border:0;
+  border-radius:12px;
+  background:transparent;
+}
+.money-tabs button.active{
+  color:var(--primary);
+  background:#fff;
+  box-shadow:0 7px 18px rgba(20,24,42,.07);
+}
+.money-hero{
+  position:relative;
+  overflow:hidden;
+  padding:25px;
+  border:1px solid rgba(255,255,255,.12);
+  background:
+    radial-gradient(circle at 87% -5%,rgba(255,255,255,.2),transparent 13rem),
+    linear-gradient(145deg,#3157d5 0%,#3f60ce 62%,#5daa72 145%);
+  box-shadow:0 24px 60px rgba(49,87,213,.2);
+}
+.money-hero::before{
+  content:'R$';
+  position:absolute;
+  right:-4px;
+  bottom:-31px;
+  color:rgba(255,255,255,.055);
+  font:950 110px/1 var(--ui);
+  letter-spacing:-.08em;
+}
+.money-hero>strong{position:relative;z-index:1;font-size:48px}
+.money-hero-top,.money-hero-foot,.money-hero>p{position:relative;z-index:1}
+.money-primary-action{
+  border-radius:19px;
+  background:linear-gradient(145deg,#3157d5,#405fc9);
+  box-shadow:0 14px 34px rgba(49,87,213,.17);
+}
+.money-metric-grid article,.money-section-card,.money-wallet-grid article,.money-goals article{
+  border-color:var(--eu-hairline);
+  background:var(--eu-glass-strong);
+  box-shadow:var(--eu-shadow-soft);
+}
+.money-metric-grid article{border-radius:23px}
+.money-metric-grid article>span{
+  background:linear-gradient(145deg,#edf1ff,#f7f8ff);
+}
+.money-section-card{border-radius:24px}
+.money-income-card{
+  background:linear-gradient(145deg,#f2f8f4,#fff);
+}
+
+/* Central */
+.life-os-hero{
+  margin-top:5px;
+  padding:36px 0 29px;
+  border-bottom-color:rgba(20,24,42,.055);
+}
+.life-os-hero h1{
+  font-family:var(--ui);
+  font-weight:950;
+  letter-spacing:-.065em;
+  background:linear-gradient(120deg,#14182a,#3157d5 120%);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+.life-os-orbit{
+  filter:drop-shadow(0 18px 32px rgba(49,87,213,.09));
+}
+.life-os-orbit b{
+  font-family:var(--ui);
+  font-weight:950;
+  background:linear-gradient(145deg,#fff,#eef2ff);
+}
+.life-os-tabs{
+  top:calc(env(safe-area-inset-top) + 52px);
+  margin:0 0 26px;
+  padding:6px;
+  border:1px solid var(--eu-hairline);
+  border-radius:18px;
+  background:rgba(248,249,252,.82);
+  box-shadow:0 9px 26px rgba(20,24,42,.045);
+}
+.life-os-tabs button{
+  min-height:38px;
+  border:0;
+  border-radius:12px;
+  background:transparent;
+}
+.life-os-tabs button.active{
+  background:#fff;
+  color:var(--ink);
+  border-color:transparent;
+  box-shadow:0 7px 18px rgba(20,24,42,.07);
+}
+.life-os-tabs button.active b{
+  background:var(--cobalt-soft);
+  color:var(--primary);
+}
+.system-command-grid{gap:11px}
+.system-command-card{
+  min-height:148px;
+  border:1px solid rgba(20,24,42,.035);
+  border-radius:24px;
+  box-shadow:0 11px 30px rgba(20,24,42,.045);
+}
+.system-command-card.inbox{background:linear-gradient(145deg,#edf1ff,#fafbff)}
+.system-command-card.attention{background:linear-gradient(145deg,#fbf0e6,#fffaf6)}
+.system-command-card.goals{background:linear-gradient(145deg,#eaf6ed,#fbfdfb)}
+.system-command-card.projects{background:linear-gradient(145deg,#f0ebfb,#fcfbff)}
+.system-command-icon{
+  border:1px solid rgba(255,255,255,.85);
+  box-shadow:0 7px 18px rgba(20,24,42,.055);
+}
+.system-command-card strong{
+  font-family:var(--ui);
+  font-weight:950;
+  letter-spacing:-.05em;
+}
+.system-now-card,.weekly-reset-card,.source-map-card,.autonomy-grid article,.system-rituals article{
+  border-color:var(--eu-hairline);
+  box-shadow:var(--eu-shadow-soft);
+}
+
+/* Vida / Memórias / generic archive surfaces */
+.life-area,.life-list-card,.memory-list article,.discovery-card,.saved-link-list a{
+  border-color:var(--eu-hairline);
+  box-shadow:0 9px 26px rgba(20,24,42,.038);
+}
+.life-area{
+  border-radius:24px;
+  overflow:hidden;
+}
+.memory-search{
+  min-height:58px;
+  border-color:var(--eu-hairline);
+  border-radius:20px;
+  background:var(--eu-glass-strong);
+  box-shadow:var(--eu-shadow-soft);
+}
+.memory-filters button{
+  border-color:var(--eu-hairline);
+  background:rgba(255,255,255,.55);
+}
+.memory-filters button.active{
+  border-color:transparent;
+  background:linear-gradient(145deg,#d56c9f,#b964a7);
+  box-shadow:0 7px 18px rgba(213,108,159,.18);
+}
+.memory-list article{
+  border-radius:22px;
+  background:rgba(255,255,255,.86);
+}
+.memory-icon{
+  border:1px solid rgba(213,108,159,.08);
+  box-shadow:0 5px 14px rgba(213,108,159,.07);
+}
+
+/* tap feedback shared */
+@media(prefers-reduced-motion:no-preference){
+  .money-metric-grid article,.money-section-card,.system-command-card,.memory-list article,.life-area{
+    transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;
+  }
+  .system-command-card:active,.memory-list article:active,.life-area:active{
+    transform:scale(.985);
+  }
+}
+
+@media(max-width:520px){
+  .money-header{padding-top:31px}
+  .money-tabs,.life-os-tabs{top:calc(env(safe-area-inset-top) + 50px)}
+  .money-hero{padding:22px;border-radius:26px}
+  .money-hero>strong{font-size:43px}
+  .life-os-hero{grid-template-columns:1fr 92px;gap:14px;padding-top:30px}
+  .life-os-hero h1{font-size:47px}
+  .life-os-orbit{width:88px;height:88px}
+  .life-os-orbit b{width:44px;height:44px;font-size:18px}
+  .system-command-card{min-height:136px;padding:16px}
+}
