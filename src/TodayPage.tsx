@@ -173,7 +173,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
 
       <section className="daily-brief-card">
         <div className="daily-brief-top">
-          <Tag tone="cobalt">DAILY BRIEF</Tag>
+          <Tag tone="cobalt">RESUMO DO DIA</Tag>
           <button className="simple-day-toggle" aria-pressed={simpleDay} onClick={() => { const next = !simpleDay; setSimpleDayMode(next); setSimpleDay(next) }}><EuIcon name={simpleDay ? 'sparkles' : 'moon'} />{simpleDay ? 'mostrar tudo' : 'hoje sem administrar'}</button>
         </div>
         <h2>{dailyBrief.title}</h2>
@@ -193,8 +193,8 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
 
       <section className="morning-intelligence now-only" aria-label="Inteligência da manhã">
         <div className="morning-intelligence-head">
-          <Tag tone="ink">MORNING INTELLIGENCE</Tag>
-          <span>montado do que já existe no seu EU</span>
+          <Tag tone="ink">RADAR DO DIA</Tag>
+          <span>montado automaticamente pelo seu EU</span>
         </div>
         <h2>{morning.headline}</h2>
         <p>{morning.note}</p>
@@ -213,7 +213,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
             <small>DINHEIRO</small>
             <strong>{typeof moneyBridge.bridge.metrics.dailyFolego === 'number'
               ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 2 }).format(moneyBridge.bridge.metrics.dailyFolego) + ' por dia'
-              : 'Seu FÔLEGO está no EU'}</strong>
+              : 'Seu dinheiro está no EU'}</strong>
             <p>{moneyBridge.bridge.summary}</p>
           </div>
           <EuIcon name="arrow-up-right" />
@@ -231,7 +231,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
       {focusRecords.length > 0 && (
         <section className="today-block continue-block now-only">
           <SectionTitle
-            eyebrow="UMA LISTA"
+            eyebrow="FOCO"
             title="Seu foco agora"
             action={<span className="focus-inline-label">{focusRecords.length}/3 · {focusAreas.length ? focusAreas.join(' + ') : 'só o que importa'}</span>}
           />
@@ -251,7 +251,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
               </NavLink>
             ))}
           </div>
-          <NavLink className="today-system-link" to="/sistema">ver o restante no Sistema <EuIcon name="arrow-up-right" /></NavLink>
+          <NavLink className="today-system-link" to="/sistema">ver o restante na Central <EuIcon name="arrow-up-right" /></NavLink>
         </section>
       )}
 
