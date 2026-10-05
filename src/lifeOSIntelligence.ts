@@ -264,3 +264,132 @@ export function deriveProjectHandoff(project: StoredRecord, records: StoredRecor
     relatedCount: related.length,
   }
 }
+
+
+export type DriftSignal = {
+  id: string
+  tone: 'cobalt' | 'amber'
+  title: string
+  detail: string
+  focusArea?: string
+}
+
+export function deriveDriftSignals(records: StoredRecord[], focusAreas: string[]) {
+  const visible = records.filter((record) => isRecordVisibleForInsights(record))
+  if (!focusAreas.length) return [] as DriftSignal[]
+
+  const now = Date.now()
+  const recent = visible.filter((record) => ts(record) >= now - 14 * 86400000)
+  const counts = new Map<string, number>()
+  recent.forEach((record) => counts.set(record.area, (counts.get(record.area) || 0) + 1))
+
+  const signals: DriftSignal[] = []
+  focusAreas.forEach((area) => {
+    const focusCount = counts.get(area) || 0
+    const latest = visible
+      .filter((record) => record.area === area)
+      .sort((a, b) => ts(b) - ts(a))[0]
+    const idleDays = latest ? Math.floor((now - ts(latest)) / 86400000) : null
+
+    if (focusCount === 0 && idleDays !== null && idleDays >= 10) {
+      signals.push({
+        id: 'neglected:' + area,
+        tone: 'amber',
+        title: area + ' saiu do radar',
+        detail: 'Você marcou ' + area + ' como foco, mas o último movimento registrado foi há ' + idleDays + ' dias.',
+        focusArea: area,
+      })
+    }
+  })
+
+  const top = [...counts.entries()].sort((a, b) => b[1] - a[1])[0]
+  if (top && !focusAreas.includes(top[0]) && top[1] >= 4) {
+    const focusTotal = focusAreas.reduce((sum, area) => sum + (counts.get(area) || 0), 0)
+    if (top[1] > focusTotal) {
+      signals.push({
+        id: 'attention:' + top[0],
+        tone: 'cobalt',
+        title: 'Sua atenção foi mais para ' + top[0],
+        detail: top[1] + ' movimentos recentes apareceram em ' + top[0] + ', mais do que nos focos definidos juntos.',
+      })
+    }
+  }
+
+  return signals.slice(0, 3)
+}
+
+export type ContextRoute = {
+  areas: string[]
+  types: string[]
+  reason: string
+}
+
+export function routeLifeOSContext(question: string): ContextRoute {
+  const value = lower(question)
+  const areas: string[] = []
+  const types: string[] = []
+
+  const addArea = (area: string, terms: string[]) => {
+    if (terms.some((term) => value.includes(term))) areas.push(area)
+  }
+  addArea('Carreira', ['trabalho', 'carreira', 'vaga', 'emprego', 'curriculo', 'currículo', 'entrevista', 'salario', 'salário', 'dados', 'sql', 'power bi'])
+  addArea('Dinheiro', ['dinheiro', 'gasto', 'conta', 'cartao', 'cartão', 'invest', 'orcamento', 'orçamento', 'salario', 'salário'])
+  addArea('Estudos', ['estudo', 'curso', 'faculdade', 'prova', 'certificacao', 'certificação', 'sql'])
+  addArea('Compras', ['comprar', 'compra', 'preco', 'preço', 'carro', 'produto'])
+  addArea('Viagens', ['viagem', 'viajar', 'hotel', 'passagem'])
+  addArea('Casa', ['casa', 'apartamento', 'aluguel'])
+  addArea('Lazer', ['filme', 'serie', 'série', 'livro', 'show', 'restaurante'])
+
+  if (['decidi', 'decisão', 'decisao'].some((term) => value.includes(term))) types.push('Decisão')
+  if (['projeto', 'projetos'].some((term) => value.includes(term))) types.push('Projeto')
+  if (['objetivo', 'meta'].some((term) => value.includes(term))) types.push('Objetivo')
+  if (['aguardando', 'esperando', 'retorno'].some((term) => value.includes(term))) types.push('Aguardando')
+  if (['candidatura', 'candidatei', 'vaga'].some((term) => value.includes(term))) types.push('Candidatura')
+
+  return {
+    areas: [...new Set(areas)],
+    types: [...new Set(types)],
+    reason: areas.length || types.length ? 'contexto específico identificado na pergunta' : 'busca geral no arquivo',
+  }
+}
+
+export function deriveCrossSignals(records: StoredRecord[]) {
+  const visible = records.filter((record) => isRecordVisibleForInsights(record))
+  const signals: Array<{ id: string; title: string; detail: string; recordIds: string[] }> = []
+  const applications = visible.filter((record) => lower(record.type).includes('candidatura') && record.status === 'active')
+  const careerWaiting = deriveWaiting(visible).filter((record) => record.area === 'Carreira')
+
+  applications.slice(0, 4).forEach((application) => {
+    const relatedWaiting = careerWaiting.find((record) =>
+      record.id !== application.id
+      && ((application.relatedIds || []).includes(record.id) || (record.relatedIds || []).includes(application.id)),
+    )
+    if (relatedWaiting) {
+      signals.push({
+        id: 'application-wait:' + application.id,
+        title: 'Candidatura + retorno pendente',
+        detail: 'Uma candidatura está conectada a algo que depende de resposta externa.',
+        recordIds: [application.id, relatedWaiting.id],
+      })
+    }
+  })
+
+  const goals = visible.filter((record) => lower(record.type).includes('objetivo') && record.status === 'active')
+  goals.slice(0, 5).forEach((goal) => {
+    const related = visible.filter((record) =>
+      record.id !== goal.id
+      && ((goal.relatedIds || []).includes(record.id) || (record.relatedIds || []).includes(goal.id)),
+    )
+    const latest = related.sort((a, b) => ts(b) - ts(a))[0]
+    if (latest && ts(latest) >= Date.now() - 14 * 86400000) {
+      signals.push({
+        id: 'goal-motion:' + goal.id,
+        title: 'Um objetivo ganhou movimento',
+        detail: goal.text + ' está conectado a uma atualização recente: ' + latest.text,
+        recordIds: [goal.id, latest.id],
+      })
+    }
+  })
+
+  return signals.slice(0, 4)
+}
