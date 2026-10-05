@@ -108,9 +108,9 @@ export default function MoneyPage() {
 
       <header className="money-header">
         <div>
-          <Tag tone="cobalt">DINHEIRO · FÔLEGO</Tag>
+          <Tag tone="cobalt">DINHEIRO</Tag>
           <h1>Seu dinheiro<br />dentro do EU.</h1>
-          <p>O mesmo motor financeiro do FÔLEGO, agora como parte da sua central de vida.</p>
+          <p>Seu motor financeiro agora faz parte da central da sua vida.</p>
         </div>
         <button className="money-refresh" onClick={() => void refresh()} disabled={loading} aria-label="Atualizar finanças">
           <EuIcon name="refresh" />
@@ -216,7 +216,7 @@ export default function MoneyPage() {
       )}
 
       <footer className="money-footer">
-        <div><span><EuIcon name="shield" /></span><p><strong>Fonte de verdade financeira</strong> · os números vêm do mesmo Supabase do FÔLEGO, protegidos por autenticação e RLS.</p></div>
+        <div><span><EuIcon name="shield" /></span><p><strong>Fonte de verdade financeira</strong> · os números vêm do seu backend financeiro, protegidos por autenticação e RLS.</p></div>
         {bundle && <button onClick={() => void signOutMoney()}>sair da conta financeira</button>}
       </footer>
 
@@ -359,8 +359,8 @@ function MoneyLogin({ onSignedIn }: { onSignedIn: () => void }) {
       <section className="money-login">
         <span className="money-login-mark"><EuIcon name="wallet" /></span>
         <Tag tone="cobalt">DINHEIRO NO EU</Tag>
-        <h1>Seu FÔLEGO<br />mora aqui agora.</h1>
-        <p>Entre com a mesma conta que você já usava no FÔLEGO. Seus dados continuam no mesmo lugar; só a casa mudou.</p>
+        <h1>Seu dinheiro<br />mora aqui agora.</h1>
+        <p>Entre com a mesma conta financeira que você já usava. Seus dados continuam no mesmo lugar; só a experiência foi centralizada.</p>
         <form onSubmit={submit}>
           <label>E-mail<input type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" /></label>
           <label>Senha<input type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" /></label>
