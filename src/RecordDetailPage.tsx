@@ -7,13 +7,15 @@ import { BrandTop, EuIcon, Tag, formatShortDate, sourceLabel, sourceTone, typeTo
 import { crossAppHint } from './uxFeatures'
 
 const areaOptions = ['Carreira', 'Dinheiro', 'Estudos', 'Casa', 'Viagens', 'Compras', 'Lazer', 'Pessoal']
-const typeOptions = ['Memória', 'Preferência', 'Desejo', 'Pesquisa', 'Curso', 'Pendência', 'Objetivo', 'Projeto', 'Decisão', 'Insight', 'Ideia', 'Marco', 'Contexto', 'Conquista', 'Depois', 'Cápsula', 'Objeto']
+const typeOptions = ['Memória', 'Preferência', 'Desejo', 'Pesquisa', 'Curso', 'Pendência', 'Aguardando', 'Candidatura', 'Objetivo', 'Projeto', 'Decisão', 'Insight', 'Ideia', 'Marco', 'Contexto', 'Conquista', 'Depois', 'Cápsula', 'Objeto']
 
 function stagesFor(type: string) {
   const value = type.toLowerCase()
   if (value.includes('pesquisa') || value.includes('desejo')) return ['Gostei', 'Pesquisando', 'Considerando', 'Decidi', 'Comprei', 'Desisti']
   if (value.includes('curso')) return ['Quero fazer', 'Comecei', 'Em andamento', 'Concluído', 'Pausado', 'Desisti']
   if (value.includes('projeto') || value.includes('objetivo')) return ['Ideia', 'Planejando', 'Em andamento', 'Concluído', 'Pausado', 'Desisti']
+  if (value.includes('aguard')) return ['Aguardando', 'Retorno recebido', 'Concluído', 'Pausado']
+  if (value.includes('candidatura')) return ['Enviada', 'Aguardando', 'Entrevista', 'Processo encerrado', 'Concluído']
   if (value.includes('pend')) return ['Preciso fazer', 'Em andamento', 'Concluído', 'Pausado', 'Desisti']
   if (value.includes('depois')) return ['Depois', 'Planejando', 'Em andamento', 'Concluído', 'Desisti']
   return ['Em andamento', 'Concluído', 'Pausado', 'Desisti']
@@ -23,7 +25,7 @@ function statusFromStage(stage: string, current?: RecordStatus): RecordStatus | 
   if (stage === 'Concluído' || stage === 'Comprei') return 'completed'
   if (stage === 'Pausado') return 'paused'
   if (stage === 'Desisti') return 'abandoned'
-  if (stage === 'Em andamento' || stage === 'Comecei' || stage === 'Pesquisando' || stage === 'Considerando' || stage === 'Planejando' || stage === 'Preciso fazer') return 'active'
+  if (stage === 'Em andamento' || stage === 'Comecei' || stage === 'Pesquisando' || stage === 'Considerando' || stage === 'Planejando' || stage === 'Preciso fazer' || stage === 'Aguardando' || stage === 'Enviada' || stage === 'Entrevista' || stage === 'Retorno recebido') return 'active'
   return current
 }
 
@@ -498,6 +500,40 @@ export default function RecordDetailPage() {
               </div>
             </section>
           )}
+
+          <section className="record-provenance">
+            <div className="record-provenance-head">
+              <div>
+                <Tag tone="cobalt">POR QUE O EU SABE ISSO?</Tag>
+                <h2>Origem e evolução</h2>
+              </div>
+              <span>{(currentRecord.revisions ?? []).length} mudança{(currentRecord.revisions ?? []).length === 1 ? '' : 's'} registrada{(currentRecord.revisions ?? []).length === 1 ? '' : 's'}</span>
+            </div>
+            <div className="provenance-facts">
+              <div><small>ORIGEM</small><strong>{sourceLabel(currentRecord.source)}</strong><p>{currentRecord.source === 'manual' || !currentRecord.source ? 'Você registrou diretamente no EU.' : currentRecord.source === 'chatgpt' ? 'Veio de uma conversa enviada ao EU.' : currentRecord.source === 'share' ? 'Entrou pelo compartilhamento do aparelho.' : 'Entrou por uma fonte identificada pelo sistema.'}</p></div>
+              <div><small>CRIADO</small><strong>{formatShortDate(currentRecord.createdAt)}</strong><p>O registro original continua preservado no histórico.</p></div>
+              <div><small>CONEXÕES</small><strong>{(currentRecord.relatedIds ?? []).length}</strong><p>Registros explicitamente ligados a este contexto.</p></div>
+            </div>
+            {(currentRecord.revisions ?? []).length > 0 && (
+              <div className="record-memory-timeline">
+                <small>COMO ISSO MUDOU</small>
+                {[...(currentRecord.revisions ?? [])].reverse().slice(0, 5).map((revision, index) => (
+                  <article key={revision.at + '-' + index}>
+                    <span />
+                    <div>
+                      <strong>{formatShortDate(revision.at)}</strong>
+                      <p>{revision.text}</p>
+                      <small>{revision.type} · {revision.area}{revision.nextMove ? ' · próximo: ' + revision.nextMove : ''}</small>
+                    </div>
+                  </article>
+                ))}
+                <article className="current-memory-state">
+                  <span />
+                  <div><strong>Agora</strong><p>{currentRecord.text}</p><small>{currentRecord.type} · {currentRecord.area}</small></div>
+                </article>
+              </div>
+            )}
+          </section>
 
           <section className="record-belongs">
             <Tag tone="amber">ISSO FAZ PARTE DE…</Tag>
