@@ -3,8 +3,9 @@ import ReactDOM from 'react-dom/client'
 import { HashRouter } from 'react-router-dom'
 import App from './App'
 import './styles.css'
+import './life-os.css'
 
-const APP_VERSION = 'eu-v14-flow-safety'
+const APP_VERSION = 'eu-v19-life-os'
 
 async function refreshPwaShell() {
   if (!('serviceWorker' in navigator)) return
