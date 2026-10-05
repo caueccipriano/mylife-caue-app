@@ -443,7 +443,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
       <section className="today-block signals-only">
         <SectionTitle
           eyebrow="SINAIS"
-          title="Seus outros apps"
+          title="Seu ecossistema"
           action={<button className="quiet-link" onClick={() => navigate('/vida#sinais')}>ver na Vida <EuIcon name="arrow-up-right" /></button>}
         />
         <div className="signal-mini-grid">
