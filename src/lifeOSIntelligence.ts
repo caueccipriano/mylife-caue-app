@@ -33,7 +33,7 @@ export function isWaitingRecord(record: StoredRecord) {
 
 export function deriveWaiting(records: StoredRecord[]) {
   return records
-    .filter(isRecordVisibleForInsights)
+    .filter((record) => isRecordVisibleForInsights(record))
     .filter((record) => record.status !== 'completed' && record.status !== 'abandoned')
     .filter(isWaitingRecord)
     .sort((a, b) => {
@@ -46,7 +46,7 @@ export function deriveWaiting(records: StoredRecord[]) {
 export function deriveCarryOver(records: StoredRecord[]) {
   const today = startOfToday()
   return records
-    .filter(isRecordVisibleForInsights)
+    .filter((record) => isRecordVisibleForInsights(record))
     .filter((record) => record.status === 'active')
     .filter((record) => !isWaitingRecord(record))
     .filter((record) => ts(record) < today)
@@ -59,7 +59,7 @@ export function deriveCarryOver(records: StoredRecord[]) {
 }
 
 export function buildMorningIntelligence(records: StoredRecord[], inboxCount: number) {
-  const visible = records.filter(isRecordVisibleForInsights)
+  const visible = records.filter((record) => isRecordVisibleForInsights(record))
   const waiting = deriveWaiting(visible)
   const carryOver = deriveCarryOver(visible)
   const now = Date.now()
@@ -103,7 +103,7 @@ export function buildMorningIntelligence(records: StoredRecord[], inboxCount: nu
 }
 
 export function buildWeeklyReset(records: StoredRecord[]) {
-  const visible = records.filter(isRecordVisibleForInsights)
+  const visible = records.filter((record) => isRecordVisibleForInsights(record))
   const now = Date.now()
   const week = now - 7 * 86400000
   const completed = visible.filter((record) => {
@@ -140,7 +140,7 @@ export type LifeOSScout = {
 }
 
 export function deriveLifeOSScouts(records: StoredRecord[], inboxCount: number): LifeOSScout[] {
-  const visible = records.filter(isRecordVisibleForInsights)
+  const visible = records.filter((record) => isRecordVisibleForInsights(record))
   const waiting = deriveWaiting(visible)
   const now = Date.now()
   const scouts: LifeOSScout[] = []
@@ -212,7 +212,7 @@ export function deriveLifeOSScouts(records: StoredRecord[], inboxCount: number):
 }
 
 export function buildContextBootstrap(records: StoredRecord[]) {
-  const visible = records.filter(isRecordVisibleForInsights)
+  const visible = records.filter((record) => isRecordVisibleForInsights(record))
   const recentCutoff = Date.now() - 14 * 86400000
   const activeProjects = visible
     .filter((record) => record.status === 'active' && lower(record.type).includes('projeto'))
