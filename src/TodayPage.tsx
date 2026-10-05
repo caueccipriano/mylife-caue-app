@@ -207,6 +207,8 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
         </div>
       </section>
 
+      <LifeCommandCenter records={records} inboxCount={inbox.length} />
+
       {moneyBridge?.bridge && (
         <NavLink className="today-money-pulse now-only" to="/dinheiro">
           <div className="today-money-pulse-mark"><EuIcon name="wallet" /></div>
