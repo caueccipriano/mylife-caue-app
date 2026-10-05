@@ -331,6 +331,82 @@ export function deriveStateOfMe(records: StoredRecord[]) {
   return { headline, detail, topAreas, openCount: open.length, decisionCount: decisions.length }
 }
 
+export function deriveNightBrief(records: StoredRecord[]) {
+  const usable = visible(records)
+  const now = new Date()
+  const start = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
+  const today = usable.filter((record) => Math.max(new Date(record.createdAt).getTime(), stamp(record)) >= start)
+  const completed = usable.filter((record) => record.completedAt && new Date(record.completedAt).getTime() >= start)
+  const decisions = today.filter((record) => lower(record.type).includes('decis'))
+  const waiting = deriveWaiting(usable)
+  const stillOpen = deriveOpenLoops(usable).filter((record) => !isWaitingRecord(record))
+
+  let headline = 'Hoje foi um dia quieto no seu EU.'
+  if (completed.length) headline = 'Você fechou ' + completed.length + (completed.length === 1 ? ' coisa hoje.' : ' coisas hoje.')
+  else if (decisions.length) headline = 'Hoje teve decisão: ' + decisions.length + (decisions.length === 1 ? ' escolha entrou no sistema.' : ' escolhas entraram no sistema.')
+  else if (today.length) headline = today.length + (today.length === 1 ? ' movimento entrou no seu EU hoje.' : ' movimentos entraram no seu EU hoje.')
+
+  return {
+    headline,
+    captured: today.length,
+    completed: completed.length,
+    decisions: decisions.length,
+    waiting: waiting.length,
+    carryToTomorrow: stillOpen.slice(0, 3),
+    note: stillOpen.length
+      ? 'O que ficou aberto continua amanhã sem precisar ser recadastrado.'
+      : 'Nada precisa ser carregado para amanhã agora.',
+  }
+}
+
+export function deriveWeekLens(records: StoredRecord[]) {
+  const usable = visible(records)
+  const start = new Date()
+  start.setHours(0, 0, 0, 0)
+
+  const days = Array.from({ length: 7 }, (_, index) => {
+    const dayStart = new Date(start.getTime() + index * DAY)
+    const dayEnd = new Date(dayStart.getTime() + DAY)
+    const scheduled = usable.filter((record) => {
+      const values = [record.followUpAt, record.revealAt].filter(Boolean) as string[]
+      return values.some((value) => {
+        const time = new Date(value).getTime()
+        return time >= dayStart.getTime() && time < dayEnd.getTime()
+      })
+    })
+    const action = scheduled.filter((record) => !isWaitingRecord(record))
+    const waiting = scheduled.filter(isWaitingRecord)
+
+    return {
+      date: dayStart.toISOString(),
+      label: new Intl.DateTimeFormat('pt-BR', { weekday: 'short' }).format(dayStart).replace('.', ''),
+      action: action.length,
+      waiting: waiting.length,
+      total: scheduled.length,
+    }
+  })
+
+  const total = days.reduce((sum, day) => sum + day.total, 0)
+  const peak = [...days].sort((a, b) => b.action - a.action)[0]
+  const level = total <= 3 ? 'light' : total <= 8 ? 'balanced' : 'busy'
+
+  return {
+    days,
+    total,
+    level,
+    headline: total === 0
+      ? 'A semana está aberta — nenhum retorno importante está marcado.'
+      : peak.action >= 3
+        ? 'Sua semana concentra mais coisas em ' + peak.label + '.'
+        : 'A semana está distribuída sem um pico forte de atenção.',
+    note: level === 'busy'
+      ? 'Talvez valha evitar abrir novas frentes até algumas coisas fecharem.'
+      : level === 'balanced'
+        ? 'Há movimento, mas ainda existe espaço para escolher uma prioridade por vez.'
+        : 'Pouca coisa está marcada no tempo. Não precisa preencher o espaço só porque ele existe.',
+  }
+}
+
 export function searchLife(records: StoredRecord[], query: string) {
   const q = lower(query.trim())
   if (!q) return []
