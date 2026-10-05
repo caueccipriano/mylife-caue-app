@@ -1,6 +1,6 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
-import { deriveDriftSignalsCore, deriveWaitingCore, isWaitingText, routeLifeOSContext } from '../src/lifeOSRules.ts'
+import { deriveDriftSignalsCore, isWaitingText, routeLifeOSContext } from '../src/lifeOSRules.ts'
 
 const now = new Date()
 const daysAgo = (days) => new Date(now.getTime() - days * 86400000).toISOString()
@@ -12,16 +12,13 @@ const base = (id, patch = {}) => ({
   createdAt: daysAgo(2),
   updatedAt: daysAgo(2),
   status: 'active',
-  relatedIds: [],
   ...patch,
 })
 
-test('waiting records are separated from user action', () => {
-  const waiting = base('w', { text: 'Aguardando resposta da empresa', type: 'Aguardando', followUpAt: daysAgo(-2) })
-  const action = base('a', { text: 'Enviar currículo' })
-  assert.equal(isWaitingText(waiting.type, waiting.text), true)
-  assert.equal(isWaitingText(action.type, action.text), false)
-  assert.deepEqual(deriveWaitingCore([action, waiting]).map((item) => item.id), ['w'])
+test('waiting language is separated from user action', () => {
+  assert.equal(isWaitingText('Aguardando', 'Resposta da empresa'), true)
+  assert.equal(isWaitingText('Pendência', 'Aguardando resposta da empresa'), true)
+  assert.equal(isWaitingText('Pendência', 'Enviar currículo'), false)
 })
 
 test('context router loads only relevant lenses', () => {
@@ -44,4 +41,10 @@ test('drift appears only when a declared focus has real inactivity evidence', ()
   const signals = deriveDriftSignalsCore([oldCareer, recentProject, recentProject2, recentProject3, recentProject4], ['Carreira'], now.getTime())
   assert.equal(signals.some((item) => item.id === 'neglected:Carreira'), true)
   assert.equal(signals.some((item) => item.id === 'attention:Pessoal'), true)
+})
+
+test('drift stays quiet when focus is still active', () => {
+  const recentCareer = base('career-now', { area: 'Carreira', updatedAt: daysAgo(1) })
+  const signals = deriveDriftSignalsCore([recentCareer], ['Carreira'], now.getTime())
+  assert.deepEqual(signals, [])
 })
