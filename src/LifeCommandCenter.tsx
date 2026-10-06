@@ -169,7 +169,7 @@ export default function LifeCommandCenter({ records, inboxCount }: { records: St
             <span className="command-insights-icon"><EuIcon name="sparkles" /></span>
             <div><strong>Ver contexto e sinais</strong><small>mudanças, semana, loops, decisões e radar</small></div>
           </div>
-          <span className="command-insights-count">${changes.length + openLoops.length + decisions.length} sinais</span>
+          <span className="command-insights-count">{changes.length + openLoops.length + decisions.length} sinais</span>
           <EuIcon name="arrow-right" />
         </summary>
         <div className="command-insights-body">
