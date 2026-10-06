@@ -81,7 +81,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   const followups = useMemo(() => activeFollowUps(records), [records])
   const due = followups.filter((item) => item.due && isRecordVisibleForInsights(item.record)).map((item) => item.record)
   const active = followups.filter((item) => isRecordVisibleForInsights(item.record)).map((item) => item.record)
-  const todayRecords = records.filter((record) => sameLocalDay(record.createdAt)).slice(0, 8)
+  const todayRecords = records.filter((record) => sameLocalDay(record.createdAt)).slice(0, 3)
   const chatToday = todayRecords.filter((record) => record.source === 'chatgpt')
   const review = useMemo(() => reviewCandidates(records), [records])
   const patterns = useMemo(() => derivePatterns(records), [records])
@@ -224,123 +224,134 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
 
       <AdaptiveHomeDeck items={adaptiveItems} />
 
-      {moneyBridge?.bridge && (
-        <NavLink className="today-money-pulse now-only" to="/dinheiro">
-          <div className="today-money-pulse-mark"><EuIcon name="wallet" /></div>
-          <div className="today-money-pulse-copy">
-            <small>DINHEIRO</small>
-            <strong>{typeof moneyBridge.bridge.metrics.dailyFolego === 'number'
-              ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 2 }).format(moneyBridge.bridge.metrics.dailyFolego) + ' por dia'
-              : 'Seu dinheiro está no EU'}</strong>
-            <p>{moneyBridge.bridge.summary}</p>
-          </div>
-          <EuIcon name="arrow-up-right" />
-        </NavLink>
-      )}
-
-      {readyCapsules.length > 0 && (
-        <button className="capsule-ready-callout now-only" onClick={() => navigate('/vida/lab')}>
-          <Tag tone="lilac">CÁPSULA DO FUTURO</Tag>
-          <strong>{readyCapsules.length === 1 ? 'Uma mensagem sua chegou.' : readyCapsules.length + ' mensagens suas chegaram.'}</strong>
-          <span>abrir no EU Lab <EuIcon name="arrow-up-right" /></span>
-        </button>
-      )}
-
-      {focusRecords.length > 0 && (
-        <section className="today-block continue-block now-only">
-          <SectionTitle
-            eyebrow="FOCO"
-            title="Seu foco agora"
-            action={<span className="focus-inline-label">{focusRecords.length}/3 · {focusAreas.length ? focusAreas.join(' + ') : 'só o que importa'}</span>}
-          />
-          <p className="today-focus-principle">No máximo três coisas. O resto continua guardado no sistema sem disputar sua atenção.</p>
-          <div className="continue-strip">
-            {focusRecords.map((record, index) => (
-              <NavLink key={record.id} className={'continue-card continue-card-' + index} to={'/registro/' + record.id}>
-                <div>
-                  <Tag tone={due.some((item) => item.id === record.id) ? 'coral' : record.pinned ? 'cobalt' : typeTone(record.type)}>
-                    {due.some((item) => item.id === record.id) ? 'AGORA' : record.pinned ? 'FIXADO' : record.type}
-                  </Tag>
-                  <span>{record.area}</span>
-                </div>
-                <h3>{record.text}</h3>
-                <p>{record.nextMove || (record.progressLevel ? 'Retomar o progresso' : record.followUpAt ? 'Tem continuidade marcada' : 'Continuar de onde parou')}</p>
-                <small>abrir <EuIcon name="arrow-up-right" /></small>
-              </NavLink>
-            ))}
-          </div>
-          <NavLink className="today-system-link" to="/sistema">ver o restante na Central <EuIcon name="arrow-up-right" /></NavLink>
-        </section>
-      )}
-
-      {waiting.length > 0 && (
-        <NavLink className="waiting-strip now-only" to="/sistema?view=panel#aguardando">
-          <span className="waiting-strip-icon"><EuIcon name="clock" /></span>
+      <details className="today-more-drawer now-only">
+        <summary>
+          <div><span><EuIcon name="collections" /></span><div><strong>Ver mais do dia</strong><small>dinheiro, foco, aguardando e lembretes</small></div></div>
+          <b>{focusRecords.length + waiting.length + inbox.length + review.length + due.length + (moneyBridge?.bridge ? 1 : 0) + readyCapsules.length}</b>
+          <EuIcon name="arrow-right" />
+        </summary>
+        <div className="today-more-body">
+        {moneyBridge?.bridge && (
+          <NavLink className="today-money-pulse now-only" to="/dinheiro">
+            <div className="today-money-pulse-mark"><EuIcon name="wallet" /></div>
+            <div className="today-money-pulse-copy">
+              <small>DINHEIRO</small>
+              <strong>{typeof moneyBridge.bridge.metrics.dailyFolego === 'number'
+                ? new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 2 }).format(moneyBridge.bridge.metrics.dailyFolego) + ' por dia'
+                : 'Seu dinheiro está no EU'}</strong>
+              <p>{moneyBridge.bridge.summary}</p>
+            </div>
+            <EuIcon name="arrow-up-right" />
+          </NavLink>
+        )}
+  
+        {readyCapsules.length > 0 && (
+          <button className="capsule-ready-callout now-only" onClick={() => navigate('/vida/lab')}>
+            <Tag tone="lilac">CÁPSULA DO FUTURO</Tag>
+            <strong>{readyCapsules.length === 1 ? 'Uma mensagem sua chegou.' : readyCapsules.length + ' mensagens suas chegaram.'}</strong>
+            <span>abrir no EU Lab <EuIcon name="arrow-up-right" /></span>
+          </button>
+        )}
+  
+        {focusRecords.length > 0 && (
+          <section className="today-block continue-block now-only">
+            <SectionTitle
+              eyebrow="FOCO"
+              title="Seu foco agora"
+              action={<span className="focus-inline-label">{focusRecords.length}/3 · {focusAreas.length ? focusAreas.join(' + ') : 'só o que importa'}</span>}
+            />
+            <p className="today-focus-principle">No máximo três coisas. O resto continua guardado no sistema sem disputar sua atenção.</p>
+            <div className="continue-strip">
+              {focusRecords.map((record, index) => (
+                <NavLink key={record.id} className={'continue-card continue-card-' + index} to={'/registro/' + record.id}>
+                  <div>
+                    <Tag tone={due.some((item) => item.id === record.id) ? 'coral' : record.pinned ? 'cobalt' : typeTone(record.type)}>
+                      {due.some((item) => item.id === record.id) ? 'AGORA' : record.pinned ? 'FIXADO' : record.type}
+                    </Tag>
+                    <span>{record.area}</span>
+                  </div>
+                  <h3>{record.text}</h3>
+                  <p>{record.nextMove || (record.progressLevel ? 'Retomar o progresso' : record.followUpAt ? 'Tem continuidade marcada' : 'Continuar de onde parou')}</p>
+                  <small>abrir <EuIcon name="arrow-up-right" /></small>
+                </NavLink>
+              ))}
+            </div>
+            <NavLink className="today-system-link" to="/sistema">ver o restante na Central <EuIcon name="arrow-up-right" /></NavLink>
+          </section>
+        )}
+  
+        {waiting.length > 0 && (
+          <NavLink className="waiting-strip now-only" to="/sistema?view=panel#aguardando">
+            <span className="waiting-strip-icon"><EuIcon name="clock" /></span>
+            <div>
+              <small>AGUARDANDO</small>
+              <strong>{waiting.length === 1 ? 'Uma coisa não depende de você agora.' : waiting.length + ' coisas não dependem de você agora.'}</strong>
+              <p>Ficam acompanhadas sem ocupar sua lista de ação.</p>
+            </div>
+            <EuIcon name="arrow-up-right" />
+          </NavLink>
+        )}
+  
+        <section className="daily-idea now-only">
+          <span className="daily-idea-icon" aria-hidden="true"><EuIcon name="sparkles" /></span>
           <div>
-            <small>AGUARDANDO</small>
-            <strong>{waiting.length === 1 ? 'Uma coisa não depende de você agora.' : waiting.length + ' coisas não dependem de você agora.'}</strong>
-            <p>Ficam acompanhadas sem ocupar sua lista de ação.</p>
+            <small>UMA IDEIA PRA HOJE</small>
+            <p>{advice(mood?.mood, due, active.length)}</p>
           </div>
-          <EuIcon name="arrow-up-right" />
-        </NavLink>
-      )}
-
-      <section className="daily-idea now-only">
-        <span className="daily-idea-icon" aria-hidden="true"><EuIcon name="sparkles" /></span>
-        <div>
-          <small>UMA IDEIA PRA HOJE</small>
-          <p>{advice(mood?.mood, due, active.length)}</p>
+        </section>
+  
+        <AstroTodayPreview />
+  
+        {inbox.length > 0 && (
+          <NavLink className="adaptive-callout chat-inbox-callout now-only" to="/inbox">
+            <div>
+              <Tag tone="ink">CAIXA DO CHAT</Tag>
+              <h2>{inbox.length === 1 ? 'Uma conversa esperando por você.' : inbox.length + ' conversas esperando por você.'}</h2>
+              <p>Revise o que vale guardar antes de entrar no seu EU.</p>
+            </div>
+            <span className="callout-arrow"><EuIcon name="arrow-up-right" /></span>
+          </NavLink>
+        )}
+  
+        {review.length > 0 && (
+          <NavLink className="adaptive-callout review-callout now-only" to="/revisao">
+            <div>
+              <Tag tone="amber">REVISÃO</Tag>
+              <h2>{review.length === 1 ? 'Uma coisa pede uma resposta.' : review.length + ' coisas pedem uma resposta.'}</h2>
+              <p>Continuar, concluir, pausar ou deixar pra lá. Leva poucos minutos.</p>
+            </div>
+            <span className="callout-arrow"><EuIcon name="arrow-up-right" /></span>
+          </NavLink>
+        )}
+  
+        {due.length > 0 && (
+          <section className="today-block now-only">
+            <SectionTitle eyebrow="VOLTOU PRA VOCÊ" title="Isso ainda está vivo?" />
+            <div className="followup-stack">
+              {due.slice(0, 3).map((record) => (
+                <article className="followup-card" key={record.id}>
+                  <div className="feed-meta">
+                    <Tag tone={typeTone(record.type)}>{record.type}</Tag>
+                    <span>{record.area}</span>
+                  </div>
+                  <h3>{record.text}</h3>
+                  <p>Você começou isso há algum tempo. Quer manter em movimento?</p>
+                  <div className="followup-actions">
+                    <button onClick={() => complete(record)} disabled={busyId === record.id}><EuIcon name="check" />Concluí</button>
+                    <button onClick={() => snooze(record, 3)} disabled={busyId === record.id}><EuIcon name="clock" />Daqui uns dias</button>
+                    <button onClick={() => snooze(record, 7)} disabled={busyId === record.id}><EuIcon name="clock" />1 semana</button>
+                    <button onClick={() => snooze(record, 30)} disabled={busyId === record.id}><EuIcon name="clock" />Mês que vem</button>
+                    <button onClick={() => navigate('/registro/' + record.id)}>Abrir <EuIcon name="arrow-up-right" /></button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </section>
+        )}
+  
+  
         </div>
-      </section>
-
-      <AstroTodayPreview />
-
-      {inbox.length > 0 && (
-        <NavLink className="adaptive-callout chat-inbox-callout now-only" to="/inbox">
-          <div>
-            <Tag tone="ink">CAIXA DO CHAT</Tag>
-            <h2>{inbox.length === 1 ? 'Uma conversa esperando por você.' : inbox.length + ' conversas esperando por você.'}</h2>
-            <p>Revise o que vale guardar antes de entrar no seu EU.</p>
-          </div>
-          <span className="callout-arrow"><EuIcon name="arrow-up-right" /></span>
-        </NavLink>
-      )}
-
-      {review.length > 0 && (
-        <NavLink className="adaptive-callout review-callout now-only" to="/revisao">
-          <div>
-            <Tag tone="amber">REVISÃO</Tag>
-            <h2>{review.length === 1 ? 'Uma coisa pede uma resposta.' : review.length + ' coisas pedem uma resposta.'}</h2>
-            <p>Continuar, concluir, pausar ou deixar pra lá. Leva poucos minutos.</p>
-          </div>
-          <span className="callout-arrow"><EuIcon name="arrow-up-right" /></span>
-        </NavLink>
-      )}
-
-      {due.length > 0 && (
-        <section className="today-block now-only">
-          <SectionTitle eyebrow="VOLTOU PRA VOCÊ" title="Isso ainda está vivo?" />
-          <div className="followup-stack">
-            {due.slice(0, 3).map((record) => (
-              <article className="followup-card" key={record.id}>
-                <div className="feed-meta">
-                  <Tag tone={typeTone(record.type)}>{record.type}</Tag>
-                  <span>{record.area}</span>
-                </div>
-                <h3>{record.text}</h3>
-                <p>Você começou isso há algum tempo. Quer manter em movimento?</p>
-                <div className="followup-actions">
-                  <button onClick={() => complete(record)} disabled={busyId === record.id}><EuIcon name="check" />Concluí</button>
-                  <button onClick={() => snooze(record, 3)} disabled={busyId === record.id}><EuIcon name="clock" />Daqui uns dias</button>
-                  <button onClick={() => snooze(record, 7)} disabled={busyId === record.id}><EuIcon name="clock" />1 semana</button>
-                  <button onClick={() => snooze(record, 30)} disabled={busyId === record.id}><EuIcon name="clock" />Mês que vem</button>
-                  <button onClick={() => navigate('/registro/' + record.id)}>Abrir <EuIcon name="arrow-up-right" /></button>
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
-      )}
+      </details>
 
       <section className="today-block signals-only">
         <SectionTitle eyebrow="ESSA SEMANA" title="O que sua vida contou" action={<button className="quiet-link" onClick={() => navigate('/memorias/humor')}>humor <EuIcon name="arrow-up-right" /></button>} />
