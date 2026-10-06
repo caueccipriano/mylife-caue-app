@@ -126,22 +126,21 @@ export default function LifeCommandCenter({ records, inboxCount }: { records: St
       <div className="eu-command-shell">
         <div className="eu-command-label">
           <span><EuIcon name="sparkles" /></span>
-          <div><strong>EU Command</strong><small>digite uma coisa; o sistema decide o caminho</small></div>
+          <div><strong>Diga ao EU</strong><small>registrar, buscar ou encaminhar</small></div>
         </div>
         <form className="eu-command-input" onSubmit={(event) => { event.preventDefault(); runCommand() }}>
           <input
             value={command}
             onChange={(event) => setCommand(event.target.value)}
-            placeholder="ex.: gastei 82 de gasolina · decidi estudar SQL · buscar carro"
+            placeholder="Ex.: decidi estudar SQL · gastei 82 · buscar carro"
             aria-label="Comando universal do EU"
           />
           <button type="submit" aria-label="Executar comando"><EuIcon name="arrow-right" /></button>
         </form>
-        <div className="eu-command-actions">
-          <button onClick={() => runCommand()}><EuIcon name="bolt" />entender e encaminhar</button>
-          <button onClick={() => { const value = command.trim(); if (value) setSearchQuery(value) }}><EuIcon name="search" />buscar na minha vida</button>
+        <div className="eu-command-footer">
+          <p className="eu-command-guard"><EuIcon name="shield" />ações consequenciais pedem confirmação</p>
+          <NavLink to="/pergunte"><EuIcon name="sparkles" />Perguntar ao EU</NavLink>
         </div>
-        <p className="eu-command-guard"><EuIcon name="shield" />Gastos, receitas e outras ações consequenciais nunca são gravados sem confirmação.</p>
       </div>
 
       {searchQuery && (
