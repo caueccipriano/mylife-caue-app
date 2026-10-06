@@ -1,6 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { deriveDriftSignalsCore, isWaitingText, routeLifeOSContext } from '../src/lifeOSRules.ts'
+import { askEuBrain } from '../src/euBrain.ts'
 
 const now = new Date()
 const daysAgo = (days) => new Date(now.getTime() - days * 86400000).toISOString()
@@ -47,4 +48,37 @@ test('drift stays quiet when focus is still active', () => {
   const recentCareer = base('career-now', { area: 'Carreira', updatedAt: daysAgo(1) })
   const signals = deriveDriftSignalsCore([recentCareer], ['Carreira'], now.getTime())
   assert.deepEqual(signals, [])
+})
+
+
+test('EU Brain routes waiting questions to waiting context', () => {
+  const waiting = base('waiting-1', {
+    text: 'Aguardando resposta de recrutador',
+    type: 'Pendência',
+    status: 'active',
+    nextMove: 'Aguardar retorno',
+  })
+  const answer = askEuBrain([waiting], [], 'quem estou esperando agora?')
+  assert.equal(answer.intent, 'waiting')
+  assert.equal(answer.sources[0]?.id, 'waiting-1')
+  assert.equal(answer.confidence, 'high')
+})
+
+test('EU Brain preserves uncertainty when archive has no evidence', () => {
+  const answer = askEuBrain([], [], 'onde paramos no projeto lunar?')
+  assert.equal(answer.intent, 'handoff')
+  assert.equal(answer.confidence, 'low')
+  assert.equal(answer.sources.length, 0)
+})
+
+test('EU Brain finds explicit decisions without inventing one', () => {
+  const decision = base('decision-1', {
+    text: 'Decidi estudar SQL primeiro',
+    type: 'Decisão',
+    status: 'active',
+    expectation: 'ganhar base para dados',
+  })
+  const answer = askEuBrain([decision], [], 'o que eu já decidi sobre SQL?')
+  assert.equal(answer.intent, 'decision')
+  assert.equal(answer.sources.some((item) => item.id === 'decision-1'), true)
 })
