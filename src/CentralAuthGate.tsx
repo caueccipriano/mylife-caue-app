@@ -112,7 +112,7 @@ function CentralLogin() {
 
         <div className="central-auth-trust">
           <EuIcon name="shield" />
-          <p><strong>É a mesma conta.</strong> Não criamos outro usuário. A autenticação continua no mesmo backend financeiro que você já usava.</p>
+          <p><strong>É a mesma conta.</strong> Não criamos outro usuário. Você continua entrando pela mesma autenticação que já usava no FÔLEGO.</p>
         </div>
       </section>
     </main>

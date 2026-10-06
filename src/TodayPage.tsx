@@ -12,6 +12,7 @@ import { AstroTodayPreview } from './AstrologyPage'
 import { haptic } from './securitySettings'
 import LifeCommandCenter from './LifeCommandCenter'
 import AdaptiveHomeDeck from './AdaptiveHomeDeck'
+import AssistantSurface from './AssistantSurface'
 import { deriveAttentionBudget } from './lifeCommandCenter'
 import { deriveAdaptiveHome } from './adaptiveLife'
 import { deriveAmbientProfile } from './ambientHome'
@@ -71,6 +72,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   const requestedView = searchParams.get('view')
   const [busyId, setBusyId] = useState<string | null>(null)
   const [simpleDay, setSimpleDay] = useState(() => getSimpleDayMode())
+  const [focusMode, setFocusMode] = useState(() => localStorage.getItem('eu-focus-mode-v1') === 'on')
   const [todayView, setTodayView] = useState<'now' | 'signals'>(() => {
     if (requestedView === 'signals' || requestedView === 'now') return requestedView
     return localStorage.getItem('eu-today-view') === 'signals' ? 'signals' : 'now'
@@ -117,6 +119,14 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   function selectTodayView(value: 'now' | 'signals') {
     setTodayView(value)
     localStorage.setItem('eu-today-view', value)
+  }
+
+  function toggleFocusMode() {
+    const next = !focusMode
+    setFocusMode(next)
+    localStorage.setItem('eu-focus-mode-v1', next ? 'on' : 'off')
+    if (next) setTodayView('now')
+    haptic('light')
   }
 
   useEffect(() => {
@@ -171,7 +181,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   }
 
   return (
-    <div className={'v2-page today-page today-view-' + todayView + ' ambient-' + ambient.period + ' ambient-pressure-' + ambient.pressure + ' adaptive-primary-' + (adaptiveItems[0]?.id || 'quiet') + (simpleDay ? ' simple-day' : '')}>
+    <div className={'v2-page today-page today-view-' + todayView + ' ambient-' + ambient.period + ' ambient-pressure-' + ambient.pressure + ' adaptive-primary-' + (adaptiveItems[0]?.id || 'quiet') + (simpleDay ? ' simple-day' : '') + (focusMode ? ' focus-mode-on' : '')}>
       <BrandTop />
 
       <section className="today-glance" aria-label="Seu dia no EU">
@@ -221,15 +231,50 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
         </div>
       </section>
 
-      <nav className="today-view-tabs" aria-label="Visões de Hoje" role="tablist">
-        <button role="tab" aria-selected={todayView === 'now'} className={todayView === 'now' ? 'active' : ''} onClick={() => selectTodayView('now')}><EuIcon name="bolt" />Agora</button>
-        <button role="tab" aria-selected={todayView === 'signals'} className={todayView === 'signals' ? 'active' : ''} onClick={() => selectTodayView('signals')}><EuIcon name="sparkles" />Sinais</button>
-      </nav>
+      <div className="today-mode-row">
+        <nav className="today-view-tabs" aria-label="Visões de Hoje" role="tablist">
+          <button role="tab" aria-selected={todayView === 'now'} className={todayView === 'now' ? 'active' : ''} onClick={() => selectTodayView('now')}><EuIcon name="bolt" />Agora</button>
+          <button role="tab" aria-selected={todayView === 'signals'} className={todayView === 'signals' ? 'active' : ''} onClick={() => selectTodayView('signals')}><EuIcon name="sparkles" />Sinais</button>
+        </nav>
+        <button className={'focus-mode-toggle' + (focusMode ? ' active' : '')} aria-pressed={focusMode} onClick={toggleFocusMode}>
+          <EuIcon name={focusMode ? 'check' : 'pin'} />
+          {focusMode ? 'em foco' : 'foco'}
+        </button>
+      </div>
       </section>
 
       <LifeCommandCenter records={records} inboxCount={inbox.length} />
 
-      <AdaptiveHomeDeck items={adaptiveItems} />
+      {focusMode && (
+        <section className="focus-stage-v32 now-only" aria-label="Modo foco">
+          <header>
+            <div>
+              <span><EuIcon name="pin" /></span>
+              <div><small>MODO FOCO</small><h2>O resto pode esperar.</h2></div>
+            </div>
+            <button onClick={toggleFocusMode}>sair do foco</button>
+          </header>
+          <p>O EU reduziu a tela para as poucas coisas que merecem movimento agora.</p>
+          <div className="focus-stage-list-v32">
+            {focusRecords.length ? focusRecords.map((record, index) => (
+              <NavLink key={record.id} to={'/registro/' + record.id}>
+                <b>{String(index + 1).padStart(2, '0')}</b>
+                <div>
+                  <span>{record.area}</span>
+                  <strong>{record.text}</strong>
+                  <small>{record.nextMove || 'Continuar de onde parou'}</small>
+                </div>
+                <EuIcon name="arrow-up-right" />
+              </NavLink>
+            )) : (
+              <div className="focus-stage-empty-v32"><strong>Nada está pedindo foco agora.</strong><p>Você pode usar o modo assim mesmo para deixar o EU quieto.</p></div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {!focusMode && <AdaptiveHomeDeck items={adaptiveItems} />}
+      {!focusMode && <AssistantSurface records={records} moods={moodHistory} />}
 
       <details className="today-more-drawer now-only">
         <summary>
