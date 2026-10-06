@@ -52,9 +52,9 @@ A interface usa a identidade consolidada do EU/FÔLEGO: superfícies claras, azu
 
 ## Estado atual
 
-**EU v30 — Unified Core**
+**EU v31 — Alive**
 
-A Home, o comando universal, Dinheiro e Central compartilham uma mesma hierarquia visual. O foco desta versão é simplificação e coerência, mantendo as camadas de inteligência já existentes.
+A Home agora traz **EU sabe**, uma leitura contextual gerada pelo Brain a partir do próprio arquivo. A lupa global abre uma busca universal pelos registros e pode continuar a consulta no Brain. A camada visual Alive melhora contraste, legibilidade, navegação, busca, Home, Brain, login, Dinheiro e Central sem alterar a fonte de verdade dos dados.
 
 ---
 
