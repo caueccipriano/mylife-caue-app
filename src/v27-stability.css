@@ -358,3 +358,246 @@ a,
     padding-inline:7px;
   }
 }
+
+
+/* v27.1 · Simple Home
+   One clear layer at a time. Advanced intelligence stays available, not loud. */
+.command-insights-drawer{
+  margin:10px 0 2px;
+  border:1px solid rgba(20,24,42,.055);
+  border-radius:19px;
+  background:rgba(255,255,255,.58);
+  box-shadow:0 7px 22px rgba(20,24,42,.028);
+  overflow:hidden;
+}
+.command-insights-drawer>summary{
+  min-height:62px;
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto 16px;
+  gap:10px;
+  align-items:center;
+  padding:10px 13px;
+  list-style:none;
+  cursor:pointer;
+}
+.command-insights-drawer>summary::-webkit-details-marker{display:none}
+.command-insights-drawer>summary>div{
+  min-width:0;
+  display:grid;
+  grid-template-columns:34px minmax(0,1fr);
+  gap:9px;
+  align-items:center;
+}
+.command-insights-icon{
+  width:34px;
+  height:34px;
+  display:grid;
+  place-items:center;
+  border-radius:11px;
+  background:var(--surface-muted);
+  color:var(--lilac);
+}
+.command-insights-icon .eu-icon{width:15px}
+.command-insights-drawer>summary strong{
+  display:block;
+  font-size:10px;
+  font-weight:900;
+}
+.command-insights-drawer>summary small{
+  display:block;
+  margin-top:2px;
+  color:var(--muted);
+  font-size:7px;
+}
+.command-insights-count{
+  padding:6px 8px;
+  border-radius:999px;
+  background:var(--surface-muted);
+  color:var(--muted);
+  font-size:7px;
+  white-space:nowrap;
+}
+.command-insights-drawer>summary>.eu-icon{
+  width:13px;
+  color:var(--muted);
+  transition:transform .18s ease;
+}
+.command-insights-drawer[open]>summary>.eu-icon{transform:rotate(90deg)}
+.command-insights-body{
+  display:grid;
+  gap:10px;
+  padding:0 10px 12px;
+  border-top:1px solid rgba(20,24,42,.04);
+}
+.command-insights-body>.eu-context-switcher{margin-top:10px}
+.command-insights-body .what-changed-card,
+.command-insights-body .command-detail-card,
+.command-insights-body .state-of-me-card,
+.command-insights-body .personal-api-card{
+  box-shadow:none;
+}
+.command-insights-body .time-lens-grid,
+.command-insights-body .command-summary-grid{
+  margin-block:0;
+}
+
+/* The visible home should feel calmer than the expanded intelligence layer. */
+.eu-command-center{
+  margin-bottom:18px;
+}
+.eu-now-answer{
+  min-height:178px;
+}
+.eu-now-answer>strong{
+  margin-top:20px;
+  font-size:19px;
+}
+.eu-now-answer>p{
+  margin-top:6px;
+  font-size:9px;
+}
+.eu-now-metrics{
+  margin-top:16px;
+}
+.eu-command-shell{
+  padding:15px;
+}
+.eu-command-label small,
+.eu-command-guard{
+  opacity:.72;
+}
+.eu-command-actions{
+  margin-top:8px;
+}
+
+/* Adaptive priority: one feature + two compact supports. */
+.adaptive-home-deck{
+  margin-top:14px;
+}
+.adaptive-home-head{
+  margin-bottom:9px;
+}
+.adaptive-home-head h2{
+  font-size:21px;
+}
+.adaptive-feature-card{
+  min-height:178px;
+  padding:18px;
+  border-radius:24px;
+}
+.adaptive-feature-copy h3{
+  margin-top:12px;
+  font-size:21px;
+}
+.adaptive-feature-copy>small{
+  margin-top:15px;
+}
+.adaptive-secondary-grid{
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+  margin-top:7px;
+}
+.adaptive-secondary-card{
+  min-height:86px;
+  grid-template-columns:30px minmax(0,1fr);
+  padding:11px;
+  border-radius:17px;
+}
+.adaptive-secondary-icon{
+  width:30px;
+  height:30px;
+  border-radius:10px;
+}
+.adaptive-secondary-card strong{
+  font-size:9px;
+}
+.adaptive-secondary-card p{
+  display:none;
+}
+.adaptive-secondary-card>b{
+  display:none;
+}
+
+/* Less giant typography on utility pages. */
+.brain-hero-copy h1,
+.decide-hero h1,
+.people-hero h1{
+  font-size:clamp(42px,7vw,60px);
+}
+.brain-hero-copy p,
+.decide-hero p,
+.people-hero p{
+  max-width:540px;
+}
+
+/* Quiet by default: technical implementation details stay subordinate. */
+.personal-api-card{
+  opacity:.82;
+}
+.personal-api-card[open]{opacity:1}
+
+@media(max-width:520px){
+  .command-insights-drawer>summary{
+    grid-template-columns:minmax(0,1fr) 14px;
+    min-height:58px;
+  }
+  .command-insights-count{display:none}
+
+  .eu-now-answer{
+    min-height:168px;
+    padding:18px;
+  }
+  .eu-now-answer-top h2{font-size:21px}
+  .eu-now-answer>strong{font-size:18px}
+
+  .eu-command-actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+  }
+  .eu-command-actions button{
+    min-height:40px;
+  }
+
+  .adaptive-home-deck{margin-bottom:26px}
+  .adaptive-home-head h2{font-size:19px}
+  .adaptive-feature-card{
+    min-height:160px;
+    padding:16px;
+    grid-template-columns:38px minmax(0,1fr);
+    gap:11px;
+  }
+  .adaptive-feature-icon{
+    width:38px;
+    height:38px;
+    border-radius:12px;
+  }
+  .adaptive-feature-copy h3{
+    font-size:18px;
+    line-height:1.08;
+  }
+  .adaptive-feature-copy p{
+    font-size:9px;
+  }
+  .adaptive-secondary-grid{
+    grid-template-columns:1fr 1fr;
+  }
+  .adaptive-secondary-card{
+    min-height:78px;
+  }
+
+  .brain-hero-copy h1,
+  .decide-hero h1,
+  .people-hero h1{
+    font-size:40px;
+  }
+}
+
+@media(max-width:380px){
+  .adaptive-secondary-grid{grid-template-columns:1fr}
+  .adaptive-secondary-card{min-height:70px}
+  .command-insights-body{padding-inline:7px}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .command-insights-drawer>summary>.eu-icon{transition:none}
+}
