@@ -52,9 +52,9 @@ A interface usa a identidade consolidada do EU/FÔLEGO: superfícies claras, azu
 
 ## Estado atual
 
-**EU v31 — Alive**
+**EU v32 — Personal Assistant**
 
-A Home agora traz **EU sabe**, uma leitura contextual gerada pelo Brain a partir do próprio arquivo. A lupa global abre uma busca universal pelos registros e pode continuar a consulta no Brain. A camada visual Alive melhora contraste, legibilidade, navegação, busca, Home, Brain, login, Dinheiro e Central sem alterar a fonte de verdade dos dados.
+A Home passa a combinar **EU sabe**, **EU percebeu**, resumo semanal e **Seu fio**. O Brain mantém contexto recente para perguntas de continuação, o modo Foco reduz a interface ao que realmente pede ação e a timeline pode ser aberta diretamente. A camada visual v32 redesenha hierarquia, tipografia, profundidade, dock, Home, Brain, Memórias, Dinheiro e Central com prioridade para legibilidade e uso no iPhone.
 
 ---
 
