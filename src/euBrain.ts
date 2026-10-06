@@ -4,7 +4,7 @@ import { isRecordVisibleForInsights } from './storage'
 import { derivePeople, deriveLivingGoals } from './adaptiveLife'
 import { deriveDecisionJournal, deriveWhatChanged, searchLife } from './lifeCommandCenter'
 import { deriveProjectHandoff, deriveWaiting } from './lifeOSIntelligence'
-import { brainConfidenceForSourceCount, brainIntentFor, type BrainIntent } from './euBrainRules'
+import { brainConfidenceForSourceCount, brainDecisionQueryIsGeneric, brainIntentFor, brainPeopleQueryIsGeneric, type BrainIntent } from './euBrainRules'
 
 export type BrainAction = {
   label: string
@@ -152,7 +152,7 @@ function answerHandoff(records: StoredRecord[], question: string): BrainAnswer {
 
 function answerDecision(records: StoredRecord[], question: string): BrainAnswer {
   const matches = searchLife(records, question)
-  const journal = deriveDecisionJournal(matches.length ? matches : records)
+  const journal = deriveDecisionJournal(matches.length ? matches : brainDecisionQueryIsGeneric(question) ? records : [])
   const sources = journal.map((entry) => entry.record).slice(0, 6)
 
   if (!journal.length) {
@@ -220,7 +220,7 @@ function answerPeople(records: StoredRecord[], question: string): BrainAnswer {
   const q = lower(question)
   const people = derivePeople(records)
   const named = people.find((person) => q.includes(lower(person.name)))
-  const person = named || people[0]
+  const person = named || (brainPeopleQueryIsGeneric(question) ? people[0] : undefined)
 
   if (!person) {
     return {
