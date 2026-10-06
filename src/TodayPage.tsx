@@ -81,7 +81,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   const followups = useMemo(() => activeFollowUps(records), [records])
   const due = followups.filter((item) => item.due && isRecordVisibleForInsights(item.record)).map((item) => item.record)
   const active = followups.filter((item) => isRecordVisibleForInsights(item.record)).map((item) => item.record)
-  const todayRecords = records.filter((record) => sameLocalDay(record.createdAt)).slice(0, 8)
+  const todayRecords = records.filter((record) => sameLocalDay(record.createdAt)).slice(0, 3)
   const chatToday = todayRecords.filter((record) => record.source === 'chatgpt')
   const review = useMemo(() => reviewCandidates(records), [records])
   const patterns = useMemo(() => derivePatterns(records), [records])
