@@ -1,8 +1,19 @@
-import { type FormEvent, useMemo, useState } from 'react'
+import { type FormEvent, useEffect, useMemo, useState } from 'react'
 import { NavLink, useSearchParams } from 'react-router-dom'
 import { askEuBrain, type BrainAnswer } from './euBrain'
 import { useBridges, useRecords } from './appState'
 import { BrandTop, EuIcon, Tag, typeTone, type EuIconName } from './v2Ui'
+
+const HISTORY_KEY = 'eu-brain-history-v1'
+
+type ConversationTurn = {
+  id: string
+  question: string
+  answer: string
+  detail?: string
+  confidence: BrainAnswer['confidence']
+  at: string
+}
 
 const suggestions: Array<{ label: string; query: string; icon: EuIconName }> = [
   { label: 'Agora', query: 'O que eu preciso saber agora?', icon: 'bolt' },
@@ -19,6 +30,22 @@ function confidenceLabel(value: BrainAnswer['confidence']) {
   return 'pouco contexto'
 }
 
+function readHistory(): ConversationTurn[] {
+  try {
+    const value = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]') as ConversationTurn[]
+    return Array.isArray(value) ? value.slice(-8) : []
+  } catch {
+    return []
+  }
+}
+
+function needsPreviousContext(value: string) {
+  const clean = value.trim().toLocaleLowerCase('pt-BR')
+  if (!clean) return false
+  return clean.split(/\s+/).length <= 5
+    || /^(e |e sobre|e se|isso|esse|essa|aquele|aquela|ele|ela|tamb[eé]m|agora|por que|e agora)/.test(clean)
+}
+
 export default function AskEuPage() {
   const records = useRecords()
   const { bridges } = useBridges()
@@ -26,7 +53,35 @@ export default function AskEuPage() {
   const initialQuery = params.get('q')?.trim() || ''
   const [query, setQuery] = useState(initialQuery)
   const [asked, setAsked] = useState(initialQuery)
-  const answer = useMemo<BrainAnswer | null>(() => asked ? askEuBrain(records, bridges, asked) : null, [asked, records, bridges])
+  const [history, setHistory] = useState<ConversationTurn[]>(readHistory)
+
+  const previousTurn = history[history.length - 1]
+  const contextualQuestion = asked && previousTurn && needsPreviousContext(asked) && previousTurn.question !== asked
+    ? previousTurn.question + '. Continuação: ' + asked
+    : asked
+
+  const answer = useMemo<BrainAnswer | null>(
+    () => contextualQuestion ? askEuBrain(records, bridges, contextualQuestion) : null,
+    [contextualQuestion, records, bridges],
+  )
+
+  useEffect(() => {
+    if (!asked || !answer) return
+    const last = history[history.length - 1]
+    if (last?.question === asked && last.answer === answer.answer) return
+
+    const turn: ConversationTurn = {
+      id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7),
+      question: asked,
+      answer: answer.answer,
+      detail: answer.detail,
+      confidence: answer.confidence,
+      at: new Date().toISOString(),
+    }
+    const next = [...history, turn].slice(-8)
+    setHistory(next)
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(next))
+  }, [asked, answer])
 
   function submit(event: FormEvent) {
     event.preventDefault()
@@ -48,15 +103,20 @@ export default function AskEuPage() {
     setParams({}, { replace: true })
   }
 
+  function clearConversation() {
+    setHistory([])
+    localStorage.removeItem(HISTORY_KEY)
+  }
+
   return (
-    <div className="v2-page ask-eu-page brain-page">
+    <div className="v2-page ask-eu-page brain-page brain-conversation-v32">
       <BrandTop />
 
       <header className="brain-hero">
         <div className="brain-hero-copy">
-          <Tag tone="cobalt">EU BRAIN</Tag>
-          <h1>Pergunte à<br />sua própria vida.</h1>
-          <p>O EU cruza contexto, decisões, projetos, objetivos, pessoas e sinais já existentes no seu arquivo. Sem inventar fatos e sem executar nada por você.</p>
+          <Tag tone="cobalt">EU · ASSISTENTE</Tag>
+          <h1>Converse com<br />a sua própria vida.</h1>
+          <p>O EU cruza seu arquivo, mantém o fio da conversa e mostra as fontes. Quando não sabe, não inventa.</p>
         </div>
         <div className="brain-orbit" aria-hidden="true">
           <span /><span /><span />
@@ -64,14 +124,32 @@ export default function AskEuPage() {
         </div>
       </header>
 
+      {history.length > 0 && (
+        <section className="brain-history-v32" aria-label="Contexto recente da conversa">
+          <header>
+            <div><small>CONVERSA RECENTE</small><strong>O EU lembra do fio.</strong></div>
+            <button onClick={clearConversation}>limpar</button>
+          </header>
+          <div>
+            {history.slice(-3).map((turn) => (
+              <button key={turn.id} className="brain-history-turn-v32" onClick={() => ask(turn.question)}>
+                <span><EuIcon name="chat" /></span>
+                <div><small>VOCÊ</small><strong>{turn.question}</strong><p>{turn.answer}</p></div>
+                <EuIcon name="arrow-up-right" />
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
+
       <form className="brain-command-box" onSubmit={submit}>
         <span className="brain-command-mark"><EuIcon name="sparkles" /></span>
         <textarea
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           rows={2}
-          placeholder="Ex.: onde paramos no Editalume? · o que mudou? · quem estou esperando?"
-          aria-label="Pergunta para o EU Brain"
+          placeholder={history.length ? 'Continue daqui: “e sobre isso?”' : 'Ex.: onde paramos no Editalume?'}
+          aria-label="Pergunta para o EU"
         />
         <button type="submit" disabled={!query.trim()} aria-label="Perguntar ao EU">
           <EuIcon name="arrow-right" />
@@ -90,20 +168,20 @@ export default function AskEuPage() {
       {!answer && (
         <section className="brain-start-grid">
           <article className="brain-start-card context">
-            <span><EuIcon name="collections" /></span>
-            <small>CONTEXTO</small>
-            <strong>Onde paramos?</strong>
-            <p>Retoma projeto, próximo passo, decisões relacionadas e coisas aguardando.</p>
+            <span><EuIcon name="chat" /></span>
+            <small>CONVERSA</small>
+            <strong>Pode continuar de onde parou.</strong>
+            <p>Perguntas curtas como “e sobre isso?” reaproveitam o contexto recente.</p>
           </article>
           <article className="brain-start-card impact">
             <span><EuIcon name="compass" /></span>
             <small>IMPACTO</small>
             <strong>O que isso afeta?</strong>
-            <p>Mostra áreas e registros conectados antes de você tratar hipótese como fato.</p>
+            <p>O EU conecta áreas e registros relacionados antes de concluir qualquer coisa.</p>
           </article>
           <article className="brain-start-card truth">
             <span><EuIcon name="shield" /></span>
-            <small>TRUTH LAYER</small>
+            <small>VERDADE</small>
             <strong>Sem resposta inventada.</strong>
             <p>Se o arquivo não sustenta uma conclusão, o EU assume que ainda não sabe.</p>
           </article>
@@ -117,8 +195,12 @@ export default function AskEuPage() {
               <Tag tone={answer.confidence === 'high' ? 'green' : answer.confidence === 'medium' ? 'amber' : 'muted'}>{answer.eyebrow}</Tag>
               <span className={'brain-confidence confidence-' + answer.confidence}><i />{confidenceLabel(answer.confidence)}</span>
             </div>
-            <button onClick={reset} aria-label="Nova pergunta"><EuIcon name="refresh" /></button>
+            <button onClick={reset} aria-label="Nova pergunta"><EuIcon name="plus" /></button>
           </header>
+
+          {previousTurn && needsPreviousContext(asked) && previousTurn.question !== asked && (
+            <div className="brain-context-chip-v32"><EuIcon name="link" />continuando de “{previousTurn.question}”</div>
+          )}
 
           <div className="brain-answer-copy">
             <h2>{answer.answer}</h2>
@@ -175,7 +257,7 @@ export default function AskEuPage() {
             </div>
           )}
 
-          <button className="brain-ask-again" onClick={reset}><EuIcon name="plus" />Fazer outra pergunta</button>
+          <button className="brain-ask-again" onClick={reset}><EuIcon name="chat" />Continuar conversa</button>
         </section>
       )}
     </div>
