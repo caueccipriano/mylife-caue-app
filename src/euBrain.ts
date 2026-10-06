@@ -129,7 +129,7 @@ function answerChanged(records: StoredRecord[]): BrainAnswer {
     intent: 'changed',
     eyebrow: 'WHAT CHANGED?',
     answer: changes.length + (changes.length === 1 ? ' mudança relevante apareceu' : ' mudanças relevantes apareceram') + ' nos últimos 7 dias.',
-    detail: (completed ? completed + ' concluída' + (completed > 1 ? 's' : '') + ' · ' : '') + (decisions ? decisions + ' decisão' + (decisions > 1 ? 'ões' : '') + ' · ' : '') + 'mais recente: “' + compact(newest.record.text, 120) + '”',
+    detail: (completed ? completed + ' concluída' + (completed > 1 ? 's' : '') + ' · ' : '') + (decisions ? decisions + (decisions > 1 ? ' decisões · ' : ' decisão · ') : '') + 'mais recente: “' + compact(newest.record.text, 120) + '”',
     confidence: 'high',
     sources,
     actions: [{ label: 'Ver histórico', route: '/memorias', icon: 'collections' }],
