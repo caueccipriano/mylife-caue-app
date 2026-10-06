@@ -29,7 +29,7 @@ export default defineConfig({
         background_color: '#F6F7FB',
         display: 'standalone',
         orientation: 'portrait-primary',
-        start_url: base + '?v=eu-v20-central',
+        start_url: base + '?v=eu-v27-stability-polish',
         scope: base,
         categories: ['lifestyle', 'utilities'],
         share_target: {
@@ -43,6 +43,12 @@ export default defineConfig({
           }
         },
         shortcuts: [
+          {
+            name: 'Pergunte ao EU',
+            short_name: 'EU Brain',
+            description: 'Consultar contexto, decisões e próximos passos no EU',
+            url: base + '#/pergunte'
+          },
           {
             name: 'Registrar no EU',
             short_name: 'Registrar',
