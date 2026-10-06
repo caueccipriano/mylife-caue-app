@@ -13,8 +13,9 @@ import './visual-polish-v23.css'
 import './ambient-home.css'
 import './v25-adaptive.css'
 import './v26-brain.css'
+import './v27-stability.css'
 
-const APP_VERSION = 'eu-v26-brain'
+const APP_VERSION = 'eu-v27-stability-polish'
 
 async function refreshPwaShell() {
   if (!('serviceWorker' in navigator)) return
@@ -57,25 +58,6 @@ function routeSharedContent() {
 }
 
 routeSharedContent()
-
-function lockViewportZoom() {
-  const prevent = (event: Event) => event.preventDefault()
-
-  // Safari/iOS pinch gesture.
-  document.addEventListener('gesturestart', prevent, { passive: false })
-  document.addEventListener('gesturechange', prevent, { passive: false })
-  document.addEventListener('gestureend', prevent, { passive: false })
-
-  // Double-tap zoom fallback on older iOS builds.
-  let lastTouchEnd = 0
-  document.addEventListener('touchend', (event) => {
-    const now = Date.now()
-    if (now - lastTouchEnd <= 300) event.preventDefault()
-    lastTouchEnd = now
-  }, { passive: false })
-}
-
-lockViewportZoom()
 
 window.addEventListener('load', () => {
   void refreshPwaShell()
