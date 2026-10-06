@@ -26,7 +26,7 @@ function visible(records: StoredRecord[]) {
 }
 
 function active(record: StoredRecord) {
-  return record.status !== 'completed' && record.status !== 'abandoned'
+  return record.status !== 'completed' && record.status !== 'abandoned' && record.status !== 'paused'
 }
 
 function progressValue(record: StoredRecord) {
@@ -98,7 +98,7 @@ export function deriveLivingGoals(records: StoredRecord[]): LivingGoal[] {
   })
 }
 
-const personCue = /\b(?:com|para|do|da|de|pelo|pela|aguardando|resposta de|retorno de|falei com|conversei com)\s+([A-ZÁÀÂÃÉÊÍÓÔÕÚÇ][\p{L}À-ÿ'-]+(?:\s+[A-ZÁÀÂÃÉÊÍÓÔÕÚÇ][\p{L}À-ÿ'-]+){0,2})/gu
+const personCue = /\b(?:falei com|conversei com|resposta de|retorno de|aguardando resposta de|aguardando retorno de|com)\s+([A-ZÁÀÂÃÉÊÍÓÔÕÚÇ][\p{L}À-ÿ'-]+(?:\s+[A-ZÁÀÂÃÉÊÍÓÔÕÚÇ][\p{L}À-ÿ'-]+){0,2})/gu
 const badNames = new Set([
   'EU','Hoje','Dinheiro','Carreira','Trabalho','Pessoal','Projeto','Projetos','Objetivo','Meta','Google','ChatGPT',
   'SQL','Power BI','Brasil','Jundiaí','São Paulo','Kindle','Stardew Valley',

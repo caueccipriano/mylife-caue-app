@@ -1,0 +1,248 @@
+/* EU v27 · Stability polish
+   Fixes iPhone focus/zoom collisions, dense states and interaction consistency. */
+
+:root{
+  --eu-safe-top: env(safe-area-inset-top, 0px);
+  --eu-safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Native interaction wins: no global double-tap/pinch interception. */
+button,
+a,
+[role="button"]{
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Prevent Safari focus zoom without disabling user zoom. */
+@media (max-width: 760px){
+  input,
+  textarea,
+  select{
+    font-size:16px !important;
+  }
+}
+
+/* Brain sticky input must sit below the app topbar, not underneath it. */
+.brain-command-box{
+  top:calc(var(--eu-safe-top) + 62px);
+}
+
+/* Stronger hierarchy, less visual noise. */
+.brain-page,
+.decide-page,
+.people-page{
+  max-width:760px;
+  margin-inline:auto;
+}
+
+.brain-hero,
+.decide-hero,
+.people-hero{
+  padding-top:30px;
+}
+
+.brain-query-chips{
+  mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 24px),transparent);
+  -webkit-mask-image:linear-gradient(90deg,#000 0,#000 calc(100% - 24px),transparent);
+}
+
+.brain-answer,
+.decision-builder,
+.person-focus-card{
+  border-color:rgba(20,24,42,.055);
+  box-shadow:
+    0 20px 60px rgba(20,24,42,.065),
+    inset 0 1px 0 rgba(255,255,255,.8);
+}
+
+.brain-source-card,
+.decision-evidence-group>a,
+.person-timeline>a{
+  min-width:0;
+}
+
+.brain-source-card p,
+.decision-evidence-group>a strong,
+.person-timeline strong,
+.adaptive-feature-copy h3,
+.adaptive-secondary-card strong,
+.living-goal-card h2{
+  overflow-wrap:anywhere;
+}
+
+.brain-actions a,
+.decision-result-card>button,
+.brain-ask-again{
+  min-height:44px;
+}
+
+.brain-answer-head>button{
+  width:44px;
+  height:44px;
+}
+
+.brain-confidence{
+  min-height:28px;
+  padding-inline:7px;
+  border-radius:999px;
+  background:rgba(255,255,255,.6);
+}
+
+.brain-trace[open] summary>.eu-icon{
+  transform:rotate(90deg);
+}
+
+.brain-trace summary>.eu-icon{
+  transition:transform .18s ease;
+}
+
+/* Decision score now reads as evidence, not a mysterious rating. */
+.decision-result-card-top>b{
+  display:grid;
+  justify-items:end;
+  gap:2px;
+}
+.decision-result-card-top>b::after{
+  content:'evidência';
+  color:var(--muted);
+  font:700 6px/1 var(--ui);
+  letter-spacing:.05em;
+  text-transform:uppercase;
+}
+
+/* Paused / empty states should look intentionally quiet. */
+.living-goals-view .soft-empty,
+.people-empty,
+.decision-empty-state,
+.brain-no-source{
+  background:linear-gradient(145deg,rgba(255,255,255,.76),rgba(246,247,251,.82));
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.8);
+}
+
+/* Adaptive deck gets one clear visual focal point. */
+.adaptive-home-deck{
+  padding-top:2px;
+}
+.adaptive-feature-card{
+  box-shadow:0 16px 44px rgba(20,24,42,.06);
+}
+.adaptive-secondary-card{
+  box-shadow:0 7px 22px rgba(20,24,42,.035);
+}
+.adaptive-secondary-card p{
+  display:-webkit-box;
+  -webkit-line-clamp:2;
+  -webkit-box-orient:vertical;
+  overflow:hidden;
+}
+
+/* People strip: avoid cramped accidental horizontal page scroll. */
+.people-strip{
+  overscroll-behavior-inline:contain;
+  scroll-snap-type:x proximity;
+}
+.people-strip button{
+  scroll-snap-align:start;
+  min-height:108px;
+}
+
+/* Bottom dock + FAB safe-area hardening. */
+.v2-bottom-nav{
+  bottom:max(8px,var(--eu-safe-bottom));
+}
+.global-register-pill.compact{
+  bottom:calc(88px + var(--eu-safe-bottom));
+}
+
+/* Keep sheets above the dock and keyboard-friendly. */
+.register-sheet{
+  max-height:min(88dvh,820px);
+  padding-bottom:max(18px,var(--eu-safe-bottom));
+}
+.sheet-backdrop{
+  overscroll-behavior:contain;
+}
+
+/* Long content shouldn't sit under the floating dock. */
+.eu-v2-main{
+  padding-bottom:calc(172px + var(--eu-safe-bottom));
+}
+
+@media(max-width:520px){
+  .brain-command-box{
+    top:calc(var(--eu-safe-top) + 58px);
+    padding:8px 8px 8px 10px;
+  }
+
+  .brain-command-box textarea{
+    min-height:44px;
+    line-height:1.28;
+  }
+
+  .brain-query-chips{
+    margin-right:-15px;
+    padding-right:28px;
+  }
+
+  .brain-answer,
+  .decision-builder,
+  .person-focus-card{
+    border-radius:24px;
+  }
+
+  .brain-source-card{
+    grid-template-columns:24px minmax(0,1fr) 12px;
+  }
+
+  .decision-result-card{
+    padding:16px;
+  }
+
+  .person-stats article{
+    min-height:68px;
+  }
+
+  .adaptive-home-head>span{
+    display:none;
+  }
+}
+
+@media(max-width:380px){
+  .brain-command-box{
+    grid-template-columns:32px minmax(0,1fr) 40px;
+    gap:6px;
+  }
+
+  .brain-command-mark{
+    width:32px;
+    height:32px;
+  }
+
+  .brain-command-box>button{
+    width:40px;
+    height:40px;
+  }
+
+  .brain-source-index{
+    display:none;
+  }
+
+  .brain-source-card{
+    grid-template-columns:minmax(0,1fr) 12px;
+  }
+
+  .brain-source-card>div{
+    grid-column:1;
+  }
+
+  .living-goal-top{
+    align-items:flex-start;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .brain-trace summary>.eu-icon{
+    transition:none;
+  }
+}
