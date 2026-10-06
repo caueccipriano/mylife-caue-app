@@ -126,9 +126,9 @@ export default function MoneyPage() {
 
       <header className="money-header">
         <div>
-          <Tag tone="cobalt">DINHEIRO</Tag>
-          <h1>Seu dinheiro<br />dentro do EU.</h1>
-          <p>Seu motor financeiro agora faz parte da central da sua vida.</p>
+          <Tag tone="green">EU · DINHEIRO</Tag>
+          <h1>Seu dinheiro,<br />sem sair do EU.</h1>
+          <p>O Fôlego virou o motor financeiro da sua central pessoal.</p>
         </div>
         <button className="money-refresh" onClick={() => void refresh()} disabled={loading} aria-label="Atualizar finanças">
           <EuIcon name="refresh" />
@@ -164,7 +164,7 @@ export default function MoneyPage() {
                 </div>
               </section>
 
-              <button className="money-primary-action" onClick={() => setRegisterOpen(true)}><EuIcon name="plus" />Novo lançamento</button>
+              <button className="money-primary-action" onClick={() => setRegisterOpen(true)}><EuIcon name="plus" />Registrar gasto ou entrada</button>
 
               <section className="money-metric-grid">
                 <article><span><EuIcon name="wallet" /></span><small>Disponível</small><strong>{money(bundle.snapshot.liquidBalance)}</strong></article>

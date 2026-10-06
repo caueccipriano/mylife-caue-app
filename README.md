@@ -1,55 +1,60 @@
 # EU
 
-**EU** é um arquivo vivo pessoal: o lugar onde a vida é organizada, entendida, registrada, encontrada e acompanhada.
+**EU** é uma central pessoal para organizar contexto, dinheiro, decisões, projetos, memórias e sinais da vida em um único lugar.
 
-Não é um gerenciador de tarefas, agenda ou dashboard de produtividade.
+A proposta não é virar um gerenciador de tarefas. O EU tenta reduzir ruído: mostra o que importa agora e mantém o restante acessível quando você quiser aprofundar.
 
-## Produto
+## Experiência principal
 
-O app oferece cinco perspectivas integradas sobre a mesma vida:
+A navegação é dividida em cinco áreas:
 
-- **Agora** — situação atual, assuntos em foco e registros recentes.
-- **Áreas** — categorias permanentes da vida.
-- **Projetos** — iniciativas com início, fim ou meta clara.
-- **Arquivo** — memória pesquisável de tudo que foi registrado.
-- **Eu** — dossiê pessoal vivo e linha do tempo.
+- **Hoje** — contexto atual, humor, prioridade adaptativa, registros recentes e o campo **Diga ao EU**.
+- **Dinheiro** — o antigo FÔLEGO incorporado ao EU, usando o mesmo backend financeiro.
+- **Central** — objetivos, projetos, agenda, dependências, revisões e sinais do Life OS.
+- **Vida** — áreas pessoais, carreira, fases, capítulos, identidade e laboratório.
+- **Memórias** — arquivo pesquisável, humor, coleções e histórico.
 
-O coração da experiência é o botão **Registrar**: texto, foto, link, documento ou áudio entram primeiro como um registro único e depois são interpretados e vinculados.
+O botão **Registrar** continua sendo a entrada rápida para guardar algo sem precisar decidir antes onde aquilo pertence.
 
-## Direção visual
+## Diga ao EU
 
-Design editorial, arquitetônico e silencioso.
+O campo universal da Home recebe linguagem natural e encaminha o conteúdo para a ação adequada.
 
-| Token | Cor |
-| --- | --- |
-| Areia | `#D3C7AD` |
-| Azul | `#28374A` |
-| Terra | `#754437` |
-| Oliva | `#6B6751` |
-| Papel | `#F5F1E8` |
+Exemplos:
 
-Títulos editoriais serifados, corpo sans-serif limpo, bordas finas, bastante espaço vazio e quase nenhuma decoração gratuita.
+- `gastei 82 de gasolina` → prepara um lançamento financeiro;
+- `decidi estudar SQL` → prepara um registro;
+- `buscar carro` → pesquisa no arquivo pessoal.
 
-## Stack
+Ações com consequência, especialmente movimentações financeiras, continuam exigindo confirmação.
+
+## Dinheiro / FÔLEGO
+
+O FÔLEGO não é mais tratado como um app separado na experiência principal. A tela **Dinheiro** usa o mesmo Supabase financeiro para consultar e registrar snapshot de fôlego, contas, movimentações, orçamento, cartões, dívidas, recorrências e metas.
+
+A autenticação do EU usa a mesma conta já utilizada pelo FÔLEGO.
+
+## Dados e arquitetura
 
 - React + TypeScript + Vite
 - PWA mobile-first, otimizado para iPhone
 - React Router
-- **IndexedDB local-first** para persistência
-- Service Worker para shell offline
-- Backup manual em JSON, restaurável pelo próprio app
+- IndexedDB/localStorage para registros e contexto local do EU
+- Supabase para autenticação e dados financeiros
+- Service Worker para o shell PWA
+- Backup/restauração dos registros locais
 
-Não existe backend pago, conta obrigatória ou Supabase.
+O frontend utiliza apenas a chave pública/publishable do Supabase. O acesso aos dados financeiros deve permanecer protegido por autenticação e RLS no backend.
 
-## Dados
+## Direção visual
 
-O conteúdo pessoal fica no navegador instalado no aparelho. O EU oferece exportação de backup para que o arquivo possa ser salvo no app Arquivos/iCloud Drive e restaurado depois.
-
-A camada de interpretação começa com regras locais. IA externa só entra futuramente se fizer sentido e sempre como recurso opcional, sem ser requisito para o funcionamento básico.
+A interface usa a identidade consolidada do EU/FÔLEGO: superfícies claras, azul estrutural, verde para Dinheiro, lilás para a Central, rosa para Memórias e conteúdo secundário recolhido para reduzir sensação de dashboard.
 
 ## Estado atual
 
-Primeira fundação funcional: navegação, páginas principais, Registrar, persistência local em IndexedDB, Arquivo conectado aos registros, backup/restauração e estrutura PWA.
+**EU v30 — Unified Core**
+
+A Home, o comando universal, Dinheiro e Central compartilham uma mesma hierarquia visual. O foco desta versão é simplificação e coerência, mantendo as camadas de inteligência já existentes.
 
 ---
 

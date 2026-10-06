@@ -21,10 +21,10 @@ export default function AdaptiveHomeDeck({ items }: { items: AdaptiveHomeItem[] 
     <section className={'adaptive-home-deck adaptive-primary-' + primary.id} aria-label="Prioridades adaptativas do EU">
       <div className="adaptive-home-head">
         <div>
-          <small>HOME ADAPTATIVA</small>
-          <h2>O que merece espaço agora</h2>
+          <small>PRIORIDADE</small>
+          <h2>O que importa agora</h2>
         </div>
-        <span>muda com seu contexto</span>
+        <span>ajusta ao seu dia</span>
       </div>
 
       <NavLink to={primary.route} className={'adaptive-feature-card tone-' + primary.tone}>
@@ -33,7 +33,7 @@ export default function AdaptiveHomeDeck({ items }: { items: AdaptiveHomeItem[] 
           <Tag tone={primary.tone}>{primary.eyebrow}</Tag>
           <h3>{primary.title}</h3>
           <p>{primary.detail}</p>
-          <small>abrir contexto <EuIcon name="arrow-up-right" /></small>
+          <small>ver agora <EuIcon name="arrow-up-right" /></small>
         </div>
         <strong className="adaptive-rank">01</strong>
       </NavLink>
