@@ -1,6 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { deriveDriftSignalsCore, isWaitingText, routeLifeOSContext } from '../src/lifeOSRules.ts'
+import { brainConfidenceForSourceCount, brainIntentFor } from '../src/euBrainRules.ts'
 
 const now = new Date()
 const daysAgo = (days) => new Date(now.getTime() - days * 86400000).toISOString()
@@ -47,4 +48,19 @@ test('drift stays quiet when focus is still active', () => {
   const recentCareer = base('career-now', { area: 'Carreira', updatedAt: daysAgo(1) })
   const signals = deriveDriftSignalsCore([recentCareer], ['Carreira'], now.getTime())
   assert.deepEqual(signals, [])
+})
+
+
+
+test('EU Brain routes common questions to explicit intents', () => {
+  assert.equal(brainIntentFor('quem estou esperando agora?'), 'waiting')
+  assert.equal(brainIntentFor('o que eu já decidi sobre SQL?'), 'decision')
+  assert.equal(brainIntentFor('onde paramos no Editalume?'), 'handoff')
+  assert.equal(brainIntentFor('o que mudou esta semana?'), 'changed')
+})
+
+test('EU Brain confidence stays conservative without evidence', () => {
+  assert.equal(brainConfidenceForSourceCount(0), 'low')
+  assert.equal(brainConfidenceForSourceCount(1), 'medium')
+  assert.equal(brainConfidenceForSourceCount(3), 'high')
 })
