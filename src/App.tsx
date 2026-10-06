@@ -26,6 +26,7 @@ import MoodPage from './MoodPage'
 import CollectionsPage from './CollectionsPage'
 import AreaPage from './AreaPage'
 import NotificationsPage from './NotificationsPage'
+import SearchPage from './SearchPage'
 import DecidePage from './DecidePage'
 import PeoplePage from './PeoplePage'
 import NotificationRuleSync from './NotificationRuleSync'
@@ -93,6 +94,7 @@ function AppShell({ onRegister }: { onRegister: () => void }) {
           <Route path="/inbox" element={<ChatInboxPage />} />
           <Route path="/revisao" element={<ReviewPage />} />
           <Route path="/pergunte" element={<AskEuPage />} />
+          <Route path="/buscar" element={<SearchPage />} />
           <Route path="/assunto/:slug" element={<EntityPage />} />
           <Route path="/vida/fases" element={<SnapshotsPage />} />
           <Route path="/vida/astrologia" element={<AstrologyPage />} />
@@ -164,7 +166,7 @@ export default function App() {
             <strong>EU</strong>
             <i>✦</i>
           </div>
-          <span>Life OS</span>
+          <span>central pessoal</span>
         </div>
       )}
       <PhaseThemeSync />
