@@ -11,7 +11,7 @@ export default function MemoriesPage() {
   const records = useRecords()
   const [params] = useSearchParams()
   const navigate = useNavigate()
-  const [mode, setMode] = useState<'search' | 'timeline'>(() => localStorage.getItem('eu-memories-mode') === 'timeline' ? 'timeline' : 'search')
+  const [mode, setMode] = useState<'search' | 'timeline'>(() => params.get('mode') === 'timeline' || localStorage.getItem('eu-memories-mode') === 'timeline' ? 'timeline' : 'search')
   const [query, setQuery] = useState('')
   const initialCollection = params.get('colecao') || ''
   const [filter, setFilter] = useState(params.get('origem') === 'chatgpt' ? 'chatgpt' : initialCollection === 'favorites' ? 'favorites' : initialCollection === 'chat' ? 'chatgpt' : 'all')
