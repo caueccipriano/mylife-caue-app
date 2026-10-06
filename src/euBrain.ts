@@ -4,16 +4,7 @@ import { isRecordVisibleForInsights } from './storage'
 import { derivePeople, deriveLivingGoals } from './adaptiveLife'
 import { deriveDecisionJournal, deriveWhatChanged, searchLife } from './lifeCommandCenter'
 import { deriveProjectHandoff, deriveWaiting } from './lifeOSIntelligence'
-
-export type BrainIntent =
-  | 'status'
-  | 'changed'
-  | 'handoff'
-  | 'decision'
-  | 'waiting'
-  | 'people'
-  | 'impact'
-  | 'search'
+import { brainConfidenceForSourceCount, brainIntentFor, type BrainIntent } from './euBrainRules'
 
 export type BrainAction = {
   label: string
@@ -43,25 +34,6 @@ function compact(value: string, max = 150) {
 
 function visible(records: StoredRecord[]) {
   return records.filter(isRecordVisibleForInsights)
-}
-
-function intentFor(question: string): BrainIntent {
-  const q = lower(question)
-
-  if (/o que mudou|mudou|novidade|desde ontem|essa semana|esta semana/.test(q)) return 'changed'
-  if (/onde paramos|onde parei|retomar|continuar|ultimo passo|último passo|proximo passo|próximo passo/.test(q)) return 'handoff'
-  if (/decidi|decisao|decisão|escolhi|escolha/.test(q)) return 'decision'
-  if (/quem estou esperando|quem falta|aguardando|esperando resposta|retorno de quem/.test(q)) return 'waiting'
-  if (/quem e|quem é|pessoa|pessoas|com quem|sobre .*?\b(?:ele|ela)\b/.test(q)) return 'people'
-  if (/o que afeta|o que isso afeta|impacta|impacto|se eu fizer|se eu mudar|se eu comprar|se eu aceitar/.test(q)) return 'impact'
-  if (/como estou|como ta|como está|o que preciso saber|agora|hoje/.test(q)) return 'status'
-  return 'search'
-}
-
-function sourceConfidence(count: number) {
-  if (count >= 3) return 'high' as const
-  if (count >= 1) return 'medium' as const
-  return 'low' as const
 }
 
 function routeForRecord(record: StoredRecord) {
@@ -94,7 +66,7 @@ function answerStatus(records: StoredRecord[], bridges: BridgeCard[]): BrainAnsw
     detail: bridgeBits.length
       ? bridgeBits.map((card) => card.title + ': ' + card.bridge?.summary).join(' · ')
       : 'A leitura usa apenas o que já existe no seu arquivo neste aparelho.',
-    confidence: sourceConfidence(sources.length),
+    confidence: brainConfidenceForSourceCount(sources.length),
     sources,
     actions: [
       { label: 'Abrir Central', route: '/sistema', icon: 'collections' },
@@ -208,7 +180,7 @@ function answerDecision(records: StoredRecord[], question: string): BrainAnswer 
       : latest.record.expectation
         ? 'Você esperava: “' + compact(latest.record.expectation, 120) + '”.'
         : latest.note,
-    confidence: sourceConfidence(sources.length),
+    confidence: brainConfidenceForSourceCount(sources.length),
     sources,
     actions: [
       { label: 'Comparar opções', route: '/decidir', icon: 'compass' },
@@ -303,7 +275,7 @@ function answerImpact(records: StoredRecord[], question: string, bridges: Bridge
       : sources.length
         ? 'Veja as evidências abaixo antes de tratar isso como consequência real.'
         : 'O EU não transforma hipótese em fato.',
-    confidence: sourceConfidence(sources.length),
+    confidence: brainConfidenceForSourceCount(sources.length),
     sources,
     actions: [
       { label: 'Decida comigo', route: '/decidir', icon: 'compass' },
@@ -335,7 +307,7 @@ function answerSearch(records: StoredRecord[], question: string): BrainAnswer {
       ? 'Encontrei isto: “' + compact(matches[0].text, 180) + '”'
       : 'Encontrei ' + matches.length + ' registros relacionados. O mais relevante é: “' + compact(matches[0].text, 160) + '”',
     detail: 'A resposta foi montada só com informações já existentes no seu EU.',
-    confidence: sourceConfidence(matches.length),
+    confidence: brainConfidenceForSourceCount(matches.length),
     sources: matches.slice(0, 6),
     actions: [{ label: 'Abrir principal', route: routeForRecord(matches[0]), icon: 'arrow-up-right' }],
     trace: ['busca local', 'relevância', 'fontes verificáveis'],
@@ -343,7 +315,7 @@ function answerSearch(records: StoredRecord[], question: string): BrainAnswer {
 }
 
 export function askEuBrain(records: StoredRecord[], bridges: BridgeCard[], question: string): BrainAnswer {
-  const intent = intentFor(question)
+  const intent = brainIntentFor(question)
   if (intent === 'status') return answerStatus(records, bridges)
   if (intent === 'changed') return answerChanged(records)
   if (intent === 'handoff') return answerHandoff(records, question)
