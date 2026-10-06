@@ -300,7 +300,19 @@ export async function restoreRecord(id: string) {
 export async function permanentlyDeleteRecord(id: string) {
   const db = await openDatabase()
   const tx = db.transaction(RECORDS_STORE, 'readwrite')
-  tx.objectStore(RECORDS_STORE).delete(id)
+  const store = tx.objectStore(RECORDS_STORE)
+  const records = await requestToPromise(store.getAll()) as StoredRecord[]
+
+  for (const record of records) {
+    if (record.id === id || !(record.relatedIds ?? []).includes(id)) continue
+    store.put({
+      ...record,
+      relatedIds: (record.relatedIds ?? []).filter((relatedId) => relatedId !== id),
+      updatedAt: new Date().toISOString(),
+    })
+  }
+
+  store.delete(id)
 
   await new Promise<void>((resolve, reject) => {
     tx.oncomplete = () => resolve()
