@@ -163,187 +163,199 @@ export default function LifeCommandCenter({ records, inboxCount }: { records: St
         </div>
       )}
 
-      <div className="eu-context-switcher" aria-label="Contexto atual">
-        {([
-          ['all', 'Tudo'],
-          ['work', 'Trabalho'],
-          ['personal', 'Pessoal'],
-          ['focus', 'Foco'],
-        ] as Array<[ContextFilter, string]>).map(([id, label]) => (
-          <button key={id} className={context === id ? 'active' : ''} onClick={() => setContext(id)}>{label}</button>
-        ))}
-      </div>
-
-      <section className="what-changed-card">
-        <div className="command-section-head">
-          <div><small>WHAT CHANGED?</small><h3>Desde a última semana</h3></div>
-          <span>{changes.length} mudanças</span>
-        </div>
-        <div className="what-changed-stream">
-          {changes.slice(0, 4).map((change) => (
-            <NavLink key={change.id} to={'/registro/' + change.record.id}>
-              <span className={'change-dot change-' + change.kind} />
-              <div><strong>{compact(change.record.text, 92)}</strong><small>{change.label} · {relativeDate(change.at)}</small></div>
-              <EuIcon name="arrow-up-right" />
-            </NavLink>
+      <details className="command-insights-drawer">
+        <summary>
+          <div>
+            <span className="command-insights-icon"><EuIcon name="sparkles" /></span>
+            <div><strong>Ver contexto e sinais</strong><small>mudanças, semana, loops, decisões e radar</small></div>
+          </div>
+          <span className="command-insights-count">${changes.length + openLoops.length + decisions.length} sinais</span>
+          <EuIcon name="arrow-right" />
+        </summary>
+        <div className="command-insights-body">
+        <div className="eu-context-switcher" aria-label="Contexto atual">
+          {([
+            ['all', 'Tudo'],
+            ['work', 'Trabalho'],
+            ['personal', 'Pessoal'],
+            ['focus', 'Foco'],
+          ] as Array<[ContextFilter, string]>).map(([id, label]) => (
+            <button key={id} className={context === id ? 'active' : ''} onClick={() => setContext(id)}>{label}</button>
           ))}
-          {!changes.length && <p className="command-soft-empty">Nada importante mudou por aqui nos últimos dias.</p>}
         </div>
-      </section>
-
-      <section className="time-lens-grid">
-        {evening && (
-          <article className="night-brief-card">
-            <div className="time-lens-title">
-              <span><EuIcon name="moon" /></span>
-              <div><small>BRIEF DA NOITE</small><strong>{night.headline}</strong></div>
-            </div>
-            <p>{night.note}</p>
-            <div className="time-lens-metrics">
-              <span><b>{night.captured}</b> entraram</span>
-              <span><b>{night.completed}</b> fecharam</span>
-              <span><b>{night.decisions}</b> decisões</span>
-            </div>
-          </article>
-        )}
-
-        <article className={'week-lens-card week-' + week.level}>
-          <div className="time-lens-title">
-            <span><EuIcon name="clock" /></span>
-            <div><small>SEMANA INTELIGENTE</small><strong>{week.headline}</strong></div>
+  
+        <section className="what-changed-card">
+          <div className="command-section-head">
+            <div><small>WHAT CHANGED?</small><h3>Desde a última semana</h3></div>
+            <span>{changes.length} mudanças</span>
           </div>
-          <div className="week-mini-chart" aria-label="Carga dos próximos sete dias">
-            {week.days.map((day) => (
-              <div key={day.date} title={day.total + ' itens'}>
-                <i style={{ height: Math.max(5, Math.min(32, 5 + day.action * 9 + day.waiting * 4)) }} />
-                <small>{day.label}</small>
+          <div className="what-changed-stream">
+            {changes.slice(0, 4).map((change) => (
+              <NavLink key={change.id} to={'/registro/' + change.record.id}>
+                <span className={'change-dot change-' + change.kind} />
+                <div><strong>{compact(change.record.text, 92)}</strong><small>{change.label} · {relativeDate(change.at)}</small></div>
+                <EuIcon name="arrow-up-right" />
+              </NavLink>
+            ))}
+            {!changes.length && <p className="command-soft-empty">Nada importante mudou por aqui nos últimos dias.</p>}
+          </div>
+        </section>
+  
+        <section className="time-lens-grid">
+          {evening && (
+            <article className="night-brief-card">
+              <div className="time-lens-title">
+                <span><EuIcon name="moon" /></span>
+                <div><small>BRIEF DA NOITE</small><strong>{night.headline}</strong></div>
               </div>
-            ))}
-          </div>
-          <p>{week.note}</p>
-        </article>
-      </section>
-
-      <div className="command-summary-grid">
-        <button className="command-summary-card loops" onClick={() => setExpanded(expanded === 'loops' ? null : 'loops')}>
-          <span><EuIcon name="inbox" /></span>
-          <small>OPEN LOOPS</small>
-          <strong>{openLoops.length}</strong>
-          <p>{openLoops.length ? 'histórias ainda sem desfecho' : 'nenhum loop aberto'}</p>
-        </button>
-        <button className="command-summary-card decisions" onClick={() => setExpanded(expanded === 'decisions' ? null : 'decisions')}>
-          <span><EuIcon name="check" /></span>
-          <small>DECISÕES</small>
-          <strong>{decisions.length}</strong>
-          <p>{decisions.filter((item) => item.state === 'review').length} prontas para aprender com o resultado</p>
-        </button>
-        <button className="command-summary-card radar" onClick={() => setExpanded(expanded === 'radar' ? null : 'radar')}>
-          <span><EuIcon name="sparkles" /></span>
-          <small>RADAR</small>
-          <strong>{opportunities.length + friction.length}</strong>
-          <p>oportunidades + pontos de fricção</p>
-        </button>
-      </div>
-
-      {expanded === 'loops' && (
-        <section className="command-detail-card">
-          <div className="command-section-head">
-            <div><small>OPEN LOOPS + COMMITMENTS</small><h3>O que ainda não terminou</h3></div>
-            <span>{openLoops.length}</span>
-          </div>
-          <div className="commitment-ledger">
-            <article>
-              <span className="ledger-mark mine"><EuIcon name="user" /></span>
-              <div><small>EU PROMETI / DEPENDE DE MIM</small><strong>{mine.length}</strong><p>{mine[0] ? compact(mine[0].record.text, 78) : 'Nenhum compromisso seu detectado agora.'}</p></div>
+              <p>{night.note}</p>
+              <div className="time-lens-metrics">
+                <span><b>{night.captured}</b> entraram</span>
+                <span><b>{night.completed}</b> fecharam</span>
+                <span><b>{night.decisions}</b> decisões</span>
+              </div>
             </article>
-            <article>
-              <span className="ledger-mark theirs"><EuIcon name="clock" /></span>
-              <div><small>PROMETERAM / DEPENDE DE OUTROS</small><strong>{theirs.length}</strong><p>{theirs[0] ? compact(theirs[0].record.text, 78) : 'Nada aguardando terceiros neste contexto.'}</p></div>
-            </article>
-          </div>
-          <div className="command-record-list">
-            {openLoops.slice(0, 6).map((record) => (
-              <NavLink key={record.id} to={'/registro/' + record.id}>
-                <Tag tone={isWaitingRecordSafe(record) ? 'lilac' : typeTone(record.type)}>{isWaitingRecordSafe(record) ? 'AGUARDANDO' : record.type}</Tag>
-                <div><strong>{compact(record.text, 92)}</strong><small>{record.nextMove || record.area}</small></div>
-                <EuIcon name="arrow-up-right" />
-              </NavLink>
-            ))}
-          </div>
-          {quiet.length > 0 && (
-            <div className="no-action-needed">
-              <span><EuIcon name="check" /></span>
-              <div><strong>{quiet.length} coisas acompanhadas. Nenhuma ação necessária agora.</strong><p>O EU mantém isso vivo sem colocar na sua cabeça.</p></div>
-            </div>
           )}
-        </section>
-      )}
-
-      {expanded === 'decisions' && (
-        <section className="command-detail-card">
-          <div className="command-section-head">
-            <div><small>DECISION JOURNAL</small><h3>Decisões que ensinam</h3></div>
-            <span>{counterfactuals.length} para revisar</span>
-          </div>
-          <div className="decision-journal">
-            {decisions.slice(0, 6).map((entry) => (
-              <NavLink key={entry.id} to={'/registro/' + entry.record.id} className={'decision-entry state-' + entry.state}>
-                <span><EuIcon name={entry.state === 'learned' ? 'check' : entry.state === 'review' ? 'refresh' : 'clock'} /></span>
-                <div><strong>{compact(entry.record.text, 94)}</strong><p>{entry.note}</p>{entry.record.expectation && <small>esperava: {compact(entry.record.expectation, 82)}</small>}</div>
-                <EuIcon name="arrow-up-right" />
-              </NavLink>
-            ))}
-            {!decisions.length && <p className="command-soft-empty">Quando você registrar decisões, o EU acompanha expectativa e resultado para aprender com elas.</p>}
-          </div>
-        </section>
-      )}
-
-      {expanded === 'radar' && (
-        <section className="command-detail-card">
-          <div className="command-section-head">
-            <div><small>RADAR PESSOAL</small><h3>Oportunidade, fricção e “não agora”</h3></div>
-            <span>{opportunities.length + friction.length + someday.length}</span>
-          </div>
-          <div className="radar-columns">
-            <article className="radar-column opportunities">
-              <div className="radar-column-title"><span><EuIcon name="sparkles" /></span><div><small>OPORTUNIDADES</small><strong>{opportunities.length}</strong></div></div>
-              {opportunities.slice(0, 3).map((item) => <NavLink key={item.id} to={'/registro/' + item.record.id}>{compact(item.record.text, 76)}<EuIcon name="arrow-up-right" /></NavLink>)}
-              {!opportunities.length && <p>Nenhuma oportunidade relevante detectada agora.</p>}
-            </article>
-            <article className="radar-column friction">
-              <div className="radar-column-title"><span><EuIcon name="refresh" /></span><div><small>FRICTION MAP</small><strong>{friction.length}</strong></div></div>
-              {friction.slice(0, 3).map((item) => <NavLink key={item.id} to={'/registro/' + item.record.id}><b>{compact(item.record.text, 66)}</b><small>{item.reason}</small></NavLink>)}
-              {!friction.length && <p>Nenhum atrito repetitivo relevante detectado.</p>}
-            </article>
-          </div>
-          {someday.length > 0 && (
-            <div className="someday-strip">
-              <span><EuIcon name="moon" /></span>
-              <div><small>SOMEDAY / NOT NOW</small><strong>{someday.length} ideias podem dormir sem ocupar atenção.</strong><p>{compact(someday[0].text, 100)}</p></div>
+  
+          <article className={'week-lens-card week-' + week.level}>
+            <div className="time-lens-title">
+              <span><EuIcon name="clock" /></span>
+              <div><small>SEMANA INTELIGENTE</small><strong>{week.headline}</strong></div>
             </div>
-          )}
+            <div className="week-mini-chart" aria-label="Carga dos próximos sete dias">
+              {week.days.map((day) => (
+                <div key={day.date} title={day.total + ' itens'}>
+                  <i style={{ height: Math.max(5, Math.min(32, 5 + day.action * 9 + day.waiting * 4)) }} />
+                  <small>{day.label}</small>
+                </div>
+              ))}
+            </div>
+            <p>{week.note}</p>
+          </article>
         </section>
-      )}
-
-      <section className="state-of-me-card">
-        <div className="state-orbit" aria-hidden="true"><i /><i /><b>EU</b></div>
-        <div className="state-copy">
-          <small>STATE OF ME</small>
-          <h3>{state.headline}</h3>
-          <p>{state.detail}</p>
-          <div className="state-area-chips">{state.topAreas.map((item) => <span key={item.area}>{item.area} · {item.count}</span>)}</div>
+  
+        <div className="command-summary-grid">
+          <button className="command-summary-card loops" onClick={() => setExpanded(expanded === 'loops' ? null : 'loops')}>
+            <span><EuIcon name="inbox" /></span>
+            <small>OPEN LOOPS</small>
+            <strong>{openLoops.length}</strong>
+            <p>{openLoops.length ? 'histórias ainda sem desfecho' : 'nenhum loop aberto'}</p>
+          </button>
+          <button className="command-summary-card decisions" onClick={() => setExpanded(expanded === 'decisions' ? null : 'decisions')}>
+            <span><EuIcon name="check" /></span>
+            <small>DECISÕES</small>
+            <strong>{decisions.length}</strong>
+            <p>{decisions.filter((item) => item.state === 'review').length} prontas para aprender com o resultado</p>
+          </button>
+          <button className="command-summary-card radar" onClick={() => setExpanded(expanded === 'radar' ? null : 'radar')}>
+            <span><EuIcon name="sparkles" /></span>
+            <small>RADAR</small>
+            <strong>{opportunities.length + friction.length}</strong>
+            <p>oportunidades + pontos de fricção</p>
+          </button>
         </div>
-      </section>
-
-      <details className="personal-api-card">
-        <summary><span><EuIcon name="collections" /></span><div><strong>Personal API</strong><small>uma única resposta estruturada para o resto do EU</small></div><EuIcon name="arrow-right" /></summary>
-        <div className="personal-api-grid">
-          <span><b>{snapshot.counts.openLoops}</b> loops</span>
-          <span><b>{snapshot.counts.waiting}</b> aguardando</span>
-          <span><b>{snapshot.counts.projects}</b> projetos</span>
-          <span><b>{snapshot.counts.goals}</b> objetivos</span>
+  
+        {expanded === 'loops' && (
+          <section className="command-detail-card">
+            <div className="command-section-head">
+              <div><small>OPEN LOOPS + COMMITMENTS</small><h3>O que ainda não terminou</h3></div>
+              <span>{openLoops.length}</span>
+            </div>
+            <div className="commitment-ledger">
+              <article>
+                <span className="ledger-mark mine"><EuIcon name="user" /></span>
+                <div><small>EU PROMETI / DEPENDE DE MIM</small><strong>{mine.length}</strong><p>{mine[0] ? compact(mine[0].record.text, 78) : 'Nenhum compromisso seu detectado agora.'}</p></div>
+              </article>
+              <article>
+                <span className="ledger-mark theirs"><EuIcon name="clock" /></span>
+                <div><small>PROMETERAM / DEPENDE DE OUTROS</small><strong>{theirs.length}</strong><p>{theirs[0] ? compact(theirs[0].record.text, 78) : 'Nada aguardando terceiros neste contexto.'}</p></div>
+              </article>
+            </div>
+            <div className="command-record-list">
+              {openLoops.slice(0, 6).map((record) => (
+                <NavLink key={record.id} to={'/registro/' + record.id}>
+                  <Tag tone={isWaitingRecordSafe(record) ? 'lilac' : typeTone(record.type)}>{isWaitingRecordSafe(record) ? 'AGUARDANDO' : record.type}</Tag>
+                  <div><strong>{compact(record.text, 92)}</strong><small>{record.nextMove || record.area}</small></div>
+                  <EuIcon name="arrow-up-right" />
+                </NavLink>
+              ))}
+            </div>
+            {quiet.length > 0 && (
+              <div className="no-action-needed">
+                <span><EuIcon name="check" /></span>
+                <div><strong>{quiet.length} coisas acompanhadas. Nenhuma ação necessária agora.</strong><p>O EU mantém isso vivo sem colocar na sua cabeça.</p></div>
+              </div>
+            )}
+          </section>
+        )}
+  
+        {expanded === 'decisions' && (
+          <section className="command-detail-card">
+            <div className="command-section-head">
+              <div><small>DECISION JOURNAL</small><h3>Decisões que ensinam</h3></div>
+              <span>{counterfactuals.length} para revisar</span>
+            </div>
+            <div className="decision-journal">
+              {decisions.slice(0, 6).map((entry) => (
+                <NavLink key={entry.id} to={'/registro/' + entry.record.id} className={'decision-entry state-' + entry.state}>
+                  <span><EuIcon name={entry.state === 'learned' ? 'check' : entry.state === 'review' ? 'refresh' : 'clock'} /></span>
+                  <div><strong>{compact(entry.record.text, 94)}</strong><p>{entry.note}</p>{entry.record.expectation && <small>esperava: {compact(entry.record.expectation, 82)}</small>}</div>
+                  <EuIcon name="arrow-up-right" />
+                </NavLink>
+              ))}
+              {!decisions.length && <p className="command-soft-empty">Quando você registrar decisões, o EU acompanha expectativa e resultado para aprender com elas.</p>}
+            </div>
+          </section>
+        )}
+  
+        {expanded === 'radar' && (
+          <section className="command-detail-card">
+            <div className="command-section-head">
+              <div><small>RADAR PESSOAL</small><h3>Oportunidade, fricção e “não agora”</h3></div>
+              <span>{opportunities.length + friction.length + someday.length}</span>
+            </div>
+            <div className="radar-columns">
+              <article className="radar-column opportunities">
+                <div className="radar-column-title"><span><EuIcon name="sparkles" /></span><div><small>OPORTUNIDADES</small><strong>{opportunities.length}</strong></div></div>
+                {opportunities.slice(0, 3).map((item) => <NavLink key={item.id} to={'/registro/' + item.record.id}>{compact(item.record.text, 76)}<EuIcon name="arrow-up-right" /></NavLink>)}
+                {!opportunities.length && <p>Nenhuma oportunidade relevante detectada agora.</p>}
+              </article>
+              <article className="radar-column friction">
+                <div className="radar-column-title"><span><EuIcon name="refresh" /></span><div><small>FRICTION MAP</small><strong>{friction.length}</strong></div></div>
+                {friction.slice(0, 3).map((item) => <NavLink key={item.id} to={'/registro/' + item.record.id}><b>{compact(item.record.text, 66)}</b><small>{item.reason}</small></NavLink>)}
+                {!friction.length && <p>Nenhum atrito repetitivo relevante detectado.</p>}
+              </article>
+            </div>
+            {someday.length > 0 && (
+              <div className="someday-strip">
+                <span><EuIcon name="moon" /></span>
+                <div><small>SOMEDAY / NOT NOW</small><strong>{someday.length} ideias podem dormir sem ocupar atenção.</strong><p>{compact(someday[0].text, 100)}</p></div>
+              </div>
+            )}
+          </section>
+        )}
+  
+        <section className="state-of-me-card">
+          <div className="state-orbit" aria-hidden="true"><i /><i /><b>EU</b></div>
+          <div className="state-copy">
+            <small>STATE OF ME</small>
+            <h3>{state.headline}</h3>
+            <p>{state.detail}</p>
+            <div className="state-area-chips">{state.topAreas.map((item) => <span key={item.area}>{item.area} · {item.count}</span>)}</div>
+          </div>
+        </section>
+  
+        <details className="personal-api-card">
+          <summary><span><EuIcon name="collections" /></span><div><strong>Personal API</strong><small>uma única resposta estruturada para o resto do EU</small></div><EuIcon name="arrow-right" /></summary>
+          <div className="personal-api-grid">
+            <span><b>{snapshot.counts.openLoops}</b> loops</span>
+            <span><b>{snapshot.counts.waiting}</b> aguardando</span>
+            <span><b>{snapshot.counts.projects}</b> projetos</span>
+            <span><b>{snapshot.counts.goals}</b> objetivos</span>
+          </div>
+          <p>Essa camada evita que cada tela invente uma versão diferente da sua vida. Todos os módulos podem consultar o mesmo snapshot.</p>
+        </details>
         </div>
-        <p>Essa camada evita que cada tela invente uma versão diferente da sua vida. Todos os módulos podem consultar o mesmo snapshot.</p>
       </details>
     </section>
   )
