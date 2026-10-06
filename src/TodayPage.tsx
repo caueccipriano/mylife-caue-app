@@ -3,7 +3,7 @@ import { NavLink, useNavigate, useSearchParams } from 'react-router-dom'
 import { activeFollowUps, isRecordVisibleForInsights, nextFollowUpDate, saveMoodCheckin, updateRecord, type MoodValue, type StoredRecord } from './storage'
 import { derivePatterns, lifePulse, reviewCandidates } from './intelligence'
 import { deriveEcosystemInsights } from './ecosystem'
-import { buildDailyBrief } from './lifeModel'
+import { askEuBrain } from './euBrain'
 import { dueCapsules, getSimpleDayMode, setSimpleDayMode } from './v3Life'
 import { deriveContinue, deriveWeeklyDigest, getFocusAreas } from './uxFeatures'
 import { useBridges, useChatInbox, useMood, useMoodHistory, usePersonalProfile, useRecords } from './appState'
@@ -89,7 +89,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   const pulse = useMemo(() => lifePulse(records), [records])
   const continueRecords = useMemo(() => deriveContinue(records, focusAreas), [records, focusAreas])
   const ecosystemInsights = useMemo(() => deriveEcosystemInsights(records, bridges), [records, bridges])
-  const dailyBrief = useMemo(() => buildDailyBrief(records, bridges), [records, bridges])
+  const euKnows = useMemo(() => askEuBrain(records, bridges, 'O que eu preciso saber agora?'), [records, bridges])
   const readyCapsules = useMemo(() => dueCapsules(records), [records])
   const waiting = useMemo(() => deriveWaiting(records), [records])
   const carryOver = useMemo(() => deriveCarryOver(records), [records])
@@ -200,17 +200,24 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
         <span className={'mood-skip' + (mood ? ' saved' : '')} aria-live="polite">{mood ? <><EuIcon name="check" />salvo para hoje</> : 'opcional, sempre'}</span>
       </section>
 
-      <section className="daily-brief-card">
-        <div className="daily-brief-top">
-          <Tag tone="cobalt">RESUMO DO DIA</Tag>
+      <section className={'eu-knows-card confidence-' + euKnows.confidence}>
+        <div className="eu-knows-top">
+          <div>
+            <Tag tone="cobalt">EU SABE</Tag>
+            <span className="eu-knows-live"><i />contexto vivo</span>
+          </div>
           <button className="simple-day-toggle" aria-pressed={simpleDay} onClick={() => { const next = !simpleDay; setSimpleDayMode(next); setSimpleDay(next) }}><EuIcon name={simpleDay ? 'sparkles' : 'moon'} />{simpleDay ? 'mostrar tudo' : 'hoje sem administrar'}</button>
         </div>
-        <h2>{dailyBrief.title}</h2>
-        <p>{dailyBrief.text}</p>
-        <div className="daily-brief-chips">
-          {dailyBrief.dueCount > 0 && <span>{dailyBrief.dueCount} pedindo continuidade</span>}
-          {dailyBrief.staleCount > 0 && <span>{dailyBrief.staleCount} parados</span>}
-          {dailyBrief.topArea && <span>{dailyBrief.topArea} em destaque</span>}
+        <h2>{euKnows.answer}</h2>
+        {euKnows.detail && <p>{euKnows.detail}</p>}
+        <div className="eu-knows-foot">
+          <div className="eu-knows-chips">
+            {ambientAttention.overdueCount > 0 && <span>{ambientAttention.overdueCount} pedindo ação</span>}
+            {waiting.length > 0 && <span>{waiting.length} aguardando</span>}
+            {euKnows.sources.length > 0 && <span>{euKnows.sources.length} evidência{euKnows.sources.length === 1 ? '' : 's'}</span>}
+            {!ambientAttention.overdueCount && !waiting.length && <span>nenhuma urgência real</span>}
+          </div>
+          <NavLink to="/pergunte?q=O%20que%20eu%20preciso%20saber%20agora%3F">entender <EuIcon name="arrow-up-right" /></NavLink>
         </div>
       </section>
 

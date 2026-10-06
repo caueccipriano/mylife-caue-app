@@ -192,11 +192,11 @@ export function BrandTop() {
     <header className="v2-topbar">
       <NavLink to="/" className="v2-brand" aria-label="EU, Hoje" onClick={() => haptic('light')}>
         <strong>EU</strong>
-        <span>arquivo vivo</span>
+        <span>central pessoal</span>
       </NavLink>
       <div className="v2-top-actions">
         <span className="v2-top-note">mais vida, menos ruído</span>
-        <NavLink to="/pergunte" className="top-icon-action top-ask-action" aria-label="Pergunte ao EU" onClick={() => haptic('light')}>
+        <NavLink to="/buscar" className="top-icon-action top-ask-action" aria-label="Buscar no EU" onClick={() => haptic('light')}>
           <EuIcon name="search" />
         </NavLink>
         <NavLink to="/inbox" className="top-icon-action" aria-label={inboxCount ? inboxCount + ' entradas aguardando revisão' : 'Caixa do Chat'} onClick={() => haptic('light')}>

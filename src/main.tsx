@@ -15,8 +15,9 @@ import './v25-adaptive.css'
 import './v26-brain.css'
 import './v27-stability.css'
 import './v30-unified.css'
+import './v31-alive.css'
 
-const APP_VERSION = 'eu-v30-unified-core'
+const APP_VERSION = 'eu-v31-alive'
 
 async function refreshPwaShell() {
   if (!('serviceWorker' in navigator)) return
