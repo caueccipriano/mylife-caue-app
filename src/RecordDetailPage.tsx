@@ -73,16 +73,23 @@ export default function RecordDetailPage() {
 
   const relatedSuggestions = useMemo(() => {
     if (!record || !isRecordVisibleForInsights(record)) return []
-    const recordTags = new Set(record.tags ?? suggestTags(record.text, record.area, record.type))
+    const normalizedArea = record.area.trim().toLowerCase()
+    const recordTags = new Set(
+      (record.tags ?? suggestTags(record.text, record.area, record.type))
+        .map((tag) => tag.trim().toLowerCase())
+        .filter((tag) => tag && tag !== normalizedArea),
+    )
     return records
       .filter((item) => item.id !== record.id && isRecordVisibleForInsights(item))
       .map((item) => {
-        const itemTags = item.tags ?? suggestTags(item.text, item.area, item.type)
+        const itemTags = (item.tags ?? suggestTags(item.text, item.area, item.type))
+          .map((tag) => tag.trim().toLowerCase())
+          .filter((tag) => tag && tag !== item.area.trim().toLowerCase())
         const overlap = itemTags.filter((tag) => recordTags.has(tag)).length
-        const score = overlap * 3 + (item.area === record.area ? 2 : 0) + (item.type === record.type ? 1 : 0)
-        return { item, score }
+        const score = overlap * 4 + (item.type === record.type && overlap > 0 ? 1 : 0)
+        return { item, overlap, score }
       })
-      .filter(({ score, item }) => score > 1 && !(record.relatedIds ?? []).includes(item.id))
+      .filter(({ overlap, item }) => overlap > 0 && !(record.relatedIds ?? []).includes(item.id))
       .sort((a, b) => b.score - a.score)
       .slice(0, 4)
       .map(({ item }) => item)
@@ -378,7 +385,7 @@ export default function RecordDetailPage() {
             <button onClick={beginEdit}><EuIcon name="edit" />Editar tudo</button>
             <button className={currentRecord.favorite ? 'active' : ''} onClick={() => void toggleFlag('favorite')}><EuIcon name="heart" />{currentRecord.favorite ? 'Favorito' : 'Favoritar'}</button>
             <button className={currentRecord.pinned ? 'active' : ''} onClick={() => void toggleFlag('pinned')}><EuIcon name="pin" />{currentRecord.pinned ? 'Fixado' : 'Fixar'}</button>
-            <button className={currentRecord.private ? 'active' : ''} onClick={() => void toggleFlag('private')}><EuIcon name="lock" />{currentRecord.private ? 'Privado' : 'Privado'}</button>
+            <button className={currentRecord.private ? 'active' : ''} onClick={() => void toggleFlag('private')}><EuIcon name="lock" />{currentRecord.private ? 'Privado' : 'Tornar privado'}</button>
           </div>
 
           <section className="record-quick-organize">
