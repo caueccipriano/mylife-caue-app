@@ -54,10 +54,11 @@ export default function AskEuPage() {
   const [query, setQuery] = useState(initialQuery)
   const [asked, setAsked] = useState(initialQuery)
   const [history, setHistory] = useState<ConversationTurn[]>(readHistory)
+  const [contextAnchor, setContextAnchor] = useState(() => readHistory().at(-1)?.question || '')
 
   const previousTurn = history[history.length - 1]
-  const contextualQuestion = asked && previousTurn && needsPreviousContext(asked) && previousTurn.question !== asked
-    ? previousTurn.question + '. Continuação: ' + asked
+  const contextualQuestion = asked && contextAnchor && needsPreviousContext(asked) && contextAnchor !== asked
+    ? contextAnchor + '. Continuação: ' + asked
     : asked
 
   const answer = useMemo<BrainAnswer | null>(
@@ -87,11 +88,13 @@ export default function AskEuPage() {
     event.preventDefault()
     if (!query.trim()) return
     const value = query.trim()
+    setContextAnchor(history.at(-1)?.question || '')
     setAsked(value)
     setParams({ q: value }, { replace: true })
   }
 
   function ask(value: string) {
+    setContextAnchor(history.at(-1)?.question || '')
     setQuery(value)
     setAsked(value)
     setParams({ q: value }, { replace: true })
@@ -105,6 +108,7 @@ export default function AskEuPage() {
 
   function clearConversation() {
     setHistory([])
+    setContextAnchor('')
     localStorage.removeItem(HISTORY_KEY)
   }
 
@@ -198,8 +202,8 @@ export default function AskEuPage() {
             <button onClick={reset} aria-label="Nova pergunta"><EuIcon name="plus" /></button>
           </header>
 
-          {previousTurn && needsPreviousContext(asked) && previousTurn.question !== asked && (
-            <div className="brain-context-chip-v32"><EuIcon name="link" />continuando de “{previousTurn.question}”</div>
+          {contextAnchor && needsPreviousContext(asked) && contextAnchor !== asked && (
+            <div className="brain-context-chip-v32"><EuIcon name="link" />continuando de “{contextAnchor}”</div>
           )}
 
           <div className="brain-answer-copy">
