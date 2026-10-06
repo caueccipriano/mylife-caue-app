@@ -62,16 +62,16 @@ export default function LifePage() {
   }
 
   return (
-    <div className="v2-page life-page">
+    <div className={'v2-page life-page life-view-' + view}>
       <BrandTop />
 
-      <header className="v2-hero">
+      <header className="v2-hero life-fluid-hero">
         <Tag tone="green">VIDA</Tag>
         <h1>O que está<br />tomando forma.</h1>
         <p>Áreas, planos, desejos e coisas que você começou — agora separados para você achar tudo mais rápido.</p>
       </header>
 
-      <nav className="life-view-tabs" aria-label="Visões da Vida" role="tablist">
+      <nav className="life-view-tabs fluid-tabs" aria-label="Visões da Vida" role="tablist">
         <button role="tab" aria-selected={view === 'overview'} className={view === 'overview' ? 'active' : ''} onClick={() => selectView('overview')}><EuIcon name="sparkles" />Visão geral</button>
         <button role="tab" aria-selected={view === 'areas'} className={view === 'areas' ? 'active' : ''} onClick={() => selectView('areas')}><EuIcon name="collections" />Áreas</button>
         <button role="tab" aria-selected={view === 'moving'} className={view === 'moving' ? 'active' : ''} onClick={() => selectView('moving')}><EuIcon name="bolt" />Em movimento</button>
@@ -167,12 +167,12 @@ export default function LifePage() {
         <section className="life-block life-view-section">
           <SectionTitle eyebrow="ÁREAS" title="Cada parte da sua vida, no lugar dela" />
           <div className="area-grid-v4">
-            {areas.map((area) => {
+            {areas.map((area, index) => {
               const recent = recentByArea(area.name)
               const count = visibleRecords.filter((record) => record.area === area.name).length
               return (
                 <NavLink
-                  className={'life-area area-semantic-' + area.id + (focusAreas.length && !focusAreas.includes(area.name) ? ' focus-dimmed' : '')}
+                  className={'life-area area-semantic-' + area.id + ' area-card-' + index + (focusAreas.length && !focusAreas.includes(area.name) ? ' focus-dimmed' : '')}
                   key={area.id}
                   to={'/vida/area/' + area.id}
                 >

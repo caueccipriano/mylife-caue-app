@@ -52,9 +52,9 @@ A interface usa a identidade consolidada do EU/FÔLEGO: superfícies claras, azu
 
 ## Estado atual
 
-**EU v32 — Personal Assistant**
+**EU v34 — Fluid UI**
 
-A Home passa a combinar **EU sabe**, **EU percebeu**, resumo semanal e **Seu fio**. O Brain mantém contexto recente para perguntas de continuação, o modo Foco reduz a interface ao que realmente pede ação e a timeline pode ser aberta diretamente. A camada visual v32 redesenha hierarquia, tipografia, profundidade, dock, Home, Brain, Memórias, Dinheiro e Central com prioridade para legibilidade e uso no iPhone.
+A interface agora reage à rolagem: a dock e o botão Registrar se compactam durante a leitura, liberando conteúdo sem perder acesso às ações. Vida ganhou hero menor, navegação contextual leve, cards assimétricos e textos controlados; cada grande área também colore sutilmente o ambiente da central. A v34 incorpora as correções de layout observadas no iPhone, priorizando respiro, safe-area e ausência de sobreposição.
 
 ---
 

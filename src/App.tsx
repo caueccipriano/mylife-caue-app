@@ -66,8 +66,47 @@ function RouteScrollMemory() {
 function AppShell({ onRegister }: { onRegister: () => void }) {
   const location = useLocation()
   const showRegister = ['/', '/sistema', '/vida', '/descobertas', '/memorias'].includes(location.pathname)
+  const [chromeCompact, setChromeCompact] = useState(false)
+
+  useEffect(() => {
+    let lastY = window.scrollY
+    let ticking = false
+
+    const update = () => {
+      const nextY = window.scrollY
+      const goingDown = nextY > lastY + 4
+      const goingUp = nextY < lastY - 4
+
+      if (nextY < 72) setChromeCompact(false)
+      else if (goingDown) setChromeCompact(true)
+      else if (goingUp) setChromeCompact(false)
+
+      lastY = nextY
+      ticking = false
+    }
+
+    const onScroll = () => {
+      if (ticking) return
+      ticking = true
+      window.requestAnimationFrame(update)
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [location.pathname])
+
+  const routeTone = location.pathname.startsWith('/dinheiro')
+    ? 'money'
+    : location.pathname.startsWith('/memorias')
+      ? 'memory'
+      : location.pathname.startsWith('/vida')
+        ? 'life'
+        : location.pathname.startsWith('/sistema')
+          ? 'central'
+          : 'today'
+
   return (
-    <div className="eu-v2-shell">
+    <div className={'eu-v2-shell route-' + routeTone + (chromeCompact ? ' chrome-compact' : '')}>
       <RouteScrollMemory />
       <main className="eu-v2-main">
         <div className="route-stage" key={location.pathname}>
@@ -120,13 +159,13 @@ function AppShell({ onRegister }: { onRegister: () => void }) {
       </main>
 
       {showRegister && (
-        <button className="global-register-pill compact" onClick={() => { haptic('light'); onRegister() }} aria-label="Registrar no EU">
+        <button className={'global-register-pill compact smart-fab' + (chromeCompact ? ' minimized' : '')} onClick={() => { haptic('light'); onRegister() }} aria-label="Registrar no EU">
           <span><EuIcon name="plus" /></span>
-          registrar
+          <b>registrar</b>
         </button>
       )}
 
-      <nav className="v2-bottom-nav" aria-label="Navegação principal">
+      <nav className={'v2-bottom-nav' + (chromeCompact ? ' dock-compact' : '')} aria-label="Navegação principal">
         {nav.map((item) => (
           <NavLink key={item.path} to={item.path} end={item.path === '/'} onClick={() => haptic('light')}>
             <span className="bottom-nav-icon-wrap"><EuIcon name={item.icon} className="bottom-nav-icon" /></span>
