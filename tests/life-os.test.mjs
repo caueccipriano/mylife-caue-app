@@ -1,7 +1,7 @@
 import test from 'node:test'
 import assert from 'node:assert/strict'
 import { deriveDriftSignalsCore, isWaitingText, routeLifeOSContext } from '../src/lifeOSRules.ts'
-import { brainConfidenceForSourceCount, brainIntentFor } from '../src/euBrainRules.ts'
+import { brainConfidenceForSourceCount, brainDecisionQueryIsGeneric, brainIntentFor, brainPeopleQueryIsGeneric } from '../src/euBrainRules.ts'
 
 const now = new Date()
 const daysAgo = (days) => new Date(now.getTime() - days * 86400000).toISOString()
@@ -63,4 +63,17 @@ test('EU Brain confidence stays conservative without evidence', () => {
   assert.equal(brainConfidenceForSourceCount(0), 'low')
   assert.equal(brainConfidenceForSourceCount(1), 'medium')
   assert.equal(brainConfidenceForSourceCount(3), 'high')
+})
+
+
+test('EU Brain only falls back globally for genuinely generic decision questions', () => {
+  assert.equal(brainDecisionQueryIsGeneric('O que eu já decidi?'), true)
+  assert.equal(brainDecisionQueryIsGeneric('O que eu já decidi sobre SQL?'), false)
+  assert.equal(brainDecisionQueryIsGeneric('Decisões recentes'), true)
+})
+
+test('EU Brain does not substitute another person for a specific missing name', () => {
+  assert.equal(brainPeopleQueryIsGeneric('Pessoas'), true)
+  assert.equal(brainPeopleQueryIsGeneric('Quem aparece mais?'), true)
+  assert.equal(brainPeopleQueryIsGeneric('Quem é João?'), false)
 })
