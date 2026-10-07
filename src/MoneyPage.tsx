@@ -127,8 +127,9 @@ export default function MoneyPage() {
   ]
 
   const budgetProgress = bundle?.snapshot.monthlyBudgetPlanned
-    ? Math.min(100, Math.round((bundle.snapshot.monthlyBudgetUsed / bundle.snapshot.monthlyBudgetPlanned) * 100))
+    ? Math.round((bundle.snapshot.monthlyBudgetUsed / bundle.snapshot.monthlyBudgetPlanned) * 100)
     : 0
+  const budgetBarProgress = Math.min(100, Math.max(0, budgetProgress))
 
   return (
     <div className="v2-page money-page">
@@ -188,7 +189,7 @@ export default function MoneyPage() {
                   <div><small>ORÇAMENTO VARIÁVEL</small><h2>Seu mês em uma linha</h2></div>
                   <strong>{budgetProgress}%</strong>
                 </div>
-                <div className="money-budget-bar"><span style={{ width: budgetProgress + '%' }} /></div>
+                <div className="money-budget-bar"><span className={budgetProgress > 100 ? 'is-over' : ''} style={{ width: budgetBarProgress + '%' }} /></div>
                 <p>{money(bundle.snapshot.monthlyBudgetUsed)} usados de {money(bundle.snapshot.monthlyBudgetPlanned)}.</p>
               </section>
 

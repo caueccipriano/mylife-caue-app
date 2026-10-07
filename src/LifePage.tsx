@@ -174,7 +174,7 @@ export default function LifePage() {
 
       {view === 'moving' && (
         <>
-          <section className="life-moving-summary-v40">
+          <section className={'life-moving-summary-v40' + (active.length + wishes.length + someday.length === 0 ? ' is-empty' : '')}>
             <div><small>EM MOVIMENTO</small><h2>O que ainda tem história aberta.</h2><p>Projetos, metas, desejos e próximos passos ficam juntos aqui — sem transformar tudo em urgência.</p></div>
             <div>
               <span><strong>{active.length}</strong> vivos</span>

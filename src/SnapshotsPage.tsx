@@ -32,6 +32,7 @@ export default function SnapshotsPage() {
 
   const current = snapshots[0]
   const previous = snapshots[1]
+  const historySnapshots = snapshots.slice(1)
   const recordDelta = current && previous ? current.recordCount - previous.recordCount : 0
   const activeDelta = current && previous ? current.activeCount - previous.activeCount : 0
   const completedDelta = current && previous ? current.completedCount - previous.completedCount : 0
@@ -48,7 +49,7 @@ export default function SnapshotsPage() {
       </header>
 
       {current && (
-        <section className={'phase-now phase-tone-' + (current.phaseTone || 'cobalt')}>
+        <section className={'phase-now phase-tone-' + (current.phaseTone || 'cobalt') + (!previous ? ' first-snapshot' : '')}>
           <Tag tone="coral">AGORA</Tag>
           <h2>{current.label}</h2>
           <p>{comparison(current, previous)}</p>
@@ -78,25 +79,32 @@ export default function SnapshotsPage() {
       )}
 
       <section className="phase-history">
-        <SectionTitle eyebrow="ARQUIVO DE FASES" title="Seus meses" />
-        <div className="phase-grid">
-          {snapshots.map((snapshot, index) => (
-            <article key={snapshot.month} className={(index === 0 ? 'current ' : '') + 'phase-tone-' + (snapshot.phaseTone || 'cobalt')}>
-              <div className="phase-card-top"><span className="phase-card-icon"><EuIcon name={index === 0 ? 'sparkles' : 'clock'} /></span><Tag tone={index === 0 ? 'coral' : 'muted'}>{index === 0 ? 'ATUAL' : 'RETRATO'}</Tag><span>{snapshot.month}</span></div>
-              <h3>{snapshot.label}</h3>
-              <p>{snapshot.activeHighlights[0] || snapshot.preferenceHighlights[0] || 'Uma fase mais silenciosa no arquivo.'}</p>
-              <div className="phase-mini">
-                <span>{snapshot.activeCount} em movimento</span>
-                <span>{snapshot.completedCount} concluídos</span>
-              </div>
-              {snapshot.bridgeSummaries.length > 0 && (
-                <div className="phase-apps">
-                  {snapshot.bridgeSummaries.map((item) => <small key={item.app}>{item.title}: {item.summary}</small>)}
+        <SectionTitle eyebrow="ARQUIVO DE FASES" title="Seus meses anteriores" />
+        {historySnapshots.length ? (
+          <div className="phase-grid">
+            {historySnapshots.map((snapshot) => (
+              <article key={snapshot.month} className={'phase-tone-' + (snapshot.phaseTone || 'cobalt')}>
+                <div className="phase-card-top"><span className="phase-card-icon"><EuIcon name="clock" /></span><Tag tone="muted">RETRATO</Tag><span>{snapshot.month}</span></div>
+                <h3>{snapshot.label}</h3>
+                <p>{snapshot.activeHighlights[0] || snapshot.preferenceHighlights[0] || 'Uma fase mais silenciosa no arquivo.'}</p>
+                <div className="phase-mini">
+                  <span>{snapshot.activeCount} em movimento</span>
+                  <span>{snapshot.completedCount} concluídos</span>
                 </div>
-              )}
-            </article>
-          ))}
-        </div>
+                {snapshot.bridgeSummaries.length > 0 && (
+                  <div className="phase-apps">
+                    {snapshot.bridgeSummaries.map((item) => <small key={item.app}>{item.title}: {item.summary}</small>)}
+                  </div>
+                )}
+              </article>
+            ))}
+          </div>
+        ) : (
+          <div className="phase-first-empty">
+            <span><EuIcon name="clock" /></span>
+            <div><strong>Este é o primeiro retrato.</strong><p>Quando o próximo mês chegar, o EU vai conseguir mostrar o que realmente mudou.</p></div>
+          </div>
+        )}
       </section>
     </div>
   )

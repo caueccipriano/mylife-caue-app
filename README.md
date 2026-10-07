@@ -52,9 +52,9 @@ A interface usa a identidade consolidada do EU/FÔLEGO: superfícies claras, azu
 
 ## Estado atual
 
-**EU v42 — One EU**
+**EU v43 — iPhone Polish**
 
-Hoje, Central, Vida, Memórias e Brain passam a consumir a mesma camada de conexões entre registros e bridges. Compras podem conversar com Fôlego, estudo com carreira, decisões com movimentos posteriores e metas financeiras podem aparecer como contexto fora do Dinheiro sem duplicar sua fonte de verdade. O bridge do Fôlego agora publica também quantidade de metas ativas, meta principal e progresso resumido.
+Passada de QA baseada em screenshots reais do iPhone/Safari: a dock principal aparece apenas nas cinco rotas principais e se oculta durante leitura; páginas internas de Vida deixam de ter navegação flutuante cobrindo conteúdo. Central ficou mais compacta, cards do Mapa ficaram menores, estado vazio de Em movimento foi reduzido, Astrologia deixou de repetir o clima do dia, Fases não duplica o mês atual, Carreira ganhou escala mobile e o orçamento variável agora mostra o percentual real acima de 100%.
 
 ---
 

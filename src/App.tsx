@@ -66,6 +66,7 @@ function RouteScrollMemory() {
 function AppShell({ onRegister }: { onRegister: () => void }) {
   const location = useLocation()
   const showRegister = ['/', '/sistema', '/vida', '/descobertas', '/memorias'].includes(location.pathname)
+  const showPrimaryDock = ['/', '/dinheiro', '/sistema', '/vida', '/memorias'].includes(location.pathname)
   const [chromeCompact, setChromeCompact] = useState(false)
   const fabMinimized = chromeCompact || location.pathname !== '/'
 
@@ -107,7 +108,7 @@ function AppShell({ onRegister }: { onRegister: () => void }) {
           : 'today'
 
   return (
-    <div className={'eu-v2-shell route-' + routeTone + (chromeCompact ? ' chrome-compact' : '')}>
+    <div className={'eu-v2-shell route-' + routeTone + (chromeCompact ? ' chrome-compact' : '') + (!showPrimaryDock ? ' no-primary-dock' : '')}>
       <RouteScrollMemory />
       <main className="eu-v2-main">
         <div className="route-stage" key={location.pathname}>
@@ -166,14 +167,16 @@ function AppShell({ onRegister }: { onRegister: () => void }) {
         </button>
       )}
 
-      <nav className={'v2-bottom-nav' + (chromeCompact ? ' dock-compact' : '')} aria-label="Navegação principal">
-        {nav.map((item) => (
-          <NavLink key={item.path} to={item.path} end={item.path === '/'} onClick={() => haptic('light')}>
-            <span className="bottom-nav-icon-wrap"><EuIcon name={item.icon} className="bottom-nav-icon" /></span>
-            <small>{item.label}</small>
-          </NavLink>
-        ))}
-      </nav>
+      {showPrimaryDock && (
+        <nav className={'v2-bottom-nav' + (chromeCompact ? ' dock-compact' : '')} aria-label="Navegação principal">
+          {nav.map((item) => (
+            <NavLink key={item.path} to={item.path} end={item.path === '/'} onClick={() => haptic('light')}>
+              <span className="bottom-nav-icon-wrap"><EuIcon name={item.icon} className="bottom-nav-icon" /></span>
+              <small>{item.label}</small>
+            </NavLink>
+          ))}
+        </nav>
+      )}
     </div>
   )
 }
