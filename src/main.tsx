@@ -28,8 +28,9 @@ import './v41-memory-first.css'
 import './v42-one-eu.css'
 import './v43-iphone-polish.css'
 import './v54-living-system.css'
+import './v55-iphone-qa.css'
 
-const APP_VERSION = 'eu-v54-living-system'
+const APP_VERSION = 'eu-v55-iphone-qa'
 
 let pwaReloading = false
 
