@@ -22,8 +22,9 @@ import './v35-system.css'
 import './v36-finance.css'
 import './v37-money-management.css'
 import './v38-planning-future.css'
+import './v39-simplify-core.css'
 
-const APP_VERSION = 'eu-v38-planning-future'
+const APP_VERSION = 'eu-v39-simplify-core'
 
 async function refreshPwaShell() {
   if (!('serviceWorker' in navigator)) return

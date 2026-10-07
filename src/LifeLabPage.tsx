@@ -17,6 +17,7 @@ import {
 } from './v3Life'
 import { localSyncVaultMeta, syncVaultSecurityNote, writeLocalSyncVault } from './syncVault'
 import { BrandTop, EuIcon, SectionTitle, Tag, formatShortDate, typeTone } from './v2Ui'
+import { autonomyRules, buildLifeOSSources } from './lifeOSSources'
 
 function formatFullDate(value: string) {
   return new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'long', year: 'numeric' }).format(new Date(value))
@@ -45,6 +46,7 @@ export default function LifeLabPage() {
   const capsules = useMemo(() => futureCapsules(records), [records])
   const readyCapsules = useMemo(() => dueCapsules(records), [records])
   const phaseTone = useMemo(() => derivePhaseTheme(records), [records])
+  const systemSources = useMemo(() => buildLifeOSSources(bridges), [bridges])
 
   const [capsuleText, setCapsuleText] = useState('')
   const [capsuleDate, setCapsuleDate] = useState('')
@@ -380,6 +382,40 @@ export default function LifeLabPage() {
           </select>
           <textarea value={phaseNote} onChange={(event) => setPhaseNote(event.target.value)} rows={3} placeholder="O que ficou comigo dessa fase?" />
           <button onClick={() => void closePhase()} disabled={!phaseChoice}>Fechar fase</button>
+        </div>
+      </section>
+
+      <section className="lab-block lab-connections-only lab-system-inspector-v39">
+        <SectionTitle eyebrow="COMO O EU FUNCIONA" title="Fontes, autonomia e ritmo" />
+        <p className="life-os-intro">Esses detalhes saíram da Central para ela continuar operacional. Aqui você ainda pode entender de onde cada verdade vem e o que o EU pode fazer sozinho.</p>
+
+        <div className="source-map-grid">
+          {systemSources.map((source) => (
+            <article key={source.id} className={'source-map-card source-' + source.state}>
+              <div className="source-map-top">
+                <strong>{source.title}</strong>
+                <span>{source.state === 'connected' ? 'conectado' : source.state === 'stale' ? 'antigo' : source.state === 'planned' ? 'planejado' : 'local'}</span>
+              </div>
+              <p>{source.role}</p>
+              <small>fonte de verdade: {source.truthFor}</small>
+              <em>{source.note}</em>
+            </article>
+          ))}
+        </div>
+
+        <div className="autonomy-grid">
+          {autonomyRules.map((rule) => (
+            <article key={rule.id} className={'autonomy-' + rule.id}>
+              <span><EuIcon name={rule.id === 'auto' ? 'bolt' : rule.id === 'prepare' ? 'edit' : 'shield'} /></span>
+              <div><strong>{rule.title}</strong><p>{rule.detail}</p></div>
+            </article>
+          ))}
+        </div>
+
+        <div className="system-rituals">
+          <article><span><EuIcon name="sun" /></span><div><strong>Diário · 2 minutos</strong><p>Humor, contexto e uma decisão sobre o que merece energia hoje.</p></div></article>
+          <article><span><EuIcon name="refresh" /></span><div><strong>Semanal · 10 minutos</strong><p>Limpar entradas, revisar coisas paradas e escolher poucas frentes de foco.</p></div></article>
+          <article><span><EuIcon name="compass" /></span><div><strong>Mensal · 20 minutos</strong><p>Olhar objetivos, projetos e áreas para ajustar direção sem transformar a vida em checklist.</p></div></article>
         </div>
       </section>
 

@@ -122,6 +122,17 @@ export default function LifeOSPage() {
 
   const nextMoves = useMemo(() => active.filter((record) => record.nextMove?.trim()), [active])
 
+  const needsYou = useMemo(() => {
+    const seen = new Set<string>()
+    return [...actionDue, ...review, ...carryOver]
+      .filter((record) => {
+        if (isWaitingRecord(record) || seen.has(record.id)) return false
+        seen.add(record.id)
+        return true
+      })
+      .slice(0, 8)
+  }, [actionDue, review, carryOver])
+
   const areaStates = useMemo(() => areas.map((area) => {
     const areaRecords = visible.filter((record) => record.area.toLowerCase() === area.name.toLowerCase())
     const areaActive = areaRecords.filter((record) => record.status === 'active')
@@ -134,7 +145,7 @@ export default function LifeOSPage() {
   }), [visible, actionDue])
 
   const tabs: Array<{ id: SystemView; label: string; count?: number }> = [
-    { id: 'panel', label: 'Painel' },
+    { id: 'panel', label: 'Agora' },
     { id: 'goals', label: 'Objetivos', count: goals.length },
     { id: 'projects', label: 'Projetos', count: projects.length },
     { id: 'agenda', label: 'Agenda', count: agenda.length },
@@ -205,24 +216,31 @@ export default function LifeOSPage() {
             </button>
           </section>
 
-          <section className="life-os-block">
-            <SectionTitle eyebrow="AGORA" title="O sistema está vendo isso" action={<button className="quiet-link" onClick={() => selectView('agenda')}>abrir agenda <EuIcon name="arrow-up-right" /></button>} />
-            <div className="system-now-card">
-              <div className="system-now-lead">
-                <Tag tone={actionDue.length ? 'coral' : carryOver.length ? 'cobalt' : 'green'}>{actionDue.length ? 'PEDE ATENÇÃO' : carryOver.length ? 'CONTINUIDADE' : 'EM DIA'}</Tag>
-                <h2>{actionDue[0] ? compactText(actionDue[0].text, 105) : carryOver[0] ? compactText(carryOver[0].text, 105) : goals[0] ? compactText(goals[0].text, 105) : 'Seu sistema está respirando bem.'}</h2>
-                <p>{actionDue[0] ? nextAction(actionDue[0]) : carryOver[0] ? 'Isso veio de antes e continua vivo — sem precisar recadastrar.' : goals[0] ? nextAction(goals[0]) : 'Continue registrando decisões, movimentos e coisas que quer construir.'}</p>
-                {(actionDue[0] || carryOver[0]) && <NavLink to={'/registro/' + (actionDue[0] || carryOver[0]).id}>abrir <EuIcon name="arrow-up-right" /></NavLink>}
-              </div>
-              <div className="system-now-stats">
-                <div><strong>{completedThisWeek}</strong><span>concluídos em 7 dias</span></div>
-                <div><strong>{carryOver.length}</strong><span>continuidades automáticas</span></div>
-                <div><strong>{stale.length}</strong><span>parados há 3+ semanas</span></div>
-              </div>
+          <section className="life-os-block central-needs-v39">
+            <SectionTitle eyebrow="PRECISA DE VOCÊ" title={needsYou.length ? needsYou.length + (needsYou.length === 1 ? ' coisa pede decisão' : ' coisas pedem decisão') : 'Nada urgente agora'} action={<button className="quiet-link" onClick={() => selectView('agenda')}>abrir agenda <EuIcon name="arrow-up-right" /></button>} />
+            <div className="central-needs-list-v39">
+              {needsYou.slice(0, 5).map((record, index) => (
+                <NavLink key={record.id} to={'/registro/' + record.id} className={index === 0 ? 'is-lead' : ''}>
+                  <span className="central-needs-index-v39">{String(index + 1).padStart(2, '0')}</span>
+                  <div>
+                    <small>{actionDue.some((item) => item.id === record.id) ? 'AGORA' : review.some((item) => item.id === record.id) ? 'REVISAR' : 'CONTINUAR'} · {record.area}</small>
+                    <strong>{compactText(record.text, 96)}</strong>
+                    <p>{nextAction(record)}</p>
+                  </div>
+                  <EuIcon name="arrow-up-right" />
+                </NavLink>
+              ))}
+              {!needsYou.length && <div className="soft-empty wide"><span><EuIcon name="check" /></span><p>O que depende de você está em dia. A Central continua acompanhando o resto.</p></div>}
+            </div>
+            <div className="central-week-strip-v39">
+              <span><strong>{completedThisWeek}</strong> fechadas em 7 dias</span>
+              <span><strong>{waiting.length}</strong> aguardando</span>
+              <span><strong>{inbox.length}</strong> entradas</span>
+              <span><strong>{stale.length}</strong> paradas há 3+ semanas</span>
             </div>
           </section>
 
-          <section className="life-os-block">
+          <section className="life-os-block central-deep-context-v39">
             <SectionTitle eyebrow="SCOUTS" title="O que merece ser notado" />
             <p className="life-os-intro">O EU separa sinal de ruído. Alto pede ação; médio entra no radar; baixo fica registrado sem interromper você.</p>
             <div className="life-os-scouts">
@@ -242,7 +260,7 @@ export default function LifeOSPage() {
           </section>
 
           {crossSignals.length > 0 && (
-            <section className="life-os-block">
+            <section className="life-os-block central-deep-context-v39">
               <SectionTitle eyebrow="INTELIGÊNCIA CRUZADA" title="Conexões que mudam o contexto" />
               <div className="system-cross-signals">
                 {crossSignals.map((signal) => (
@@ -255,7 +273,7 @@ export default function LifeOSPage() {
             </section>
           )}
 
-          <section className="life-os-block context-bootstrap-block">
+          <section className="life-os-block context-bootstrap-block central-deep-context-v39">
             <SectionTitle eyebrow="CONTEXTO" title="O EU já acorda orientado" />
             <div className="context-bootstrap-card">
               <div><strong>{bootstrap.activeProjects.length}</strong><span>projetos ativos</span></div>
@@ -281,7 +299,7 @@ export default function LifeOSPage() {
             </div>
           </section>
 
-          <section className="life-os-block">
+          <section className="life-os-block central-deep-context-v39">
             <SectionTitle eyebrow="MAPA DA VIDA" title="Onde há movimento" action={<NavLink className="quiet-link" to="/vida">ver Vida <EuIcon name="arrow-up-right" /></NavLink>} />
             <div className="life-area-orbit-grid">
               {areaStates.map((area) => (
@@ -315,12 +333,12 @@ export default function LifeOSPage() {
               <div className="weekly-reset-actions">
                 <NavLink to="/inbox"><EuIcon name="inbox" />limpar entrada</NavLink>
                 <NavLink to="/revisao"><EuIcon name="refresh" />revisar pendências</NavLink>
-                <NavLink to="/?view=signals"><EuIcon name="sparkles" />ver sinais</NavLink>
+                <NavLink to="/vida/lab"><EuIcon name="sparkles" />ver sinais no Lab</NavLink>
               </div>
             </article>
           </section>
 
-          <section className="life-os-block">
+          <section className="life-os-block central-deep-context-v39">
             <SectionTitle eyebrow="SOURCE MAP" title="De onde cada verdade vem" />
             <p className="life-os-intro">O EU pode raciocinar em cima de várias fontes, mas não deve substituir a fonte original quando precisão importa.</p>
             <div className="source-map-grid">
@@ -338,7 +356,7 @@ export default function LifeOSPage() {
             </div>
           </section>
 
-          <section className="life-os-block">
+          <section className="life-os-block central-deep-context-v39">
             <SectionTitle eyebrow="AUTONOMIA" title="O que o EU pode fazer sozinho" />
             <div className="autonomy-grid">
               {autonomyRules.map((rule) => (
@@ -350,7 +368,7 @@ export default function LifeOSPage() {
             </div>
           </section>
 
-          <section className="life-os-block">
+          <section className="life-os-block central-deep-context-v39">
             <SectionTitle eyebrow="RITMO" title="Rituais do seu sistema" />
             <div className="system-rituals">
               <article>
