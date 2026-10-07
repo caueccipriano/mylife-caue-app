@@ -240,7 +240,7 @@ export default function LifeOSPage() {
             </div>
           </section>
 
-          <section className="life-os-block">
+          <section className="life-os-block central-deep-context-v39">
             <SectionTitle eyebrow="SCOUTS" title="O que merece ser notado" />
             <p className="life-os-intro">O EU separa sinal de ruído. Alto pede ação; médio entra no radar; baixo fica registrado sem interromper você.</p>
             <div className="life-os-scouts">
@@ -260,7 +260,7 @@ export default function LifeOSPage() {
           </section>
 
           {crossSignals.length > 0 && (
-            <section className="life-os-block">
+            <section className="life-os-block central-deep-context-v39">
               <SectionTitle eyebrow="INTELIGÊNCIA CRUZADA" title="Conexões que mudam o contexto" />
               <div className="system-cross-signals">
                 {crossSignals.map((signal) => (
@@ -273,7 +273,7 @@ export default function LifeOSPage() {
             </section>
           )}
 
-          <section className="life-os-block context-bootstrap-block">
+          <section className="life-os-block context-bootstrap-block central-deep-context-v39">
             <SectionTitle eyebrow="CONTEXTO" title="O EU já acorda orientado" />
             <div className="context-bootstrap-card">
               <div><strong>{bootstrap.activeProjects.length}</strong><span>projetos ativos</span></div>
@@ -299,7 +299,7 @@ export default function LifeOSPage() {
             </div>
           </section>
 
-          <section className="life-os-block">
+          <section className="life-os-block central-deep-context-v39">
             <SectionTitle eyebrow="MAPA DA VIDA" title="Onde há movimento" action={<NavLink className="quiet-link" to="/vida">ver Vida <EuIcon name="arrow-up-right" /></NavLink>} />
             <div className="life-area-orbit-grid">
               {areaStates.map((area) => (
@@ -338,7 +338,7 @@ export default function LifeOSPage() {
             </article>
           </section>
 
-          <section className="life-os-block">
+          <section className="life-os-block central-deep-context-v39">
             <SectionTitle eyebrow="SOURCE MAP" title="De onde cada verdade vem" />
             <p className="life-os-intro">O EU pode raciocinar em cima de várias fontes, mas não deve substituir a fonte original quando precisão importa.</p>
             <div className="source-map-grid">
@@ -356,7 +356,7 @@ export default function LifeOSPage() {
             </div>
           </section>
 
-          <section className="life-os-block">
+          <section className="life-os-block central-deep-context-v39">
             <SectionTitle eyebrow="AUTONOMIA" title="O que o EU pode fazer sozinho" />
             <div className="autonomy-grid">
               {autonomyRules.map((rule) => (
@@ -368,7 +368,7 @@ export default function LifeOSPage() {
             </div>
           </section>
 
-          <section className="life-os-block">
+          <section className="life-os-block central-deep-context-v39">
             <SectionTitle eyebrow="RITMO" title="Rituais do seu sistema" />
             <div className="system-rituals">
               <article>
