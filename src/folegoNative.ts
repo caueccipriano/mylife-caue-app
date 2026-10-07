@@ -95,6 +95,7 @@ export type MoneyDebt = {
   payment_account_id?: string | null
   started_on?: string | null
   notes?: string | null
+  first_due?: string | null
 }
 
 export type MoneyRecurring = {
@@ -347,6 +348,7 @@ export async function loadMoneyBundle(): Promise<MoneyBundle> {
     transactionsResult,
     cardsResult,
     debtsResult,
+    debtInstallmentsResult,
     recurringResult,
     goalsResult,
     contributionsResult,
@@ -360,14 +362,21 @@ export async function loadMoneyBundle(): Promise<MoneyBundle> {
     moneySupabase.from('financial_events').select('id,event_type,description,amount,occurred_at,status,category_id').eq('space_id', space.id).order('occurred_at', { ascending: false }).limit(30),
     moneySupabase.from('credit_cards').select('id,name,issuer,brand,last_four,closing_day,due_day,issuer_limit,personal_limit,payment_account_id').eq('space_id', space.id).eq('active', true).order('name'),
     moneySupabase.from('debts').select('id,name,creditor,original_amount,opening_balance,total_installments,interest_rate_monthly,status,debt_type,payment_account_id,started_on,notes').eq('space_id', space.id).is('archived_at', null).order('created_at', { ascending: false }),
+    moneySupabase.from('debt_installments').select('debt_id,due_date,installment_number').eq('space_id', space.id).order('installment_number'),
     moneySupabase.from('recurring_items').select('id,name,item_type,amount,frequency,day_of_month,active,certainty,category_id,account_id,card_id,starts_on,ends_on').eq('space_id', space.id).order('name'),
     moneySupabase.from('savings_goals').select('id,name,target,target_date,icon_key,status').eq('space_id', space.id).neq('status', 'archived').order('created_at'),
     moneySupabase.from('goal_contributions').select('goal_id,amount').eq('space_id', space.id),
   ])
 
   if (snapshotResult.error) throw snapshotResult.error
-  for (const result of [accountsResult, transactionsResult, cardsResult, debtsResult, recurringResult, goalsResult, contributionsResult]) {
+  for (const result of [accountsResult, transactionsResult, cardsResult, debtsResult, debtInstallmentsResult, recurringResult, goalsResult, contributionsResult]) {
     if (result.error) throw result.error
+  }
+
+  const firstDueByDebt = new Map<string, string>()
+  for (const row of (debtInstallmentsResult.data || []) as Array<Record<string, unknown>>) {
+    const debtId = String(row.debt_id)
+    if (!firstDueByDebt.has(debtId) && row.due_date) firstDueByDebt.set(debtId, String(row.due_date))
   }
 
   const contributed = new Map<string, number>()
@@ -399,6 +408,7 @@ export async function loadMoneyBundle(): Promise<MoneyBundle> {
       original_amount: numberValue(row.original_amount),
       opening_balance: numberValue(row.opening_balance),
       interest_rate_monthly: row.interest_rate_monthly == null ? null : numberValue(row.interest_rate_monthly),
+      first_due: firstDueByDebt.get(String(row.id)) || null,
     })) as MoneyDebt[],
     recurring: (recurringResult.data || []).map((row) => ({ ...row, amount: numberValue(row.amount) })) as MoneyRecurring[],
     goals: ((goalsResult.data || []) as Array<Record<string, unknown>>).map((row) => ({
