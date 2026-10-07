@@ -52,9 +52,9 @@ A interface usa a identidade consolidada do EU/FÔLEGO: superfícies claras, azu
 
 ## Estado atual
 
-**EU v34 — Fluid UI**
+**EU v35 — Design System Reset**
 
-A interface agora reage à rolagem: a dock e o botão Registrar se compactam durante a leitura, liberando conteúdo sem perder acesso às ações. Vida ganhou hero menor, navegação contextual leve, cards assimétricos e textos controlados; cada grande área também colore sutilmente o ambiente da central. A v34 incorpora as correções de layout observadas no iPhone, priorizando respiro, safe-area e ausência de sobreposição.
+A identidade visual foi unificada entre Hoje, Dinheiro, Central, Vida e Memórias: tipografia sans consistente, paleta menos saturada, contraste revisado, headers compactos, dock clara em todos os períodos do dia e FAB reduzido fora da Home. Dinheiro ganhou hero legível, Central abandonou o rótulo Life OS, Memórias recebeu hero e CTA reorganizados, e os estados de humor passaram a usar tons suaves em vez de neon.
 
 ---
 
