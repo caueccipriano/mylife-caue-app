@@ -24,8 +24,9 @@ import './v37-money-management.css'
 import './v38-planning-future.css'
 import './v39-simplify-core.css'
 import './v40-life-map.css'
+import './v41-memory-first.css'
 
-const APP_VERSION = 'eu-v40-life-map'
+const APP_VERSION = 'eu-v41-memory-first'
 
 async function refreshPwaShell() {
   if (!('serviceWorker' in navigator)) return
