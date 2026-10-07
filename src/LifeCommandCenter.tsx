@@ -49,7 +49,7 @@ function contextRecords(records: StoredRecord[], filter: ContextFilter) {
   return records
 }
 
-export default function LifeCommandCenter({ records, inboxCount }: { records: StoredRecord[]; inboxCount: number }) {
+export default function LifeCommandCenter({ records, inboxCount, compact = false }: { records: StoredRecord[]; inboxCount: number; compact?: boolean }) {
   const navigate = useNavigate()
   const [command, setCommand] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
@@ -106,7 +106,7 @@ export default function LifeCommandCenter({ records, inboxCount }: { records: St
 
   return (
     <section className="eu-command-center now-only" aria-label="EU Command Center">
-      <div className={'eu-now-answer attention-' + attention.level}>
+      {!compact && <div className={'eu-now-answer attention-' + attention.level}>
         <div className="eu-now-answer-top">
           <div>
             <Tag tone="cobalt">EU, AGORA</Tag>
@@ -121,7 +121,7 @@ export default function LifeCommandCenter({ records, inboxCount }: { records: St
           <span><b>{attention.waitingCount}</b> estão acompanhadas</span>
           <span><b>{attention.activeAreas}</b> áreas em movimento</span>
         </div>
-      </div>
+      </div>}
 
       <div className="eu-command-shell">
         <div className="eu-command-label">
@@ -162,7 +162,7 @@ export default function LifeCommandCenter({ records, inboxCount }: { records: St
         </div>
       )}
 
-      <details className="command-insights-drawer">
+      {!compact && <details className="command-insights-drawer">
         <summary>
           <div>
             <span className="command-insights-icon"><EuIcon name="sparkles" /></span>
@@ -355,7 +355,7 @@ export default function LifeCommandCenter({ records, inboxCount }: { records: St
           <p>Essa camada evita que cada tela invente uma versão diferente da sua vida. Todos os módulos podem consultar o mesmo snapshot.</p>
         </details>
         </div>
-      </details>
+      </details>}
     </section>
   )
 }
