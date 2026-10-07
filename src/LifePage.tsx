@@ -175,14 +175,18 @@ export default function LifePage() {
 
       {view === 'moving' && (
         <>
-          <section className={'life-moving-summary-v40' + (active.length + wishes.length + someday.length === 0 ? ' is-empty' : '')}>
-            <div><small>EM MOVIMENTO</small><h2>O que ainda tem história aberta.</h2><p>Projetos, metas, desejos e próximos passos ficam juntos aqui — sem transformar tudo em urgência.</p></div>
-            <div>
-              <span><strong>{active.length}</strong> vivos</span>
-              <span><strong>{wishes.length}</strong> desejos</span>
-              <span><strong>{someday.length}</strong> depois</span>
-            </div>
-          </section>
+          {active.length + wishes.length + someday.length === 0 ? (
+            <SmartEmptyState quiet icon="sparkles" title="Nada está pedindo movimento agora." detail="Projetos, desejos e próximos passos aparecem aqui quando houver uma história realmente aberta." />
+          ) : (
+            <section className="life-moving-summary-v40">
+              <div><small>EM MOVIMENTO</small><h2>O que ainda tem história aberta.</h2><p>Projetos, metas, desejos e próximos passos ficam juntos aqui — sem transformar tudo em urgência.</p></div>
+              <div>
+                <span><strong>{active.length}</strong> vivos</span>
+                <span><strong>{wishes.length}</strong> desejos</span>
+                <span><strong>{someday.length}</strong> depois</span>
+              </div>
+            </section>
+          )}
 
           <OneEuConnections items={oneEuConnections} limit={2} compact title="O que também mexe em outra área." />
 
