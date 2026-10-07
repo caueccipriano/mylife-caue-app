@@ -52,9 +52,9 @@ A interface usa a identidade consolidada do EU/FÔLEGO: superfícies claras, azu
 
 ## Estado atual
 
-**EU v43 — iPhone Polish**
+**EU v44 — Fresh Update**
 
-Passada de QA baseada em screenshots reais do iPhone/Safari: a dock principal aparece apenas nas cinco rotas principais e se oculta durante leitura; páginas internas de Vida deixam de ter navegação flutuante cobrindo conteúdo. Central ficou mais compacta, cards do Mapa ficaram menores, estado vazio de Em movimento foi reduzido, Astrologia deixou de repetir o clima do dia, Fases não duplica o mês atual, Carreira ganhou escala mobile e o orçamento variável agora mostra o percentual real acima de 100%.
+Corrige atualização do PWA no iPhone/Safari. O app continua usando `autoUpdate`, mas agora recarrega automaticamente quando um novo service worker assume o controle e volta a checar por build nova ao retornar do background, voltar online ou reaparecer via `pageshow`. O `start_url` antigo com `?v=eu-v20-central` foi removido para evitar inicialização presa em uma versão histórica.
 
 ---
 
