@@ -301,7 +301,7 @@ export default function LifeOSPage() {
                   <EuIcon name="arrow-up-right" />
                 </NavLink>
               ))}
-              {!waiting.length && <SmartEmptyState quiet icon="check" title="Nada esperando terceiros." detail="Quando uma resposta ou dependência externa aparecer, ela fica aqui sem ocupar sua fila de ação." />}}
+              {!waiting.length && <SmartEmptyState quiet icon="check" title="Nada esperando terceiros." detail="Quando uma resposta ou dependência externa aparecer, ela fica aqui sem ocupar sua fila de ação." />}
             </div>
           </section>
 
@@ -430,7 +430,7 @@ export default function LifeOSPage() {
                 )}
               </NavLink>
             ))}
-            {!livingGoals.length && <SmartEmptyState icon="compass" title="Você ainda não formalizou um objetivo." detail="Não precisa inventar um. Quando surgir uma direção real, registre como Objetivo ou Meta." actionLabel="registrar uma direção" actionTo="/capturar" />}}
+            {!livingGoals.length && <SmartEmptyState icon="compass" title="Você ainda não formalizou um objetivo." detail="Não precisa inventar um. Quando surgir uma direção real, registre como Objetivo ou Meta." actionLabel="registrar uma direção" actionTo="/capturar" />}
           </div>
         </section>
       )}
@@ -458,7 +458,7 @@ export default function LifeOSPage() {
                 </NavLink>
               )
             })}
-            {!projects.length && <SmartEmptyState icon="bolt" title="Nenhum projeto precisa existir só para preencher a tela." detail="Quando algo ganhar começo, movimento e fim, transforme em Projeto." actionLabel="registrar algo em construção" actionTo="/capturar" />}}
+            {!projects.length && <SmartEmptyState icon="bolt" title="Nenhum projeto precisa existir só para preencher a tela." detail="Quando algo ganhar começo, movimento e fim, transforme em Projeto." actionLabel="registrar algo em construção" actionTo="/capturar" />}
           </div>
         </section>
       )}
@@ -480,7 +480,7 @@ export default function LifeOSPage() {
                 <EuIcon name="arrow-up-right" />
               </NavLink>
             ))}
-            {!agenda.length && <SmartEmptyState quiet icon="clock" title="Nada marcado no tempo." detail="Retornos e cápsulas aparecem aqui somente quando houver algo que realmente precise voltar." />}}
+            {!agenda.length && <SmartEmptyState quiet icon="clock" title="Nada marcado no tempo." detail="Retornos e cápsulas aparecem aqui somente quando houver algo que realmente precise voltar." />}
           </div>
         </section>
       )}
