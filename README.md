@@ -52,9 +52,9 @@ A interface usa a identidade consolidada do EU/FÔLEGO: superfícies claras, azu
 
 ## Estado atual
 
-**EU v36 — Fôlego Parity**
+**EU v37 — Money Management**
 
-Dinheiro deixa de ser apenas consultivo: Planejamento agora cria e edita limites por categoria, e a Carteira passa a configurar recebimento recorrente, conta, reserva, cartão e conta fixa usando os mesmos RPCs já utilizados pelo Fôlego independente. O registro rápido, histórico, cartões, dívidas, recorrências, metas e snapshot continuam usando a mesma fonte de verdade financeira.
+A Carteira passa a ser gerenciável: contas e cartões podem ser editados/arquivados, recorrências podem ser editadas e pausadas, metas podem ser criadas/editadas/concluídas/arquivadas com aportes, e dívidas podem ser criadas/editadas/quitadas/arquivadas. As ações usam os RPCs existentes e as policies RLS do projeto Fôlego; aportes permanecem somente positivos porque o backend não permite remoção.
 
 ---
 
