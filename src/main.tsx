@@ -29,8 +29,9 @@ import './v42-one-eu.css'
 import './v43-iphone-polish.css'
 import './v54-living-system.css'
 import './v55-iphone-qa.css'
+import './v55-actions.css'
 
-const APP_VERSION = 'eu-v55-iphone-qa'
+const APP_VERSION = 'eu-v55-actions'
 
 let pwaReloading = false
 
