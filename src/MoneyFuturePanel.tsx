@@ -27,7 +27,7 @@ function dateLabel(value?: string | null) {
 }
 
 function parseMoney(value: string) {
-  const normalized = value.trim().replace(/./g, '').replace(',', '.')
+  const normalized = value.trim().replace(/[.]/g, '').replace(',', '.')
   const parsed = Number(normalized)
   return Number.isFinite(parsed) ? parsed : 0
 }
@@ -144,7 +144,7 @@ export default function MoneyFuturePanel({
                 : spendResult.verdict === 'caution'
                   ? 'Cabe no futuro, mas aperta seu Fôlego atual.'
                   : 'Essa compra leva sua projeção para o negativo.'}</strong>
-              <p>Pior saldo depois da compra: {money(spendResult.minimumBalance)} · saldo final: {money(spendResult.endingBalance)}.</p>
+              <p>Pior saldo: {money(spendResult.baseMinimum)} → {money(spendResult.minimumBalance)} · saldo final: {money(spendResult.endingBalance)}.</p>
             </div>
           </div>
         )}
