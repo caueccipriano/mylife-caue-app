@@ -68,7 +68,6 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   const { bridges } = useBridges()
   const moneyBridge = bridges.find((card) => card.id === 'folego')
   const oneEuConnections = useMemo(() => deriveOneEuConnections(records, bridges), [records, bridges])
-  const dailyRhythm = useMemo(() => deriveDailyRhythm(records, bridges, mood, ambientNow), [records, bridges, mood, ambientNow])
   const inbox = useChatInbox()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -82,6 +81,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   })
   const [focusAreas, setFocusAreasState] = useState(() => getFocusAreas())
   const [ambientNow, setAmbientNow] = useState(() => new Date())
+  const dailyRhythm = useMemo(() => deriveDailyRhythm(records, bridges, mood, ambientNow), [records, bridges, mood, ambientNow])
 
   const followups = useMemo(() => activeFollowUps(records), [records])
   const due = followups.filter((item) => item.due && isRecordVisibleForInsights(item.record)).map((item) => item.record)
