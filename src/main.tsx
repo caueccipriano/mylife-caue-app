@@ -26,8 +26,9 @@ import './v39-simplify-core.css'
 import './v40-life-map.css'
 import './v41-memory-first.css'
 import './v42-one-eu.css'
+import './v43-iphone-polish.css'
 
-const APP_VERSION = 'eu-v42-one-eu'
+const APP_VERSION = 'eu-v43-iphone-polish'
 
 async function refreshPwaShell() {
   if (!('serviceWorker' in navigator)) return
