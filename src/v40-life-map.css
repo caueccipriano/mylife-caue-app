@@ -1,0 +1,683 @@
+/* EU v40 · Life Map
+   Vida = mapa vivo / movimento / você. */
+
+.life-page{
+  --life-map-line:rgba(24,32,51,.075);
+  --life-map-green:#568d6b;
+  --life-map-blue:#3b5ccc;
+  --life-map-lilac:#7567b0;
+  --life-map-amber:#b98556;
+  --life-map-rose:#b66f91;
+}
+
+.life-map-tabs-v40{
+  grid-template-columns:repeat(3,1fr)!important;
+  position:relative!important;
+  top:auto!important;
+  margin-bottom:22px!important;
+}
+
+.life-map-tabs-v40 button{
+  min-height:42px!important;
+  font-size:8.5px!important;
+}
+
+/* ---------- map intro ---------- */
+.life-map-intro-v40{
+  display:flex;
+  align-items:end;
+  justify-content:space-between;
+  gap:14px;
+  margin:2px 2px 17px;
+}
+
+.life-map-intro-v40>div{
+  display:grid;
+  gap:4px;
+  max-width:560px;
+}
+
+.life-map-intro-v40 small{
+  color:#7e879a;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.09em;
+}
+
+.life-map-intro-v40 h2{
+  margin:0;
+  color:var(--eu35-ink,#182033);
+  font-size:clamp(25px,5vw,34px);
+  line-height:1;
+  letter-spacing:-.05em;
+}
+
+.life-map-intro-v40 p{
+  margin:0;
+  max-width:520px;
+  color:#747d90;
+  font-size:9.5px;
+  line-height:1.45;
+}
+
+.life-map-intro-v40>button{
+  flex:0 0 auto;
+  min-height:34px;
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:0 10px;
+  border:1px solid var(--life-map-line);
+  border-radius:11px;
+  background:#f6f7f9;
+  color:#6d7589;
+  font-size:8px;
+  font-weight:850;
+}
+
+.life-map-intro-v40>button .eu-icon{
+  width:12px;
+}
+
+/* ---------- map cards ---------- */
+.life-map-grid-v40{
+  display:grid;
+  grid-template-columns:1.06fr .94fr;
+  gap:9px;
+}
+
+.life-map-card-v40{
+  position:relative;
+  overflow:hidden;
+  min-height:205px;
+  display:grid;
+  grid-template-rows:auto 1fr;
+  gap:14px;
+  padding:16px;
+  border:1px solid var(--life-map-line);
+  border-radius:22px;
+  background:#fff;
+  box-shadow:none;
+}
+
+.life-map-card-v40::after{
+  content:'';
+  position:absolute;
+  width:150px;
+  height:150px;
+  right:-73px;
+  bottom:-82px;
+  border-radius:50%;
+  border:1px solid rgba(24,32,51,.04);
+  pointer-events:none;
+}
+
+.life-map-card-v40.map-card-0,
+.life-map-card-v40.map-card-3,
+.life-map-card-v40.map-card-6{
+  min-height:230px;
+}
+
+.life-map-card-v40.state-attention{
+  border-color:rgba(185,133,86,.19);
+}
+
+.life-map-card-v40.is-focus{
+  box-shadow:inset 0 0 0 1px rgba(59,92,204,.08);
+}
+
+.life-map-card-v40.area-carreira{
+  background:linear-gradient(145deg,#eef6f0,#fbfcfb);
+}
+.life-map-card-v40.area-dinheiro{
+  background:linear-gradient(145deg,#edf5ef,#f8fbf9);
+}
+.life-map-card-v40.area-estudos{
+  background:linear-gradient(145deg,#f1eef8,#fbfafd);
+}
+.life-map-card-v40.area-casa{
+  background:linear-gradient(145deg,#f8f1e9,#fcfaf7);
+}
+.life-map-card-v40.area-viagens{
+  background:linear-gradient(145deg,#ecf4f8,#fbfcfd);
+}
+.life-map-card-v40.area-compras{
+  background:linear-gradient(145deg,#f7edf2,#fdfafb);
+}
+.life-map-card-v40.area-lazer{
+  background:linear-gradient(145deg,#f1f5e8,#fbfcf7);
+}
+.life-map-card-v40.area-pessoal{
+  background:linear-gradient(145deg,#f2eef8,#fbfafd);
+}
+
+.life-map-card-top-v40{
+  position:relative;
+  z-index:1;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.life-map-icon-v40{
+  width:43px;
+  height:43px;
+  display:grid;
+  place-items:center;
+  border:1px solid rgba(255,255,255,.72);
+  border-radius:14px;
+  background:rgba(255,255,255,.68);
+  color:#515b70;
+}
+
+.life-map-icon-v40 .eu-icon{
+  width:18px;
+}
+
+.life-map-card-top-v40>button{
+  width:34px;
+  height:34px;
+  display:grid;
+  place-items:center;
+  border:1px solid rgba(24,32,51,.055);
+  border-radius:11px;
+  background:rgba(255,255,255,.58);
+  color:#9aa1b0;
+}
+
+.life-map-card-top-v40>button.is-active{
+  background:#eef2fb;
+  color:var(--life-map-blue);
+  border-color:rgba(59,92,204,.12);
+}
+
+.life-map-card-top-v40>button .eu-icon{
+  width:14px;
+}
+
+.life-map-card-main-v40{
+  position:relative;
+  z-index:1;
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  color:inherit;
+  text-decoration:none;
+}
+
+.life-map-state-v40{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  min-width:0;
+  margin-bottom:6px;
+}
+
+.life-map-state-v40 i{
+  width:6px;
+  height:6px;
+  flex:0 0 auto;
+  border-radius:50%;
+  background:#a8afbd;
+}
+
+.state-moving .life-map-state-v40 i{
+  background:var(--life-map-green);
+}
+
+.state-attention .life-map-state-v40 i{
+  background:var(--life-map-amber);
+  box-shadow:0 0 0 4px rgba(185,133,86,.09);
+}
+
+.life-map-state-v40 span{
+  color:#778095;
+  font-size:7.5px;
+  font-style:normal;
+  font-weight:850;
+  letter-spacing:.04em;
+  text-transform:uppercase;
+}
+
+.life-map-state-v40 em{
+  min-width:0;
+  overflow:hidden;
+  color:#8f96a6;
+  font-size:7px;
+  font-style:normal;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.life-map-card-main-v40 h3{
+  margin:0;
+  color:var(--eu35-ink,#182033);
+  font-size:clamp(22px,4vw,29px);
+  line-height:1;
+  letter-spacing:-.05em;
+}
+
+.life-map-card-main-v40>p{
+  display:-webkit-box;
+  margin:8px 0 13px;
+  overflow:hidden;
+  color:#6f788b;
+  font-size:9.5px;
+  line-height:1.45;
+  -webkit-line-clamp:3;
+  -webkit-box-orient:vertical;
+}
+
+.life-map-meta-v40{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.life-map-meta-v40 span{
+  min-width:0;
+  overflow:hidden;
+  color:#848c9e;
+  font-size:8px;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.life-map-meta-v40 .eu-icon{
+  width:12px;
+  flex:0 0 auto;
+  color:#8d95a5;
+}
+
+.life-map-focus-v40{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  margin-top:10px;
+  padding:13px 14px;
+  border:1px solid var(--life-map-line);
+  border-radius:16px;
+  background:rgba(255,255,255,.68);
+}
+
+.life-map-focus-v40>div{
+  display:grid;
+  gap:2px;
+  min-width:0;
+}
+
+.life-map-focus-v40 small{
+  color:#8991a2;
+  font-size:7.5px;
+  font-weight:900;
+  letter-spacing:.08em;
+}
+
+.life-map-focus-v40 strong{
+  overflow:hidden;
+  color:#4c566b;
+  font-size:9.5px;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.life-map-focus-v40>span{
+  flex:0 0 auto;
+  min-width:34px;
+  height:27px;
+  display:grid;
+  place-items:center;
+  border-radius:999px;
+  background:#eef2fb;
+  color:#5d70ae;
+  font-size:8px;
+  font-weight:900;
+}
+
+/* ---------- movement ---------- */
+.life-moving-summary-v40{
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:18px;
+  align-items:end;
+  margin:2px 2px 20px;
+  padding:18px;
+  border:1px solid var(--life-map-line);
+  border-radius:20px;
+  background:
+    radial-gradient(circle at 100% 0%,rgba(117,103,176,.07),transparent 13rem),
+    linear-gradient(145deg,#fff,#f8f7fb);
+}
+
+.life-moving-summary-v40>div:first-child{
+  display:grid;
+  gap:4px;
+  max-width:520px;
+}
+
+.life-moving-summary-v40 small{
+  color:#7c7697;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.08em;
+}
+
+.life-moving-summary-v40 h2{
+  margin:0;
+  color:var(--eu35-ink,#182033);
+  font-size:27px;
+  line-height:1;
+  letter-spacing:-.05em;
+}
+
+.life-moving-summary-v40 p{
+  margin:0;
+  color:#747d90;
+  font-size:9.5px;
+  line-height:1.45;
+}
+
+.life-moving-summary-v40>div:last-child{
+  display:flex;
+  gap:6px;
+}
+
+.life-moving-summary-v40>div:last-child span{
+  min-width:67px;
+  min-height:55px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:2px;
+  padding:9px;
+  border:1px solid var(--life-map-line);
+  border-radius:13px;
+  background:rgba(255,255,255,.74);
+  color:#81899b;
+  font-size:7.5px;
+}
+
+.life-moving-summary-v40>div:last-child strong{
+  color:#4c566b;
+  font-size:15px;
+}
+
+.life-moving-primary-v40{
+  margin-top:0!important;
+}
+
+.life-view-moving .life-list-cards{
+  gap:8px;
+}
+
+.life-view-moving .life-list-card{
+  border-radius:17px!important;
+  box-shadow:none!important;
+}
+
+/* ---------- You = phase + tools ---------- */
+.life-phase-v40{
+  display:grid;
+  gap:13px;
+  margin:2px 0 22px;
+  padding:19px;
+  border:1px solid var(--life-map-line);
+  border-radius:22px;
+  background:
+    radial-gradient(circle at 100% 0%,rgba(86,141,107,.08),transparent 13rem),
+    linear-gradient(145deg,#fff,#f5f8f6);
+}
+
+.life-phase-copy-v40{
+  display:grid;
+  gap:5px;
+}
+
+.life-phase-copy-v40>small{
+  color:#627d6a;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:.08em;
+}
+
+.life-phase-copy-v40 h2{
+  margin:0;
+  color:var(--eu35-ink,#182033);
+  font-size:28px;
+  line-height:1;
+  letter-spacing:-.05em;
+}
+
+.life-phase-copy-v40 p{
+  margin:0;
+  max-width:570px;
+  color:#717b8c;
+  font-size:9.5px;
+  line-height:1.5;
+}
+
+.life-phase-copy-v40 .v2-tag{
+  width:max-content;
+  margin-top:3px;
+}
+
+.life-phase-metrics-v40{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:7px;
+}
+
+.life-phase-metrics-v40>span{
+  min-height:58px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:2px;
+  padding:10px;
+  border:1px solid var(--life-map-line);
+  border-radius:13px;
+  background:rgba(255,255,255,.68);
+  color:#7d8598;
+  font-size:7.5px;
+}
+
+.life-phase-metrics-v40 strong{
+  color:#445064;
+  font-size:16px;
+}
+
+.life-phase-shift-v40{
+  display:grid;
+  grid-template-columns:1fr 24px 1fr;
+  align-items:center;
+  gap:8px;
+}
+
+.life-phase-shift-v40 article{
+  min-height:82px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:3px;
+  padding:11px;
+  border:1px solid var(--life-map-line);
+  border-radius:14px;
+  background:rgba(255,255,255,.72);
+}
+
+.life-phase-shift-v40 article small{
+  color:#8b92a3;
+  font-size:7px;
+  font-weight:850;
+  letter-spacing:.06em;
+}
+
+.life-phase-shift-v40 article strong{
+  overflow:hidden;
+  color:#4d5669;
+  font-size:11px;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.life-phase-shift-v40 article span{
+  color:#8b92a3;
+  font-size:7.5px;
+}
+
+.life-phase-shift-v40>.eu-icon{
+  width:15px;
+  color:#a3a9b6;
+  justify-self:center;
+}
+
+.life-view-you .self-tools-grid,
+.life-view-you .plan-grid{
+  gap:8px!important;
+}
+
+.life-view-you .self-tool-card,
+.life-view-you .plan-card,
+.life-view-you .phases-entry-card{
+  border-color:var(--life-map-line)!important;
+  box-shadow:none!important;
+}
+
+/* ---------- simplify former Vida visual layers ---------- */
+.life-page .life-stats-grid,
+.life-page .before-now-grid,
+.life-page .month-story-card,
+.life-page .signals-life-grid,
+.life-page .ecosystem-insights{
+  box-shadow:none!important;
+}
+
+/* ---------- mobile ---------- */
+@media(max-width:620px){
+  .life-map-tabs-v40{
+    margin-bottom:18px!important;
+  }
+
+  .life-map-intro-v40{
+    align-items:start;
+    margin-bottom:14px;
+  }
+
+  .life-map-intro-v40 h2{
+    font-size:25px;
+  }
+
+  .life-map-grid-v40{
+    grid-template-columns:1fr;
+    gap:8px;
+  }
+
+  .life-map-card-v40,
+  .life-map-card-v40.map-card-0,
+  .life-map-card-v40.map-card-3,
+  .life-map-card-v40.map-card-6{
+    min-height:0;
+    grid-template-rows:auto auto;
+    gap:16px;
+    padding:15px;
+    border-radius:19px;
+  }
+
+  .life-map-card-main-v40{
+    justify-content:flex-start;
+  }
+
+  .life-map-card-main-v40 h3{
+    font-size:24px;
+  }
+
+  .life-map-card-main-v40>p{
+    max-width:94%;
+    font-size:9.5px;
+    -webkit-line-clamp:2;
+  }
+
+  .life-map-card-top-v40{
+    position:absolute;
+    left:15px;
+    top:15px;
+    right:15px;
+  }
+
+  .life-map-card-main-v40{
+    padding-top:54px;
+  }
+
+  .life-map-state-v40{
+    margin-bottom:5px;
+  }
+
+  .life-moving-summary-v40{
+    grid-template-columns:1fr;
+    align-items:start;
+    padding:15px;
+    border-radius:19px;
+  }
+
+  .life-moving-summary-v40>div:last-child{
+    width:100%;
+  }
+
+  .life-moving-summary-v40>div:last-child span{
+    flex:1;
+    min-width:0;
+  }
+
+  .life-phase-v40{
+    padding:16px;
+    border-radius:19px;
+  }
+
+  .life-phase-copy-v40 h2{
+    font-size:25px;
+  }
+}
+
+@media(max-width:390px){
+  .life-map-intro-v40{
+    display:grid;
+  }
+
+  .life-map-intro-v40>button{
+    width:max-content;
+  }
+
+  .life-map-tabs-v40 button{
+    font-size:8px!important;
+  }
+
+  .life-phase-metrics-v40{
+    grid-template-columns:1fr 1fr 1fr;
+    gap:5px;
+  }
+
+  .life-phase-metrics-v40>span{
+    padding:8px;
+    font-size:7px;
+  }
+
+  .life-phase-metrics-v40 strong{
+    font-size:14px;
+  }
+
+  .life-phase-shift-v40{
+    grid-template-columns:1fr 18px 1fr;
+    gap:5px;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .life-map-card-v40,
+  .life-map-card-top-v40>button{
+    transition:none!important;
+  }
+}

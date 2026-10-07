@@ -52,9 +52,9 @@ A interface usa a identidade consolidada do EU/FÔLEGO: superfícies claras, azu
 
 ## Estado atual
 
-**EU v39 — Simplify the Core**
+**EU v40 — Life Map**
 
-Hoje foi reduzido ao que merece atenção: check-in, EU sabe, comando universal e no máximo três prioridades. Revisão, aguardando e administração saíram do fluxo principal. A Central agora abre em **Agora**, com uma fila operacional do que depende de você, entradas, dependências, agenda, objetivos e projetos. Explicações internas de fontes/autonomia/rituais foram movidas para o EU Lab.
+Vida agora tem só **Mapa / Em movimento / Você**. O Mapa reordena áreas por foco, atenção e movimento; cada card mostra o estado atual e o contexto mais recente. Dinheiro abre a fonte Fôlego diretamente e usa seu bridge como contexto, sem duplicar finanças. Em movimento concentra histórias abertas, desejos e futuro sem pressão; Você reúne fase atual, identidade, capítulos, planos e retrospectivas.
 
 ---
 

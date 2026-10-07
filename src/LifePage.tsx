@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import { areas, projects } from './data'
 import { periodStory } from './intelligence'
-import { deriveEcosystemInsights } from './ecosystem'
 import { captureCurrentLifeSnapshot } from './snapshots'
 import { useBridges, useMoodHistory, useRecords } from './appState'
 import { BrandTop, EuIcon, SectionTitle, Tag, formatShortDate, typeTone, type EuIconName } from './v2Ui'
@@ -27,10 +26,10 @@ const areaIcons: Record<string, EuIconName> = {
 export default function LifePage() {
   const records = useRecords()
   const moods = useMoodHistory()
-  const { bridges, refreshing, forceRefresh } = useBridges()
-  const [view, setView] = useState<'overview' | 'areas' | 'moving' | 'you'>(() => {
+  const { bridges } = useBridges()
+  const [view, setView] = useState<'map' | 'moving' | 'you'>(() => {
     const saved = localStorage.getItem('eu-life-view')
-    return saved === 'areas' || saved === 'moving' || saved === 'you' ? saved : 'overview'
+    return saved === 'moving' || saved === 'you' ? saved : 'map'
   })
   const [focusAreas, setFocusAreasState] = useState(() => getFocusAreas())
 
@@ -38,18 +37,57 @@ export default function LifePage() {
   const active = visibleRecords.filter((record) => record.status === 'active')
   const wishes = topRecords(visibleRecords, (type) => type.includes('desejo') || type.includes('pesquisa') || type.includes('prefer'), 6)
   const goals = topRecords(visibleRecords, (type) => type.includes('objetivo') || type.includes('curso') || type.includes('pend'), 6)
-  const recentByArea = (area: string) => visibleRecords.filter((record) => record.area === area).slice(0, 2)
   const monthStory = periodStory(visibleRecords, 30)
   const someday = visibleRecords.filter((record) => record.someday || record.type === 'Depois').slice(0, 8)
-  const ecosystemInsights = deriveEcosystemInsights(visibleRecords, bridges)
   const beforeNow = useMemo(() => deriveBeforeNow(visibleRecords), [records])
   const stats = useMemo(() => deriveLifeStats(visibleRecords, moods), [records, moods])
+
+  const areaStates = useMemo(() => {
+    const bridgeForArea: Record<string, string | undefined> = {
+      Dinheiro: 'folego',
+      Estudos: 'repertorio',
+      Pessoal: 'traco',
+    }
+
+    return areas.map((area) => {
+      const areaRecords = visibleRecords
+        .filter((record) => record.area === area.name)
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+      const activeRecords = areaRecords.filter((record) => record.status === 'active')
+      const dueRecords = activeRecords.filter((record) => record.followUpAt && new Date(record.followUpAt).getTime() <= Date.now())
+      const recentCutoff = Date.now() - 21 * 86400000
+      const recentRecords = areaRecords.filter((record) => new Date(record.createdAt).getTime() >= recentCutoff)
+      const lead = dueRecords[0] || activeRecords.find((record) => record.nextMove?.trim()) || recentRecords[0] || areaRecords[0]
+      const bridgeId = bridgeForArea[area.name]
+      const source = bridgeId ? bridges.find((card) => card.id === bridgeId) : undefined
+      const state = dueRecords.length ? 'attention' : activeRecords.length || recentRecords.length || source?.bridge ? 'moving' : 'quiet'
+      const stateLabel = state === 'attention' ? 'pede atenção' : state === 'moving' ? 'em movimento' : 'quieta'
+      const href = area.id === 'dinheiro' ? '/dinheiro' : '/vida/area/' + area.id
+      const sourceLabel = source?.bridge ? source.title : null
+      const copy = source?.bridge?.summary || lead?.nextMove || lead?.text || area.now
+
+      return {
+        ...area,
+        href,
+        state,
+        stateLabel,
+        sourceLabel,
+        copy,
+        count: areaRecords.length,
+        activeCount: activeRecords.length,
+        latestAt: lead?.createdAt || null,
+      }
+    }).sort((a, b) => {
+      const score = (item: typeof a) => (focusAreas.includes(item.name) ? 30 : 0) + (item.state === 'attention' ? 20 : item.state === 'moving' ? 10 : 0) + item.activeCount
+      return score(b) - score(a)
+    })
+  }, [visibleRecords, bridges, focusAreas])
 
   useEffect(() => {
     captureCurrentLifeSnapshot(visibleRecords, bridges)
   }, [records, bridges])
 
-  function selectView(value: 'overview' | 'areas' | 'moving' | 'you') {
+  function selectView(value: 'map' | 'moving' | 'you') {
     setView(value)
     localStorage.setItem('eu-life-view', value)
   }
@@ -67,130 +105,80 @@ export default function LifePage() {
 
       <header className="v2-hero life-fluid-hero">
         <Tag tone="green">VIDA</Tag>
-        <h1>O que está<br />tomando forma.</h1>
-        <p>Áreas, planos, desejos e coisas que você começou — agora separados para você achar tudo mais rápido.</p>
+        <h1>Sua vida,<br />vista de cima.</h1>
+        <p>Um mapa vivo do que está andando, do que está quieto e do que merece mais espaço agora.</p>
       </header>
 
-      <nav className="life-view-tabs fluid-tabs" aria-label="Visões da Vida" role="tablist">
-        <button role="tab" aria-selected={view === 'overview'} className={view === 'overview' ? 'active' : ''} onClick={() => selectView('overview')}><EuIcon name="sparkles" />Visão geral</button>
-        <button role="tab" aria-selected={view === 'areas'} className={view === 'areas' ? 'active' : ''} onClick={() => selectView('areas')}><EuIcon name="collections" />Áreas</button>
+      <nav className="life-view-tabs fluid-tabs life-map-tabs-v40" aria-label="Visões da Vida" role="tablist">
+        <button role="tab" aria-selected={view === 'map'} className={view === 'map' ? 'active' : ''} onClick={() => selectView('map')}><EuIcon name="compass" />Mapa</button>
         <button role="tab" aria-selected={view === 'moving'} className={view === 'moving' ? 'active' : ''} onClick={() => selectView('moving')}><EuIcon name="bolt" />Em movimento</button>
         <button role="tab" aria-selected={view === 'you'} className={view === 'you' ? 'active' : ''} onClick={() => selectView('you')}><EuIcon name="user" />Você</button>
       </nav>
 
-      {view === 'overview' && (
+      {view === 'map' && (
         <>
-          <section className="life-block focus-panel">
-            <SectionTitle eyebrow="FOCO DO MOMENTO" title="O que merece mais espaço agora" action={focusAreas.length ? <button className="quiet-link" onClick={() => setFocusAreasState(setFocusAreas([]))}><EuIcon name="x" />limpar foco</button> : undefined} />
-            <p className="muted-copy">Escolha até 3 áreas. O EU usa isso para ordenar “Continuar” e destacar o que importa sem esconder o resto.</p>
-            <div className="focus-area-chips">
-              {areas.map((area) => (
-                <button key={area.id} aria-pressed={focusAreas.includes(area.name)} className={focusAreas.includes(area.name) ? 'active' : ''} onClick={() => toggleFocus(area.name)}>
-                  <EuIcon name={areaIcons[area.id] || 'sparkles'} />
-                  <span>{area.name}</span>
-                </button>
-              ))}
+          <section className="life-map-intro-v40">
+            <div>
+              <small>SEU MAPA</small>
+              <h2>Onde sua vida está mexendo.</h2>
+              <p>Áreas com movimento sobem. Áreas quietas continuam aqui sem disputar sua atenção.</p>
             </div>
-          </section>
-
-          <section className="life-block stats-panel">
-            <SectionTitle eyebrow="VOCÊ EM NÚMEROS" title="Só o bastante para enxergar a fase" />
-            <div className="life-stats-grid">
-              <article><strong>{stats.active}</strong><span>em movimento</span></article>
-              <article><strong>{stats.wishes}</strong><span>desejos/pesquisas</span></article>
-              <article><strong>{stats.completed}</strong><span>ciclos fechados</span></article>
-              <article><strong>{stats.areas}</strong><span>áreas vivas</span></article>
-              <article><strong>{stats.favorites}</strong><span>favoritos</span></article>
-              <article><strong>{stats.moods}</strong><span>check-ins de humor</span></article>
-            </div>
-          </section>
-
-          <section className="life-block before-now-panel">
-            <SectionTitle eyebrow="ANTES × AGORA" title="O que mudou nos últimos dois meses" />
-            <div className="before-now-grid">
-              <article>
-                <Tag tone="muted">ANTES · 30–60 DIAS</Tag>
-                <h3>{beforeNow.previous.topArea || 'fase mais quieta'}</h3>
-                <p>{beforeNow.previous.count} registros · {beforeNow.previous.completed} concluídos</p>
-                <div>{beforeNow.previous.topTags.map((tag) => <span key={tag}>#{tag}</span>)}</div>
-              </article>
-              <b className="flow-arrow"><EuIcon name="arrow-right" /></b>
-              <article>
-                <Tag tone="cobalt">AGORA · 30 DIAS</Tag>
-                <h3>{beforeNow.current.topArea || 'ganhando forma'}</h3>
-                <p>{beforeNow.current.count} registros · {beforeNow.current.completed} concluídos</p>
-                <div>{beforeNow.current.topTags.map((tag) => <span key={tag}>#{tag}</span>)}</div>
-              </article>
-            </div>
-          </section>
-
-          <section className="life-block month-story-block">
-            <SectionTitle eyebrow="SEU MÊS" title="O que tomou espaço na sua vida" />
-            <article className="month-story-card">
-              <div><strong>{monthStory.count}</strong><span>coisas registradas</span></div>
-              <p>{monthStory.text}</p>
-              {monthStory.topArea && <Tag tone="green">{monthStory.topArea} foi a área mais presente</Tag>}
-            </article>
-          </section>
-
-          <section className="life-block" id="sinais">
-            <SectionTitle
-              eyebrow="SINAIS"
-              title="O que sua central está contando"
-              action={<button className="quiet-link" disabled={refreshing} onClick={() => void forceRefresh()}><EuIcon name="refresh" />{refreshing ? 'atualizando…' : 'atualizar'}</button>}
-            />
-            <div className="signals-life-grid">
-              {bridges.map((card) => (
-                <article key={card.id}>
-                  <div className="signal-title-row"><strong>{card.title}</strong><span className={card.bridge ? 'signal-dot on' : 'signal-dot'} /></div>
-                  <p>{card.bridge?.summary || (card.id === 'folego' ? 'Entre em Dinheiro no EU para ativar seu resumo financeiro.' : 'Abra o app uma vez para o EU receber o resumo.')}</p>
-                  <small>{card.stale ? 'resumo antigo · atualizar' : card.bridge?.status || 'aguardando'}</small>
-                </article>
-              ))}
-            </div>
-            {ecosystemInsights.length > 0 && (
-              <div className="ecosystem-insights">
-                {ecosystemInsights.slice(0, 3).map((insight) => (
-                  <article key={insight.id} className={'ecosystem-insight insight-' + insight.tone}>
-                    <Tag tone={insight.tone}>CONEXÃO</Tag>
-                    <h3>{insight.title}</h3>
-                    <p>{insight.detail}</p>
-                  </article>
-                ))}
-              </div>
+            {focusAreas.length > 0 && (
+              <button onClick={() => setFocusAreasState(setFocusAreas([]))}><EuIcon name="x" />limpar foco</button>
             )}
+          </section>
+
+          <section className="life-map-grid-v40" aria-label="Mapa das áreas da vida">
+            {areaStates.map((area, index) => (
+              <article
+                key={area.id}
+                className={'life-map-card-v40 state-' + area.state + ' area-' + area.id + (focusAreas.includes(area.name) ? ' is-focus' : '') + ' map-card-' + index}
+              >
+                <div className="life-map-card-top-v40">
+                  <span className="life-map-icon-v40"><EuIcon name={areaIcons[area.id] || 'sparkles'} /></span>
+                  <button
+                    className={focusAreas.includes(area.name) ? 'is-active' : ''}
+                    onClick={() => toggleFocus(area.name)}
+                    aria-label={(focusAreas.includes(area.name) ? 'Remover ' : 'Adicionar ') + area.name + ' do foco'}
+                    aria-pressed={focusAreas.includes(area.name)}
+                  ><EuIcon name="pin" /></button>
+                </div>
+                <NavLink to={area.href} className="life-map-card-main-v40">
+                  <div className="life-map-state-v40">
+                    <i />
+                    <span>{area.stateLabel}</span>
+                    {area.sourceLabel && <em>via {area.sourceLabel}</em>}
+                  </div>
+                  <h3>{area.name}</h3>
+                  <p>{area.copy}</p>
+                  <div className="life-map-meta-v40">
+                    <span>{area.activeCount ? area.activeCount + (area.activeCount === 1 ? ' assunto vivo' : ' assuntos vivos') : area.count ? area.count + ' registros' : 'sem pressão agora'}</span>
+                    <EuIcon name="arrow-up-right" />
+                  </div>
+                </NavLink>
+              </article>
+            ))}
+          </section>
+
+          <section className="life-map-focus-v40">
+            <div><small>FOCO DO MOMENTO</small><strong>{focusAreas.length ? focusAreas.join(' · ') : 'Nenhuma área precisa dominar seu dia.'}</strong></div>
+            <span>{focusAreas.length}/3</span>
           </section>
         </>
       )}
 
-      {view === 'areas' && (
-        <section className="life-block life-view-section">
-          <SectionTitle eyebrow="ÁREAS" title="Cada parte da sua vida, no lugar dela" />
-          <div className="area-grid-v4">
-            {areas.map((area, index) => {
-              const recent = recentByArea(area.name)
-              const count = visibleRecords.filter((record) => record.area === area.name).length
-              return (
-                <NavLink
-                  className={'life-area area-semantic-' + area.id + ' area-card-' + index + (focusAreas.length && !focusAreas.includes(area.name) ? ' focus-dimmed' : '')}
-                  key={area.id}
-                  to={'/vida/area/' + area.id}
-                >
-                  <span className="life-area-icon"><EuIcon name={areaIcons[area.id] || 'sparkles'} /></span>
-                  <strong>{area.name}</strong>
-                  <p>{recent[0]?.text || area.now}</p>
-                  <small>{count ? count + ' registros' : area.status}</small>
-                  {focusAreas.includes(area.name) && <Tag tone="cobalt">FOCO</Tag>}
-                </NavLink>
-              )
-            })}
-          </div>
-        </section>
-      )}
-
       {view === 'moving' && (
         <>
-          <section className="life-block">
+          <section className="life-moving-summary-v40">
+            <div><small>EM MOVIMENTO</small><h2>O que ainda tem história aberta.</h2><p>Projetos, metas, desejos e próximos passos ficam juntos aqui — sem transformar tudo em urgência.</p></div>
+            <div>
+              <span><strong>{active.length}</strong> vivos</span>
+              <span><strong>{wishes.length}</strong> desejos</span>
+              <span><strong>{someday.length}</strong> depois</span>
+            </div>
+          </section>
+
+          <section className="life-block life-moving-primary-v40">
             <SectionTitle eyebrow="AGORA" title="Projetos, metas e começos" />
             <div className="life-list-cards">
               {active.slice(0, 8).map((record) => (
@@ -246,6 +234,25 @@ export default function LifePage() {
 
       {view === 'you' && (
         <>
+          <section className="life-phase-v40">
+            <div className="life-phase-copy-v40">
+              <small>SUA FASE</small>
+              <h2>{beforeNow.current.topArea || 'Sua vida está ganhando forma.'}</h2>
+              <p>{monthStory.text}</p>
+              {monthStory.topArea && <Tag tone="green">{monthStory.topArea} mais presente neste mês</Tag>}
+            </div>
+            <div className="life-phase-metrics-v40">
+              <span><strong>{stats.active}</strong> em movimento</span>
+              <span><strong>{stats.completed}</strong> ciclos fechados</span>
+              <span><strong>{stats.moods}</strong> check-ins</span>
+            </div>
+            <div className="life-phase-shift-v40">
+              <article><small>30–60 DIAS</small><strong>{beforeNow.previous.topArea || 'mais quieta'}</strong><span>{beforeNow.previous.count} registros</span></article>
+              <EuIcon name="arrow-right" />
+              <article><small>AGORA</small><strong>{beforeNow.current.topArea || 'ganhando forma'}</strong><span>{beforeNow.current.count} registros</span></article>
+            </div>
+          </section>
+
           <section className="life-block self-tools-block">
             <SectionTitle eyebrow="VOCÊ" title="Olhar a vida de outros ângulos" />
             <div className="self-tools-grid">
