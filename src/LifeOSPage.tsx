@@ -8,6 +8,8 @@ import { BrandTop, EuIcon, SectionTitle, Tag, formatShortDate, typeTone } from '
 import { buildContextBootstrap, buildWeeklyReset, deriveCarryOver, deriveCrossSignals, deriveLifeOSScouts, deriveProjectHandoff, deriveWaiting, isWaitingRecord } from './lifeOSIntelligence'
 import { autonomyRules, buildLifeOSSources } from './lifeOSSources'
 import { deriveLivingGoals } from './adaptiveLife'
+import { deriveOneEuConnections } from './oneEu'
+import OneEuConnections from './OneEuConnections'
 
 type SystemView = 'panel' | 'goals' | 'projects' | 'agenda'
 
@@ -76,6 +78,7 @@ export default function LifeOSPage() {
   const crossSignals = useMemo(() => deriveCrossSignals(visible), [visible])
   const sources = useMemo(() => buildLifeOSSources(bridges), [bridges])
   const review = useMemo(() => reviewCandidates(visible), [visible])
+  const oneEuConnections = useMemo(() => deriveOneEuConnections(visible, bridges), [visible, bridges])
 
   const goals = useMemo(() => (
     visible
@@ -239,6 +242,8 @@ export default function LifeOSPage() {
               <span><strong>{stale.length}</strong> paradas há 3+ semanas</span>
             </div>
           </section>
+
+          <OneEuConnections items={oneEuConnections} limit={2} title="O contexto já está cruzado." />
 
           <section className="life-os-block central-deep-context-v39">
             <SectionTitle eyebrow="SCOUTS" title="O que merece ser notado" />

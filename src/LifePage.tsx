@@ -7,6 +7,8 @@ import { useBridges, useMoodHistory, useRecords } from './appState'
 import { BrandTop, EuIcon, SectionTitle, Tag, formatShortDate, typeTone, type EuIconName } from './v2Ui'
 import { isRecordVisibleForInsights } from './storage'
 import { deriveBeforeNow, deriveLifeStats, getFocusAreas, setFocusAreas } from './uxFeatures'
+import { deriveOneEuConnections } from './oneEu'
+import OneEuConnections from './OneEuConnections'
 
 function topRecords(records: ReturnType<typeof useRecords>, predicate: (type: string) => boolean, limit = 3) {
   return records.filter((record) => predicate(record.type.toLowerCase())).slice(0, limit)
@@ -41,6 +43,7 @@ export default function LifePage() {
   const someday = visibleRecords.filter((record) => record.someday || record.type === 'Depois').slice(0, 8)
   const beforeNow = useMemo(() => deriveBeforeNow(visibleRecords), [records])
   const stats = useMemo(() => deriveLifeStats(visibleRecords, moods), [records, moods])
+  const oneEuConnections = useMemo(() => deriveOneEuConnections(visibleRecords, bridges), [visibleRecords, bridges])
 
   const areaStates = useMemo(() => {
     const bridgeForArea: Record<string, string | undefined> = {
@@ -164,6 +167,8 @@ export default function LifePage() {
             <div><small>FOCO DO MOMENTO</small><strong>{focusAreas.length ? focusAreas.join(' · ') : 'Nenhuma área precisa dominar seu dia.'}</strong></div>
             <span>{focusAreas.length}/3</span>
           </section>
+
+          <OneEuConnections items={oneEuConnections} limit={2} title="Onde suas áreas se encontram." />
         </>
       )}
 
@@ -177,6 +182,8 @@ export default function LifePage() {
               <span><strong>{someday.length}</strong> depois</span>
             </div>
           </section>
+
+          <OneEuConnections items={oneEuConnections} limit={2} compact title="O que também mexe em outra área." />
 
           <section className="life-block life-moving-primary-v40">
             <SectionTitle eyebrow="AGORA" title="Projetos, metas e começos" />

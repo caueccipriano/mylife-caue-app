@@ -343,9 +343,23 @@ async function budgetItems(spaceId: string) {
     .sort((a, b) => a.categoryPath.localeCompare(b.categoryPath))
 }
 
-function publishMoneyBridge(snapshot: MoneySnapshot) {
+type MoneyBridgeGoal = {
+  name: string
+  target: number
+  contributed: number
+  status?: string
+}
+
+function publishMoneyBridge(snapshot: MoneySnapshot, goals: MoneyBridgeGoal[] = []) {
   const budgetPercent = snapshot.monthlyBudgetPlanned > 0
     ? Math.round((snapshot.monthlyBudgetUsed / snapshot.monthlyBudgetPlanned) * 100)
+    : null
+  const activeGoals = goals
+    .filter((goal) => goal.status !== 'archived' && goal.status !== 'completed' && goal.target > 0)
+    .sort((a, b) => (b.contributed / b.target) - (a.contributed / a.target))
+  const topGoal = activeGoals[0]
+  const topGoalProgress = topGoal
+    ? Math.max(0, Math.min(100, Math.round((topGoal.contributed / topGoal.target) * 100)))
     : null
   const payload = {
     version: 2,
@@ -358,6 +372,7 @@ function publishMoneyBridge(snapshot: MoneySnapshot) {
       snapshot.dailyFolego == null ? null : moneyForBridge(snapshot.dailyFolego) + ' por dia',
       budgetPercent == null ? null : budgetPercent + '% do orçamento variável usado',
       snapshot.daysUntilIncome == null ? null : snapshot.daysUntilIncome + ' dias até o próximo recebimento',
+      topGoal ? topGoal.name + ' em ' + topGoalProgress + '%' : null,
       snapshot.shortfall > 0 ? 'atenção ao caixa' : snapshot.cashHeadroom > 0 ? 'caixa com folga' : 'sem déficit projetado',
     ].filter(Boolean).join(' · '),
     metrics: {
@@ -374,6 +389,11 @@ function publishMoneyBridge(snapshot: MoneySnapshot) {
       monthlyBudgetUsed: snapshot.monthlyBudgetUsed,
       budgetConfigured: snapshot.budgetConfigured,
       limitingFactor: snapshot.limitingFactor,
+      activeGoalCount: activeGoals.length,
+      topGoalName: topGoal?.name || null,
+      topGoalProgress,
+      topGoalTarget: topGoal?.target ?? null,
+      topGoalContributed: topGoal?.contributed ?? null,
     },
   }
   const encoded = JSON.stringify(payload)
@@ -394,13 +414,38 @@ function statusForBridge(status: string) {
   return status
 }
 
+async function moneyBridgeGoals(spaceId: string): Promise<MoneyBridgeGoal[]> {
+  const [{ data: goals, error: goalsError }, { data: contributions, error: contributionsError }] = await Promise.all([
+    moneySupabase.from('savings_goals').select('id,name,target,status').eq('space_id', spaceId).neq('status', 'archived'),
+    moneySupabase.from('goal_contributions').select('goal_id,amount').eq('space_id', spaceId),
+  ])
+  if (goalsError) throw goalsError
+  if (contributionsError) throw contributionsError
+
+  const contributed = new Map<string, number>()
+  for (const row of (contributions || []) as Array<Record<string, unknown>>) {
+    const id = String(row.goal_id)
+    contributed.set(id, (contributed.get(id) || 0) + numberValue(row.amount))
+  }
+
+  return ((goals || []) as Array<Record<string, unknown>>).map((row) => ({
+    name: String(row.name || 'Meta'),
+    target: numberValue(row.target),
+    contributed: contributed.get(String(row.id)) || 0,
+    status: row.status ? String(row.status) : undefined,
+  }))
+}
+
 export async function refreshMoneyBridge() {
   const { data } = await moneySupabase.auth.getSession()
   if (!data.session) return false
   const space = await primarySpace()
-  const { data: snapshotData, error } = await moneySupabase.rpc('get_folego_snapshot', { p_space_id: space.id })
+  const [{ data: snapshotData, error }, goals] = await Promise.all([
+    moneySupabase.rpc('get_folego_snapshot', { p_space_id: space.id }),
+    moneyBridgeGoals(space.id),
+  ])
   if (error) throw error
-  publishMoneyBridge(parseSnapshot(snapshotData))
+  publishMoneyBridge(parseSnapshot(snapshotData), goals)
   return true
 }
 
@@ -454,8 +499,18 @@ export async function loadMoneyBundle(): Promise<MoneyBundle> {
     contributed.set(id, (contributed.get(id) || 0) + numberValue(row.amount))
   }
 
+  const parsedGoals = ((goalsResult.data || []) as Array<Record<string, unknown>>).map((row) => ({
+    id: String(row.id),
+    name: String(row.name),
+    target: numberValue(row.target),
+    target_date: row.target_date ? String(row.target_date) : null,
+    icon_key: row.icon_key ? String(row.icon_key) : 'piggy-bank',
+    status: row.status ? String(row.status) : undefined,
+    contributed: contributed.get(String(row.id)) || 0,
+  }))
+
   const snapshot = parseSnapshot(snapshotResult.data)
-  publishMoneyBridge(snapshot)
+  publishMoneyBridge(snapshot, parsedGoals)
 
   return {
     session,
@@ -480,15 +535,7 @@ export async function loadMoneyBundle(): Promise<MoneyBundle> {
       first_due: firstDueByDebt.get(String(row.id)) || null,
     })) as MoneyDebt[],
     recurring: (recurringResult.data || []).map((row) => ({ ...row, amount: numberValue(row.amount) })) as MoneyRecurring[],
-    goals: ((goalsResult.data || []) as Array<Record<string, unknown>>).map((row) => ({
-      id: String(row.id),
-      name: String(row.name),
-      target: numberValue(row.target),
-      target_date: row.target_date ? String(row.target_date) : null,
-      icon_key: row.icon_key ? String(row.icon_key) : 'piggy-bank',
-      status: row.status ? String(row.status) : undefined,
-      contributed: contributed.get(String(row.id)) || 0,
-    })),
+    goals: parsedGoals,
   }
 }
 
