@@ -48,8 +48,11 @@ export default function MoneySetupSheet({
   const initialBudget = initialBudgetItem || null
   const availableBudgetCategories = useMemo(() => {
     const discretionary = bundle.expenseCategories.filter((item) => !item.essential)
-    return discretionary.length ? discretionary : bundle.expenseCategories
-  }, [bundle])
+    const base = discretionary.length ? discretionary : bundle.expenseCategories
+    if (!initialBudget?.categoryId || base.some((item) => item.id === initialBudget.categoryId)) return base
+    const current = bundle.expenseCategories.find((item) => item.id === initialBudget.categoryId)
+    return current ? [current, ...base] : base
+  }, [bundle, initialBudget?.categoryId])
 
   const [name, setName] = useState(kind === 'income' ? 'Salário' : kind === 'recurring' ? '' : kind === 'account' ? '' : kind === 'reserve' ? 'Reserva' : kind === 'card' ? '' : '')
   const [institution, setInstitution] = useState('')
