@@ -2,6 +2,8 @@ import { type FormEvent, useEffect, useMemo, useState } from 'react'
 import { BrandTop, EuIcon, Tag } from './v2Ui'
 import MoneySetupSheet, { type MoneySetupKind } from './MoneySetupSheet'
 import MoneyManageSheet, { type MoneyManageTarget } from './MoneyManageSheet'
+import MoneyPlanPanel from './MoneyPlanPanel'
+import MoneyFuturePanel from './MoneyFuturePanel'
 import {
   loadMoneyBundle,
   moneySupabase,
@@ -13,7 +15,7 @@ import {
   type MoneyCategory,
 } from './folegoNative'
 
-type MoneyView = 'overview' | 'movement' | 'plan' | 'wallet'
+type MoneyView = 'overview' | 'movement' | 'plan' | 'future' | 'wallet'
 
 function money(value?: number | null) {
   if (value == null) return '—'
@@ -72,14 +74,16 @@ export default function MoneyPage() {
   const [error, setError] = useState('')
   const [commandDraft, setCommandDraft] = useState(() => sessionStorage.getItem('eu-money-command-draft') || '')
   const [registerOpen, setRegisterOpen] = useState(() => Boolean(sessionStorage.getItem('eu-money-command-draft')))
-  const [setupOpen, setSetupOpen] = useState<{ kind: MoneySetupKind; budgetItem?: MoneyBudgetItem | null } | null>(null)
+  const [setupOpen, setSetupOpen] = useState<{ kind: MoneySetupKind; budgetItem?: MoneyBudgetItem | null; periodMonth?: string } | null>(null)
   const [manageOpen, setManageOpen] = useState<MoneyManageTarget | null>(null)
+  const [moneyRevision, setMoneyRevision] = useState(0)
 
   async function refresh() {
     setLoading(true)
     setError('')
     try {
       setBundle(await loadMoneyBundle())
+      setMoneyRevision((value) => value + 1)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Não consegui carregar suas finanças.')
     } finally {
@@ -118,6 +122,7 @@ export default function MoneyPage() {
     { id: 'overview', label: 'Visão' },
     { id: 'movement', label: 'Movimento' },
     { id: 'plan', label: 'Plano' },
+    { id: 'future', label: 'Futuro' },
     { id: 'wallet', label: 'Carteira' },
   ]
 
@@ -215,34 +220,14 @@ export default function MoneyPage() {
           )}
 
           {view === 'plan' && (
-            <section className="money-section money-full-view">
-              <div className="money-section-title">
-                <div><small>PLANO</small><h2>Planejamento do mês</h2><p>Limites que alimentam alertas e o cálculo do seu fôlego.</p></div>
-                <button className="money-small-action" onClick={() => setSetupOpen({ kind: 'budget' })}><EuIcon name="plus" />categoria</button>
-              </div>
-              <div className="money-plan-summary">
-                <div><span>planejado</span><strong>{money(bundle.budgetItems.reduce((sum, item) => sum + item.plannedAmount, 0))}</strong></div>
-                <div><span>categorias</span><strong>{bundle.budgetItems.length}</strong></div>
-                <div><span>uso atual</span><strong>{budgetProgress}%</strong></div>
-              </div>
-              <div className="money-plan-list">
-                {bundle.budgetItems.map((item) => (
-                  <article key={item.categoryId} className="money-plan-editable">
-                    <span className="money-plan-icon"><EuIcon name="wallet" /></span>
-                    <div><strong>{item.categoryPath}</strong><small>aviso {Math.round(item.warningThreshold * 100)}% · crítico {Math.round(item.criticalThreshold * 100)}%</small></div>
-                    <b>{money(item.plannedAmount)}</b>
-                    <button aria-label={'Editar planejamento de ' + item.categoryPath} onClick={() => setSetupOpen({ kind: 'budget', budgetItem: item })}><EuIcon name="arrow-right" /></button>
-                  </article>
-                ))}
-                {!bundle.budgetItems.length && (
-                  <div className="money-empty money-empty-action">
-                    <p>Nenhum limite planejado para este mês.</p>
-                    <button onClick={() => setSetupOpen({ kind: 'budget' })}><EuIcon name="plus" />Criar primeiro limite</button>
-                  </div>
-                )}
-              </div>
-            </section>
+            <MoneyPlanPanel
+              bundle={bundle}
+              revision={moneyRevision}
+              onEditBudget={(budgetItem, periodMonth) => setSetupOpen({ kind: 'budget', budgetItem, periodMonth })}
+            />
           )}
+
+          {view === 'future' && <MoneyFuturePanel bundle={bundle} revision={moneyRevision} />}
 
           {view === 'wallet' && <MoneyWallet bundle={bundle} onSetup={(kind) => setSetupOpen({ kind })} onManage={setManageOpen} />}
         </>
@@ -277,6 +262,7 @@ export default function MoneyPage() {
           bundle={bundle}
           kind={setupOpen.kind}
           initialBudgetItem={setupOpen.budgetItem}
+          periodMonth={setupOpen.periodMonth}
           onClose={() => setSetupOpen(null)}
           onSaved={() => {
             setSetupOpen(null)

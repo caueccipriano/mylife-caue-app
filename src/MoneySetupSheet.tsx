@@ -36,12 +36,14 @@ export default function MoneySetupSheet({
   bundle,
   kind,
   initialBudgetItem,
+  periodMonth,
   onClose,
   onSaved,
 }: {
   bundle: MoneyBundle
   kind: MoneySetupKind
   initialBudgetItem?: MoneyBudgetItem | null
+  periodMonth?: string
   onClose: () => void
   onSaved: () => void
 }) {
@@ -93,6 +95,7 @@ export default function MoneySetupSheet({
           plannedAmount,
           warningThreshold,
           criticalThreshold,
+          periodMonth,
         })
       }
 

@@ -69,6 +69,75 @@ export type MoneyBudgetItem = {
   criticalThreshold: number
 }
 
+export type MoneyBudgetOverviewRow = {
+  categoryId: string
+  categoryName: string
+  parentId: string | null
+  parentName: string | null
+  essential: boolean
+  plannedAmount: number
+  actualAmount: number
+  remainingAmount: number
+  warningThreshold: number
+  criticalThreshold: number
+  usageRatio: number
+  status: string
+  budgetSource: string
+  isRecurring: boolean
+}
+
+export type MoneyProjectionCategory = {
+  name: string
+  amount: number
+}
+
+export type MoneyProjectionMonth = {
+  month: string
+  openingBalance: number
+  guaranteedIncome: number
+  variableIncome: number
+  income: number
+  directExpenses: number
+  recurringExpenses: number
+  cardInstallments: number
+  debts: number
+  reserveTransfers: number
+  investments: number
+  otherInflows: number
+  otherOutflows: number
+  netChange: number
+  closingBalance: number
+  categories: MoneyProjectionCategory[]
+}
+
+export type MoneyProjection = {
+  asOfDate: string
+  horizonMonths: number
+  openingBalance: number
+  hasProjectionInputs: boolean
+  summary: {
+    endingBalance: number
+    minimumBalance: number
+    maximumBalance: number
+    projectedSavings: number
+    criticalMonth: string | null
+  }
+  months: MoneyProjectionMonth[]
+}
+
+export type MoneyInvoiceSummary = {
+  cardId: string
+  cardName: string
+  invoiceId: string | null
+  grossPurchases: number
+  credits: number
+  payments: number
+  amountDue: number
+  dueDate: string | null
+  closingDate: string | null
+  referenceMonth: string | null
+}
+
 export type MoneyCard = {
   id: string
   name: string
@@ -416,6 +485,7 @@ export async function loadMoneyBundle(): Promise<MoneyBundle> {
       name: String(row.name),
       target: numberValue(row.target),
       target_date: row.target_date ? String(row.target_date) : null,
+      icon_key: row.icon_key ? String(row.icon_key) : 'piggy-bank',
       status: row.status ? String(row.status) : undefined,
       contributed: contributed.get(String(row.id)) || 0,
     })),
@@ -468,10 +538,11 @@ export async function setMoneyBudgetItem(input: {
   plannedAmount: number
   warningThreshold?: number
   criticalThreshold?: number
+  periodMonth?: string
 }) {
   const { data, error } = await moneySupabase.rpc('onboarding_set_budget_item', {
     p_space_id: input.spaceId,
-    p_period_month: monthKey(),
+    p_period_month: input.periodMonth || monthKey(),
     p_category_id: input.categoryId,
     p_planned_amount: input.plannedAmount,
     p_warning_threshold: input.warningThreshold ?? .70,
@@ -837,4 +908,146 @@ export async function closeMoneyDebt(spaceId: string, debtId: string) {
   })
   if (error) throw error
   return data
+}
+
+
+function objectValue(value: unknown): Record<string, unknown> {
+  if (value && typeof value === 'object' && !Array.isArray(value)) return value as Record<string, unknown>
+  return {}
+}
+
+export async function loadMoneyBudgetOverview(spaceId: string, periodMonth: string): Promise<MoneyBudgetOverviewRow[]> {
+  const { data, error } = await moneySupabase.rpc('get_budget_overview', {
+    p_space_id: spaceId,
+    p_period_month: periodMonth,
+  })
+  if (error) throw error
+  return ((data || []) as Array<Record<string, unknown>>).map((row) => ({
+    categoryId: String(row.category_id),
+    categoryName: String(row.category_name || 'Categoria'),
+    parentId: row.parent_id ? String(row.parent_id) : null,
+    parentName: row.parent_name ? String(row.parent_name) : null,
+    essential: Boolean(row.essential),
+    plannedAmount: numberValue(row.planned_amount),
+    actualAmount: numberValue(row.actual_amount),
+    remainingAmount: numberValue(row.remaining_amount),
+    warningThreshold: numberValue(row.warning_threshold) || .70,
+    criticalThreshold: numberValue(row.critical_threshold) || .90,
+    usageRatio: numberValue(row.usage_ratio),
+    status: String(row.status || 'none'),
+    budgetSource: String(row.budget_source || 'none'),
+    isRecurring: Boolean(row.is_recurring),
+  }))
+}
+
+export async function copyMoneyBudgetMonth(spaceId: string, sourceMonth: string, targetMonth: string) {
+  const rows = await loadMoneyBudgetOverview(spaceId, sourceMonth)
+  const copyable = rows.filter((row) => row.budgetSource !== 'aggregate' && row.plannedAmount > 0)
+  if (!copyable.length) throw new Error('O mês anterior não tem limites para copiar.')
+  await Promise.all(copyable.map((row) => setMoneyBudgetItem({
+    spaceId,
+    categoryId: row.categoryId,
+    plannedAmount: row.plannedAmount,
+    warningThreshold: row.warningThreshold,
+    criticalThreshold: row.criticalThreshold,
+    periodMonth: targetMonth,
+  })))
+  return copyable.length
+}
+
+function parseMoneyProjection(value: unknown): MoneyProjection {
+  const root = objectValue(value)
+  const summary = objectValue(root.summary)
+  const months = Array.isArray(root.months) ? root.months : []
+  return {
+    asOfDate: String(root.as_of_date || todayKey()),
+    horizonMonths: Number(root.horizon_months) || 6,
+    openingBalance: numberValue(root.opening_balance),
+    hasProjectionInputs: Boolean(root.has_projection_inputs),
+    summary: {
+      endingBalance: numberValue(summary.ending_balance),
+      minimumBalance: numberValue(summary.minimum_balance),
+      maximumBalance: numberValue(summary.maximum_balance),
+      projectedSavings: numberValue(summary.projected_savings),
+      criticalMonth: summary.critical_month ? String(summary.critical_month) : null,
+    },
+    months: months.map((raw): MoneyProjectionMonth => {
+      const row = objectValue(raw)
+      const categories = Array.isArray(row.categories) ? row.categories : []
+      return {
+        month: String(row.month || ''),
+        openingBalance: numberValue(row.opening_balance),
+        guaranteedIncome: numberValue(row.guaranteed_income),
+        variableIncome: numberValue(row.variable_income),
+        income: numberValue(row.income),
+        directExpenses: numberValue(row.direct_expenses),
+        recurringExpenses: numberValue(row.recurring_expenses),
+        cardInstallments: numberValue(row.card_installments),
+        debts: numberValue(row.debts),
+        reserveTransfers: numberValue(row.reserve_transfers),
+        investments: numberValue(row.investments),
+        otherInflows: numberValue(row.other_inflows),
+        otherOutflows: numberValue(row.other_outflows),
+        netChange: numberValue(row.net_change),
+        closingBalance: numberValue(row.closing_balance),
+        categories: categories.map((rawCategory): MoneyProjectionCategory => {
+          const category = objectValue(rawCategory)
+          return { name: String(category.name || 'Outros'), amount: numberValue(category.amount) }
+        }),
+      }
+    }),
+  }
+}
+
+export async function loadMoneyProjection(
+  spaceId: string,
+  horizonMonths: 3 | 6 | 12 | 24 = 6,
+  adjustments: Array<Record<string, unknown>> = [],
+): Promise<MoneyProjection> {
+  const { data, error } = await moneySupabase.rpc('get_projection', {
+    p_space_id: spaceId,
+    p_horizon_months: horizonMonths,
+    p_adjustments: adjustments,
+    p_disabled_variable_income_keys: [],
+  })
+  if (error) throw error
+  return parseMoneyProjection(data)
+}
+
+export async function simulateMoneySpend(spaceId: string, amount: number, horizonMonths: 3 | 6 | 12 | 24 = 6) {
+  if (!Number.isFinite(amount) || amount <= 0) throw new Error('Informe um valor maior que zero.')
+  return loadMoneyProjection(spaceId, horizonMonths, [{
+    id: 'eu-can-spend',
+    name: 'Compra simulada',
+    component: 'other_outflow',
+    amount_delta: amount,
+    frequency: 'once',
+    starts_on: todayKey(),
+    category_name: 'Compra simulada',
+    variable_income: false,
+  }])
+}
+
+export async function loadMoneyInvoiceSummaries(spaceId: string, cards: MoneyCard[]): Promise<MoneyInvoiceSummary[]> {
+  const results = await Promise.all(cards.map(async (card) => {
+    const { data, error } = await moneySupabase.rpc('get_card_invoice_semantics', {
+      p_space_id: spaceId,
+      p_card_id: card.id,
+    })
+    if (error) throw error
+    const row = objectValue(data)
+    return {
+      cardId: card.id,
+      cardName: card.name,
+      invoiceId: row.invoice_id ? String(row.invoice_id) : null,
+      grossPurchases: numberValue(row.gross_purchases),
+      credits: numberValue(row.credits),
+      payments: numberValue(row.payments),
+      amountDue: numberValue(row.amount_due),
+      dueDate: row.due_date ? String(row.due_date) : null,
+      closingDate: row.closing_date ? String(row.closing_date) : null,
+      referenceMonth: row.reference_month ? String(row.reference_month) : null,
+    }
+  }))
+  return results
 }
