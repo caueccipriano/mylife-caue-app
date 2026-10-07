@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { areas, projects } from './data'
+import { areas } from './data'
 import { periodStory } from './intelligence'
 import { captureCurrentLifeSnapshot } from './snapshots'
 import { useBridges, useMoodHistory, useRecords } from './appState'
@@ -9,6 +9,7 @@ import { isRecordVisibleForInsights } from './storage'
 import { deriveBeforeNow, deriveLifeStats, getFocusAreas, setFocusAreas } from './uxFeatures'
 import { deriveOneEuConnections } from './oneEu'
 import OneEuConnections from './OneEuConnections'
+import SmartEmptyState from './SmartEmptyState'
 
 function topRecords(records: ReturnType<typeof useRecords>, predicate: (type: string) => boolean, limit = 3) {
   return records.filter((record) => predicate(record.type.toLowerCase())).slice(0, limit)
@@ -185,57 +186,63 @@ export default function LifePage() {
 
           <OneEuConnections items={oneEuConnections} limit={2} compact title="O que também mexe em outra área." />
 
-          <section className="life-block life-moving-primary-v40">
-            <SectionTitle eyebrow="AGORA" title="Projetos, metas e começos" />
-            <div className="life-list-cards">
-              {active.slice(0, 8).map((record) => (
-                <NavLink key={record.id} className={'life-list-card tappable-card record-link-card type-border-' + typeTone(record.type) + (record.pinned ? ' pinned' : '')} to={'/registro/' + record.id}>
-                  <div><Tag tone={record.pinned ? 'cobalt' : typeTone(record.type)}>{record.pinned ? 'FIXADO' : record.type}</Tag><span>{record.area}</span></div>
-                  <h3>{record.text}</h3>
-                  <p>{record.nextMove || 'Em acompanhamento desde ' + formatShortDate(record.startedAt || record.createdAt) + '.'}</p>
-                </NavLink>
-              ))}
-              {!active.length && projects.slice(0, 3).map((project) => (
-                <article key={project.id} className="life-list-card type-border-coral">
-                  <div><Tag tone="coral">Projeto</Tag><span>{project.area}</span></div>
-                  <h3>{project.name}</h3><p>{project.summary}</p>
-                </article>
-              ))}
-            </div>
-          </section>
+          {active.length > 0 && (
+            <section className="life-block life-moving-primary-v40">
+              <SectionTitle eyebrow="AGORA" title="Projetos, metas e começos" />
+              <div className="life-list-cards">
+                {active.slice(0, 8).map((record) => (
+                  <NavLink key={record.id} className={'life-list-card tappable-card record-link-card type-border-' + typeTone(record.type) + (record.pinned ? ' pinned' : '')} to={'/registro/' + record.id}>
+                    <div><Tag tone={record.pinned ? 'cobalt' : typeTone(record.type)}>{record.pinned ? 'FIXADO' : record.type}</Tag><span>{record.area}</span></div>
+                    <h3>{record.text}</h3>
+                    <p>{record.nextMove || 'Em acompanhamento desde ' + formatShortDate(record.startedAt || record.createdAt) + '.'}</p>
+                  </NavLink>
+                ))}
+              </div>
+            </section>
+          )}
 
-          <details className="life-fold" open>
-            <summary><span><small>DESEJOS</small><strong>Coisas que chamaram sua atenção</strong></span><b className="fold-icon"><EuIcon name="plus" /></b></summary>
-            <div className="compact-stack">
-              {wishes.length ? wishes.map((record) => (
-                <NavLink key={record.id} className="compact-record-link" to={'/registro/' + record.id}>
-                  <Tag tone="pink">{record.type}</Tag><p>{record.text}</p>
-                </NavLink>
-              )) : <p className="muted-copy">Quando você disser “gostei” ou “andei pesquisando pra comprar”, aparece aqui.</p>}
-            </div>
-          </details>
+          {wishes.length > 0 && (
+            <details className="life-fold" open>
+              <summary><span><small>DESEJOS</small><strong>Coisas que chamaram sua atenção</strong></span><b className="fold-icon"><EuIcon name="plus" /></b></summary>
+              <div className="compact-stack">
+                {wishes.map((record) => (
+                  <NavLink key={record.id} className="compact-record-link" to={'/registro/' + record.id}>
+                    <Tag tone="pink">{record.type}</Tag><p>{record.text}</p>
+                  </NavLink>
+                ))}
+              </div>
+            </details>
+          )}
 
-          <details className="life-fold" open>
-            <summary><span><small>PRÓXIMOS PASSOS</small><strong>Coisas que pedem continuidade</strong></span><b className="fold-icon"><EuIcon name="plus" /></b></summary>
-            <div className="compact-stack">
-              {goals.length ? goals.map((record) => (
-                <NavLink key={record.id} className="compact-record-link" to={'/registro/' + record.id}>
-                  <Tag tone="coral">{record.type}</Tag><p>{record.text}</p>
-                </NavLink>
-              )) : <p className="muted-copy">Cursos, objetivos e pendências vivas aparecem aqui.</p>}
-            </div>
-          </details>
+          {goals.length > 0 && (
+            <details className="life-fold" open>
+              <summary><span><small>PRÓXIMOS PASSOS</small><strong>Coisas que pedem continuidade</strong></span><b className="fold-icon"><EuIcon name="plus" /></b></summary>
+              <div className="compact-stack">
+                {goals.map((record) => (
+                  <NavLink key={record.id} className="compact-record-link" to={'/registro/' + record.id}>
+                    <Tag tone="coral">{record.type}</Tag><p>{record.text}</p>
+                  </NavLink>
+                ))}
+              </div>
+            </details>
+          )}
 
-          <details className="life-fold">
-            <summary><span><small>DEPOIS</small><strong>Futuro sem pressão</strong></span><b className="fold-icon"><EuIcon name="plus" /></b></summary>
-            <div className="someday-grid">
-              {someday.length ? someday.map((record) => (
-                <NavLink key={record.id} to={'/registro/' + record.id} className="someday-card">
-                  <Tag tone="lilac">{record.type}</Tag><p>{record.text}</p><span>não está cobrando você agora</span>
-                </NavLink>
-              )) : <p className="muted-copy">Coisas de “um dia eu quero…” moram aqui.</p>}
-            </div>
-          </details>
+          {someday.length > 0 && (
+            <details className="life-fold">
+              <summary><span><small>DEPOIS</small><strong>Futuro sem pressão</strong></span><b className="fold-icon"><EuIcon name="plus" /></b></summary>
+              <div className="someday-grid">
+                {someday.map((record) => (
+                  <NavLink key={record.id} to={'/registro/' + record.id} className="someday-card">
+                    <Tag tone="lilac">{record.type}</Tag><p>{record.text}</p><span>não está cobrando você agora</span>
+                  </NavLink>
+                ))}
+              </div>
+            </details>
+          )}
+
+          {active.length + wishes.length + goals.length + someday.length === 0 && (
+            <SmartEmptyState quiet icon="check" title="Nada precisa virar história aberta agora." detail="O EU continua observando conexões e só traz blocos de movimento quando existir algo real para acompanhar." />
+          )}
         </>
       )}
 
@@ -339,18 +346,21 @@ export function CareerPlanPage() {
       <section className="career-live">
         <SectionTitle eyebrow="RADAR" title="O plano aprende com você" />
         <div className="career-live-grid">
-          <article>
-            <Tag tone="coral">LACUNAS</Tag>
-            {gaps.length ? gaps.map((item) => <p key={item.id}>{item.text}</p>) : <p>Registre cursos, tecnologias e coisas que você percebe que precisa aprender.</p>}
-          </article>
-          <article>
-            <Tag tone="pink">INTERESSES</Tag>
-            {interests.length ? interests.map((item) => <p key={item.id}>{item.text}</p>) : <p>Vagas, empresas e caminhos que chamarem sua atenção entram aqui.</p>}
-          </article>
-          <article>
-            <Tag tone="green">DECISÕES</Tag>
-            {decisions.length ? decisions.map((item) => <p key={item.id}>{item.text}</p>) : <p>As decisões profissionais ficam registradas para o plano não perder contexto.</p>}
-          </article>
+          {gaps.length ? (
+            <article><Tag tone="coral">LACUNAS</Tag>{gaps.map((item) => <p key={item.id}>{item.text}</p>)}</article>
+          ) : (
+            <SmartEmptyState quiet icon="book" title="Nenhuma lacuna registrada." detail="Cursos e tecnologias só entram aqui quando você realmente perceber uma necessidade." />
+          )}
+          {interests.length ? (
+            <article><Tag tone="pink">INTERESSES</Tag>{interests.map((item) => <p key={item.id}>{item.text}</p>)}</article>
+          ) : (
+            <SmartEmptyState quiet icon="sparkles" title="Nenhum interesse salvo." detail="Vagas, empresas e caminhos aparecem quando chamarem sua atenção de verdade." />
+          )}
+          {decisions.length ? (
+            <article><Tag tone="green">DECISÕES</Tag>{decisions.map((item) => <p key={item.id}>{item.text}</p>)}</article>
+          ) : (
+            <SmartEmptyState quiet icon="check" title="Sem decisões profissionais registradas." detail="O plano não inventa escolhas; ele espera você tomar uma." />
+          )}
         </div>
       </section>
     </div>
