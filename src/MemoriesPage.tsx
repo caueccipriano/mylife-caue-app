@@ -22,7 +22,6 @@ export default function MemoriesPage() {
   const [moodFilter, setMoodFilter] = useState('')
   const threads = useMemo(() => deriveMemoryThreads(records, isRecordVisibleForInsights), [records])
   const allMoods = listMoodCheckins()
-  const moods = allMoods.slice(-14).reverse()
   const moodByDate = new Map(allMoods.map((item) => [item.date, item.mood]))
 
   const topTags = useMemo(() => {
@@ -89,6 +88,29 @@ export default function MemoriesPage() {
     navigate('/memorias', { replace: true })
   }
 
+  function selectQuickFilter(value: 'recent' | 'favorites' | 'chatgpt' | 'decisão' | 'all') {
+    setMode('search')
+    setQuery('')
+    setTagFilter('')
+    setAreaFilter('')
+    setStatusFilter('')
+    setMoodFilter('')
+    if (value === 'recent') {
+      setFilter('all')
+      setPeriodFilter('30')
+    } else {
+      setFilter(value === 'all' ? 'all' : value)
+      setPeriodFilter('all')
+    }
+    navigate('/memorias', { replace: true })
+  }
+
+  function askEuFromMemory() {
+    const value = query.trim()
+    if (!value) return
+    navigate('/pergunte?q=' + encodeURIComponent(value))
+  }
+
   function RecordCard({ record }: { record: (typeof records)[number] }) {
     const tags = record.tags?.length ? record.tags : suggestTags(record.text, record.area, record.type)
     const sealedCapsule = Boolean(record.revealAt && !record.capsuleOpenedAt && new Date(record.revealAt).getTime() > Date.now())
@@ -142,38 +164,58 @@ export default function MemoriesPage() {
     <div className="v2-page memories-page">
       <BrandTop />
 
-      <header className="v2-hero memories-hero">
+      <header className="memory-first-header-v41">
         <Tag tone="pink">MEMÓRIAS</Tag>
-        <h1>Tudo que você<br />quis guardar.</h1>
-        <p>Decisões, desejos, cursos, conversas, referências e coisas que você nem lembrava que tinha guardado.</p>
+        <h1>O que você está<br />tentando lembrar?</h1>
+        <p>Procure do jeito que você falaria. O arquivo encontra registros; o EU cruza contexto e responde com fontes.</p>
       </header>
 
-      <nav className="memory-section-nav" aria-label="Seções de Memórias">
-        <NavLink to="/memorias" end><EuIcon name="search" />Buscar</NavLink>
+      <section className="memory-first-search-v41" aria-label="Buscar nas Memórias">
+        <div className="memory-first-input-v41">
+          <span><EuIcon name="search" /></span>
+          <input
+            value={query}
+            onFocus={() => selectMode('search')}
+            onChange={(event) => {
+              setQuery(event.target.value)
+              if (mode !== 'search') selectMode('search')
+            }}
+            placeholder="Ex.: qual era aquele relógio que eu gostei?"
+            aria-label="O que você está tentando lembrar?"
+          />
+          {query && <button className="memory-search-clear" aria-label="Limpar busca" onClick={() => setQuery('')}><EuIcon name="x" /></button>}
+        </div>
+        <div className="memory-first-actions-v41">
+          <button className="primary" onClick={() => selectMode('search')}><EuIcon name="search" />Buscar no arquivo</button>
+          <button className="ask" onClick={askEuFromMemory} disabled={!query.trim()}><EuIcon name="sparkles" />Perguntar ao EU</button>
+        </div>
+      </section>
+
+      <div className="memory-quick-filters-v41" aria-label="Atalhos de Memórias">
+        <button className={filter === 'all' && periodFilter === 'all' && !query ? 'active' : ''} onClick={() => selectQuickFilter('all')}>Tudo</button>
+        <button className={filter === 'all' && periodFilter === '30' ? 'active' : ''} onClick={() => selectQuickFilter('recent')}>Recentes</button>
+        <button className={filter === 'favorites' ? 'active' : ''} onClick={() => selectQuickFilter('favorites')}><EuIcon name="heart" />Favoritos</button>
+        <button className={filter === 'chatgpt' ? 'active' : ''} onClick={() => selectQuickFilter('chatgpt')}><EuIcon name="chat" />Do Chat</button>
+        <button className={filter === 'decisão' ? 'active' : ''} onClick={() => selectQuickFilter('decisão')}><EuIcon name="check" />Decisões</button>
+      </div>
+
+      <nav className="memory-explore-v41" aria-label="Explorar Memórias">
+        <button className={mode === 'search' ? 'active' : ''} onClick={() => selectMode('search')}><EuIcon name="search" />Arquivo</button>
+        <button className={mode === 'timeline' ? 'active' : ''} onClick={() => selectMode('timeline')}><EuIcon name="note" />Linha do tempo</button>
         <NavLink to="/memorias/colecoes"><EuIcon name="collections" />Coleções</NavLink>
         <NavLink to="/memorias/humor"><EuIcon name="mood" />Humor</NavLink>
-        <NavLink to="/seguranca"><EuIcon name="settings" />Ajustes</NavLink>
       </nav>
 
-      <NavLink className="ask-eu-entry" to="/pergunte">
-        <div>
-          <Tag tone="ink">PERGUNTE AO EU</Tag>
-          <strong>“O que eu já falei sobre isso?”</strong>
-          <span>Pergunte em linguagem natural e veja as fontes.</span>
-        </div>
-        <b><EuIcon name="arrow-up-right" /></b>
-      </NavLink>
-
       {mode === 'search' && !query.trim() && activeFilterCount === 0 && !initialCollection && threads.length > 0 && (
-        <section className="memory-threads" aria-label="Histórias que você conectou">
+        <section className="memory-threads memory-threads-v41" aria-label="Conexões encontradas no arquivo">
           <div className="memory-threads-head">
             <div>
-              <Tag tone="ink">ENCONTROS DO SEU ARQUIVO</Tag>
-              <h2>Coisas que se conectam.</h2>
+              <Tag tone="lilac">CONEXÕES</Tag>
+              <h2>Coisas que seu arquivo juntou.</h2>
             </div>
           </div>
           <div className="memory-thread-list">
-            {threads.map((thread) => (
+            {threads.slice(0, 4).map((thread) => (
               <button
                 type="button"
                 key={thread.id}
@@ -192,24 +234,6 @@ export default function MemoriesPage() {
             ))}
           </div>
         </section>
-      )}
-
-      <div className="memory-mode-switch">
-        <button className={mode === 'search' ? 'active' : ''} onClick={() => selectMode('search')}><EuIcon name="search" />Buscar</button>
-        <button className={mode === 'timeline' ? 'active' : ''} onClick={() => selectMode('timeline')}><EuIcon name="note" />Linha do tempo</button>
-      </div>
-
-      {mode === 'search' && (
-        <div className="memory-search">
-          <span><EuIcon name="search" /></span>
-          <input
-            value={query}
-            onChange={(event) => setQuery(event.target.value)}
-            placeholder="Ex.: qual era aquele relógio que eu gostei?"
-            aria-label="Buscar nas memórias"
-          />
-          {query && <button className="memory-search-clear" aria-label="Limpar busca" onClick={() => setQuery('')}><EuIcon name="x" /></button>}
-        </div>
       )}
 
       <details className="memory-filter-panel memory-filter-hub">
@@ -323,19 +347,7 @@ export default function MemoriesPage() {
         </section>
       )}
 
-      {moods.length > 0 && (
-        <section className="memory-moods">
-          <SectionTitle eyebrow="HUMOR" title="Um preview do seu histórico" action={<button className="quiet-link" onClick={() => navigate('/memorias/humor')}>ver heatmap <EuIcon name="arrow-up-right" /></button>} />
-          <div className="mood-history">
-            {moods.map((item) => (
-              <article key={item.date} className={'mood-history-' + item.mood}>
-                <span><EuIcon name={item.mood === 'animado' ? 'smile' : item.mood === 'ok' ? 'neutral' : item.mood === 'cansado' ? 'moon' : 'bolt'} /></span>
-                <small>{new Intl.DateTimeFormat('pt-BR', { day: '2-digit', month: 'short' }).format(new Date(item.date + 'T12:00:00'))}</small>
-              </article>
-            ))}
-          </div>
-        </section>
-      )}
+
 
     </div>
   )
