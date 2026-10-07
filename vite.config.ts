@@ -29,7 +29,7 @@ export default defineConfig({
         background_color: '#F6F7FB',
         display: 'standalone',
         orientation: 'portrait-primary',
-        start_url: base + '?v=eu-v20-central',
+        start_url: base,
         scope: base,
         categories: ['lifestyle', 'utilities'],
         share_target: {

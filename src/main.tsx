@@ -28,7 +28,20 @@ import './v41-memory-first.css'
 import './v42-one-eu.css'
 import './v43-iphone-polish.css'
 
-const APP_VERSION = 'eu-v43-iphone-polish'
+const APP_VERSION = 'eu-v44-fresh-update'
+
+let pwaReloading = false
+
+function reloadWhenNewServiceWorkerTakesControl() {
+  if (!('serviceWorker' in navigator)) return
+
+  navigator.serviceWorker.addEventListener('controllerchange', () => {
+    if (pwaReloading) return
+
+    pwaReloading = true
+    window.location.reload()
+  })
+}
 
 async function refreshPwaShell() {
   if (!('serviceWorker' in navigator)) return
@@ -48,6 +61,17 @@ async function refreshPwaShell() {
     // A atualização do shell não pode impedir o app de abrir.
   }
 }
+
+reloadWhenNewServiceWorkerTakesControl()
+
+function requestFreshShell() {
+  if (document.visibilityState === 'hidden') return
+  void refreshPwaShell()
+}
+
+window.addEventListener('pageshow', requestFreshShell)
+window.addEventListener('online', requestFreshShell)
+document.addEventListener('visibilitychange', requestFreshShell)
 
 function routeSharedContent() {
   const params = new URLSearchParams(window.location.search)
@@ -72,9 +96,7 @@ function routeSharedContent() {
 
 routeSharedContent()
 
-window.addEventListener('load', () => {
-  void refreshPwaShell()
-})
+window.addEventListener('load', requestFreshShell)
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
