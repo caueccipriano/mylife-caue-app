@@ -52,9 +52,9 @@ A interface usa a identidade consolidada do EU/FÔLEGO: superfícies claras, azu
 
 ## Estado atual
 
-**EU v40 — Life Map**
+**EU v41 — Memory First**
 
-Vida agora tem só **Mapa / Em movimento / Você**. O Mapa reordena áreas por foco, atenção e movimento; cada card mostra o estado atual e o contexto mais recente. Dinheiro abre a fonte Fôlego diretamente e usa seu bridge como contexto, sem duplicar finanças. Em movimento concentra histórias abertas, desejos e futuro sem pressão; Você reúne fase atual, identidade, capítulos, planos e retrospectivas.
+Memórias passa a abrir com a pergunta **“O que você está tentando lembrar?”**. Um único campo permite buscar no arquivo ou enviar a mesma frase para o Brain com fontes. Recentes, Favoritos, Do Chat e Decisões ficam como filtros visíveis; Linha do tempo, Coleções e Humor viram exploração secundária. Ajustes saiu da navegação de Memórias e filtros avançados ficaram recolhidos.
 
 ---
 
