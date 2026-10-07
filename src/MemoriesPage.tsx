@@ -8,6 +8,8 @@ import { useBridges, useRecords } from './appState'
 import { BrandTop, EuIcon, SectionTitle, Tag, formatShortDate, typeIcon, typeTone } from './v2Ui'
 import { deriveOneEuConnections } from './oneEu'
 import OneEuConnections from './OneEuConnections'
+import { deriveMemoryInsights } from './memoryIntelligence'
+import MemoryInsights from './MemoryInsights'
 
 export default function MemoriesPage() {
   const records = useRecords()
@@ -25,6 +27,7 @@ export default function MemoriesPage() {
   const [moodFilter, setMoodFilter] = useState('')
   const threads = useMemo(() => deriveMemoryThreads(records, isRecordVisibleForInsights), [records])
   const oneEuConnections = useMemo(() => deriveOneEuConnections(records, bridges), [records, bridges])
+  const memoryInsights = useMemo(() => deriveMemoryInsights(records), [records])
   const allMoods = listMoodCheckins()
   const moodByDate = new Map(allMoods.map((item) => [item.date, item.mood]))
 
@@ -212,6 +215,10 @@ export default function MemoriesPage() {
 
       {mode === 'search' && !query.trim() && activeFilterCount === 0 && !initialCollection && (
         <OneEuConnections items={oneEuConnections} limit={2} compact title="O resto do EU também lembra." />
+      )}
+
+      {mode === 'search' && !query.trim() && activeFilterCount === 0 && !initialCollection && (
+        <MemoryInsights items={memoryInsights} />
       )}
 
       {mode === 'search' && !query.trim() && activeFilterCount === 0 && !initialCollection && threads.length > 0 && (
