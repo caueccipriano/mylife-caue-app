@@ -169,7 +169,16 @@ export default function LifePage() {
 
       {view === 'moving' && (
         <>
-          <section className="life-block">
+          <section className="life-moving-summary-v40">
+            <div><small>EM MOVIMENTO</small><h2>O que ainda tem história aberta.</h2><p>Projetos, metas, desejos e próximos passos ficam juntos aqui — sem transformar tudo em urgência.</p></div>
+            <div>
+              <span><strong>{active.length}</strong> vivos</span>
+              <span><strong>{wishes.length}</strong> desejos</span>
+              <span><strong>{someday.length}</strong> depois</span>
+            </div>
+          </section>
+
+          <section className="life-block life-moving-primary-v40">
             <SectionTitle eyebrow="AGORA" title="Projetos, metas e começos" />
             <div className="life-list-cards">
               {active.slice(0, 8).map((record) => (
