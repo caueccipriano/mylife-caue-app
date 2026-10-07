@@ -437,3 +437,123 @@ export async function registerMoneyMovement(input: {
   if (error) throw error
   return data
 }
+
+function todayKey() {
+  return new Date().toISOString().slice(0, 10)
+}
+
+export async function setMoneyBudgetItem(input: {
+  spaceId: string
+  categoryId: string
+  plannedAmount: number
+  warningThreshold?: number
+  criticalThreshold?: number
+}) {
+  const { data, error } = await moneySupabase.rpc('onboarding_set_budget_item', {
+    p_space_id: input.spaceId,
+    p_period_month: monthKey(),
+    p_category_id: input.categoryId,
+    p_planned_amount: input.plannedAmount,
+    p_warning_threshold: input.warningThreshold ?? .70,
+    p_critical_threshold: input.criticalThreshold ?? .90,
+  })
+  if (error) throw error
+  return data
+}
+
+export async function createMoneyAccount(input: {
+  spaceId: string
+  name: string
+  openingBalance: number
+  institution?: string
+  type?: string
+  availableForSpending?: boolean
+}) {
+  const { data, error } = await moneySupabase.rpc('onboarding_create_account', {
+    p_space_id: input.spaceId,
+    p_name: input.name,
+    p_opening_balance: input.openingBalance,
+    p_balance_date: todayKey(),
+    p_institution: input.institution?.trim() || null,
+    p_type: input.type || 'checking',
+    p_available_for_spending: input.availableForSpending ?? true,
+  })
+  if (error) throw error
+  return data
+}
+
+export async function configureMoneyIncome(input: {
+  spaceId: string
+  name: string
+  amount: number
+  dayOfMonth: number
+  accountId: string
+  categoryId?: string
+}) {
+  const { data, error } = await moneySupabase.rpc('onboarding_configure_income', {
+    p_space_id: input.spaceId,
+    p_name: input.name,
+    p_amount: input.amount,
+    p_day_of_month: input.dayOfMonth,
+    p_account_id: input.accountId,
+    p_starts_on: todayKey(),
+    p_category_id: input.categoryId || null,
+  })
+  if (error) throw error
+  return data
+}
+
+export async function configureMoneyRecurringExpense(input: {
+  spaceId: string
+  name: string
+  amount: number
+  dayOfMonth: number
+  categoryId: string
+  accountId: string
+  certainty?: string
+}) {
+  const { data, error } = await moneySupabase.rpc('onboarding_configure_recurring_expense', {
+    p_space_id: input.spaceId,
+    p_name: input.name,
+    p_amount: input.amount,
+    p_day_of_month: input.dayOfMonth,
+    p_category_id: input.categoryId,
+    p_account_id: input.accountId,
+    p_starts_on: todayKey(),
+    p_certainty: input.certainty || 'confirmed',
+  })
+  if (error) throw error
+  return data
+}
+
+export async function createMoneyCard(input: {
+  spaceId: string
+  name: string
+  closingDay: number
+  dueDay: number
+  paymentAccountId: string
+  issuer?: string
+  brand?: string
+  lastFour?: string
+  personalLimit?: number | null
+  issuerLimit?: number | null
+  currentInvoiceBalance?: number
+  currentInvoiceDueDate?: string | null
+}) {
+  const { data, error } = await moneySupabase.rpc('onboarding_create_card', {
+    p_space_id: input.spaceId,
+    p_name: input.name,
+    p_closing_day: input.closingDay,
+    p_due_day: input.dueDay,
+    p_payment_account_id: input.paymentAccountId,
+    p_issuer: input.issuer?.trim() || null,
+    p_brand: input.brand?.trim() || null,
+    p_last_four: input.lastFour?.trim() || null,
+    p_personal_limit: input.personalLimit ?? null,
+    p_issuer_limit: input.issuerLimit ?? null,
+    p_current_invoice_balance: input.currentInvoiceBalance ?? 0,
+    p_current_invoice_due_date: input.currentInvoiceDueDate || null,
+  })
+  if (error) throw error
+  return data
+}
