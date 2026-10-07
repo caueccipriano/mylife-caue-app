@@ -4,11 +4,14 @@ import { groupTimeline, smartSearch } from './intelligence'
 import { deriveMemoryThreads } from './memoryThreads'
 import './memory-threads.css'
 import { isRecordVisibleForInsights, listMoodCheckins, suggestTags } from './storage'
-import { useRecords } from './appState'
+import { useBridges, useRecords } from './appState'
 import { BrandTop, EuIcon, SectionTitle, Tag, formatShortDate, typeIcon, typeTone } from './v2Ui'
+import { deriveOneEuConnections } from './oneEu'
+import OneEuConnections from './OneEuConnections'
 
 export default function MemoriesPage() {
   const records = useRecords()
+  const { bridges } = useBridges()
   const [params] = useSearchParams()
   const navigate = useNavigate()
   const [mode, setMode] = useState<'search' | 'timeline'>(() => params.get('mode') === 'timeline' || localStorage.getItem('eu-memories-mode') === 'timeline' ? 'timeline' : 'search')
@@ -21,6 +24,7 @@ export default function MemoriesPage() {
   const [periodFilter, setPeriodFilter] = useState<'all' | '30' | '90' | '365'>('all')
   const [moodFilter, setMoodFilter] = useState('')
   const threads = useMemo(() => deriveMemoryThreads(records, isRecordVisibleForInsights), [records])
+  const oneEuConnections = useMemo(() => deriveOneEuConnections(records, bridges), [records, bridges])
   const allMoods = listMoodCheckins()
   const moodByDate = new Map(allMoods.map((item) => [item.date, item.mood]))
 
@@ -205,6 +209,10 @@ export default function MemoriesPage() {
         <NavLink to="/memorias/colecoes"><EuIcon name="collections" />Coleções</NavLink>
         <NavLink to="/memorias/humor"><EuIcon name="mood" />Humor</NavLink>
       </nav>
+
+      {mode === 'search' && !query.trim() && activeFilterCount === 0 && !initialCollection && (
+        <OneEuConnections items={oneEuConnections} limit={2} compact title="O resto do EU também lembra." />
+      )}
 
       {mode === 'search' && !query.trim() && activeFilterCount === 0 && !initialCollection && threads.length > 0 && (
         <section className="memory-threads memory-threads-v41" aria-label="Conexões encontradas no arquivo">
