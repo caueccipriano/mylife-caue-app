@@ -52,9 +52,9 @@ A interface usa a identidade consolidada do EU/FÔLEGO: superfícies claras, azu
 
 ## Estado atual
 
-**EU v41 — Memory First**
+**EU v42 — One EU**
 
-Memórias passa a abrir com a pergunta **“O que você está tentando lembrar?”**. Um único campo permite buscar no arquivo ou enviar a mesma frase para o Brain com fontes. Recentes, Favoritos, Do Chat e Decisões ficam como filtros visíveis; Linha do tempo, Coleções e Humor viram exploração secundária. Ajustes saiu da navegação de Memórias e filtros avançados ficaram recolhidos.
+Hoje, Central, Vida, Memórias e Brain passam a consumir a mesma camada de conexões entre registros e bridges. Compras podem conversar com Fôlego, estudo com carreira, decisões com movimentos posteriores e metas financeiras podem aparecer como contexto fora do Dinheiro sem duplicar sua fonte de verdade. O bridge do Fôlego agora publica também quantidade de metas ativas, meta principal e progresso resumido.
 
 ---
 
