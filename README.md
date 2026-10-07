@@ -52,9 +52,9 @@ A interface usa a identidade consolidada do EU/FÔLEGO: superfícies claras, azu
 
 ## Estado atual
 
-**EU v35 — Design System Reset**
+**EU v36 — Fôlego Parity**
 
-A identidade visual foi unificada entre Hoje, Dinheiro, Central, Vida e Memórias: tipografia sans consistente, paleta menos saturada, contraste revisado, headers compactos, dock clara em todos os períodos do dia e FAB reduzido fora da Home. Dinheiro ganhou hero legível, Central abandonou o rótulo Life OS, Memórias recebeu hero e CTA reorganizados, e os estados de humor passaram a usar tons suaves em vez de neon.
+Dinheiro deixa de ser apenas consultivo: Planejamento agora cria e edita limites por categoria, e a Carteira passa a configurar recebimento recorrente, conta, reserva, cartão e conta fixa usando os mesmos RPCs já utilizados pelo Fôlego independente. O registro rápido, histórico, cartões, dívidas, recorrências, metas e snapshot continuam usando a mesma fonte de verdade financeira.
 
 ---
 

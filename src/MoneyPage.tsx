@@ -1,5 +1,6 @@
 import { type FormEvent, useEffect, useMemo, useState } from 'react'
 import { BrandTop, EuIcon, Tag } from './v2Ui'
+import MoneySetupSheet, { type MoneySetupKind } from './MoneySetupSheet'
 import {
   loadMoneyBundle,
   moneySupabase,
@@ -7,6 +8,7 @@ import {
   signInMoney,
   signOutMoney,
   type MoneyBundle,
+  type MoneyBudgetItem,
   type MoneyCategory,
 } from './folegoNative'
 
@@ -69,6 +71,7 @@ export default function MoneyPage() {
   const [error, setError] = useState('')
   const [commandDraft, setCommandDraft] = useState(() => sessionStorage.getItem('eu-money-command-draft') || '')
   const [registerOpen, setRegisterOpen] = useState(() => Boolean(sessionStorage.getItem('eu-money-command-draft')))
+  const [setupOpen, setSetupOpen] = useState<{ kind: MoneySetupKind; budgetItem?: MoneyBudgetItem | null } | null>(null)
 
   async function refresh() {
     setLoading(true)
@@ -189,6 +192,7 @@ export default function MoneyPage() {
                   <strong>{money(bundle.snapshot.nextIncomeAmount)}</strong>
                   <p>{bundle.snapshot.nextIncomeDate ? dateLabel(bundle.snapshot.nextIncomeDate) : 'Ainda não configurado'}</p>
                 </div>
+                <button className="money-inline-action" onClick={() => setSetupOpen({ kind: 'income' })}>{bundle.snapshot.needsIncomeSetup ? 'configurar' : 'ajustar'}</button>
               </section>
 
               <section className="money-section">
@@ -210,7 +214,10 @@ export default function MoneyPage() {
 
           {view === 'plan' && (
             <section className="money-section money-full-view">
-              <div className="money-section-title"><div><small>PLANO</small><h2>Planejamento do mês</h2><p>Limites que alimentam alertas e o cálculo do seu fôlego.</p></div></div>
+              <div className="money-section-title">
+                <div><small>PLANO</small><h2>Planejamento do mês</h2><p>Limites que alimentam alertas e o cálculo do seu fôlego.</p></div>
+                <button className="money-small-action" onClick={() => setSetupOpen({ kind: 'budget' })}><EuIcon name="plus" />categoria</button>
+              </div>
               <div className="money-plan-summary">
                 <div><span>planejado</span><strong>{money(bundle.budgetItems.reduce((sum, item) => sum + item.plannedAmount, 0))}</strong></div>
                 <div><span>categorias</span><strong>{bundle.budgetItems.length}</strong></div>
@@ -218,18 +225,24 @@ export default function MoneyPage() {
               </div>
               <div className="money-plan-list">
                 {bundle.budgetItems.map((item) => (
-                  <article key={item.categoryId}>
+                  <article key={item.categoryId} className="money-plan-editable">
                     <span className="money-plan-icon"><EuIcon name="wallet" /></span>
                     <div><strong>{item.categoryPath}</strong><small>aviso {Math.round(item.warningThreshold * 100)}% · crítico {Math.round(item.criticalThreshold * 100)}%</small></div>
                     <b>{money(item.plannedAmount)}</b>
+                    <button aria-label={'Editar planejamento de ' + item.categoryPath} onClick={() => setSetupOpen({ kind: 'budget', budgetItem: item })}><EuIcon name="arrow-right" /></button>
                   </article>
                 ))}
-                {!bundle.budgetItems.length && <div className="money-empty">Nenhum limite planejado para este mês.</div>}
+                {!bundle.budgetItems.length && (
+                  <div className="money-empty money-empty-action">
+                    <p>Nenhum limite planejado para este mês.</p>
+                    <button onClick={() => setSetupOpen({ kind: 'budget' })}><EuIcon name="plus" />Criar primeiro limite</button>
+                  </div>
+                )}
               </div>
             </section>
           )}
 
-          {view === 'wallet' && <MoneyWallet bundle={bundle} />}
+          {view === 'wallet' && <MoneyWallet bundle={bundle} onSetup={(kind) => setSetupOpen({ kind })} />}
         </>
       )}
 
@@ -251,6 +264,20 @@ export default function MoneyPage() {
             setRegisterOpen(false)
             setCommandDraft('')
             sessionStorage.removeItem('eu-money-command-draft')
+            void refresh()
+          }}
+        />
+      )}
+
+      {bundle && setupOpen && (
+        <MoneySetupSheet
+          key={setupOpen.kind + ':' + (setupOpen.budgetItem?.categoryId || 'new')}
+          bundle={bundle}
+          kind={setupOpen.kind}
+          initialBudgetItem={setupOpen.budgetItem}
+          onClose={() => setSetupOpen(null)}
+          onSaved={() => {
+            setSetupOpen(null)
             void refresh()
           }}
         />
@@ -284,10 +311,19 @@ function TransactionList({ bundle, limit }: { bundle: MoneyBundle; limit: number
   )
 }
 
-function MoneyWallet({ bundle }: { bundle: MoneyBundle }) {
+function MoneyWallet({ bundle, onSetup }: { bundle: MoneyBundle; onSetup: (kind: MoneySetupKind) => void }) {
   return (
     <section className="money-section money-full-view">
       <div className="money-section-title"><div><small>CARTEIRA</small><h2>Tudo que compõe sua vida financeira</h2><p>Contas, cartões, dívidas, recorrências e metas em uma visão só.</p></div></div>
+
+      <div className="money-config-grid" aria-label="Configurar Fôlego">
+        <button onClick={() => onSetup('income')}><span><EuIcon name="trend-up" /></span><strong>Recebimento</strong><small>salário e entradas recorrentes</small></button>
+        <button onClick={() => onSetup('account')}><span><EuIcon name="wallet" /></span><strong>Conta</strong><small>saldo disponível hoje</small></button>
+        <button onClick={() => onSetup('reserve')}><span><EuIcon name="shield" /></span><strong>Reserva</strong><small>dinheiro protegido</small></button>
+        <button onClick={() => onSetup('card')}><span><EuIcon name="collections" /></span><strong>Cartão</strong><small>fechamento, vencimento e fatura</small></button>
+        <button onClick={() => onSetup('recurring')}><span><EuIcon name="refresh" /></span><strong>Recorrência</strong><small>contas fixas mensais</small></button>
+        <button onClick={() => onSetup('budget')}><span><EuIcon name="compass" /></span><strong>Planejamento</strong><small>limite por categoria</small></button>
+      </div>
 
       <div className="money-wallet-block">
         <h3>Contas <span>{bundle.accounts.length}</span></h3>

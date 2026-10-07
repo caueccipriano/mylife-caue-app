@@ -19,8 +19,9 @@ import './v31-alive.css'
 import './v32-assistant.css'
 import './v34-fluid.css'
 import './v35-system.css'
+import './v36-finance.css'
 
-const APP_VERSION = 'eu-v35-design-system-reset'
+const APP_VERSION = 'eu-v36-folego-parity'
 
 async function refreshPwaShell() {
   if (!('serviceWorker' in navigator)) return
