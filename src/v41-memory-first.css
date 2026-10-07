@@ -1,0 +1,507 @@
+/* EU v41 · Memory First
+   Search first, ask second, exploration third. */
+
+.memories-page{
+  --memory-v41-line:rgba(24,32,51,.075);
+  --memory-v41-rose:#b66f91;
+  --memory-v41-lilac:#7567b0;
+  --memory-v41-blue:#3b5ccc;
+}
+
+.memory-first-header-v41{
+  display:grid;
+  gap:8px;
+  padding:18px 2px 14px;
+}
+
+.memory-first-header-v41 h1{
+  max-width:640px;
+  margin:0;
+  color:var(--eu35-ink,#182033);
+  font-size:clamp(36px,7vw,52px);
+  line-height:.96;
+  letter-spacing:-.058em;
+}
+
+.memory-first-header-v41>p{
+  max-width:560px;
+  margin:0;
+  color:#70798d;
+  font-size:10.5px;
+  line-height:1.5;
+}
+
+/* ---------- primary search surface ---------- */
+.memory-first-search-v41{
+  display:grid;
+  gap:9px;
+  padding:14px;
+  border:1px solid rgba(182,111,145,.11);
+  border-radius:21px;
+  background:
+    radial-gradient(circle at 100% 0%,rgba(182,111,145,.07),transparent 13rem),
+    linear-gradient(145deg,#fff,#faf6f8);
+}
+
+.memory-first-input-v41{
+  min-height:57px;
+  display:grid;
+  grid-template-columns:34px 1fr auto;
+  align-items:center;
+  gap:8px;
+  padding:4px 6px 4px 10px;
+  border:1px solid var(--memory-v41-line);
+  border-radius:16px;
+  background:#fff;
+}
+
+.memory-first-input-v41>span{
+  width:34px;
+  height:34px;
+  display:grid;
+  place-items:center;
+  border-radius:11px;
+  background:#f7edf2;
+  color:#9f617d;
+}
+
+.memory-first-input-v41>span .eu-icon{
+  width:15px;
+}
+
+.memory-first-input-v41 input{
+  min-width:0;
+  width:100%;
+  border:0;
+  outline:0;
+  background:transparent;
+  color:var(--eu35-ink,#182033);
+  font:inherit;
+  font-size:13px;
+  font-weight:650;
+}
+
+.memory-first-input-v41 input::placeholder{
+  color:#a0a7b5;
+  font-weight:500;
+}
+
+.memory-first-input-v41 .memory-search-clear{
+  width:35px;
+  height:35px;
+  display:grid;
+  place-items:center;
+  border:0;
+  border-radius:10px;
+  background:#f3f4f7;
+  color:#7d8597;
+}
+
+.memory-first-input-v41 .memory-search-clear .eu-icon{
+  width:13px;
+}
+
+.memory-first-actions-v41{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:7px;
+}
+
+.memory-first-actions-v41 button{
+  min-height:43px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:7px;
+  border-radius:13px;
+  font-size:9px;
+  font-weight:850;
+}
+
+.memory-first-actions-v41 button .eu-icon{
+  width:13px;
+}
+
+.memory-first-actions-v41 .primary{
+  border:1px solid rgba(182,111,145,.10);
+  background:#f5eaf0;
+  color:#965a77;
+}
+
+.memory-first-actions-v41 .ask{
+  border:0;
+  background:var(--eu35-blue,#3b5ccc);
+  color:#fff;
+}
+
+.memory-first-actions-v41 .ask:disabled{
+  background:#dfe3ed;
+  color:#98a0b1;
+}
+
+/* ---------- quick filters ---------- */
+.memory-quick-filters-v41{
+  display:flex;
+  gap:6px;
+  margin:10px 0 8px;
+  overflow-x:auto;
+  scrollbar-width:none;
+}
+
+.memory-quick-filters-v41::-webkit-scrollbar{display:none}
+
+.memory-quick-filters-v41 button{
+  flex:0 0 auto;
+  min-height:34px;
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  padding:0 10px;
+  border:1px solid var(--memory-v41-line);
+  border-radius:999px;
+  background:rgba(255,255,255,.72);
+  color:#747d90;
+  font-size:8px;
+  font-weight:820;
+}
+
+.memory-quick-filters-v41 button.active{
+  border-color:rgba(182,111,145,.13);
+  background:#f7eaf0;
+  color:#9a5b79;
+}
+
+.memory-quick-filters-v41 .eu-icon{
+  width:12px;
+}
+
+/* ---------- secondary exploration ---------- */
+.memory-explore-v41{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:4px;
+  margin-bottom:18px;
+  padding:4px;
+  border:1px solid var(--memory-v41-line);
+  border-radius:15px;
+  background:#f2f4f7;
+}
+
+.memory-explore-v41 button,
+.memory-explore-v41 a{
+  min-width:0;
+  min-height:39px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:5px;
+  padding:0 6px;
+  border:0;
+  border-radius:11px;
+  background:transparent;
+  color:#778094;
+  text-decoration:none;
+  font-size:8px;
+  font-weight:800;
+}
+
+.memory-explore-v41 button.active,
+.memory-explore-v41 a.active{
+  background:#fff;
+  color:var(--memory-v41-rose);
+  box-shadow:0 5px 13px rgba(24,32,51,.045);
+}
+
+.memory-explore-v41 .eu-icon{
+  width:12px;
+}
+
+/* ---------- connections ---------- */
+.memory-threads-v41{
+  margin:0 0 17px!important;
+  padding:0!important;
+}
+
+.memory-threads-v41 .memory-threads-head{
+  margin-bottom:9px;
+}
+
+.memory-threads-v41 .memory-threads-head h2{
+  margin:6px 0 0;
+  color:var(--eu35-ink,#182033);
+  font-size:20px;
+  letter-spacing:-.04em;
+}
+
+.memory-threads-v41 .memory-thread-list{
+  gap:7px;
+}
+
+.memory-threads-v41 .memory-thread-card{
+  min-height:76px;
+  padding:11px 12px;
+  border:1px solid var(--memory-v41-line);
+  border-radius:16px;
+  background:#fff;
+  box-shadow:none;
+}
+
+.memory-threads-v41 .memory-thread-symbol{
+  width:34px;
+  height:34px;
+  border-radius:11px;
+  background:#f1edf8;
+  color:#6b5da0;
+}
+
+.memory-threads-v41 .memory-thread-copy em{
+  color:#898fa0;
+  font-size:7.5px;
+}
+
+.memory-threads-v41 .memory-thread-copy strong{
+  font-size:10.5px;
+  line-height:1.3;
+}
+
+.memory-threads-v41 .memory-thread-copy small{
+  font-size:8px;
+  line-height:1.35;
+}
+
+/* ---------- advanced filters become subordinate ---------- */
+.memories-page .memory-filter-panel{
+  margin:0 0 14px!important;
+  border:1px solid var(--memory-v41-line)!important;
+  border-radius:14px!important;
+  background:rgba(255,255,255,.64)!important;
+  box-shadow:none!important;
+}
+
+.memories-page .memory-filter-panel>summary{
+  min-height:42px;
+  padding:0 11px!important;
+}
+
+.memories-page .memory-filter-panel>summary>span{
+  color:#687287;
+  font-size:8.5px;
+  font-weight:820;
+}
+
+.memories-page .memory-filter-panel>summary>b{
+  color:#939aa9;
+  font-size:7.5px;
+}
+
+.memories-page .memory-filter-hub-body{
+  padding:9px 11px 11px!important;
+}
+
+.memories-page .memory-advanced-filters{
+  gap:7px!important;
+}
+
+.memories-page .memory-advanced-filters label{
+  font-size:7.5px!important;
+}
+
+.memories-page .memory-advanced-filters select{
+  min-height:38px!important;
+  border-color:var(--memory-v41-line)!important;
+  background:#f7f8fa!important;
+}
+
+.memories-page .memory-tag-strip{
+  margin-top:8px!important;
+}
+
+.memories-page .memory-tag-strip button{
+  min-height:30px!important;
+  border-color:var(--memory-v41-line)!important;
+  background:#f7f8fa!important;
+  color:#747d90!important;
+}
+
+.memories-page .memory-tag-strip button.active{
+  background:#f5eaf0!important;
+  color:#965a77!important;
+}
+
+/* ---------- result state ---------- */
+.memories-page .memory-filter-status{
+  margin:0 0 10px;
+  padding:8px 10px;
+  border:1px solid var(--memory-v41-line);
+  border-radius:12px;
+  background:#fff;
+}
+
+.memories-page .memory-filter-status span{
+  color:#747d90;
+  font-size:8px;
+}
+
+.memories-page .memory-filter-status button{
+  color:#965a77;
+  font-size:8px;
+}
+
+.memories-page .memory-results,
+.memories-page .memory-timeline{
+  margin-top:18px!important;
+}
+
+.memories-page .memory-results .v2-section-title,
+.memories-page .memory-timeline .v2-section-title{
+  margin-bottom:10px!important;
+}
+
+.memories-page .memory-results .v2-section-title h2,
+.memories-page .memory-timeline .v2-section-title h2{
+  font-size:23px!important;
+}
+
+.memories-page .memory-list{
+  display:grid;
+  gap:7px;
+}
+
+.memories-page .memory-record-card{
+  min-height:76px;
+  padding:12px;
+  border:1px solid var(--memory-v41-line)!important;
+  border-radius:16px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+
+.memories-page .memory-icon{
+  width:36px!important;
+  height:36px!important;
+  border-radius:11px!important;
+}
+
+.memories-page .memory-record-card h3{
+  margin:4px 0 5px!important;
+  font-size:10.5px!important;
+  line-height:1.35!important;
+}
+
+.memories-page .memory-record-state-row,
+.memories-page .memory-inline-tags{
+  gap:5px!important;
+}
+
+.memories-page .memory-inline-tags span,
+.memories-page .memory-record-state-row>span{
+  font-size:7.5px!important;
+}
+
+/* ---------- timeline ---------- */
+.memories-page .timeline-month{
+  gap:8px!important;
+}
+
+.memories-page .timeline-month>h3{
+  color:#7a8295!important;
+  font-size:9px!important;
+}
+
+.memories-page .timeline-line{
+  padding-left:22px!important;
+}
+
+.memories-page .timeline-line::before{
+  left:7px!important;
+  background:linear-gradient(180deg,rgba(182,111,145,.18),rgba(117,103,176,.10),rgba(59,92,204,.05))!important;
+}
+
+.memories-page .timeline-event>i{
+  left:-19px!important;
+  top:21px!important;
+  width:8px!important;
+  height:8px!important;
+  border-color:var(--eu35-bg,#f6f7fb)!important;
+  background:var(--memory-v41-rose)!important;
+  box-shadow:0 0 0 4px rgba(182,111,145,.07)!important;
+}
+
+/* ---------- remove legacy memory hero surfaces if old CSS leaks ---------- */
+.memories-page .memories-hero,
+.memories-page .memory-section-nav,
+.memories-page .ask-eu-entry,
+.memories-page .memory-mode-switch,
+.memories-page>.memory-search,
+.memories-page .memory-moods{
+  display:none!important;
+}
+
+/* ---------- mobile ---------- */
+@media(max-width:520px){
+  .memory-first-header-v41{
+    padding:14px 1px 12px;
+  }
+
+  .memory-first-header-v41 h1{
+    font-size:36px;
+  }
+
+  .memory-first-header-v41>p{
+    font-size:9.8px;
+  }
+
+  .memory-first-search-v41{
+    padding:11px;
+    border-radius:18px;
+  }
+
+  .memory-first-input-v41{
+    min-height:53px;
+    border-radius:14px;
+  }
+
+  .memory-first-input-v41 input{
+    font-size:12px;
+  }
+
+  .memory-first-actions-v41 button{
+    min-height:41px;
+    font-size:8.5px;
+  }
+
+  .memory-explore-v41{
+    overflow-x:auto;
+    display:flex;
+    scrollbar-width:none;
+  }
+
+  .memory-explore-v41::-webkit-scrollbar{display:none}
+
+  .memory-explore-v41 button,
+  .memory-explore-v41 a{
+    flex:0 0 92px;
+  }
+
+  .memories-page .memory-advanced-filters{
+    grid-template-columns:1fr 1fr!important;
+  }
+}
+
+@media(max-width:390px){
+  .memory-first-header-v41 h1{
+    font-size:33px;
+  }
+
+  .memory-first-actions-v41{
+    grid-template-columns:1fr;
+  }
+
+  .memory-quick-filters-v41{
+    margin-top:8px;
+  }
+
+  .memories-page .memory-advanced-filters{
+    grid-template-columns:1fr!important;
+  }
+}
