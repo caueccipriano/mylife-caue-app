@@ -52,9 +52,15 @@ A interface usa a identidade consolidada do EU/FÔLEGO: superfícies claras, azu
 
 ## Estado atual
 
-**EU v55.1 — iPhone QA**
+**EU v55 — Actions**
 
-Passada visual pós-v54 baseada em QA real no iPhone. O release preserva todo o Living System e corrige a composição mobile antes do próximo ciclo de features:
+Depois do QA de iPhone, o comando **Diga ao EU** virou uma camada de ações com confirmação:
+
+- **Comandos com preview:** registrar, criar retorno, concluir, pausar ou preparar um movimento financeiro nunca grava algo silenciosamente.
+- **Lembretes locais:** frases como “me lembra sexta de mandar o formulário” viram uma Pendência com data de retorno.
+- **Concluir/pausar por linguagem natural:** o EU procura o registro, mostra exatamente qual item será alterado e só executa após confirmação.
+- **Dinheiro protegido:** “gastei 80 de gasolina” apenas abre o Fôlego preenchido para revisão; o comando não lança dinheiro sozinho.
+- **Captura contextual:** decisões, projetos, objetivos e candidaturas são classificados e recebem área antes do preview.
 
 - **Deep Routes 2.0:** páginas internas usam um shell visual mais consistente, sem dock principal e com densidade mobile reduzida.
 - **Empty States inteligentes:** o EU deixa de preencher espaço com blocos vazios e passa a explicar quando o silêncio é normal ou qual ação pequena faz sentido.

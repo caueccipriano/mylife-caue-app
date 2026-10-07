@@ -477,13 +477,113 @@ export type CommandIntent =
   | { kind: 'search'; query: string }
   | { kind: 'money'; query: string }
   | { kind: 'capture'; query: string; type: string; area: string }
+  | { kind: 'reminder'; query: string; area: string; followUpAt: string; followUpDays: number }
+  | { kind: 'complete'; query: string }
+  | { kind: 'pause'; query: string }
+
+function commandAscii(value: string) {
+  return lower(value).normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+}
+
+function commandArea(value: string) {
+  const q = commandAscii(value)
+  if (includesAny(q, ['trabalho', 'carreira', 'vaga', 'entrevista', 'curriculo', 'promocao', 'power bi', 'sap', 'sql', 'dados'])) return 'Carreira'
+  if (includesAny(q, ['curso', 'faculdade', 'estudo', 'prova', 'idioma', 'aula', 'certificacao'])) return 'Estudos'
+  if (includesAny(q, ['carro', 'tenis', 'relogio', 'perfume', 'notebook', 'celular', 'comprar', 'preco'])) return 'Compras'
+  if (includesAny(q, ['viagem', 'viajar', 'hotel', 'passagem', 'roteiro'])) return 'Viagens'
+  if (includesAny(q, ['dinheiro', 'guardar', 'investir', 'conta', 'cartao', 'parcela', 'orcamento'])) return 'Dinheiro'
+  if (includesAny(q, ['casa', 'apartamento', 'aluguel', 'movel'])) return 'Casa'
+  if (includesAny(q, ['livro', 'serie', 'filme', 'restaurante', 'show', 'lazer'])) return 'Lazer'
+  return 'Pessoal'
+}
+
+function reminderDate(input: string) {
+  const q = commandAscii(input)
+  const now = new Date()
+  const atNine = (date: Date) => {
+    date.setHours(9, 0, 0, 0)
+    return date
+  }
+
+  const explicit = q.match(/\b(\d{1,2})\/(\d{1,2})(?:\/(\d{2,4}))?\b/)
+  if (explicit) {
+    const day = Number(explicit[1])
+    const month = Number(explicit[2]) - 1
+    let year = explicit[3] ? Number(explicit[3]) : now.getFullYear()
+    if (year < 100) year += 2000
+    let date = atNine(new Date(year, month, day))
+    if (!explicit[3] && date.getTime() <= now.getTime()) date = atNine(new Date(year + 1, month, day))
+    return date
+  }
+
+  if (q.includes('amanha')) {
+    const date = new Date(now)
+    date.setDate(date.getDate() + 1)
+    return atNine(date)
+  }
+
+  const inDays = q.match(/\bem\s+(\d{1,2})\s+dias?\b/)
+  if (inDays) {
+    const date = new Date(now)
+    date.setDate(date.getDate() + Number(inDays[1]))
+    return atNine(date)
+  }
+
+  if (q.includes('semana que vem')) {
+    const date = new Date(now)
+    date.setDate(date.getDate() + 7)
+    return atNine(date)
+  }
+
+  const weekdays: Array<[string, number]> = [
+    ['domingo', 0], ['segunda', 1], ['terca', 2], ['quarta', 3], ['quinta', 4], ['sexta', 5], ['sabado', 6],
+  ]
+  const weekday = weekdays.find(([name]) => q.includes(name))
+  if (weekday) {
+    const date = new Date(now)
+    let delta = (weekday[1] - date.getDay() + 7) % 7
+    if (delta === 0) delta = 7
+    date.setDate(date.getDate() + delta)
+    return atNine(date)
+  }
+
+  const date = new Date(now)
+  date.setDate(date.getDate() + 1)
+  return atNine(date)
+}
+
+function reminderText(input: string) {
+  return input
+    .replace(/^\s*(me\s+lembra|me\s+lembre|lembrar)\s+(de\s+)?/i, '')
+    .replace(/\b(amanhã|amanha|semana que vem|domingo|segunda(?:-feira)?|terça(?:-feira)?|terca(?:-feira)?|quarta(?:-feira)?|quinta(?:-feira)?|sexta(?:-feira)?|sábado|sabado)\b/ig, '')
+    .replace(/\bem\s+\d{1,2}\s+dias?\b/ig, '')
+    .replace(/\b\d{1,2}\/\d{1,2}(?:\/\d{2,4})?\b/g, '')
+    .replace(/\s{2,}/g, ' ')
+    .trim()
+}
 
 export function parseLifeCommand(input: string): CommandIntent {
   const value = input.trim()
   const normalized = lower(value)
+  const ascii = commandAscii(value)
 
   if (includesAny(normalized, ['gastei ', 'paguei ', 'recebi ', 'salário ', 'salario ', 'r$ ', 'reais'])) {
     return { kind: 'money', query: value }
+  }
+
+  if (/^\s*(me\s+lembra|me\s+lembre|lembrar)\b/i.test(value)) {
+    const at = reminderDate(value)
+    const query = reminderText(value) || value
+    const diffDays = Math.max(1, Math.ceil((at.getTime() - Date.now()) / DAY))
+    return { kind: 'reminder', query, area: commandArea(query), followUpAt: at.toISOString(), followUpDays: diffDays }
+  }
+
+  if (/^\s*(concluir|conclui|conclua|fechar|fecha|finalizar|finaliza)\s+/.test(ascii)) {
+    return { kind: 'complete', query: value.replace(/^\s*(concluir|conclui|conclua|fechar|fecha|finalizar|finaliza)\s+/i, '').trim() }
+  }
+
+  if (/^\s*(pausar|pausa|pause)\s+/.test(ascii)) {
+    return { kind: 'pause', query: value.replace(/^\s*(pausar|pausa|pause)\s+/i, '').trim() }
   }
 
   if (includesAny(normalized, ['buscar ', 'procura ', 'onde está ', 'onde esta ', 'ache ', 'encontre '])) {
@@ -493,11 +593,12 @@ export function parseLifeCommand(input: string): CommandIntent {
   const decision = includesAny(normalized, ['decidi ', 'decisão ', 'decisao '])
   const project = includesAny(normalized, ['projeto ', 'comecei ', 'estou criando ', 'estou fazendo '])
   const goal = includesAny(normalized, ['quero ', 'meta ', 'objetivo '])
+  const application = includesAny(normalized, ['me candidatei ', 'candidatura ', 'apliquei para '])
 
   return {
     kind: 'capture',
     query: value,
-    type: decision ? 'Decisão' : project ? 'Projeto' : goal ? 'Objetivo' : 'Memória',
-    area: 'Pessoal',
+    type: decision ? 'Decisão' : application ? 'Candidatura' : project ? 'Projeto' : goal ? 'Objetivo' : 'Memória',
+    area: application ? 'Carreira' : commandArea(value),
   }
 }
