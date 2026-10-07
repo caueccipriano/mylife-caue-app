@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
-import type { StoredRecord } from './storage'
+import { saveRecord, updateRecord, type StoredRecord } from './storage'
 import { EuIcon, Tag, typeTone } from './v2Ui'
+import { haptic } from './securitySettings'
 import {
   buildPersonalApiSnapshot,
   deriveAttentionBudget,
@@ -19,9 +20,15 @@ import {
   deriveWeekLens,
   parseLifeCommand,
   searchLife,
+  type CommandIntent,
 } from './lifeCommandCenter'
 
 type ContextFilter = 'all' | 'work' | 'personal' | 'focus'
+
+type PendingCommandAction = {
+  intent: Exclude<CommandIntent, { kind: 'search' }>
+  target?: StoredRecord
+}
 
 function compact(value: string, size = 88) {
   const clean = value.trim()
@@ -55,6 +62,9 @@ export default function LifeCommandCenter({ records, inboxCount, compact: compac
   const [searchQuery, setSearchQuery] = useState('')
   const [context, setContext] = useState<ContextFilter>('all')
   const [expanded, setExpanded] = useState<'loops' | 'decisions' | 'radar' | null>(null)
+  const [pendingAction, setPendingAction] = useState<PendingCommandAction | null>(null)
+  const [actionBusy, setActionBusy] = useState(false)
+  const [actionMessage, setActionMessage] = useState('')
 
   const scopedRecords = useMemo(() => contextRecords(records, context), [records, context])
   const attention = useMemo(() => deriveAttentionBudget(scopedRecords, inboxCount), [scopedRecords, inboxCount])
@@ -81,28 +91,148 @@ export default function LifeCommandCenter({ records, inboxCount, compact: compac
     const value = command.trim()
     if (!value) return
 
+    setActionMessage('')
     const intent = parseLifeCommand(value)
 
     if (intent.kind === 'search') {
+      setPendingAction(null)
       setSearchQuery(intent.query)
       setCommand('')
       return
     }
 
-    if (intent.kind === 'money') {
-      sessionStorage.setItem('eu-money-command-draft', intent.query)
-      navigate('/dinheiro?from=command')
+    if (intent.kind === 'complete' || intent.kind === 'pause') {
+      const target = searchLife(records, intent.query)
+        .find((record) => record.status !== 'completed' && record.status !== 'abandoned' && !record.trashedAt)
+
+      if (!target) {
+        setPendingAction(null)
+        setSearchQuery(intent.query)
+        setActionMessage('Não encontrei um registro ativo seguro para alterar. Mostrei a busca em vez de mudar algo por aproximação.')
+        return
+      }
+
+      setPendingAction({ intent, target })
       return
     }
 
-    const params = new URLSearchParams({
-      texto: intent.query,
-      tipo: intent.type,
-      area: intent.area,
-      origem: 'manual',
-    })
-    navigate('/capturar?' + params.toString())
+    setPendingAction({ intent })
   }
+
+  async function confirmPendingAction() {
+    if (!pendingAction || actionBusy) return
+    setActionBusy(true)
+    setActionMessage('')
+
+    try {
+      const { intent, target } = pendingAction
+      const now = new Date().toISOString()
+
+      if (intent.kind === 'money') {
+        sessionStorage.setItem('eu-money-command-draft', intent.query)
+        setPendingAction(null)
+        setCommand('')
+        navigate('/dinheiro?from=command')
+        return
+      }
+
+      if (intent.kind === 'complete' && target) {
+        await updateRecord(target.id, { status: 'completed', completedAt: now })
+        window.dispatchEvent(new Event('eu-record-saved'))
+        setActionMessage('Concluído. O histórico foi preservado.')
+      } else if (intent.kind === 'pause' && target) {
+        await updateRecord(target.id, { status: 'paused' })
+        window.dispatchEvent(new Event('eu-record-saved'))
+        setActionMessage('Pausado. O EU deixa de cobrar isso até você retomar.')
+      } else if (intent.kind === 'reminder') {
+        await saveRecord({
+          id: crypto.randomUUID(),
+          text: intent.query,
+          type: 'Pendência',
+          area: intent.area,
+          createdAt: now,
+          source: 'manual',
+          status: 'active',
+          startedAt: now,
+          followUpAt: intent.followUpAt,
+          followUpDays: intent.followUpDays,
+          nextMove: 'Retomar no dia combinado',
+          tags: ['comando-eu', 'retorno'],
+        })
+        window.dispatchEvent(new Event('eu-record-saved'))
+        setActionMessage('Retorno criado. O EU traz isso de volta no dia combinado.')
+      } else if (intent.kind === 'capture') {
+        const track = ['Projeto', 'Objetivo', 'Pendência', 'Candidatura'].includes(intent.type)
+        await saveRecord({
+          id: crypto.randomUUID(),
+          text: intent.query,
+          type: intent.type,
+          area: intent.area,
+          createdAt: now,
+          source: 'manual',
+          status: track ? 'active' : undefined,
+          startedAt: track ? now : undefined,
+          tags: ['comando-eu'],
+        })
+        window.dispatchEvent(new Event('eu-record-saved'))
+        setActionMessage(intent.type + ' registrado em ' + intent.area + '.')
+      }
+
+      haptic('success')
+      setPendingAction(null)
+      setCommand('')
+    } catch (error) {
+      setActionMessage(error instanceof Error ? error.message : 'Não consegui executar essa ação.')
+    } finally {
+      setActionBusy(false)
+    }
+  }
+
+  function pendingActionCopy() {
+    if (!pendingAction) return null
+    const { intent, target } = pendingAction
+
+    if (intent.kind === 'money') {
+      return {
+        eyebrow: 'DINHEIRO · REVISÃO OBRIGATÓRIA',
+        title: 'Preparar este movimento financeiro?',
+        detail: intent.query,
+        confirm: 'abrir Dinheiro',
+      }
+    }
+
+    if (intent.kind === 'reminder') {
+      const when = new Intl.DateTimeFormat('pt-BR', { weekday: 'long', day: '2-digit', month: 'short' }).format(new Date(intent.followUpAt))
+      return {
+        eyebrow: 'RETORNO',
+        title: 'Trazer isso de volta ' + when + '?',
+        detail: intent.query + ' · ' + intent.area,
+        confirm: 'criar retorno',
+      }
+    }
+
+    if ((intent.kind === 'complete' || intent.kind === 'pause') && target) {
+      return {
+        eyebrow: intent.kind === 'complete' ? 'CONCLUIR' : 'PAUSAR',
+        title: target.text,
+        detail: target.type + ' · ' + target.area,
+        confirm: intent.kind === 'complete' ? 'confirmar conclusão' : 'confirmar pausa',
+      }
+    }
+
+    if (intent.kind === 'capture') {
+      return {
+        eyebrow: 'REGISTRAR · ' + intent.type.toUpperCase(),
+        title: intent.query,
+        detail: 'Área: ' + intent.area,
+        confirm: 'confirmar registro',
+      }
+    }
+
+    return null
+  }
+
+  const actionPreview = pendingActionCopy()
 
   return (
     <section className="eu-command-center now-only" aria-label="EU Command Center">
@@ -132,7 +262,7 @@ export default function LifeCommandCenter({ records, inboxCount, compact: compac
           <input
             value={command}
             onChange={(event) => setCommand(event.target.value)}
-            placeholder="Ex.: decidi estudar SQL · gastei 82 · buscar carro"
+            placeholder="Ex.: decidi estudar SQL · me lembra sexta · concluir curso"
             aria-label="Comando universal do EU"
           />
           <button type="submit" aria-label="Executar comando"><EuIcon name="arrow-right" /></button>
@@ -142,6 +272,27 @@ export default function LifeCommandCenter({ records, inboxCount, compact: compac
           <NavLink to="/pergunte"><EuIcon name="sparkles" />Perguntar ao EU</NavLink>
         </div>
       </div>
+
+      {actionPreview && (
+        <div className="eu-action-preview-v55" role="region" aria-label="Confirmar ação do EU">
+          <div className="eu-action-preview-icon-v55"><EuIcon name="shield" /></div>
+          <div className="eu-action-preview-copy-v55">
+            <small>{actionPreview.eyebrow}</small>
+            <strong>{actionPreview.title}</strong>
+            <p>{actionPreview.detail}</p>
+            <div>
+              <button className="cancel" onClick={() => setPendingAction(null)} disabled={actionBusy}>cancelar</button>
+              <button className="confirm" onClick={() => void confirmPendingAction()} disabled={actionBusy}>
+                <EuIcon name="check" />{actionBusy ? 'executando…' : actionPreview.confirm}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {actionMessage && (
+        <div className="eu-action-result-v55"><EuIcon name="check" /><span>{actionMessage}</span><button onClick={() => setActionMessage('')} aria-label="Fechar mensagem"><EuIcon name="x" /></button></div>
+      )}
 
       {searchQuery && (
         <div className="life-search-panel">
