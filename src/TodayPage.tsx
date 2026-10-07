@@ -112,11 +112,6 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
     if (requestedView === 'now') setTodayView('now')
   }, [requestedView])
 
-  function selectTodayView(value: 'now' | 'signals') {
-    setTodayView(value)
-    localStorage.setItem('eu-today-view', value)
-  }
-
   function toggleFocusMode() {
     const next = !focusMode
     setFocusMode(next)
@@ -332,7 +327,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
         )}
   
         {focusRecords.length > 0 && (
-          <section className="today-block continue-block now-only">
+          <section className="today-block continue-block now-only today-admin-context-v39">
             <SectionTitle
               eyebrow="FOCO"
               title="Seu foco agora"
@@ -359,7 +354,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
         )}
   
         {waiting.length > 0 && (
-          <NavLink className="waiting-strip now-only" to="/sistema?view=panel#aguardando">
+          <NavLink className="waiting-strip now-only today-admin-context-v39" to="/sistema?view=panel#aguardando">
             <span className="waiting-strip-icon"><EuIcon name="clock" /></span>
             <div>
               <small>AGUARDANDO</small>
@@ -381,7 +376,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
         <AstroTodayPreview />
   
         {inbox.length > 0 && (
-          <NavLink className="adaptive-callout chat-inbox-callout now-only" to="/inbox">
+          <NavLink className="adaptive-callout chat-inbox-callout now-only today-admin-context-v39" to="/inbox">
             <div>
               <Tag tone="ink">CAIXA DO CHAT</Tag>
               <h2>{inbox.length === 1 ? 'Uma conversa esperando por você.' : inbox.length + ' conversas esperando por você.'}</h2>
@@ -392,7 +387,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
         )}
   
         {review.length > 0 && (
-          <NavLink className="adaptive-callout review-callout now-only" to="/revisao">
+          <NavLink className="adaptive-callout review-callout now-only today-admin-context-v39" to="/revisao">
             <div>
               <Tag tone="amber">REVISÃO</Tag>
               <h2>{review.length === 1 ? 'Uma coisa pede uma resposta.' : review.length + ' coisas pedem uma resposta.'}</h2>
@@ -403,7 +398,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
         )}
   
         {due.length > 0 && (
-          <section className="today-block now-only">
+          <section className="today-block now-only today-admin-context-v39">
             <SectionTitle eyebrow="VOLTOU PRA VOCÊ" title="Isso ainda está vivo?" />
             <div className="followup-stack">
               {due.slice(0, 3).map((record) => (
