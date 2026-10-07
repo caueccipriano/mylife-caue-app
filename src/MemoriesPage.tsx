@@ -238,25 +238,11 @@ export default function MemoriesPage() {
 
       <details className="memory-filter-panel memory-filter-hub">
         <summary>
-          <span><EuIcon name="settings" />Filtrar arquivo</span>
-          <b>{activeFilterCount ? activeFilterCount + ' ativos' : 'tipo, área, data...'}</b>
+          <span><EuIcon name="settings" />Filtros avançados</span>
+          <b>{activeFilterCount ? activeFilterCount + ' ativos' : 'área, estado, data...'}</b>
         </summary>
 
         <div className="memory-filter-hub-body">
-          <div className="memory-filters" aria-label="Filtros rápidos">
-            {[
-              ['all', 'Tudo'],
-              ['favorites', 'Favoritos'],
-              ['chatgpt', 'Do Chat'],
-              ['desejo', 'Desejos'],
-              ['curso', 'Cursos'],
-              ['decisão', 'Decisões'],
-              ['insight', 'Insights'],
-            ].map(([value, label]) => (
-              <button key={value} className={filter === value ? 'active' : ''} onClick={() => setFilter(value)}>{label}</button>
-            ))}
-          </div>
-
           <div className="memory-advanced-filters">
             <label>
               <span>Área</span>
