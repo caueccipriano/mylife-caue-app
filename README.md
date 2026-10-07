@@ -52,9 +52,9 @@ A interface usa a identidade consolidada do EU/FÔLEGO: superfícies claras, azu
 
 ## Estado atual
 
-**EU v38 — Planning & Future**
+**EU v39 — Simplify the Core**
 
-Planejamento agora navega por mês, compara planejado × realizado e pode copiar os limites do mês anterior. A nova aba Futuro usa `get_projection` para mostrar caixa projetado, cartões, dívidas e reservas em 3/6/12/24 meses; faturas abertas usam `get_card_invoice_semantics`. O recurso “Posso gastar?” simula uma compra como ajuste temporário e avalia o pior saldo futuro sem gravar a simulação.
+Hoje foi reduzido ao que merece atenção: check-in, EU sabe, comando universal e no máximo três prioridades. Revisão, aguardando e administração saíram do fluxo principal. A Central agora abre em **Agora**, com uma fila operacional do que depende de você, entradas, dependências, agenda, objetivos e projetos. Explicações internas de fontes/autonomia/rituais foram movidas para o EU Lab.
 
 ---
 
