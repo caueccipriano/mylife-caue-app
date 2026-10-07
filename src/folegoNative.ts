@@ -79,6 +79,7 @@ export type MoneyCard = {
   due_day?: number
   issuer_limit?: number | null
   personal_limit?: number | null
+  payment_account_id?: string | null
 }
 
 export type MoneyDebt = {
@@ -91,6 +92,9 @@ export type MoneyDebt = {
   interest_rate_monthly?: number | null
   status?: string
   debt_type?: string | null
+  payment_account_id?: string | null
+  started_on?: string | null
+  notes?: string | null
 }
 
 export type MoneyRecurring = {
@@ -102,6 +106,11 @@ export type MoneyRecurring = {
   day_of_month?: number | null
   active?: boolean
   certainty?: string | null
+  category_id?: string | null
+  account_id?: string | null
+  card_id?: string | null
+  starts_on?: string | null
+  ends_on?: string | null
 }
 
 export type MoneyGoal = {
@@ -109,6 +118,7 @@ export type MoneyGoal = {
   name: string
   target: number
   target_date?: string | null
+  icon_key?: string
   status?: string
   contributed: number
 }
@@ -348,10 +358,10 @@ export async function loadMoneyBundle(): Promise<MoneyBundle> {
     categories(space.id, 'income'),
     budgetItems(space.id),
     moneySupabase.from('financial_events').select('id,event_type,description,amount,occurred_at,status,category_id').eq('space_id', space.id).order('occurred_at', { ascending: false }).limit(30),
-    moneySupabase.from('credit_cards').select('id,name,issuer,brand,last_four,closing_day,due_day,issuer_limit,personal_limit').eq('space_id', space.id).eq('active', true).order('name'),
-    moneySupabase.from('debts').select('id,name,creditor,original_amount,opening_balance,total_installments,interest_rate_monthly,status,debt_type').eq('space_id', space.id).is('archived_at', null).order('created_at', { ascending: false }),
-    moneySupabase.from('recurring_items').select('id,name,item_type,amount,frequency,day_of_month,active,certainty').eq('space_id', space.id).eq('active', true).order('name'),
-    moneySupabase.from('savings_goals').select('id,name,target,target_date,status').eq('space_id', space.id).neq('status', 'archived').order('created_at'),
+    moneySupabase.from('credit_cards').select('id,name,issuer,brand,last_four,closing_day,due_day,issuer_limit,personal_limit,payment_account_id').eq('space_id', space.id).eq('active', true).order('name'),
+    moneySupabase.from('debts').select('id,name,creditor,original_amount,opening_balance,total_installments,interest_rate_monthly,status,debt_type,payment_account_id,started_on,notes').eq('space_id', space.id).is('archived_at', null).order('created_at', { ascending: false }),
+    moneySupabase.from('recurring_items').select('id,name,item_type,amount,frequency,day_of_month,active,certainty,category_id,account_id,card_id,starts_on,ends_on').eq('space_id', space.id).order('name'),
+    moneySupabase.from('savings_goals').select('id,name,target,target_date,icon_key,status').eq('space_id', space.id).neq('status', 'archived').order('created_at'),
     moneySupabase.from('goal_contributions').select('goal_id,amount').eq('space_id', space.id),
   ])
 
@@ -553,6 +563,267 @@ export async function createMoneyCard(input: {
     p_issuer_limit: input.issuerLimit ?? null,
     p_current_invoice_balance: input.currentInvoiceBalance ?? 0,
     p_current_invoice_due_date: input.currentInvoiceDueDate || null,
+  })
+  if (error) throw error
+  return data
+}
+
+
+export async function updateMoneyAccount(input: {
+  spaceId: string
+  accountId: string
+  name: string
+  institution?: string | null
+  type: string
+  availableForSpending: boolean
+}) {
+  const { data, error } = await moneySupabase.rpc('update_wallet_account', {
+    p_space_id: input.spaceId,
+    p_account_id: input.accountId,
+    p_name: input.name,
+    p_institution: input.institution?.trim() || null,
+    p_type: input.type,
+    p_available_for_spending: input.availableForSpending,
+  })
+  if (error) throw error
+  return data
+}
+
+export async function archiveMoneyAccount(spaceId: string, accountId: string) {
+  const { data, error } = await moneySupabase.rpc('archive_wallet_account', {
+    p_space_id: spaceId,
+    p_account_id: accountId,
+  })
+  if (error) throw error
+  return data
+}
+
+export async function updateMoneyCard(input: {
+  spaceId: string
+  cardId: string
+  name: string
+  closingDay: number
+  dueDay: number
+  paymentAccountId?: string | null
+  issuer?: string | null
+  brand?: string | null
+  lastFour?: string | null
+  personalLimit?: number | null
+}) {
+  const { data, error } = await moneySupabase.rpc('update_wallet_card', {
+    p_space_id: input.spaceId,
+    p_card_id: input.cardId,
+    p_name: input.name,
+    p_closing_day: input.closingDay,
+    p_due_day: input.dueDay,
+    p_payment_account_id: input.paymentAccountId || null,
+    p_issuer: input.issuer?.trim() || null,
+    p_brand: input.brand?.trim() || null,
+    p_last_four: input.lastFour?.trim() || null,
+    p_personal_limit: input.personalLimit ?? null,
+  })
+  if (error) throw error
+  return data
+}
+
+export async function archiveMoneyCard(spaceId: string, cardId: string) {
+  const { data, error } = await moneySupabase.rpc('archive_wallet_card', {
+    p_space_id: spaceId,
+    p_card_id: cardId,
+  })
+  if (error) throw error
+  return data
+}
+
+export async function updateMoneyRecurring(input: {
+  spaceId: string
+  itemId: string
+  name: string
+  amount: number
+  dayOfMonth: number | null
+  categoryId?: string | null
+  accountId?: string | null
+  cardId?: string | null
+  certainty?: string
+  active?: boolean
+}) {
+  const { data, error } = await moneySupabase
+    .from('recurring_items')
+    .update({
+      name: input.name,
+      amount: input.amount,
+      day_of_month: input.dayOfMonth,
+      category_id: input.categoryId || null,
+      account_id: input.accountId || null,
+      card_id: input.cardId || null,
+      certainty: input.certainty || 'confirmed',
+      active: input.active ?? true,
+    })
+    .eq('space_id', input.spaceId)
+    .eq('id', input.itemId)
+    .select('id')
+    .single()
+  if (error) throw error
+  return data
+}
+
+export async function setMoneyRecurringActive(spaceId: string, itemId: string, active: boolean) {
+  const { data, error } = await moneySupabase
+    .from('recurring_items')
+    .update({ active })
+    .eq('space_id', spaceId)
+    .eq('id', itemId)
+    .select('id')
+    .single()
+  if (error) throw error
+  return data
+}
+
+export async function createMoneyGoal(input: {
+  spaceId: string
+  name: string
+  target: number
+  targetDate?: string | null
+  iconKey?: string
+}) {
+  const { data, error } = await moneySupabase
+    .from('savings_goals')
+    .insert({
+      space_id: input.spaceId,
+      name: input.name,
+      target: input.target,
+      target_date: input.targetDate || null,
+      icon_key: input.iconKey || 'piggy-bank',
+      status: 'active',
+    })
+    .select('id')
+    .single()
+  if (error) throw error
+  return data
+}
+
+export async function updateMoneyGoal(input: {
+  spaceId: string
+  goalId: string
+  name: string
+  target: number
+  targetDate?: string | null
+  iconKey?: string
+  status?: string
+}) {
+  const { data, error } = await moneySupabase
+    .from('savings_goals')
+    .update({
+      name: input.name,
+      target: input.target,
+      target_date: input.targetDate || null,
+      icon_key: input.iconKey || 'piggy-bank',
+      status: input.status || 'active',
+      completed_at: input.status === 'completed' ? new Date().toISOString() : null,
+    })
+    .eq('space_id', input.spaceId)
+    .eq('id', input.goalId)
+    .select('id')
+    .single()
+  if (error) throw error
+  return data
+}
+
+export async function addMoneyGoalContribution(input: {
+  spaceId: string
+  goalId: string
+  amount: number
+  note?: string | null
+}) {
+  const { data, error } = await moneySupabase
+    .from('goal_contributions')
+    .insert({
+      space_id: input.spaceId,
+      goal_id: input.goalId,
+      amount: input.amount,
+      note: input.note?.trim() || null,
+    })
+    .select('id')
+    .single()
+  if (error) throw error
+  return data
+}
+
+export async function createMoneyDebt(input: {
+  spaceId: string
+  name: string
+  creditor: string
+  originalAmount: number
+  totalInstallments?: number | null
+  firstDue: string
+  paymentAccountId?: string | null
+  startedOn?: string | null
+  interestRateMonthly?: number | null
+  debtType?: string
+  notes?: string | null
+}) {
+  const { data, error } = await moneySupabase.rpc('create_debt_v2', {
+    p_space_id: input.spaceId,
+    p_name: input.name,
+    p_creditor: input.creditor,
+    p_original_amount: input.originalAmount,
+    p_total_installments: input.totalInstallments ?? null,
+    p_first_due: input.firstDue,
+    p_payment_account_id: input.paymentAccountId || null,
+    p_started_on: input.startedOn || todayKey(),
+    p_interest_rate_monthly: input.interestRateMonthly ?? null,
+    p_debt_type: input.debtType || 'other',
+    p_notes: input.notes?.trim() || null,
+  })
+  if (error) throw error
+  return data
+}
+
+export async function updateMoneyDebt(input: {
+  spaceId: string
+  debtId: string
+  name: string
+  creditor: string
+  originalAmount: number
+  totalInstallments?: number | null
+  firstDue: string
+  paymentAccountId?: string | null
+  startedOn?: string | null
+  interestRateMonthly?: number | null
+  debtType?: string
+  notes?: string | null
+}) {
+  const { data, error } = await moneySupabase.rpc('update_debt_v2', {
+    p_space_id: input.spaceId,
+    p_debt_id: input.debtId,
+    p_name: input.name,
+    p_creditor: input.creditor,
+    p_original_amount: input.originalAmount,
+    p_total_installments: input.totalInstallments ?? null,
+    p_first_due: input.firstDue,
+    p_payment_account_id: input.paymentAccountId || null,
+    p_started_on: input.startedOn || todayKey(),
+    p_interest_rate_monthly: input.interestRateMonthly ?? null,
+    p_debt_type: input.debtType || 'other',
+    p_notes: input.notes?.trim() || null,
+  })
+  if (error) throw error
+  return data
+}
+
+export async function archiveMoneyDebt(spaceId: string, debtId: string) {
+  const { data, error } = await moneySupabase.rpc('archive_debt', {
+    p_space_id: spaceId,
+    p_debt_id: debtId,
+  })
+  if (error) throw error
+  return data
+}
+
+export async function closeMoneyDebt(spaceId: string, debtId: string) {
+  const { data, error } = await moneySupabase.rpc('close_debt', {
+    p_space_id: spaceId,
+    p_debt_id: debtId,
   })
   if (error) throw error
   return data
