@@ -1,0 +1,319 @@
+/* EU v55.1 · iPhone QA
+   Final pass based on real-device screenshots after the Living System release. */
+
+html{
+  scroll-padding-bottom:calc(92px + env(safe-area-inset-bottom));
+}
+
+.eu-v2-main{
+  padding-bottom:calc(128px + env(safe-area-inset-bottom))!important;
+}
+
+.no-primary-dock .eu-v2-main{
+  padding-bottom:calc(26px + env(safe-area-inset-bottom))!important;
+}
+
+@media(max-width:620px){
+  .v2-page{
+    width:calc(100% - 24px)!important;
+  }
+
+  .v2-bottom-nav{
+    left:12px!important;
+    right:12px!important;
+    bottom:calc(8px + env(safe-area-inset-bottom))!important;
+    min-height:56px!important;
+    padding:4px!important;
+    border-radius:18px!important;
+    box-shadow:0 12px 34px rgba(24,32,51,.10)!important;
+  }
+
+  .v2-bottom-nav a{
+    min-height:44px!important;
+    border-radius:13px!important;
+  }
+
+  .v2-bottom-nav a>small{
+    font-size:7.2px!important;
+  }
+
+  .bottom-nav-icon-wrap{
+    width:24px!important;
+    height:24px!important;
+  }
+
+  .global-register-pill.smart-fab{
+    right:14px!important;
+    bottom:calc(76px + env(safe-area-inset-bottom))!important;
+    min-width:48px!important;
+    min-height:48px!important;
+    border-radius:15px!important;
+    padding:0!important;
+    box-shadow:0 10px 24px rgba(49,87,213,.18)!important;
+  }
+
+  .global-register-pill.smart-fab b{
+    display:none!important;
+  }
+
+  .global-register-pill.smart-fab span{
+    width:48px!important;
+    height:48px!important;
+  }
+
+  .global-register-pill.smart-fab .eu-icon{
+    width:19px!important;
+  }
+
+  .no-primary-dock .v2-page{
+    width:calc(100% - 22px)!important;
+    padding-bottom:calc(30px + env(safe-area-inset-bottom))!important;
+  }
+}
+
+/* ---------- silence mode ---------- */
+.life-view-moving>.smart-empty-v46{
+  margin:4px 0 14px;
+}
+
+.life-view-moving .one-eu-connections-v42{
+  margin-top:12px!important;
+}
+
+.life-view-moving .life-fold{
+  margin-top:9px!important;
+}
+
+.life-view-moving .life-fold summary{
+  min-height:58px!important;
+}
+
+.life-os-page>.smart-empty-v46{
+  margin:0 0 15px;
+}
+
+.central-needs-v39 .smart-empty-v46{
+  margin-bottom:0;
+}
+
+/* ---------- One EU ---------- */
+.one-eu-connections-v42.is-compact{
+  gap:8px!important;
+}
+
+.one-eu-connections-v42.is-compact>header{
+  min-height:34px;
+}
+
+.one-eu-connections-v42.is-compact>header h2{
+  font-size:16px!important;
+}
+
+.one-eu-connections-v42.is-compact .one-eu-card-v42{
+  min-height:0!important;
+  border-radius:15px!important;
+}
+
+.one-eu-connections-v42.is-compact .one-eu-card-main-v54{
+  padding:10px 11px 6px!important;
+}
+
+.one-eu-connections-v42.is-compact .one-eu-make-action-v54{
+  margin:0 11px 8px 53px!important;
+}
+
+/* ---------- Central ---------- */
+@media(max-width:620px){
+  .life-os-page .life-os-hero{
+    padding-bottom:12px!important;
+  }
+
+  .life-os-page .life-os-tabs{
+    margin-bottom:13px!important;
+  }
+
+  .life-os-page .central-needs-v39{
+    margin-top:14px!important;
+  }
+
+  .life-os-page .central-needs-list-v39>a{
+    min-height:66px!important;
+  }
+
+  .life-os-page .central-needs-list-v39>a.is-lead{
+    min-height:78px!important;
+  }
+
+  .life-os-page .weekly-reset-card{
+    padding:14px!important;
+    border-radius:17px!important;
+  }
+
+  .life-os-page .weekly-reset-copy h2{
+    font-size:21px!important;
+  }
+
+  .life-os-page .weekly-reset-metrics{
+    gap:5px!important;
+  }
+
+  .life-os-page .weekly-reset-metrics>div{
+    min-height:48px!important;
+    padding:7px!important;
+  }
+
+  .life-os-page .life-os-shortcuts{
+    margin-top:14px!important;
+  }
+}
+
+/* ---------- Life map / movement ---------- */
+@media(max-width:620px){
+  .life-page .life-fluid-hero{
+    padding-bottom:18px!important;
+  }
+
+  .life-page .life-map-tabs-v40{
+    margin-bottom:15px!important;
+  }
+
+  .life-map-focus-v40{
+    margin-top:8px!important;
+    padding:10px 11px!important;
+    border-radius:14px!important;
+  }
+
+  .life-map-focus-v40 strong{
+    font-size:8.7px!important;
+  }
+
+  .life-view-moving .smart-empty-v46{
+    min-height:66px!important;
+  }
+
+  .life-view-moving .one-eu-connections-v42.is-compact{
+    margin-top:10px!important;
+  }
+}
+
+/* ---------- Career: compact poster-like sections ---------- */
+.career-live-grid>.smart-empty-v46{
+  width:100%;
+  min-height:78px;
+}
+
+@media(max-width:620px){
+  .career-v2 .career-hero-v2{
+    padding:20px 0 18px!important;
+  }
+
+  .career-v2 .career-hero-v2 h1{
+    font-size:35px!important;
+    line-height:.98!important;
+  }
+
+  .career-v2 .career-hero-v2>p{
+    font-size:9.4px!important;
+    line-height:1.48!important;
+  }
+
+  .career-v2 .career-road article{
+    min-height:88px!important;
+    padding:12px!important;
+  }
+
+  .career-v2 .career-road strong{
+    margin-top:7px!important;
+    font-size:16px!important;
+  }
+
+  .career-v2 .career-road p{
+    font-size:8.5px!important;
+    line-height:1.35!important;
+  }
+
+  .career-v2 .career-v2-grid{
+    margin-top:20px!important;
+    gap:7px!important;
+  }
+
+  .career-v2 .career-v2-card,
+  .career-v2 .career-v2-card.big{
+    padding:15px!important;
+    border-radius:17px!important;
+  }
+
+  .career-v2 .career-v2-card.big{
+    padding-block:17px!important;
+  }
+
+  .career-v2 .career-v2-card h2{
+    margin:12px 0 8px!important;
+    font-size:25px!important;
+    line-height:1.02!important;
+  }
+
+  .career-v2 .career-v2-card h3{
+    margin:11px 0 7px!important;
+    font-size:20px!important;
+    line-height:1.06!important;
+  }
+
+  .career-v2 .career-v2-card p{
+    font-size:8.8px!important;
+    line-height:1.4!important;
+  }
+
+  .career-v2 .career-live{
+    margin-top:24px!important;
+  }
+
+  .career-v2 .career-live .v2-section-title{
+    margin-bottom:10px!important;
+  }
+
+  .career-v2 .career-live .v2-section-title h2{
+    font-size:24px!important;
+  }
+
+  .career-v2 .career-live-grid{
+    gap:6px!important;
+  }
+
+  .career-v2 .career-live-grid>article{
+    min-height:0!important;
+    padding:12px!important;
+  }
+
+  .career-v2 .career-live-grid>.smart-empty-v46{
+    min-height:66px!important;
+    padding:11px!important;
+  }
+}
+
+/* ---------- deep routes ---------- */
+@media(max-width:620px){
+  .no-primary-dock .back-v2{
+    margin-top:10px!important;
+    margin-bottom:11px!important;
+  }
+
+  .no-primary-dock .v2-hero{
+    padding-top:20px!important;
+  }
+
+  .no-primary-dock :is(.v2-section-title,.memory-threads-head){
+    margin-bottom:10px!important;
+  }
+
+  .no-primary-dock .v2-section-title h2{
+    font-size:24px!important;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){
+  .v2-bottom-nav,
+  .global-register-pill.smart-fab{
+    transition:none!important;
+  }
+}

@@ -52,9 +52,9 @@ A interface usa a identidade consolidada do EU/FÔLEGO: superfícies claras, azu
 
 ## Estado atual
 
-**EU v54 — Living System**
+**EU v55.1 — iPhone QA**
 
-Release consolidado das frentes v45→v54:
+Passada visual pós-v54 baseada em QA real no iPhone. O release preserva todo o Living System e corrige a composição mobile antes do próximo ciclo de features:
 
 - **Deep Routes 2.0:** páginas internas usam um shell visual mais consistente, sem dock principal e com densidade mobile reduzida.
 - **Empty States inteligentes:** o EU deixa de preencher espaço com blocos vazios e passa a explicar quando o silêncio é normal ou qual ação pequena faz sentido.

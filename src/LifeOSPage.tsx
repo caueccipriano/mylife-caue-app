@@ -137,6 +137,9 @@ export default function LifeOSPage() {
       .slice(0, 8)
   }, [actionDue, review, carryOver])
 
+  const centralQuiet = inbox.length + actionDue.length + review.length + goals.length + projects.length === 0
+  const weekQuiet = weeklyReset.captured + weeklyReset.completed + weeklyReset.waiting + weeklyReset.carryOver === 0
+
   const areaStates = useMemo(() => areas.map((area) => {
     const areaRecords = visible.filter((record) => record.area.toLowerCase() === area.name.toLowerCase())
     const areaActive = areaRecords.filter((record) => record.status === 'active')
@@ -194,31 +197,35 @@ export default function LifeOSPage() {
 
       {view === 'panel' && (
         <>
-          <section className="system-command-grid">
-            <NavLink className="system-command-card inbox" to="/inbox">
-              <span className="system-command-icon"><EuIcon name="inbox" /></span>
-              <div><small>ENTRADAS</small><strong>{inbox.length}</strong><p>{inbox.length ? 'coisas esperando sua revisão' : 'caixa limpa'}</p></div>
-              <EuIcon name="arrow-up-right" />
-            </NavLink>
+          {centralQuiet ? (
+            <SmartEmptyState quiet icon="check" title="A Central está quieta." detail="Sem entradas, urgências, objetivos ou projetos pedindo espaço agora. Use as abas acima quando quiser abrir uma direção específica." />
+          ) : (
+            <section className="system-command-grid">
+              <NavLink className="system-command-card inbox" to="/inbox">
+                <span className="system-command-icon"><EuIcon name="inbox" /></span>
+                <div><small>ENTRADAS</small><strong>{inbox.length}</strong><p>{inbox.length ? 'coisas esperando sua revisão' : 'caixa limpa'}</p></div>
+                <EuIcon name="arrow-up-right" />
+              </NavLink>
 
-            <NavLink className="system-command-card attention" to={review.length ? '/revisao' : '/?view=now'}>
-              <span className="system-command-icon"><EuIcon name="bell" /></span>
-              <div><small>ATENÇÃO</small><strong>{actionDue.length + review.length}</strong><p>{actionDue.length ? actionDue.length + ' ações vencidas' : review.length ? 'revisões pendentes' : 'nada urgente'}</p></div>
-              <EuIcon name="arrow-up-right" />
-            </NavLink>
+              <NavLink className="system-command-card attention" to={review.length ? '/revisao' : '/?view=now'}>
+                <span className="system-command-icon"><EuIcon name="bell" /></span>
+                <div><small>ATENÇÃO</small><strong>{actionDue.length + review.length}</strong><p>{actionDue.length ? actionDue.length + ' ações vencidas' : review.length ? 'revisões pendentes' : 'nada urgente'}</p></div>
+                <EuIcon name="arrow-up-right" />
+              </NavLink>
 
-            <button className="system-command-card goals" onClick={() => selectView('goals')}>
-              <span className="system-command-icon"><EuIcon name="compass" /></span>
-              <div><small>OBJETIVOS</small><strong>{goals.length}</strong><p>{goals.length ? 'direções ativas' : 'nenhum objetivo formalizado'}</p></div>
-              <EuIcon name="arrow-up-right" />
-            </button>
+              <button className="system-command-card goals" onClick={() => selectView('goals')}>
+                <span className="system-command-icon"><EuIcon name="compass" /></span>
+                <div><small>OBJETIVOS</small><strong>{goals.length}</strong><p>{goals.length ? 'direções ativas' : 'nenhum objetivo formalizado'}</p></div>
+                <EuIcon name="arrow-up-right" />
+              </button>
 
-            <button className="system-command-card projects" onClick={() => selectView('projects')}>
-              <span className="system-command-icon"><EuIcon name="bolt" /></span>
-              <div><small>PROJETOS</small><strong>{projects.length}</strong><p>{projects.length ? 'coisas em construção' : 'nenhum projeto ativo'}</p></div>
-              <EuIcon name="arrow-up-right" />
-            </button>
-          </section>
+              <button className="system-command-card projects" onClick={() => selectView('projects')}>
+                <span className="system-command-icon"><EuIcon name="bolt" /></span>
+                <div><small>PROJETOS</small><strong>{projects.length}</strong><p>{projects.length ? 'coisas em construção' : 'nenhum projeto ativo'}</p></div>
+                <EuIcon name="arrow-up-right" />
+              </button>
+            </section>
+          )}
 
           <section className="life-os-block central-needs-v39">
             <SectionTitle eyebrow="PRECISA DE VOCÊ" title={needsYou.length ? needsYou.length + (needsYou.length === 1 ? ' coisa pede decisão' : ' coisas pedem decisão') : 'Nada urgente agora'} action={<button className="quiet-link" onClick={() => selectView('agenda')}>abrir agenda <EuIcon name="arrow-up-right" /></button>} />
@@ -236,12 +243,14 @@ export default function LifeOSPage() {
               ))}
               {!needsYou.length && <div className="soft-empty wide"><span><EuIcon name="check" /></span><p>O que depende de você está em dia. A Central continua acompanhando o resto.</p></div>}
             </div>
-            <div className="central-week-strip-v39">
-              <span><strong>{completedThisWeek}</strong> fechadas em 7 dias</span>
-              <span><strong>{waiting.length}</strong> aguardando</span>
-              <span><strong>{inbox.length}</strong> entradas</span>
-              <span><strong>{stale.length}</strong> paradas há 3+ semanas</span>
-            </div>
+            {(completedThisWeek + waiting.length + inbox.length + stale.length) > 0 && (
+              <div className="central-week-strip-v39">
+                <span><strong>{completedThisWeek}</strong> fechadas em 7 dias</span>
+                <span><strong>{waiting.length}</strong> aguardando</span>
+                <span><strong>{inbox.length}</strong> entradas</span>
+                <span><strong>{stale.length}</strong> paradas há 3+ semanas</span>
+              </div>
+            )}
           </section>
 
           <OneEuConnections items={oneEuConnections} limit={2} title="O contexto já está cruzado." />
@@ -324,24 +333,28 @@ export default function LifeOSPage() {
 
           <section className="life-os-block">
             <SectionTitle eyebrow="RESET SEMANAL" title="O que mudou esta semana" />
-            <article className="weekly-reset-card">
-              <div className="weekly-reset-copy">
-                <Tag tone="lilac">10 MINUTOS</Tag>
-                <h2>{weeklyReset.sentence}</h2>
-                <p>O reset não serve para reorganizar tudo. Serve para limpar ruído, reconhecer o que mudou e escolher o que merece continuar.</p>
-              </div>
-              <div className="weekly-reset-metrics">
-                <div><strong>{weeklyReset.captured}</strong><span>coisas entraram</span></div>
-                <div><strong>{weeklyReset.completed}</strong><span>foram fechadas</span></div>
-                <div><strong>{weeklyReset.waiting}</strong><span>aguardando</span></div>
-                <div><strong>{weeklyReset.carryOver}</strong><span>continuam vivas</span></div>
-              </div>
-              <div className="weekly-reset-actions">
-                <NavLink to="/inbox"><EuIcon name="inbox" />limpar entrada</NavLink>
-                <NavLink to="/revisao"><EuIcon name="refresh" />revisar pendências</NavLink>
-                <NavLink to="/vida/lab"><EuIcon name="sparkles" />ver sinais no Lab</NavLink>
-              </div>
-            </article>
+            {weekQuiet ? (
+              <SmartEmptyState quiet icon="sparkles" title="Semana silenciosa até aqui." detail="Sem movimento suficiente para justificar um painel de métricas. O EU mantém esse espaço leve." />
+            ) : (
+              <article className="weekly-reset-card">
+                <div className="weekly-reset-copy">
+                  <Tag tone="lilac">10 MINUTOS</Tag>
+                  <h2>{weeklyReset.sentence}</h2>
+                  <p>O reset não serve para reorganizar tudo. Serve para limpar ruído, reconhecer o que mudou e escolher o que merece continuar.</p>
+                </div>
+                <div className="weekly-reset-metrics">
+                  <div><strong>{weeklyReset.captured}</strong><span>coisas entraram</span></div>
+                  <div><strong>{weeklyReset.completed}</strong><span>foram fechadas</span></div>
+                  <div><strong>{weeklyReset.waiting}</strong><span>aguardando</span></div>
+                  <div><strong>{weeklyReset.carryOver}</strong><span>continuam vivas</span></div>
+                </div>
+                <div className="weekly-reset-actions">
+                  <NavLink to="/inbox"><EuIcon name="inbox" />limpar entrada</NavLink>
+                  <NavLink to="/revisao"><EuIcon name="refresh" />revisar pendências</NavLink>
+                  <NavLink to="/vida/lab"><EuIcon name="sparkles" />ver sinais no Lab</NavLink>
+                </div>
+              </article>
+            )}
           </section>
 
           <section className="life-os-block central-deep-context-v39">
