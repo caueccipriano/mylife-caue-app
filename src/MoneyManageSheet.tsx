@@ -1,4 +1,4 @@
-import { type FormEvent, useMemo, useState } from 'react'
+import { type FormEvent, type ReactNode, useMemo, useState } from 'react'
 import {
   addMoneyGoalContribution,
   archiveMoneyAccount,
@@ -74,7 +74,7 @@ function SheetFrame({
   eyebrow: string
   title: string
   onClose: () => void
-  children: React.ReactNode
+  children: ReactNode
 }) {
   return (
     <div className="money-sheet-backdrop" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose() }}>
