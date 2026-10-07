@@ -38,10 +38,6 @@ function reloadWhenNewServiceWorkerTakesControl() {
   navigator.serviceWorker.addEventListener('controllerchange', () => {
     if (pwaReloading) return
 
-    const reloadKey = 'eu-sw-reloaded:' + APP_VERSION
-    if (sessionStorage.getItem(reloadKey) === '1') return
-
-    sessionStorage.setItem(reloadKey, '1')
     pwaReloading = true
     window.location.reload()
   })
