@@ -3,39 +3,42 @@ import { Navigate, NavLink, Route, Routes, useLocation, useNavigationType } from
 import RegisterSheet from './RegisterSheet'
 import TodayPage from './TodayPage'
 import LifeOSPage from './LifeOSPage'
-import LifePage, { CareerPlanPage } from './LifePage'
-import DiscoveriesPage from './DiscoveriesPage'
+import LifePage from './LifePage'
 import MemoriesPage from './MemoriesPage'
-import ChatCapturePage from './ChatCapturePage'
-import RecordDetailPage from './RecordDetailPage'
-import ChatInboxPage from './ChatInboxPage'
-import ReviewPage from './ReviewPage'
-import AskEuPage from './AskEuPage'
-import EntityPage from './EntityPage'
-import SnapshotsPage from './SnapshotsPage'
-import AstrologyPage from './AstrologyPage'
-import SecurityCenterPage from './SecurityCenterPage'
-import TrashPage from './TrashPage'
-import SelfPage from './SelfPage'
-import ChaptersPage from './ChaptersPage'
-import WrappedPage from './WrappedPage'
-import LifeLabPage from './LifeLabPage'
 import PhaseThemeSync from './PhaseThemeSync'
-import StarterPackImportPage from './StarterPackImportPage'
-import MoodPage from './MoodPage'
-import CollectionsPage from './CollectionsPage'
-import AreaPage from './AreaPage'
-import NotificationsPage from './NotificationsPage'
-import SearchPage from './SearchPage'
-import DecidePage from './DecidePage'
-import PeoplePage from './PeoplePage'
 import NotificationRuleSync from './NotificationRuleSync'
 import { initPrivacyAutoLock } from './privacy'
 import { applyDiscreetMode, haptic } from './securitySettings'
 import { emptyExpiredTrash } from './storage'
 import { EuIcon } from './v2Ui'
+import { trackRouteVisit } from './personalization'
+import VaultAutoSync from './VaultAutoSync'
 
 const MoneyPage = lazy(() => import('./MoneyPage'))
+const CareerPlanPage = lazy(() => import('./LifePage').then((module) => ({ default: module.CareerPlanPage })))
+const DiscoveriesPage = lazy(() => import('./DiscoveriesPage'))
+const ChatCapturePage = lazy(() => import('./ChatCapturePage'))
+const RecordDetailPage = lazy(() => import('./RecordDetailPage'))
+const ChatInboxPage = lazy(() => import('./ChatInboxPage'))
+const ReviewPage = lazy(() => import('./ReviewPage'))
+const AskEuPage = lazy(() => import('./AskEuPage'))
+const EntityPage = lazy(() => import('./EntityPage'))
+const SnapshotsPage = lazy(() => import('./SnapshotsPage'))
+const AstrologyPage = lazy(() => import('./AstrologyPage'))
+const SecurityCenterPage = lazy(() => import('./SecurityCenterPage'))
+const TrashPage = lazy(() => import('./TrashPage'))
+const SelfPage = lazy(() => import('./SelfPage'))
+const ChaptersPage = lazy(() => import('./ChaptersPage'))
+const WrappedPage = lazy(() => import('./WrappedPage'))
+const LifeLabPage = lazy(() => import('./LifeLabPage'))
+const StarterPackImportPage = lazy(() => import('./StarterPackImportPage'))
+const MoodPage = lazy(() => import('./MoodPage'))
+const CollectionsPage = lazy(() => import('./CollectionsPage'))
+const AreaPage = lazy(() => import('./AreaPage'))
+const NotificationsPage = lazy(() => import('./NotificationsPage'))
+const SearchPage = lazy(() => import('./SearchPage'))
+const DecidePage = lazy(() => import('./DecidePage'))
+const PeoplePage = lazy(() => import('./PeoplePage'))
 
 const nav = [
   { path: '/', label: 'Hoje', icon: 'sun' },
@@ -69,6 +72,10 @@ function AppShell({ onRegister }: { onRegister: () => void }) {
   const showPrimaryDock = ['/', '/dinheiro', '/sistema', '/vida', '/memorias'].includes(location.pathname)
   const [chromeCompact, setChromeCompact] = useState(false)
   const fabMinimized = chromeCompact || location.pathname !== '/'
+
+  useEffect(() => {
+    trackRouteVisit(location.pathname)
+  }, [location.pathname])
 
   useEffect(() => {
     let lastY = window.scrollY
@@ -112,14 +119,11 @@ function AppShell({ onRegister }: { onRegister: () => void }) {
       <RouteScrollMemory />
       <main className="eu-v2-main">
         <div className="route-stage" key={location.pathname}>
+        <Suspense fallback={<div className="v2-page route-loading-v51"><span /><p>Abrindo…</p></div>}>
         <Routes>
           <Route path="/" element={<TodayPage onRegister={onRegister} />} />
           <Route path="/sistema" element={<LifeOSPage />} />
-          <Route path="/dinheiro" element={
-            <Suspense fallback={<div className="v2-page"><div className="money-loading"><span /><p>Abrindo seu Dinheiro…</p></div></div>}>
-              <MoneyPage />
-            </Suspense>
-          } />
+          <Route path="/dinheiro" element={<MoneyPage />} />
           <Route path="/vida" element={<LifePage />} />
           <Route path="/vida/carreira" element={<CareerPlanPage />} />
           <Route path="/vida/area/:id" element={<AreaPage />} />
@@ -157,6 +161,7 @@ function AppShell({ onRegister }: { onRegister: () => void }) {
           <Route path="/eu" element={<Navigate to="/vida" replace />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
+        </Suspense>
         </div>
       </main>
 
@@ -214,6 +219,7 @@ export default function App() {
       )}
       <PhaseThemeSync />
       <NotificationRuleSync />
+      <VaultAutoSync />
       <AppShell onRegister={() => setRegisterOpen(true)} />
       <RegisterSheet
         open={registerOpen}

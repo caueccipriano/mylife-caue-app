@@ -16,6 +16,8 @@ import { deriveAmbientProfile } from './ambientHome'
 import { deriveCarryOver, deriveCrossSignals, deriveDriftSignals, deriveWaiting, isWaitingRecord } from './lifeOSIntelligence'
 import { deriveOneEuConnections } from './oneEu'
 import OneEuConnections from './OneEuConnections'
+import { deriveDailyRhythm } from './dailyRhythm'
+import DailyRhythmCard from './DailyRhythmCard'
 
 function greeting() {
   const hour = new Date().getHours()
@@ -79,6 +81,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   })
   const [focusAreas, setFocusAreasState] = useState(() => getFocusAreas())
   const [ambientNow, setAmbientNow] = useState(() => new Date())
+  const dailyRhythm = useMemo(() => deriveDailyRhythm(records, bridges, mood, ambientNow), [records, bridges, mood, ambientNow])
 
   const followups = useMemo(() => activeFollowUps(records), [records])
   const due = followups.filter((item) => item.due && isRecordVisibleForInsights(item.record)).map((item) => item.record)
@@ -234,6 +237,8 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
         <NavLink to="/vida/lab"><EuIcon name="sparkles" />Sinais</NavLink>
       </div>
       </section>
+
+      {!focusMode && <DailyRhythmCard rhythm={dailyRhythm} />}
 
       <LifeCommandCenter records={records} inboxCount={inbox.length} compact />
 

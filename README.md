@@ -52,9 +52,19 @@ A interface usa a identidade consolidada do EU/FÔLEGO: superfícies claras, azu
 
 ## Estado atual
 
-**EU v44 — Fresh Update**
+**EU v54 — Living System**
 
-Corrige atualização do PWA no iPhone/Safari. O app continua usando `autoUpdate`, mas agora recarrega automaticamente quando um novo service worker assume o controle e volta a checar por build nova ao retornar do background, voltar online ou reaparecer via `pageshow`. O `start_url` antigo com `?v=eu-v20-central` foi removido para evitar inicialização presa em uma versão histórica.
+Release consolidado das frentes v45→v54:
+
+- **Deep Routes 2.0:** páginas internas usam um shell visual mais consistente, sem dock principal e com densidade mobile reduzida.
+- **Empty States inteligentes:** o EU deixa de preencher espaço com blocos vazios e passa a explicar quando o silêncio é normal ou qual ação pequena faz sentido.
+- **Today Proactive + Morning/Evening:** a Home ganhou um ritmo diário que muda conforme horário, pendências, contexto financeiro e fechamento do dia.
+- **One EU Actions:** conexões entre módulos podem virar um próximo passo acompanhado, sempre após confirmação.
+- **Memory Intelligence:** Memórias detecta temas recorrentes, mudanças de presença por área e continuidade depois de decisões.
+- **Design System Cleanup:** novos tokens canônicos de spacing, radius, superfície, tipografia e cor passam a orientar os novos componentes; CSS legado foi preservado por segurança até QA visual.
+- **Performance/PWA:** rotas profundas são carregadas sob demanda, reduzindo o bundle inicial, e o fluxo Fresh Update da v44 continua ativo.
+- **Personalização local:** o EU aprende, somente neste aparelho, quais conexões você abre ou ignora e usa isso como sinal leve de ordenação.
+- **Private Sync / Backup:** o Sync Vault cifrado passa a atualizar automaticamente no aparelho; recuperação em outro aparelho continua via `.eubackup` AES-GCM protegido por senha, sem fingir que existe sync de nuvem onde não existe.
 
 ---
 

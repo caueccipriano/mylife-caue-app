@@ -27,8 +27,9 @@ import './v40-life-map.css'
 import './v41-memory-first.css'
 import './v42-one-eu.css'
 import './v43-iphone-polish.css'
+import './v54-living-system.css'
 
-const APP_VERSION = 'eu-v44-fresh-update'
+const APP_VERSION = 'eu-v54-living-system'
 
 let pwaReloading = false
 

@@ -54,8 +54,13 @@ export default function SecurityCenterPage() {
   useEffect(() => {
     void listRecords().then((records) => setRecordCount(records.length))
     const refresh = () => setLastBackup(getLastBackupAt())
+    const refreshVaultMeta = () => setVaultUpdatedAt(localSyncVaultMeta().updatedAt)
     window.addEventListener('eu-security-updated', refresh)
-    return () => window.removeEventListener('eu-security-updated', refresh)
+    window.addEventListener('eu-sync-vault-updated', refreshVaultMeta)
+    return () => {
+      window.removeEventListener('eu-security-updated', refresh)
+      window.removeEventListener('eu-sync-vault-updated', refreshVaultMeta)
+    }
   }, [])
 
   const backupAge = useMemo(() => {
@@ -319,18 +324,18 @@ export default function SecurityCenterPage() {
         <summary><span><EuIcon name="file" />Backup & dados</span><small>cofre local, exportação e recuperação</small></summary>
         <div className="security-group-body">
       <section className="security-panel vault-security-panel">
-        <SectionTitle eyebrow="SYNC VAULT" title="Os seus apps, num cofre local" />
-        <p>Fôlego, Traço e Repertório podem alimentar um envelope local cifrado com os resumos mais recentes e um digest do EU.</p>
+        <SectionTitle eyebrow="SYNC VAULT · AUTOMÁTICO" title="Os seus apps, num cofre local" />
+        <p>O EU atualiza esse envelope cifrado automaticamente quando seu arquivo ou os bridges mudam. Ele sincroniza contexto entre apps do mesmo domínio neste aparelho; não é um backup em nuvem.</p>
         <div className="vault-security-row">
           <span>{vaultUpdatedAt ? 'atualizado em ' + formatDate(vaultUpdatedAt) : 'ainda não criado'}</span>
-          <button onClick={() => void refreshVault()}><EuIcon name="refresh" />Atualizar cofre</button>
+          <button onClick={() => void refreshVault()}><EuIcon name="refresh" />atualizar agora</button>
         </div>
         <small>{syncVaultSecurityNote()}</small>
       </section>
 
       <section className="security-panel backup-security-panel">
         <SectionTitle eyebrow="RECUPERAÇÃO" title="Backup que você consegue confiar" />
-        <p>O backup seguro usa AES-GCM e uma chave derivada da sua senha. A senha não é armazenada no app.</p>
+        <p>O backup seguro usa AES-GCM e uma chave derivada da sua senha. A senha não é armazenada no app. Para recuperar seus registros em outro aparelho, guarde o arquivo .eubackup e a senha separados.</p>
 
         <div className="secure-backup-password">
           <input

@@ -5,6 +5,7 @@ import { useRecords } from './appState'
 import { isRecordVisibleForInsights } from './storage'
 import { getFocusAreas, setFocusAreas } from './uxFeatures'
 import { BrandTop, EuIcon, SectionTitle, Tag, formatShortDate, typeTone, type EuIconName } from './v2Ui'
+import SmartEmptyState from './SmartEmptyState'
 
 const areaIcons: Record<string, EuIconName> = {
   carreira: 'briefcase',
@@ -79,7 +80,7 @@ export default function AreaPage() {
               <p>{record.nextMove || 'desde ' + formatShortDate(record.startedAt || record.createdAt)}</p>
             </NavLink>
           ))}
-          {!active.length && <div className="soft-empty wide"><span><EuIcon name="check" /></span><p>Nada ativo nesta área agora.</p></div>}
+          {!active.length && <SmartEmptyState quiet icon="check" title={'Nada ativo em ' + areaName + ' agora.'} detail="Essa área continua existindo sem precisar gerar tarefa. Registre algo só quando houver movimento real." actionLabel="registrar movimento" actionTo="/capturar" />}
         </div>
       </section>
 
@@ -113,15 +114,19 @@ export default function AreaPage() {
 
       <section className="area-section">
         <SectionTitle eyebrow="HISTÓRICO" title="Registros recentes" />
-        <div className="area-history-list">
-          {items.slice(0, 14).map((record) => (
-            <NavLink key={record.id} to={'/registro/' + record.id}>
-              <span>{formatShortDate(record.createdAt)}</span>
-              <strong>{record.type}</strong>
-              <p>{record.text}</p>
-            </NavLink>
-          ))}
-        </div>
+        {items.length ? (
+          <div className="area-history-list">
+            {items.slice(0, 14).map((record) => (
+              <NavLink key={record.id} to={'/registro/' + record.id}>
+                <span>{formatShortDate(record.createdAt)}</span>
+                <strong>{record.type}</strong>
+                <p>{record.text}</p>
+              </NavLink>
+            ))}
+          </div>
+        ) : (
+          <SmartEmptyState quiet icon="note" title="Sem histórico ainda." detail={'O primeiro registro em ' + areaName + ' inaugura essa linha do tempo.'} />
+        )}
       </section>
     </div>
   )
