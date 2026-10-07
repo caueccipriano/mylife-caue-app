@@ -52,9 +52,9 @@ A interface usa a identidade consolidada do EU/FÔLEGO: superfícies claras, azu
 
 ## Estado atual
 
-**EU v37 — Money Management**
+**EU v38 — Planning & Future**
 
-A Carteira passa a ser gerenciável: contas e cartões podem ser editados/arquivados, recorrências podem ser editadas e pausadas, metas podem ser criadas/editadas/concluídas/arquivadas com aportes, e dívidas podem ser criadas/editadas/quitadas/arquivadas. As ações usam os RPCs existentes e as policies RLS do projeto Fôlego; aportes permanecem somente positivos porque o backend não permite remoção.
+Planejamento agora navega por mês, compara planejado × realizado e pode copiar os limites do mês anterior. A nova aba Futuro usa `get_projection` para mostrar caixa projetado, cartões, dívidas e reservas em 3/6/12/24 meses; faturas abertas usam `get_card_invoice_semantics`. O recurso “Posso gastar?” simula uma compra como ajuste temporário e avalia o pior saldo futuro sem gravar a simulação.
 
 ---
 
