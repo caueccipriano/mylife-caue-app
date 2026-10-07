@@ -68,7 +68,7 @@ function RouteScrollMemory() {
 
 function AppShell({ onRegister }: { onRegister: () => void }) {
   const location = useLocation()
-  const showRegister = ['/', '/sistema', '/vida', '/descobertas', '/memorias'].includes(location.pathname)
+  const showRegister = location.pathname === '/'
   const showPrimaryDock = ['/', '/dinheiro', '/sistema', '/vida', '/memorias'].includes(location.pathname)
   const [chromeCompact, setChromeCompact] = useState(false)
   const fabMinimized = chromeCompact || location.pathname !== '/'
