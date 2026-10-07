@@ -93,6 +93,7 @@ export default function AstrologyPage() {
   const westernNatal = profile.astrology?.westernNatal ?? []
   const vedicNatal = profile.astrology?.vedicNatal ?? []
   const reading = useMemo(() => dailyAstrology(now, westernNatal), [now.toDateString(), westernNatal])
+  const visibleSignals = useMemo(() => reading.signals.filter((signal) => signal.detail.trim().toLowerCase() !== reading.summary.trim().toLowerCase()), [reading])
   const currentPoints = mode === 'western' ? westernNatal : vedicNatal
   const hasNatal = currentPoints.length > 0
 
@@ -121,14 +122,16 @@ export default function AstrologyPage() {
           <Tag tone="green">ATUALIZA SOZINHO</Tag>
         </div>
         <p>{reading.summary}</p>
-        <div className="astro-signal-grid">
-          {reading.signals.map((signal) => (
-            <article key={signal.id} className={'astro-signal astro-' + signal.tone}>
-              <Tag tone={signal.tone}>{signal.title}</Tag>
-              <p>{signal.detail}</p>
-            </article>
-          ))}
-        </div>
+        {visibleSignals.length > 0 && (
+          <div className="astro-signal-grid">
+            {visibleSignals.map((signal) => (
+              <article key={signal.id} className={'astro-signal astro-' + signal.tone}>
+                <Tag tone={signal.tone}>{signal.title}</Tag>
+                <p>{signal.detail}</p>
+              </article>
+            ))}
+          </div>
+        )}
         <small className="astro-note">Leitura simbólica baseada em trânsitos astrológicos; use como reflexão, não como previsão garantida.</small>
       </section>
 
