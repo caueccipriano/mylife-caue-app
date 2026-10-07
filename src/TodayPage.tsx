@@ -16,6 +16,8 @@ import { deriveAmbientProfile } from './ambientHome'
 import { deriveCarryOver, deriveCrossSignals, deriveDriftSignals, deriveWaiting, isWaitingRecord } from './lifeOSIntelligence'
 import { deriveOneEuConnections } from './oneEu'
 import OneEuConnections from './OneEuConnections'
+import { deriveDailyRhythm } from './dailyRhythm'
+import DailyRhythmCard from './DailyRhythmCard'
 
 function greeting() {
   const hour = new Date().getHours()
@@ -66,6 +68,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   const { bridges } = useBridges()
   const moneyBridge = bridges.find((card) => card.id === 'folego')
   const oneEuConnections = useMemo(() => deriveOneEuConnections(records, bridges), [records, bridges])
+  const dailyRhythm = useMemo(() => deriveDailyRhythm(records, bridges, mood, ambientNow), [records, bridges, mood, ambientNow])
   const inbox = useChatInbox()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -234,6 +237,8 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
         <NavLink to="/vida/lab"><EuIcon name="sparkles" />Sinais</NavLink>
       </div>
       </section>
+
+      {!focusMode && <DailyRhythmCard rhythm={dailyRhythm} />}
 
       <LifeCommandCenter records={records} inboxCount={inbox.length} compact />
 
