@@ -343,9 +343,23 @@ async function budgetItems(spaceId: string) {
     .sort((a, b) => a.categoryPath.localeCompare(b.categoryPath))
 }
 
-function publishMoneyBridge(snapshot: MoneySnapshot) {
+type MoneyBridgeGoal = {
+  name: string
+  target: number
+  contributed: number
+  status?: string
+}
+
+function publishMoneyBridge(snapshot: MoneySnapshot, goals: MoneyBridgeGoal[] = []) {
   const budgetPercent = snapshot.monthlyBudgetPlanned > 0
     ? Math.round((snapshot.monthlyBudgetUsed / snapshot.monthlyBudgetPlanned) * 100)
+    : null
+  const activeGoals = goals
+    .filter((goal) => goal.status !== 'archived' && goal.status !== 'completed' && goal.target > 0)
+    .sort((a, b) => (b.contributed / b.target) - (a.contributed / a.target))
+  const topGoal = activeGoals[0]
+  const topGoalProgress = topGoal
+    ? Math.max(0, Math.min(100, Math.round((topGoal.contributed / topGoal.target) * 100)))
     : null
   const payload = {
     version: 2,
@@ -358,6 +372,7 @@ function publishMoneyBridge(snapshot: MoneySnapshot) {
       snapshot.dailyFolego == null ? null : moneyForBridge(snapshot.dailyFolego) + ' por dia',
       budgetPercent == null ? null : budgetPercent + '% do orçamento variável usado',
       snapshot.daysUntilIncome == null ? null : snapshot.daysUntilIncome + ' dias até o próximo recebimento',
+      topGoal ? topGoal.name + ' em ' + topGoalProgress + '%' : null,
       snapshot.shortfall > 0 ? 'atenção ao caixa' : snapshot.cashHeadroom > 0 ? 'caixa com folga' : 'sem déficit projetado',
     ].filter(Boolean).join(' · '),
     metrics: {
@@ -374,6 +389,11 @@ function publishMoneyBridge(snapshot: MoneySnapshot) {
       monthlyBudgetUsed: snapshot.monthlyBudgetUsed,
       budgetConfigured: snapshot.budgetConfigured,
       limitingFactor: snapshot.limitingFactor,
+      activeGoalCount: activeGoals.length,
+      topGoalName: topGoal?.name || null,
+      topGoalProgress,
+      topGoalTarget: topGoal?.target ?? null,
+      topGoalContributed: topGoal?.contributed ?? null,
     },
   }
   const encoded = JSON.stringify(payload)
