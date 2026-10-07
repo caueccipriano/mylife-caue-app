@@ -5,6 +5,7 @@ import { derivePeople, deriveLivingGoals } from './adaptiveLife'
 import { deriveDecisionJournal, deriveWhatChanged, searchLife } from './lifeCommandCenter'
 import { deriveProjectHandoff, deriveWaiting } from './lifeOSIntelligence'
 import { brainConfidenceForSourceCount, brainDecisionQueryIsGeneric, brainIntentFor, brainPeopleQueryIsGeneric, type BrainIntent } from './euBrainRules'
+import { deriveOneEuConnections } from './oneEu'
 
 export type BrainAction = {
   label: string
@@ -47,6 +48,8 @@ function answerStatus(records: StoredRecord[], bridges: BridgeCard[]): BrainAnsw
   const activeGoals = goals.filter((goal) => goal.state === 'attention' || goal.state === 'quiet')
   const active = usable.filter((record) => record.status === 'active' && !deriveWaiting([record]).length)
   const bridgeBits = bridges.filter((card) => card.bridge?.summary).slice(0, 2)
+  const connections = deriveOneEuConnections(usable, bridges)
+  const topConnection = connections[0]
 
   const sources = [
     ...active.slice(0, 2),
@@ -63,16 +66,18 @@ function answerStatus(records: StoredRecord[], bridges: BridgeCard[]): BrainAnsw
     intent: 'status',
     eyebrow: 'EU, AGORA',
     answer: parts.length ? parts.slice(0, 2).join(' · ') + '.' : 'Nada importante está exigindo sua atenção agora.',
-    detail: bridgeBits.length
-      ? bridgeBits.map((card) => card.title + ': ' + card.bridge?.summary).join(' · ')
-      : 'A leitura usa apenas o que já existe no seu arquivo neste aparelho.',
+    detail: topConnection
+      ? topConnection.title + ' ' + topConnection.detail
+      : bridgeBits.length
+        ? bridgeBits.map((card) => card.title + ': ' + card.bridge?.summary).join(' · ')
+        : 'A leitura usa apenas o que já existe no seu arquivo neste aparelho.',
     confidence: brainConfidenceForSourceCount(sources.length),
     sources,
     actions: [
       { label: 'Abrir Central', route: '/sistema', icon: 'collections' },
-      { label: 'Ver objetivos', route: '/sistema?view=goals', icon: 'compass' },
+      ...(topConnection ? [{ label: topConnection.actionLabel, route: topConnection.route, icon: 'compass' as const }] : [{ label: 'Ver objetivos', route: '/sistema?view=goals', icon: 'compass' as const }]),
     ],
-    trace: ['registros ativos', 'aguardando', 'objetivos vivos', bridgeBits.length ? 'sinais integrados' : 'sem sinais externos'],
+    trace: ['registros ativos', 'aguardando', 'objetivos vivos', connections.length ? 'conexões entre módulos' : bridgeBits.length ? 'sinais integrados' : 'sem sinais externos'],
   }
 }
 
@@ -263,6 +268,8 @@ function answerImpact(records: StoredRecord[], question: string, bridges: Bridge
   const sources = [...matches, ...related].filter((record, index, arr) => arr.findIndex((item) => item.id === record.id) === index).slice(0, 7)
   const areas = [...new Set(sources.map((record) => record.area))].slice(0, 4)
   const money = bridges.find((card) => card.id === 'folego')?.bridge?.summary
+  const oneEuConnections = deriveOneEuConnections(records, bridges)
+  const linkedConnection = oneEuConnections.find((connection) => connection.areas.some((area) => areas.includes(area))) || oneEuConnections[0]
 
   return {
     intent: 'impact',
@@ -272,22 +279,41 @@ function answerImpact(records: StoredRecord[], question: string, bridges: Bridge
       : 'Ainda não há contexto suficiente no seu EU para estimar esse impacto.',
     detail: money && /compr|gasto|dinheiro|carro|assinar|pagar|salario|salário/i.test(question)
       ? 'Sinal financeiro atual: ' + money
-      : sources.length
-        ? 'Veja as evidências abaixo antes de tratar isso como consequência real.'
-        : 'O EU não transforma hipótese em fato.',
+      : linkedConnection
+        ? linkedConnection.title + ' ' + linkedConnection.detail
+        : sources.length
+          ? 'Veja as evidências abaixo antes de tratar isso como consequência real.'
+          : 'O EU não transforma hipótese em fato.',
     confidence: brainConfidenceForSourceCount(sources.length),
     sources,
     actions: [
       { label: 'Decida comigo', route: '/decidir', icon: 'compass' },
-      ...(money ? [{ label: 'Abrir Dinheiro', route: '/dinheiro', icon: 'wallet' as const }] : []),
+      ...(money ? [{ label: 'Abrir Dinheiro', route: '/dinheiro', icon: 'wallet' as const }] : linkedConnection ? [{ label: linkedConnection.actionLabel, route: linkedConnection.route, icon: 'compass' as const }] : []),
     ],
     trace: ['termos da hipótese', 'áreas relacionadas', money ? 'sinal financeiro' : 'sem sinal financeiro'],
   }
 }
 
-function answerSearch(records: StoredRecord[], question: string): BrainAnswer {
+function answerSearch(records: StoredRecord[], question: string, bridges: BridgeCard[]): BrainAnswer {
   const matches = searchLife(records, question)
+  const words = lower(question).split(/\s+/).filter((word) => word.length >= 4)
+  const connection = deriveOneEuConnections(records, bridges).find((item) => {
+    const haystack = lower(item.title + ' ' + item.detail + ' ' + item.areas.join(' '))
+    return words.some((word) => haystack.includes(word))
+  })
   if (!matches.length) {
+    if (connection) {
+      return {
+        intent: 'search',
+        eyebrow: 'ONE EU',
+        answer: connection.title,
+        detail: connection.detail,
+        confidence: 'medium',
+        sources: [],
+        actions: [{ label: connection.actionLabel, route: connection.route, icon: 'compass' }],
+        trace: ['busca local sem registro direto', 'conexões entre módulos', ...connection.sourceBridgeIds.map((id) => 'bridge ' + id)],
+      }
+    }
     return {
       intent: 'search',
       eyebrow: 'LIFE SEARCH',
@@ -323,5 +349,5 @@ export function askEuBrain(records: StoredRecord[], bridges: BridgeCard[], quest
   if (intent === 'waiting') return answerWaiting(records)
   if (intent === 'people') return answerPeople(records, question)
   if (intent === 'impact') return answerImpact(records, question, bridges)
-  return answerSearch(records, question)
+  return answerSearch(records, question, bridges)
 }
