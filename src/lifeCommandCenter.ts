@@ -578,11 +578,13 @@ export function parseLifeCommand(input: string): CommandIntent {
     return { kind: 'reminder', query, area: commandArea(query), followUpAt: at.toISOString(), followUpDays: diffDays }
   }
 
-  const complete = ascii.match(/^\s*(concluir|conclui|conclua|fechar|fecha|finalizar|finaliza)\s+(.+)/)
-  if (complete) return { kind: 'complete', query: value.slice(value.toLowerCase().indexOf(complete[2])) }
+  if (/^\s*(concluir|conclui|conclua|fechar|fecha|finalizar|finaliza)\s+/.test(ascii)) {
+    return { kind: 'complete', query: value.replace(/^\s*(concluir|conclui|conclua|fechar|fecha|finalizar|finaliza)\s+/i, '').trim() }
+  }
 
-  const pause = ascii.match(/^\s*(pausar|pausa|pause)\s+(.+)/)
-  if (pause) return { kind: 'pause', query: value.slice(value.toLowerCase().indexOf(pause[2])) }
+  if (/^\s*(pausar|pausa|pause)\s+/.test(ascii)) {
+    return { kind: 'pause', query: value.replace(/^\s*(pausar|pausa|pause)\s+/i, '').trim() }
+  }
 
   if (includesAny(normalized, ['buscar ', 'procura ', 'onde está ', 'onde esta ', 'ache ', 'encontre '])) {
     return { kind: 'search', query: value.replace(/^(buscar|procura|onde está|onde esta|ache|encontre)\s+/i, '') }
