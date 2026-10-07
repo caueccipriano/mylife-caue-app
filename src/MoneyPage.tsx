@@ -1,6 +1,7 @@
 import { type FormEvent, useEffect, useMemo, useState } from 'react'
 import { BrandTop, EuIcon, Tag } from './v2Ui'
 import MoneySetupSheet, { type MoneySetupKind } from './MoneySetupSheet'
+import MoneyManageSheet, { type MoneyManageTarget } from './MoneyManageSheet'
 import {
   loadMoneyBundle,
   moneySupabase,
@@ -72,6 +73,7 @@ export default function MoneyPage() {
   const [commandDraft, setCommandDraft] = useState(() => sessionStorage.getItem('eu-money-command-draft') || '')
   const [registerOpen, setRegisterOpen] = useState(() => Boolean(sessionStorage.getItem('eu-money-command-draft')))
   const [setupOpen, setSetupOpen] = useState<{ kind: MoneySetupKind; budgetItem?: MoneyBudgetItem | null } | null>(null)
+  const [manageOpen, setManageOpen] = useState<MoneyManageTarget | null>(null)
 
   async function refresh() {
     setLoading(true)
@@ -242,7 +244,7 @@ export default function MoneyPage() {
             </section>
           )}
 
-          {view === 'wallet' && <MoneyWallet bundle={bundle} onSetup={(kind) => setSetupOpen({ kind })} />}
+          {view === 'wallet' && <MoneyWallet bundle={bundle} onSetup={(kind) => setSetupOpen({ kind })} onManage={setManageOpen} />}
         </>
       )}
 
@@ -282,6 +284,19 @@ export default function MoneyPage() {
           }}
         />
       )}
+
+      {bundle && manageOpen && (
+        <MoneyManageSheet
+          key={manageOpen.kind + ':' + ('item' in manageOpen && manageOpen.item ? manageOpen.item.id : 'new')}
+          bundle={bundle}
+          target={manageOpen}
+          onClose={() => setManageOpen(null)}
+          onSaved={() => {
+            setManageOpen(null)
+            void refresh()
+          }}
+        />
+      )}
     </div>
   )
 }
@@ -311,7 +326,7 @@ function TransactionList({ bundle, limit }: { bundle: MoneyBundle; limit: number
   )
 }
 
-function MoneyWallet({ bundle, onSetup }: { bundle: MoneyBundle; onSetup: (kind: MoneySetupKind) => void }) {
+function MoneyWallet({ bundle, onSetup, onManage }: { bundle: MoneyBundle; onSetup: (kind: MoneySetupKind) => void; onManage: (target: MoneyManageTarget) => void }) {
   return (
     <section className="money-section money-full-view">
       <div className="money-section-title"><div><small>CARTEIRA</small><h2>Tudo que compõe sua vida financeira</h2><p>Contas, cartões, dívidas, recorrências e metas em uma visão só.</p></div></div>
@@ -323,12 +338,14 @@ function MoneyWallet({ bundle, onSetup }: { bundle: MoneyBundle; onSetup: (kind:
         <button onClick={() => onSetup('card')}><span><EuIcon name="collections" /></span><strong>Cartão</strong><small>fechamento, vencimento e fatura</small></button>
         <button onClick={() => onSetup('recurring')}><span><EuIcon name="refresh" /></span><strong>Recorrência</strong><small>contas fixas mensais</small></button>
         <button onClick={() => onSetup('budget')}><span><EuIcon name="compass" /></span><strong>Planejamento</strong><small>limite por categoria</small></button>
+        <button onClick={() => onManage({ kind: 'goal' })}><span><EuIcon name="sparkles" /></span><strong>Meta</strong><small>objetivo e prazo financeiro</small></button>
+        <button onClick={() => onManage({ kind: 'debt' })}><span><EuIcon name="clock" /></span><strong>Dívida</strong><small>parcelas, juros e credor</small></button>
       </div>
 
       <div className="money-wallet-block">
         <h3>Contas <span>{bundle.accounts.length}</span></h3>
         <div className="money-wallet-grid">
-          {bundle.accounts.map((item) => <article key={item.id}><span><EuIcon name="wallet" /></span><div><strong>{item.name}</strong><small>{item.institution || item.type || 'conta'}</small></div></article>)}
+          {bundle.accounts.map((item) => <article key={item.id} className="money-manage-row"><span><EuIcon name="wallet" /></span><div><strong>{item.name}</strong><small>{item.institution || item.type || 'conta'}{item.available_for_spending === false ? ' · protegida' : ''}</small></div><button onClick={() => onManage({ kind: 'account', item })} aria-label={'Editar ' + item.name}><EuIcon name="arrow-right" /></button></article>)}
         </div>
       </div>
 
@@ -342,6 +359,7 @@ function MoneyWallet({ bundle, onSetup }: { bundle: MoneyBundle; onSetup: (kind:
               <p>{card.last_four ? '•••• ' + card.last_four : 'cartão ativo'}</p>
               <div><span>fecha dia {card.closing_day || '—'}</span><span>vence dia {card.due_day || '—'}</span></div>
               <b>{money(card.personal_limit ?? card.issuer_limit)}</b>
+              <button className="money-card-edit" onClick={() => onManage({ kind: 'card', item: card })} aria-label={'Editar ' + card.name}><EuIcon name="arrow-right" /></button>
             </article>
           ))}
           {!bundle.cards.length && <div className="money-empty">Nenhum cartão ativo.</div>}
@@ -352,10 +370,11 @@ function MoneyWallet({ bundle, onSetup }: { bundle: MoneyBundle; onSetup: (kind:
         <h3>Dívidas <span>{bundle.debts.length}</span></h3>
         <div className="money-simple-list">
           {bundle.debts.map((debt) => (
-            <article key={debt.id}>
+            <article key={debt.id} className="money-manage-row">
               <span><EuIcon name="clock" /></span>
-              <div><strong>{debt.name}</strong><small>{debt.creditor || debt.debt_type || 'dívida'} · {debt.total_installments || '—'} parcelas</small></div>
+              <div><strong>{debt.name}</strong><small>{debt.creditor || debt.debt_type || 'dívida'} · {debt.total_installments || '—'} parcelas{debt.status ? ' · ' + debt.status : ''}</small></div>
               <b>{money(debt.opening_balance || debt.original_amount)}</b>
+              <button onClick={() => onManage({ kind: 'debt', item: debt })} aria-label={'Editar ' + debt.name}><EuIcon name="arrow-right" /></button>
             </article>
           ))}
           {!bundle.debts.length && <div className="money-empty">Nenhuma dívida ativa cadastrada.</div>}
@@ -366,10 +385,11 @@ function MoneyWallet({ bundle, onSetup }: { bundle: MoneyBundle; onSetup: (kind:
         <h3>Recorrências <span>{bundle.recurring.length}</span></h3>
         <div className="money-simple-list">
           {bundle.recurring.map((item) => (
-            <article key={item.id}>
+            <article key={item.id} className={'money-manage-row' + (item.active === false ? ' is-paused' : '')}>
               <span><EuIcon name="refresh" /></span>
-              <div><strong>{item.name}</strong><small>{item.item_type} · {item.frequency}{item.day_of_month ? ' · dia ' + item.day_of_month : ''}</small></div>
+              <div><strong>{item.name}</strong><small>{item.item_type} · {item.frequency}{item.day_of_month ? ' · dia ' + item.day_of_month : ''}{item.active === false ? ' · pausada' : ''}</small></div>
               <b>{money(item.amount)}</b>
+              <button onClick={() => onManage({ kind: 'recurring', item })} aria-label={'Editar ' + item.name}><EuIcon name="arrow-right" /></button>
             </article>
           ))}
           {!bundle.recurring.length && <div className="money-empty">Nenhuma recorrência ativa.</div>}
@@ -382,10 +402,14 @@ function MoneyWallet({ bundle, onSetup }: { bundle: MoneyBundle; onSetup: (kind:
           {bundle.goals.map((goal) => {
             const pct = goal.target > 0 ? Math.min(100, Math.round((goal.contributed / goal.target) * 100)) : 0
             return (
-              <article key={goal.id}>
+              <article key={goal.id} className="money-goal-managed">
                 <div><strong>{goal.name}</strong><span>{pct}%</span></div>
                 <div className="money-goal-bar"><span style={{ width: pct + '%' }} /></div>
-                <p>{money(goal.contributed)} de {money(goal.target)}{goal.target_date ? ' · alvo ' + dateLabel(goal.target_date) : ''}</p>
+                <p>{money(goal.contributed)} de {money(goal.target)}{goal.target_date ? ' · alvo ' + dateLabel(goal.target_date) : ''}{goal.status === 'completed' ? ' · concluída' : ''}</p>
+                <div className="money-goal-actions">
+                  <button onClick={() => onManage({ kind: 'goal-contribution', item: goal })}><EuIcon name="plus" />aporte</button>
+                  <button onClick={() => onManage({ kind: 'goal', item: goal })}><EuIcon name="arrow-right" />editar</button>
+                </div>
               </article>
             )
           })}
