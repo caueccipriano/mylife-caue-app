@@ -14,6 +14,8 @@ import LifeCommandCenter from './LifeCommandCenter'
 import { deriveAttentionBudget } from './lifeCommandCenter'
 import { deriveAmbientProfile } from './ambientHome'
 import { deriveCarryOver, deriveCrossSignals, deriveDriftSignals, deriveWaiting, isWaitingRecord } from './lifeOSIntelligence'
+import { deriveOneEuConnections } from './oneEu'
+import OneEuConnections from './OneEuConnections'
 
 function greeting() {
   const hour = new Date().getHours()
@@ -63,6 +65,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   const moodHistory = useMoodHistory()
   const { bridges } = useBridges()
   const moneyBridge = bridges.find((card) => card.id === 'folego')
+  const oneEuConnections = useMemo(() => deriveOneEuConnections(records, bridges), [records, bridges])
   const inbox = useChatInbox()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
@@ -296,6 +299,8 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
           )}
         </section>
       )}
+
+      {!focusMode && <OneEuConnections items={oneEuConnections} limit={1} compact title="Uma coisa conversa com outra." />}
 
       <details className="today-more-drawer now-only">
         <summary>
