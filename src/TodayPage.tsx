@@ -11,10 +11,7 @@ import { BrandTop, EuIcon, SectionTitle, Tag, formatShortDate, typeTone, type Eu
 import { AstroTodayPreview } from './AstrologyPage'
 import { haptic } from './securitySettings'
 import LifeCommandCenter from './LifeCommandCenter'
-import AdaptiveHomeDeck from './AdaptiveHomeDeck'
-import AssistantSurface from './AssistantSurface'
 import { deriveAttentionBudget } from './lifeCommandCenter'
-import { deriveAdaptiveHome } from './adaptiveLife'
 import { deriveAmbientProfile } from './ambientHome'
 import { deriveCarryOver, deriveCrossSignals, deriveDriftSignals, deriveWaiting, isWaitingRecord } from './lifeOSIntelligence'
 
@@ -99,7 +96,6 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   const crossSignals = useMemo(() => deriveCrossSignals(records), [records])
   const ambientAttention = useMemo(() => deriveAttentionBudget(records, inbox.length), [records, inbox.length])
   const ambient = useMemo(() => deriveAmbientProfile(ambientNow, ambientAttention.level), [ambientNow, ambientAttention.level])
-  const adaptiveItems = useMemo(() => deriveAdaptiveHome(records, { inboxCount: inbox.length, reviewCount: review.length, moneyReady: Boolean(moneyBridge?.bridge) }), [records, inbox.length, review.length, moneyBridge?.bridge])
   const focusRecords = useMemo(() => {
     const seen = new Set<string>()
     return [...due.filter((record) => !isWaitingRecord(record)), ...carryOver, ...continueRecords.filter((record) => !isWaitingRecord(record))]
@@ -181,7 +177,7 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
   }
 
   return (
-    <div className={'v2-page today-page today-view-' + todayView + ' ambient-' + ambient.period + ' ambient-pressure-' + ambient.pressure + ' adaptive-primary-' + (adaptiveItems[0]?.id || 'quiet') + (simpleDay ? ' simple-day' : '') + (focusMode ? ' focus-mode-on' : '')}>
+    <div className={'v2-page today-page today-view-' + todayView + ' ambient-' + ambient.period + ' ambient-pressure-' + ambient.pressure + (simpleDay ? ' simple-day' : '') + (focusMode ? ' focus-mode-on' : '')}>
       <BrandTop />
 
       <section className="today-glance" aria-label="Seu dia no EU">
@@ -231,19 +227,17 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
         </div>
       </section>
 
-      <div className="today-mode-row">
-        <nav className="today-view-tabs" aria-label="Visões de Hoje" role="tablist">
-          <button role="tab" aria-selected={todayView === 'now'} className={todayView === 'now' ? 'active' : ''} onClick={() => selectTodayView('now')}><EuIcon name="bolt" />Agora</button>
-          <button role="tab" aria-selected={todayView === 'signals'} className={todayView === 'signals' ? 'active' : ''} onClick={() => selectTodayView('signals')}><EuIcon name="sparkles" />Sinais</button>
-        </nav>
+      <div className="today-core-nav-v39">
         <button className={'focus-mode-toggle' + (focusMode ? ' active' : '')} aria-pressed={focusMode} onClick={toggleFocusMode}>
           <EuIcon name={focusMode ? 'check' : 'pin'} />
-          {focusMode ? 'em foco' : 'foco'}
+          {focusMode ? 'em foco' : 'modo foco'}
         </button>
+        <NavLink to="/sistema"><EuIcon name="collections" />Central</NavLink>
+        <NavLink to="/vida/lab"><EuIcon name="sparkles" />Sinais</NavLink>
       </div>
       </section>
 
-      <LifeCommandCenter records={records} inboxCount={inbox.length} />
+      <LifeCommandCenter records={records} inboxCount={inbox.length} compact />
 
       {focusMode && (
         <section className="focus-stage-v32 now-only" aria-label="Modo foco">
@@ -273,13 +267,45 @@ export default function TodayPage({ onRegister }: { onRegister: () => void }) {
         </section>
       )}
 
-      {!focusMode && <AdaptiveHomeDeck items={adaptiveItems} />}
-      {!focusMode && <AssistantSurface records={records} moods={moodHistory} />}
+      {!focusMode && (
+        <section className="today-priority-v39 now-only" aria-label="O que merece sua atenção agora">
+          <div className="today-priority-head-v39">
+            <div><small>AGORA</small><h2>{focusRecords.length ? 'O que merece sua atenção.' : 'Nada está cobrando você.'}</h2></div>
+            <NavLink to="/sistema">ver Central <EuIcon name="arrow-up-right" /></NavLink>
+          </div>
+          {focusRecords.length ? (
+            <div className="today-priority-grid-v39">
+              <NavLink className="today-priority-main-v39" to={'/registro/' + focusRecords[0].id}>
+                <span><Tag tone={due.some((item) => item.id === focusRecords[0].id) ? 'coral' : focusRecords[0].pinned ? 'cobalt' : typeTone(focusRecords[0].type)}>{due.some((item) => item.id === focusRecords[0].id) ? 'AGORA' : focusRecords[0].area}</Tag></span>
+                <strong>{focusRecords[0].text}</strong>
+                <p>{focusRecords[0].nextMove || 'Continuar de onde parou.'}</p>
+                <small>abrir <EuIcon name="arrow-up-right" /></small>
+              </NavLink>
+              {focusRecords.length > 1 && (
+                <div className="today-priority-secondary-v39">
+                  {focusRecords.slice(1, 3).map((record) => (
+                    <NavLink key={record.id} to={'/registro/' + record.id}>
+                      <span>{record.area}</span>
+                      <strong>{record.text}</strong>
+                      <EuIcon name="arrow-up-right" />
+                    </NavLink>
+                  ))}
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="today-priority-empty-v39">
+              <span><EuIcon name="check" /></span>
+              <div><strong>Seu sistema está quieto.</strong><p>Use o espaço para registrar, pensar ou simplesmente seguir o dia.</p></div>
+            </div>
+          )}
+        </section>
+      )}
 
       <details className="today-more-drawer now-only">
         <summary>
-          <div><span><EuIcon name="collections" /></span><div><strong>Ver mais do dia</strong><small>dinheiro, foco, aguardando e lembretes</small></div></div>
-          <b>{focusRecords.length + waiting.length + inbox.length + review.length + due.length + (moneyBridge?.bridge ? 1 : 0) + readyCapsules.length}</b>
+          <div><span><EuIcon name="collections" /></span><div><strong>Mais contexto</strong><small>dinheiro, ideia do dia e detalhes leves</small></div></div>
+          <b>{(moneyBridge?.bridge ? 1 : 0) + readyCapsules.length}</b>
           <EuIcon name="arrow-right" />
         </summary>
         <div className="today-more-body">
