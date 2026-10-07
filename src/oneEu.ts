@@ -89,9 +89,9 @@ export function deriveOneEuConnections(records: StoredRecord[], bridges: BridgeC
   if (typeof goalCount === 'number' && goalCount > 0 && typeof goalName === 'string' && goalName.trim()) {
     connections.push({
       id: 'folego:goal',
-      eyebrow: 'DINHEIRO + VIDA',
-      title: goalName + ' também é uma história da sua vida.',
-      detail: (typeof goalProgress === 'number' ? goalProgress + '% da meta já foi construído. ' : '') + 'O valor continua no Fôlego; o resto do EU só usa esse progresso como contexto.',
+      eyebrow: 'META FINANCEIRA + VIDA',
+      title: 'Meta financeira: ' + goalName,
+      detail: (typeof goalProgress === 'number' ? goalProgress + '% construído no Fôlego. ' : '') + 'O EU usa esse progresso como contexto sem duplicar seus dados.',
       route: '/dinheiro',
       actionLabel: 'abrir meta',
       tone: 'green',
