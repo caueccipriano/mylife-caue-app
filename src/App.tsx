@@ -67,6 +67,7 @@ function AppShell({ onRegister }: { onRegister: () => void }) {
   const location = useLocation()
   const showRegister = ['/', '/sistema', '/vida', '/descobertas', '/memorias'].includes(location.pathname)
   const [chromeCompact, setChromeCompact] = useState(false)
+  const fabMinimized = chromeCompact || location.pathname !== '/'
 
   useEffect(() => {
     let lastY = window.scrollY
@@ -159,7 +160,7 @@ function AppShell({ onRegister }: { onRegister: () => void }) {
       </main>
 
       {showRegister && (
-        <button className={'global-register-pill compact smart-fab' + (chromeCompact ? ' minimized' : '')} onClick={() => { haptic('light'); onRegister() }} aria-label="Registrar no EU">
+        <button className={'global-register-pill compact smart-fab' + (fabMinimized ? ' minimized' : '')} onClick={() => { haptic('light'); onRegister() }} aria-label="Registrar no EU">
           <span><EuIcon name="plus" /></span>
           <b>registrar</b>
         </button>

@@ -144,7 +144,7 @@ export default function MemoriesPage() {
 
       <header className="v2-hero memories-hero">
         <Tag tone="pink">MEMÓRIAS</Tag>
-        <h1>Procure qualquer<br />coisa da sua vida.</h1>
+        <h1>Tudo que você<br />quis guardar.</h1>
         <p>Decisões, desejos, cursos, conversas, referências e coisas que você nem lembrava que tinha guardado.</p>
       </header>
 

@@ -157,8 +157,8 @@ export default function LifeOSPage() {
           <b>EU</b>
         </div>
         <div>
-          <Tag tone="ink">LIFE OS</Tag>
-          <h1>Sua vida,<br />organizada.</h1>
+          <Tag tone="lilac">CENTRAL</Tag>
+          <h1>Sua vida,<br />em ordem.</h1>
           <p>Um lugar para enxergar o que está vivo, o que pede atenção e para onde você quer ir — sem transformar a vida em checklist.</p>
         </div>
       </header>
