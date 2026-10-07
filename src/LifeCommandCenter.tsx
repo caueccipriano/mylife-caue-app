@@ -49,7 +49,7 @@ function contextRecords(records: StoredRecord[], filter: ContextFilter) {
   return records
 }
 
-export default function LifeCommandCenter({ records, inboxCount, compact = false }: { records: StoredRecord[]; inboxCount: number; compact?: boolean }) {
+export default function LifeCommandCenter({ records, inboxCount, compact: compactMode = false }: { records: StoredRecord[]; inboxCount: number; compact?: boolean }) {
   const navigate = useNavigate()
   const [command, setCommand] = useState('')
   const [searchQuery, setSearchQuery] = useState('')
@@ -106,7 +106,7 @@ export default function LifeCommandCenter({ records, inboxCount, compact = false
 
   return (
     <section className="eu-command-center now-only" aria-label="EU Command Center">
-      {!compact && <div className={'eu-now-answer attention-' + attention.level}>
+      {!compactMode && <div className={'eu-now-answer attention-' + attention.level}>
         <div className="eu-now-answer-top">
           <div>
             <Tag tone="cobalt">EU, AGORA</Tag>
@@ -162,7 +162,7 @@ export default function LifeCommandCenter({ records, inboxCount, compact = false
         </div>
       )}
 
-      {!compact && <details className="command-insights-drawer">
+      {!compactMode && <details className="command-insights-drawer">
         <summary>
           <div>
             <span className="command-insights-icon"><EuIcon name="sparkles" /></span>
