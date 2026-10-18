@@ -1,6 +1,6 @@
 {
   "brand": "Editalume",
-  "generated_at": "2026-10-17T10:46:56.104144-03:00",
+  "generated_at": "2026-10-18T11:02:48.959023-03:00",
   "status": "sample_ok",
   "region": "SP",
   "niche": "manutenção, conservação e serviços prediais",
@@ -1715,20 +1715,6 @@
     }
   ],
   "catalog": [
-    {
-      "id": "46634044000174-1-000266/2026",
-      "object": "(MERENDA ESCOLAR)MANDIOCA PROCESSADA/AGR ICULTURA FAMILIAR CONTR.PAG.",
-      "organ": "MUNICIPIO DE SOROCABA",
-      "city": "Sorocaba",
-      "uf": "SP",
-      "deadline": "2026-10-18T00:00:00-03:00",
-      "modality": "Dispensa",
-      "estimated_value_brl": 20.0,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/46634044000174/2026/266",
-      "relevance": 0,
-      "sector_focus": false
-    },
     {
       "id": "46482840000139-1-000813/2026",
       "object": "Prestação de Serviço de Confecção e instalação de Porta de vidro",
@@ -12198,6 +12184,20 @@
       "estimated_value_brl": 1596.0,
       "source": "PNCP",
       "source_url": "https://pncp.gov.br/app/editais/46634598000171/2026/475",
+      "relevance": 0,
+      "sector_focus": false
+    },
+    {
+      "id": "46634424000109-1-000111/2026",
+      "object": "AQUISIÇÃO DE RELÓGIOS DE PONTO COM RECONHECIMENTO FACIAL COMPATÍVEL COM O SOFTWARE DA FIORILLI SOFTWARE LTDA UTILIZADO PELA PREFEITURA MUNICIPAL DE BARÃO DE ANTONINA E BOBINAS TÉRMICAS PARA IMPRESSÃO DE TICKET, INSTALAÇÃO E MANUTENÇÃO INCLUSAS DURANTE O PERÍODO DA GARANTIA",
+      "organ": "MUNICIPIO DE BARAO DE ANTONINA",
+      "city": "Barão de Antonina",
+      "uf": "SP",
+      "deadline": "2026-10-22T07:59:00-03:00",
+      "modality": "Dispensa",
+      "estimated_value_brl": 37765.0,
+      "source": "PNCP",
+      "source_url": "https://pncp.gov.br/app/editais/46634424000109/2026/111",
       "relevance": 0,
       "sector_focus": false
     },
