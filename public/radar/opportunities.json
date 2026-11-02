@@ -1,6 +1,6 @@
 {
   "brand": "Editalume",
-  "generated_at": "2026-11-01T13:49:43.326458-03:00",
+  "generated_at": "2026-11-02T17:23:52.509327-03:00",
   "status": "sample_ok",
   "region": "SP",
   "niche": "manutenção, conservação e serviços prediais",
@@ -1771,20 +1771,6 @@
     }
   ],
   "catalog": [
-    {
-      "id": "45093267000109-1-000133/2026",
-      "object": "AQUISIÇÃO DE ESTOCÁVEIS PARA MERENDA ESCOLAR.",
-      "organ": "MUNICIPIO DE BADY BASSITT",
-      "city": "Bady Bassitt",
-      "uf": "SP",
-      "deadline": "2026-11-02T08:50:00-03:00",
-      "modality": "Pregão - Eletrônico",
-      "estimated_value_brl": 1871567.5,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/45093267000109/2026/133",
-      "relevance": 0,
-      "sector_focus": false
-    },
     {
       "id": "46251021000180-1-000435/2026",
       "object": "Registro de preços para eventual aquisição de cabos elétricos e de comunicação.",
@@ -6794,6 +6780,20 @@
       "estimated_value_brl": 290734.92,
       "source": "PNCP",
       "source_url": "https://pncp.gov.br/app/editais/46341038000129/2026/677",
+      "relevance": 0,
+      "sector_focus": false
+    },
+    {
+      "id": "46374500000194-1-008656/2026",
+      "object": "Materiais para controle glicêmico",
+      "organ": "SECRETARIA DE ESTADO DA SAUDE",
+      "city": "Sorocaba",
+      "uf": "SP",
+      "deadline": "2026-11-04T08:00:00-03:00",
+      "modality": "Pregão - Eletrônico",
+      "estimated_value_brl": null,
+      "source": "PNCP",
+      "source_url": "https://pncp.gov.br/app/editais/46374500000194/2026/8656",
       "relevance": 0,
       "sector_focus": false
     },
