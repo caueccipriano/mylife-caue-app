@@ -1,6 +1,6 @@
 {
   "brand": "Editalume",
-  "generated_at": "2026-11-14T13:37:46.855231-03:00",
+  "generated_at": "2026-11-15T14:14:18.007509-03:00",
   "status": "sample_ok",
   "region": "SP",
   "niche": "manutenção, conservação e serviços prediais",
@@ -12636,20 +12636,6 @@
       "sector_focus": true
     },
     {
-      "id": "00394452000103-1-024457/2026",
-      "object": "MATERIAL ELÉTRICO E HIDRÁULICO",
-      "organ": "COMANDO DO EXERCITO",
-      "city": "São Paulo",
-      "uf": "SP",
-      "deadline": "2026-11-18T12:00:00-03:00",
-      "modality": "Dispensa",
-      "estimated_value_brl": 19189.24,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/00394452000103/2026/24457",
-      "relevance": 0,
-      "sector_focus": false
-    },
-    {
       "id": "02186336000116-1-000055/2026",
       "object": "CONTRATAÇÃO DE PESSOA JURÍDICA PARA A AQUISIÇÃO DE MATERIAIS PEDAGÓGICOS, JOGOS EDUCATIVOS, BRINQUEDOS PEDAGÓGICOS, MATERIAIS SENSORIAIS, INSTRUMENTOS MUSICAIS, MATERIAIS DE PSICOMOTRICIDADE, RECURSOS PARA ESTIMULAÇÃO COGNITIVA, COORDENAÇÃO MOTORA, LING",
       "organ": "MUNICIPIO DE APORE",
@@ -14442,20 +14428,6 @@
       "sector_focus": false
     },
     {
-      "id": "50015304000109-1-000127/2026",
-      "object": "Aquisição de materiais de expediente.",
-      "organ": "TAUBATE CAMARA MUNICIPAL",
-      "city": "Taubaté",
-      "uf": "SP",
-      "deadline": "2026-11-19T14:01:00-03:00",
-      "modality": "Dispensa",
-      "estimated_value_brl": 5007.15,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/50015304000109/2026/127",
-      "relevance": 0,
-      "sector_focus": false
-    },
-    {
       "id": "46634291000170-1-001055/2026",
       "object": "ABERTURA DE PROCESSO LICITATÓRIO PARA CONTRATAÇÃO DE EMPRESA ESPECIALIZADA PARA PRESTAÇÃO DE SERVIÇOS E LOCAÇÃO DE SISTEMA E RADIOCOMUNICAÇÃO POC COM TRANSMISSÃO DE VOZ E DADOS, MONITORAMENTO POR GPS E SISTEMA DE GRAVAÇÃO INCLUINDO EQUIPAMENTOS, INSTALAÇÃO, IMPLANTAÇÃO, CONFIGURAÇÃO, MANUTENÇÃO, TREINAMENTO E ATENDIMENTO ONSITE PARA OPERAÇÃO DO SAMU 192 - SECRETARIA MUNICIPAL DE SAÚDE; CONTRATO.",
       "organ": "MUNICIPIO DE ITAPETININGA",
@@ -14984,20 +14956,6 @@
       "estimated_value_brl": 11476.76,
       "source": "PNCP",
       "source_url": "https://pncp.gov.br/app/editais/48031918000124/2026/3370",
-      "relevance": 0,
-      "sector_focus": false
-    },
-    {
-      "id": "48031918000124-1-003375/2026",
-      "object": "Aquisição de Estantes de Aço e Estantes Gaveteiro",
-      "organ": "UNIVERSIDADE ESTADUAL PAULISTA JULIO DE MESQUITA FILHO",
-      "city": "Dracena",
-      "uf": "SP",
-      "deadline": "2026-11-23T08:30:00-03:00",
-      "modality": "Dispensa",
-      "estimated_value_brl": 6121.18,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/48031918000124/2026/3375",
       "relevance": 0,
       "sector_focus": false
     },
@@ -17826,6 +17784,48 @@
       "estimated_value_brl": 14908526.11,
       "source": "PNCP",
       "source_url": "https://pncp.gov.br/app/editais/46634291000170/2025/1157",
+      "relevance": 0,
+      "sector_focus": false
+    },
+    {
+      "id": "51885242000140-1-000734/2026",
+      "object": "Aquisição emergencial de agulha hipodérmica descartável 30 x 0,8 mm, sem dispositivo de segurança, destinada ao atendimento das demandas da Rede Municipal de Saúde.",
+      "organ": "MUNICIPIO DE CAMPINAS",
+      "city": "Campinas",
+      "uf": "SP",
+      "deadline": "2026-12-30T09:41:00-03:00",
+      "modality": "Dispensa",
+      "estimated_value_brl": 11850.0,
+      "source": "PNCP",
+      "source_url": "https://pncp.gov.br/app/editais/51885242000140/2026/734",
+      "relevance": 0,
+      "sector_focus": false
+    },
+    {
+      "id": "51885242000140-1-000863/2026",
+      "object": "Aquisição de de tubo de coleta.",
+      "organ": "MUNICIPIO DE CAMPINAS",
+      "city": "Campinas",
+      "uf": "SP",
+      "deadline": "2026-12-30T10:26:00-03:00",
+      "modality": "Dispensa",
+      "estimated_value_brl": 3200.0,
+      "source": "PNCP",
+      "source_url": "https://pncp.gov.br/app/editais/51885242000140/2026/863",
+      "relevance": 0,
+      "sector_focus": false
+    },
+    {
+      "id": "51885242000140-1-000059/2026",
+      "object": "Aquisição emergencial de Luva de procedimento Nitrílica ou Vinílica Tamanhos M e P para uso da Rede Municipal de Saúde.",
+      "organ": "MUNICIPIO DE CAMPINAS",
+      "city": "Campinas",
+      "uf": "SP",
+      "deadline": "2026-12-30T14:54:00-03:00",
+      "modality": "Dispensa",
+      "estimated_value_brl": 39330.0,
+      "source": "PNCP",
+      "source_url": "https://pncp.gov.br/app/editais/51885242000140/2026/59",
       "relevance": 0,
       "sector_focus": false
     }
