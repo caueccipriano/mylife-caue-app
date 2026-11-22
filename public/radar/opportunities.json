@@ -1,6 +1,6 @@
 {
   "brand": "Editalume",
-  "generated_at": "2026-11-21T14:36:05.774233-03:00",
+  "generated_at": "2026-11-22T14:51:54.529959-03:00",
   "status": "sample_ok",
   "region": "SP",
   "niche": "manutenção, conservação e serviços prediais",
@@ -5786,20 +5786,6 @@
       "estimated_value_brl": 756622.8,
       "source": "PNCP",
       "source_url": "https://pncp.gov.br/app/editais/46611117000102/2026/46",
-      "relevance": 0,
-      "sector_focus": false
-    },
-    {
-      "id": "06302492000156-1-000059/2026",
-      "object": "Contratação de serviços de extensão do suporte para Access Points e Solução de Gerenciamento Centralizado.",
-      "organ": "TRIBUNAL REGIONAL ELEITORAL DE SAO PAULO",
-      "city": "São Paulo",
-      "uf": "SP",
-      "deadline": "2026-11-23T13:00:00-03:00",
-      "modality": "Pregão - Eletrônico",
-      "estimated_value_brl": 150028.59,
-      "source": "PNCP",
-      "source_url": "https://pncp.gov.br/app/editais/06302492000156/2026/59",
       "relevance": 0,
       "sector_focus": false
     },
@@ -18176,6 +18162,20 @@
       "estimated_value_brl": 3092597.4,
       "source": "PNCP",
       "source_url": "https://pncp.gov.br/app/editais/46523122000163/2026/318",
+      "relevance": 0,
+      "sector_focus": false
+    },
+    {
+      "id": "46377800000127-1-004657/2026",
+      "object": "Contratação de serviços de guarda  e estadia de veículos apreendidos ",
+      "organ": "SAO PAULO SECRETARIA DA SEGURANCA PUBLICA",
+      "city": "Bauru",
+      "uf": "SP",
+      "deadline": "2027-01-06T17:59:00-03:00",
+      "modality": "Pregão - Eletrônico",
+      "estimated_value_brl": 2693031.6,
+      "source": "PNCP",
+      "source_url": "https://pncp.gov.br/app/editais/46377800000127/2026/4657",
       "relevance": 0,
       "sector_focus": false
     }
